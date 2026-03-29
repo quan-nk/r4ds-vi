@@ -2,21 +2,24 @@ project:
   type: book
   output-dir: _book
 
+lang: vi
+
 book:
-  title: "R for Data Science (2e)"
+  title: "R cho Khoa học Dữ liệu (Phiên bản 2)"
   reader-mode: true
 
   page-footer:
     left: |
-      R for Data Science (2e) was written by Hadley Wickham, Mine
-      Çetinkaya-Rundel, and Garrett Grolemund.
+      R cho Khoa học Dữ liệu (2e) được viết bởi Hadley Wickham, Mine
+      Çetinkaya-Rundel, và Garrett Grolemund. Bản dịch tiếng Việt bởi
+      Nguyễn Khôi Quân.
     right: |
-      This book was built with <a href="https://quarto.org/">Quarto</a>.
+      Cuốn sách này được xây dựng bằng <a href="https://quarto.org/">Quarto</a>.
   cover-image: cover.jpg
   favicon: cover.jpg
-  site-url: https://r4ds.hadley.nz/
-  repo-url: https://github.com/hadley/r4ds/
-  repo-branch: main
+  site-url: https://quan-nk.github.io/r4ds-vi/
+  repo-url: https://github.com/quan-nk/r4ds-vi/
+  repo-branch: translate
   repo-actions: [edit, issue]
   chapters:
     - index.qmd
@@ -78,8 +81,7 @@ format:
       - r4ds.scss
     code-link: true
 
-    author-meta: "Hadley Wickham, Mine Çetinkaya-Rundel, and Garrett Grolemund"
-    include-in-header: "plausible.html"
+    author-meta: "Hadley Wickham, Mine Çetinkaya-Rundel, và Garrett Grolemund"
     callout-appearance: simple
 
 editor: source

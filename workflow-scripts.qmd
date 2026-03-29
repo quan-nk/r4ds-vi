@@ -1,124 +1,124 @@
-# Workflow: scripts and projects {#sec-workflow-scripts-projects}
+# Quy trình làm việc: tập lệnh và dự án {#sec-workflow-scripts-projects}
 
 ```{r}
 #| echo: false
 source("_common.R")
 ```
 
-This chapter will introduce you to two essential tools for organizing your code: scripts and projects.
+Chương này sẽ giới thiệu cho bạn hai công cụ thiết yếu để tổ chức mã: tập lệnh (script) và dự án (project).
 
-## Scripts
+## Tập lệnh
 
-So far, you have used the console to run code.
-That's a great place to start, but you'll find it gets cramped pretty quickly as you create more complex ggplot2 graphics and longer dplyr pipelines.
-To give yourself more room to work, use the script editor.
-Open it up by clicking the File menu, selecting New File, then R script, or using the keyboard shortcut Cmd/Ctrl + Shift + N.
-Now you'll see four panes, as in @fig-rstudio-script.
-The script editor is a great place to experiment with your code.
-When you want to change something, you don't have to re-type the whole thing, you can just edit the script and re-run it.
-And once you have written code that works and does what you want, you can save it as a script file to easily return to later.
+Cho đến nay, bạn đã sử dụng bảng điều khiển để chạy mã.
+Đó là nơi tuyệt vời để bắt đầu, nhưng bạn sẽ thấy nó trở nên chật chội khá nhanh khi bạn tạo đồ họa ggplot2 phức tạp hơn và pipeline dplyr dài hơn.
+Để có thêm không gian làm việc, hãy sử dụng trình soạn thảo tập lệnh.
+Mở nó bằng cách nhấp vào menu File, chọn New File, rồi R script, hoặc sử dụng phím tắt Cmd/Ctrl + Shift + N.
+Bây giờ bạn sẽ thấy bốn bảng, như trong @fig-rstudio-script.
+Trình soạn thảo tập lệnh là nơi tuyệt vời để thử nghiệm với mã.
+Khi bạn muốn thay đổi gì đó, bạn không phải gõ lại toàn bộ, bạn chỉ cần chỉnh sửa tập lệnh và chạy lại.
+Và khi bạn đã viết mã hoạt động đúng và làm những gì bạn muốn, bạn có thể lưu nó thành file tập lệnh để dễ dàng quay lại sau.
 
 ```{r}
 #| label: fig-rstudio-script
 #| echo: false
 #| out-width: ~
 #| fig-cap: |
-#|   Opening the script editor adds a new pane at the top-left of the
-#|   IDE.
+#|   Mở trình soạn thảo tập lệnh thêm một bảng mới ở phía trên bên trái
+#|   của IDE.
 #| fig-alt: |
-#|   RStudio IDE with Editor, Console, and Output highlighted.
+#|   IDE RStudio với Editor, Console, và Output được đánh dấu.
 knitr::include_graphics("diagrams/rstudio/script.png", dpi = 270)
 ```
 
-### Running code
+### Chạy mã
 
-The script editor is an excellent place for building complex ggplot2 plots or long sequences of dplyr manipulations.
-The key to using the script editor effectively is to memorize one of the most important keyboard shortcuts: Cmd/Ctrl + Enter.
-This executes the current R expression in the console.
-For example, take the code below.
+Trình soạn thảo tập lệnh là nơi tuyệt vời để xây dựng biểu đồ ggplot2 phức tạp hoặc chuỗi thao tác dplyr dài.
+Chìa khóa để sử dụng trình soạn thảo hiệu quả là ghi nhớ một trong những phím tắt quan trọng nhất: Cmd/Ctrl + Enter.
+Phím tắt này thực thi biểu thức R hiện tại trong bảng điều khiển.
+Ví dụ, xem đoạn mã bên dưới.
 
 ```{r}
 #| eval: false
 library(dplyr)
 library(nycflights13)
 
-not_cancelled <- flights |> 
+not_cancelled <- flights |>
   filter(!is.na(dep_delay)█, !is.na(arr_delay))
 
-not_cancelled |> 
-  group_by(year, month, day) |> 
+not_cancelled |>
+  group_by(year, month, day) |>
   summarize(mean = mean(dep_delay))
 ```
 
-If your cursor is at █, pressing Cmd/Ctrl + Enter will run the complete command that generates `not_cancelled`.
-It will also move the cursor to the following statement (beginning with `not_cancelled |>`).
-That makes it easy to step through your complete script by repeatedly pressing Cmd/Ctrl + Enter.
+Nếu con trỏ của bạn ở █, nhấn Cmd/Ctrl + Enter sẽ chạy toàn bộ lệnh tạo ra `not_cancelled`.
+Nó cũng sẽ di chuyển con trỏ đến lệnh tiếp theo (bắt đầu với `not_cancelled |>`).
+Điều này giúp dễ dàng chạy qua toàn bộ tập lệnh bằng cách nhấn Cmd/Ctrl + Enter liên tục.
 
-Instead of running your code expression-by-expression, you can also execute the complete script in one step with Cmd/Ctrl + Shift + S.
-Doing this regularly is a great way to ensure that you've captured all the important parts of your code in the script.
+Thay vì chạy mã từng biểu thức, bạn cũng có thể thực thi toàn bộ tập lệnh trong một bước với Cmd/Ctrl + Shift + S.
+Làm điều này thường xuyên là cách tuyệt vời để đảm bảo bạn đã nắm bắt tất cả các phần quan trọng của mã trong tập lệnh.
 
-We recommend you always start your script with the packages you need.
-That way, if you share your code with others, they can easily see which packages they need to install.
-Note, however, that you should never include `install.packages()` in a script you share.
-It's inconsiderate to hand off a script that will change something on their computer if they're not being careful!
+Chúng tôi khuyến nghị bạn luôn bắt đầu tập lệnh với các gói bạn cần.
+Bằng cách đó, nếu bạn chia sẻ mã với người khác, họ có thể dễ dàng thấy những gói nào cần cài đặt.
+Tuy nhiên, lưu ý rằng bạn không bao giờ nên đặt `install.packages()` trong tập lệnh bạn chia sẻ.
+Thật thiếu tế nhị khi giao một tập lệnh sẽ thay đổi thứ gì đó trên máy tính của họ nếu họ không cẩn thận!
 
-When working through future chapters, we highly recommend starting in the script editor and practicing your keyboard shortcuts.
-Over time, sending code to the console in this way will become so natural that you won't even think about it.
+Khi làm việc qua các chương trong tương lai, chúng tôi rất khuyến nghị bạn bắt đầu trong trình soạn thảo tập lệnh và thực hành phím tắt.
+Theo thời gian, việc gửi mã đến bảng điều khiển theo cách này sẽ trở nên tự nhiên đến mức bạn không cần suy nghĩ.
 
-### RStudio diagnostics
+### Chẩn đoán của RStudio
 
-In the script editor, RStudio will highlight syntax errors with a red squiggly line and a cross in the sidebar:
+Trong trình soạn thảo tập lệnh, RStudio sẽ đánh dấu lỗi cú pháp bằng đường gợn sóng đỏ và dấu chéo ở thanh bên:
 
 ```{r}
 #| echo: false
 #| out-width: ~
 #| fig-alt: |
-#|   Script editor with the script x y <- 10. A red X indicates that there is 
-#|   syntax error. The syntax error is also highlighted with a red squiggly line.
+#|   Trình soạn thảo tập lệnh với mã x y <- 10. Dấu X đỏ cho biết có lỗi
+#|   cú pháp. Lỗi cú pháp cũng được đánh dấu bằng đường gợn sóng đỏ.
 knitr::include_graphics("screenshots/rstudio-diagnostic.png")
 ```
 
-Hover over the cross to see what the problem is:
+Di chuột qua dấu chéo để xem vấn đề là gì:
 
 ```{r}
 #| echo: false
 #| out-width: ~
 #| fig-alt: |
-#|   Script editor with the script x y <- 10. A red X indicates that there is 
-#|   syntax error. The syntax error is also highlighted with a red squiggly line.
-#|   Hovering over the X shows a text box with the text unexpected token y and 
+#|   Trình soạn thảo tập lệnh với mã x y <- 10. Dấu X đỏ cho biết có lỗi
+#|   cú pháp. Lỗi cú pháp cũng được đánh dấu bằng đường gợn sóng đỏ.
+#|   Di chuột qua X hiển thị hộp văn bản với nội dung unexpected token y và
 #|   unexpected token <-.
 knitr::include_graphics("screenshots/rstudio-diagnostic-tip.png")
 ```
 
-RStudio will also let you know about potential problems:
+RStudio cũng sẽ thông báo cho bạn về các vấn đề tiềm ẩn:
 
 ```{r}
 #| echo: false
 #| out-width: ~
 #| fig-alt: |
-#|   Script editor with the script 3 == NA. A yellow exclamation mark 
-#|   indicates that there may be a potential problem. Hovering over the 
-#|   exclamation mark shows a text box with the text use is.na to check 
-#|   whether expression evaluates to NA.
+#|   Trình soạn thảo tập lệnh với mã 3 == NA. Dấu chấm than vàng
+#|   cho biết có thể có vấn đề tiềm ẩn. Di chuột qua dấu chấm than
+#|   hiển thị hộp văn bản với nội dung use is.na to check whether
+#|   expression evaluates to NA.
 knitr::include_graphics("screenshots/rstudio-diagnostic-warn.png")
 ```
 
-### Saving and naming
+### Lưu và đặt tên
 
-RStudio automatically saves the contents of the script editor when you quit, and automatically reloads it when you re-open.
-Nevertheless, it's a good idea to avoid Untitled1, Untitled2, Untitled3, and so on and instead save your scripts and give them informative names.
+RStudio tự động lưu nội dung trình soạn thảo tập lệnh khi bạn thoát, và tự động tải lại khi bạn mở lại.
+Tuy nhiên, bạn nên tránh Untitled1, Untitled2, Untitled3, v.v. và thay vào đó lưu tập lệnh và đặt tên mang tính mô tả.
 
-It might be tempting to name your files `code.R` or `myscript.R`, but you should think a bit harder before choosing a name for your file.
-Three important principles for file naming are as follows:
+Có thể hấp dẫn khi đặt tên file là `code.R` hay `myscript.R`, nhưng bạn nên suy nghĩ kỹ hơn trước khi chọn tên cho file.
+Ba nguyên tắc quan trọng cho việc đặt tên file như sau:
 
-1.  File names should be **machine** readable: avoid spaces, symbols, and special characters. Don't rely on case sensitivity to distinguish files.
-2.  File names should be **human** readable: use file names to describe what's in the file.
-3.  File names should play well with default ordering: start file names with numbers so that alphabetical sorting puts them in the order they get used.
+1.  Tên file nên **máy** đọc được: tránh dấu cách, ký hiệu, và ký tự đặc biệt. Không dựa vào phân biệt chữ hoa/thường để phân biệt file.
+2.  Tên file nên **người** đọc được: sử dụng tên file để mô tả nội dung bên trong.
+3.  Tên file nên hoạt động tốt với thứ tự sắp xếp mặc định: bắt đầu tên file bằng số để sắp xếp theo bảng chữ cái đặt chúng theo thứ tự sử dụng.
 
-For example, suppose you have the following files in a project folder.
+Ví dụ, giả sử bạn có các file sau trong thư mục dự án.
 
-```         
+```
 alternative model.R
 code for exploratory analysis.r
 finalreport.qmd
@@ -130,13 +130,13 @@ run-first.r
 temp.txt
 ```
 
-There are a variety of problems here: it's hard to find which file to run first, file names contain spaces, there are two files with the same name but different capitalization (`finalreport` vs. `FinalReport`[^workflow-scripts-1]), and some names don't describe their contents (`run-first` and `temp`).
+Có nhiều vấn đề ở đây: khó tìm file nào cần chạy trước, tên file chứa dấu cách, có hai file cùng tên nhưng khác chữ hoa/thường (`finalreport` so với `FinalReport`[^workflow-scripts-1]), và một số tên không mô tả nội dung (`run-first` và `temp`).
 
-[^workflow-scripts-1]: Not to mention that you're tempting fate by using "final" in the name 😆 The comic Piled Higher and Deeper has a [fun strip on this](https://phdcomics.com/comics/archive.php?comicid=1531).
+[^workflow-scripts-1]: Chưa kể rằng bạn đang thách thức số phận khi dùng "final" trong tên 😆 Truyện tranh Piled Higher and Deeper có một [mẩu truyện vui về điều này](https://phdcomics.com/comics/archive.php?comicid=1531).
 
-Here's a better way of naming and organizing the same set of files:
+Đây là cách đặt tên và tổ chức tốt hơn cho cùng bộ file:
 
-```         
+```
 01-load-data.R
 02-exploratory-analysis.R
 03-model-approach-1.R
@@ -148,85 +148,85 @@ report-2022-04-02.qmd
 report-draft-notes.txt
 ```
 
-Numbering the key scripts makes it obvious in which order to run them and a consistent naming scheme makes it easier to see what varies.
-Additionally, the figures are labelled similarly, the reports are distinguished by dates included in the file names, and `temp` is renamed to `report-draft-notes` to better describe its contents.
-If you have a lot of files in a directory, taking organization one step further and placing different types of files (scripts, figures, etc.) in different directories is recommended.
+Đánh số các tập lệnh chính giúp rõ ràng thứ tự chạy và sơ đồ đặt tên nhất quán giúp dễ thấy điều gì thay đổi.
+Ngoài ra, các hình được đánh nhãn tương tự, báo cáo được phân biệt bằng ngày trong tên file, và `temp` được đổi tên thành `report-draft-notes` để mô tả nội dung tốt hơn.
+Nếu bạn có nhiều file trong một thư mục, nên tổ chức thêm một bước bằng cách đặt các loại file khác nhau (tập lệnh, hình, v.v.) vào các thư mục khác nhau.
 
-## Projects
+## Dự án
 
-One day, you will need to quit R, go do something else, and return to your analysis later.
-One day, you will be working on multiple analyses simultaneously and you want to keep them separate.
-One day, you will need to bring data from the outside world into R and send numerical results and figures from R back out into the world.
+Một ngày nào đó, bạn sẽ cần thoát R, đi làm việc khác, và quay lại phân tích sau.
+Một ngày nào đó, bạn sẽ làm việc trên nhiều phân tích đồng thời và muốn giữ chúng riêng biệt.
+Một ngày nào đó, bạn sẽ cần đưa dữ liệu từ thế giới bên ngoài vào R và gửi kết quả số và hình từ R ra thế giới bên ngoài.
 
-To handle these real life situations, you need to make two decisions:
+Để xử lý các tình huống thực tế này, bạn cần đưa ra hai quyết định:
 
-1.  What is the source of truth?
-    What will you save as your lasting record of what happened?
+1.  Nguồn sự thật là gì?
+    Bạn sẽ lưu gì như bản ghi lâu dài về những gì đã xảy ra?
 
-2.  Where does your analysis live?
+2.  Phân tích của bạn nằm ở đâu?
 
-### What is the source of truth?
+### Nguồn sự thật là gì?
 
-As a beginner, it's okay to rely on your current Environment to contain all the objects you have created throughout your analysis.
-However, to make it easier to work on larger projects or collaborate with others, your source of truth should be the R scripts.
-With your R scripts (and your data files), you can recreate the environment.
-With only your environment, it's much harder to recreate your R scripts: you'll either have to retype a lot of code from memory (inevitably making mistakes along the way) or you'll have to carefully mine your R history.
+Với người mới bắt đầu, có thể dựa vào Environment hiện tại để chứa tất cả đối tượng bạn đã tạo trong suốt quá trình phân tích.
+Tuy nhiên, để dễ dàng hơn khi làm việc trên dự án lớn hơn hoặc cộng tác với người khác, nguồn sự thật nên là các tập lệnh R.
+Với tập lệnh R (và file dữ liệu), bạn có thể tái tạo môi trường.
+Chỉ với môi trường, việc tái tạo tập lệnh R khó hơn nhiều: bạn sẽ phải gõ lại rất nhiều mã từ bộ nhớ (chắc chắn mắc lỗi) hoặc phải cẩn thận khai thác lịch sử R.
 
-To help keep your R scripts as the source of truth for your analysis, we highly recommend that you instruct RStudio not to preserve your workspace between sessions.
-You can do this either by running `usethis::use_blank_slate()`[^workflow-scripts-2] or by mimicking the options shown in @fig-blank-slate. This will cause you some short-term pain, because now when you restart RStudio, it will no longer remember the code that you ran last time nor will the objects you created or the datasets you read be available to use.
-But this short-term pain saves you long-term agony because it forces you to capture all important procedures in your code.
-There's nothing worse than discovering three months after the fact that you've only stored the results of an important calculation in your environment, not the calculation itself in your code.
+Để giúp giữ tập lệnh R là nguồn sự thật cho phân tích của bạn, chúng tôi rất khuyến nghị bạn hướng dẫn RStudio không bảo tồn không gian làm việc giữa các phiên.
+Bạn có thể làm điều này bằng cách chạy `usethis::use_blank_slate()`[^workflow-scripts-2] hoặc bằng cách mô phỏng các tùy chọn trong @fig-blank-slate. Điều này sẽ gây cho bạn chút khó chịu ngắn hạn, vì bây giờ khi khởi động lại RStudio, nó sẽ không còn nhớ mã bạn đã chạy lần trước cũng như các đối tượng bạn đã tạo hoặc tập dữ liệu bạn đã đọc sẽ không có sẵn.
+Nhưng nỗi khó chịu ngắn hạn này cứu bạn khỏi đau khổ dài hạn vì nó buộc bạn nắm bắt tất cả thủ tục quan trọng trong mã.
+Không có gì tệ hơn việc phát hiện ba tháng sau rằng bạn chỉ lưu kết quả của một phép tính quan trọng trong môi trường, không phải bản thân phép tính trong mã.
 
-[^workflow-scripts-2]: If you don't have usethis installed, you can install it with `install.packages("usethis")`.
+[^workflow-scripts-2]: Nếu bạn chưa cài đặt usethis, bạn có thể cài đặt bằng `install.packages("usethis")`.
 
 ```{r}
 #| label: fig-blank-slate
 #| echo: false
 #| fig-cap: |
-#|   Copy these options in your RStudio options to always start your 
-#|   RStudio session with a clean slate.
+#|   Sao chép các tùy chọn này trong tùy chọn RStudio để luôn bắt đầu
+#|   phiên RStudio với bảng sạch.
 #| fig-alt: |
-#|   RStudio Global Options window where the option Restore .RData into workspace 
-#|   at startup is not checked. Also, the option Save workspace to .RData 
-#|   on exit is set to Never.
+#|   Cửa sổ RStudio Global Options trong đó tùy chọn Restore .RData into
+#|   workspace at startup không được chọn. Ngoài ra, tùy chọn Save workspace
+#|   to .RData on exit được đặt thành Never.
 #| out-width: ~
 knitr::include_graphics("diagrams/rstudio/clean-slate.png", dpi = 270)
 ```
 
-There is a great pair of keyboard shortcuts that will work together to make sure you've captured the important parts of your code in the editor:
+Có một cặp phím tắt tuyệt vời hoạt động cùng nhau để đảm bảo bạn đã nắm bắt các phần quan trọng của mã trong trình soạn thảo:
 
-1.  Press Cmd/Ctrl + Shift + 0/F10 to restart R.
-2.  Press Cmd/Ctrl + Shift + S to re-run the current script.
+1.  Nhấn Cmd/Ctrl + Shift + 0/F10 để khởi động lại R.
+2.  Nhấn Cmd/Ctrl + Shift + S để chạy lại tập lệnh hiện tại.
 
-We collectively use this pattern hundreds of times a week.
+Chúng tôi cùng nhau sử dụng mẫu này hàng trăm lần mỗi tuần.
 
-Alternatively, if you don't use keyboard shortcuts, you can go to Session \> Restart R and then highlight and re-run your current script.
+Ngoài ra, nếu bạn không sử dụng phím tắt, bạn có thể vào Session \> Restart R rồi bôi đen và chạy lại tập lệnh hiện tại.
 
 ::: callout-note
 ## RStudio server
 
-If you're using RStudio server, your R session is never restarted by default.
-When you close your RStudio server tab, it might feel like you're closing R, but the server actually keeps it running in the background.
-The next time you return, you'll be in exactly the same place you left.
-This makes it even more important to regularly restart R so that you're starting with a clean slate.
+Nếu bạn đang sử dụng RStudio server, phiên R của bạn mặc định không bao giờ được khởi động lại.
+Khi bạn đóng tab RStudio server, có thể cảm giác như bạn đang đóng R, nhưng server thực tế vẫn giữ nó chạy ngầm.
+Lần tiếp theo bạn quay lại, bạn sẽ ở đúng nơi bạn đã rời đi.
+Điều này khiến việc khởi động lại R thường xuyên càng quan trọng hơn để bạn bắt đầu với bảng sạch.
 :::
 
-### Where does your analysis live?
+### Phân tích của bạn nằm ở đâu?
 
-R has a powerful notion of the **working directory**.
-This is where R looks for files that you ask it to load, and where it will put any files that you ask it to save.
-RStudio shows your current working directory at the top of the console:
+R có khái niệm mạnh mẽ về **thư mục làm việc** (working directory).
+Đây là nơi R tìm kiếm file bạn yêu cầu tải, và nơi nó sẽ đặt bất kỳ file nào bạn yêu cầu lưu.
+RStudio hiển thị thư mục làm việc hiện tại ở đầu bảng điều khiển:
 
 ```{r}
 #| echo: false
 #| fig-alt: |
-#|   The Console tab shows the current working directory as 
+#|   Tab Console hiển thị thư mục làm việc hiện tại là
 #|   ~/Documents/r4ds.
 #| out-width: ~
 knitr::include_graphics("screenshots/rstudio-wd.png")
 ```
 
-And you can print this out in R code by running `getwd()`:
+Và bạn có thể in ra trong mã R bằng cách chạy `getwd()`:
 
 ```{r}
 #| eval: false
@@ -234,52 +234,52 @@ getwd()
 #> [1] "/Users/hadley/Documents/r4ds"
 ```
 
-In this R session, the current working directory (think of it as "home") is in hadley's Documents folder, in a subfolder called r4ds.
-This code will return a different result when you run it, because your computer has a different directory structure than Hadley's!
+Trong phiên R này, thư mục làm việc hiện tại (nghĩ về nó như "nhà") nằm trong thư mục Documents của hadley, trong thư mục con gọi là r4ds.
+Mã này sẽ trả về kết quả khác khi bạn chạy, vì máy tính của bạn có cấu trúc thư mục khác với máy Hadley!
 
-As a beginning R user, it's OK to let your working directory be your home directory, documents directory, or any other weird directory on your computer.
-But you're more than a handful of chapters into this book, and you're no longer a beginner.
-Very soon now you should evolve to organizing your projects into directories and, when working on a project, set R's working directory to the associated directory.
+Với người mới sử dụng R, việc để thư mục làm việc là thư mục home, thư mục documents, hoặc bất kỳ thư mục kỳ lạ nào trên máy tính là được.
+Nhưng bạn đã đi qua khá nhiều chương trong cuốn sách này, và bạn không còn là người mới nữa.
+Rất sớm thôi bạn nên phát triển sang tổ chức dự án thành thư mục và, khi làm việc trên một dự án, đặt thư mục làm việc của R thành thư mục tương ứng.
 
-You can set the working directory from within R but **we** **do not recommend it**:
+Bạn có thể đặt thư mục làm việc từ bên trong R nhưng **chúng tôi** **không khuyến nghị**:
 
 ```{r}
 #| eval: false
 setwd("/path/to/my/CoolProject")
 ```
 
-There's a better way; a way that also puts you on the path to managing your R work like an expert.
-That way is the **RStudio** **project**.
+Có cách tốt hơn; cách cũng đưa bạn lên con đường quản lý công việc R như chuyên gia.
+Cách đó là **dự án** **RStudio**.
 
-### RStudio projects
+### Dự án RStudio
 
-Keeping all the files associated with a given project (input data, R scripts, analytical results, and figures) together in one directory is such a wise and common practice that RStudio has built-in support for this via **projects**.
-Let's make a project for you to use while you're working through the rest of this book.
-Click File \> New Project, then follow the steps shown in @fig-new-project.
+Giữ tất cả file liên quan đến một dự án (dữ liệu đầu vào, tập lệnh R, kết quả phân tích, và hình) cùng nhau trong một thư mục là thói quen khôn ngoan và phổ biến đến mức RStudio có hỗ trợ tích hợp cho điều này qua **dự án** (project).
+Hãy tạo một dự án cho bạn sử dụng khi làm việc qua phần còn lại của cuốn sách này.
+Nhấp File \> New Project, rồi làm theo các bước trong @fig-new-project.
 
 ```{r}
 #| label: fig-new-project
 #| echo: false
-#| fig-cap: | 
-#|   To create new project: (top) first click New Directory, then (middle)
-#|   click New Project, then (bottom) fill in the directory (project) name,
-#|   choose a good subdirectory for its home and click Create Project.
+#| fig-cap: |
+#|   Để tạo dự án mới: (trên) đầu tiên nhấp New Directory, rồi (giữa)
+#|   nhấp New Project, rồi (dưới) điền tên thư mục (dự án),
+#|   chọn thư mục con tốt và nhấp Create Project.
 #| fig-alt: |
-#|   Three screenshots of the New Project menu. In the first screenshot, 
-#|   the Create Project window is shown and New Directory is selected. 
-#|   In the second screenshot, the Project Type window is shown and 
-#|   Empty Project is selected. In the third screenshot, the Create New
-#|   Project  window is shown and the directory name is given as r4ds and
-#|   the project is being created as subdirectory of the Desktop.
+#|   Ba ảnh chụp màn hình của menu New Project. Trong ảnh đầu tiên,
+#|   cửa sổ Create Project được hiển thị và New Directory được chọn.
+#|   Trong ảnh thứ hai, cửa sổ Project Type được hiển thị và
+#|   Empty Project được chọn. Trong ảnh thứ ba, cửa sổ Create New
+#|   Project được hiển thị và tên thư mục là r4ds và
+#|   dự án đang được tạo như thư mục con của Desktop.
 #| out-width: ~
 knitr::include_graphics("diagrams/new-project.png")
 ```
 
-Call your project `r4ds` and think carefully about which subdirectory you put the project in.
-If you don't store it somewhere sensible, it will be hard to find it in the future!
+Đặt tên dự án là `r4ds` và suy nghĩ kỹ về thư mục con nào bạn đặt dự án vào.
+Nếu bạn không lưu ở nơi hợp lý, sẽ khó tìm nó trong tương lai!
 
-Once this process is complete, you'll get a new RStudio project just for this book.
-Check that the "home" of your project is the current working directory:
+Khi quá trình này hoàn tất, bạn sẽ có một dự án RStudio mới dành cho cuốn sách này.
+Kiểm tra rằng "nhà" của dự án là thư mục làm việc hiện tại:
 
 ```{r}
 #| eval: false
@@ -287,76 +287,76 @@ getwd()
 #> [1] /Users/hadley/Documents/r4ds
 ```
 
-Now enter the following commands in the script editor, and save the file, calling it "diamonds.R".
-Then, create a new folder called "data".
-You can do this by clicking on the "New Folder" button in the Files pane in RStudio.
-Finally, run the complete script which will save a PNG and CSV file into your project directory.
-Don't worry about the details, you'll learn them later in the book.
+Bây giờ nhập các lệnh sau vào trình soạn thảo tập lệnh, và lưu file với tên "diamonds.R".
+Sau đó, tạo thư mục mới có tên "data".
+Bạn có thể làm điều này bằng cách nhấp nút "New Folder" trong bảng Files của RStudio.
+Cuối cùng, chạy toàn bộ tập lệnh sẽ lưu file PNG và CSV vào thư mục dự án.
+Đừng lo về chi tiết, bạn sẽ học chúng sau trong cuốn sách.
 
 ```{r}
 #| label: toy-line
 #| eval: false
 library(tidyverse)
 
-ggplot(diamonds, aes(x = carat, y = price)) + 
+ggplot(diamonds, aes(x = carat, y = price)) +
   geom_hex()
 ggsave("diamonds.png")
 
 write_csv(diamonds, "data/diamonds.csv")
 ```
 
-Quit RStudio.
-Inspect the folder associated with your project --- notice the `.Rproj` file.
-Double-click that file to re-open the project.
-Notice you get back to where you left off: it's the same working directory and command history, and all the files you were working on are still open.
-Because you followed our instructions above, you will, however, have a completely fresh environment, guaranteeing that you're starting with a clean slate.
+Thoát RStudio.
+Kiểm tra thư mục liên quan đến dự án --- chú ý file `.Rproj`.
+Nhấp đúp vào file đó để mở lại dự án.
+Chú ý bạn quay lại nơi bạn đã rời đi: cùng thư mục làm việc và lịch sử lệnh, và tất cả file bạn đang làm việc vẫn mở.
+Vì bạn đã làm theo hướng dẫn ở trên, bạn sẽ có một môi trường hoàn toàn mới, đảm bảo bạn bắt đầu với bảng sạch.
 
-In your favorite OS-specific way, search your computer for `diamonds.png` and you will find the PNG (no surprise) but *also the script that created it* (`diamonds.R`).
-This is a huge win!
-One day, you will want to remake a figure or just understand where it came from.
-If you rigorously save figures to files **with R code** and never with the mouse or the clipboard, you will be able to reproduce old work with ease!
+Bằng cách ưa thích của hệ điều hành, tìm kiếm `diamonds.png` trên máy tính và bạn sẽ tìm thấy file PNG (không bất ngờ) nhưng *cũng tìm thấy tập lệnh đã tạo ra nó* (`diamonds.R`).
+Đây là chiến thắng lớn!
+Một ngày nào đó, bạn sẽ muốn tạo lại hình hoặc chỉ hiểu nó đến từ đâu.
+Nếu bạn nghiêm túc lưu hình vào file **bằng mã R** và không bao giờ bằng chuột hoặc clipboard, bạn sẽ có thể tái tạo công việc cũ dễ dàng!
 
-### Relative and absolute paths
+### Đường dẫn tương đối và tuyệt đối
 
-Once you're inside a project, you should only ever use relative paths not absolute paths.
-What's the difference?
-A relative path is relative to the working directory, i.e. the project's home.
-When Hadley wrote `data/diamonds.csv` above it was a shortcut for `/Users/hadley/Documents/r4ds/data/diamonds.csv`.
-But importantly, if Mine ran this code on her computer, it would point to `/Users/Mine/Documents/r4ds/data/diamonds.csv`.
-This is why relative paths are important: they'll work regardless of where the R project folder ends up.
+Khi ở bên trong dự án, bạn chỉ nên sử dụng đường dẫn tương đối, không phải đường dẫn tuyệt đối.
+Sự khác biệt là gì?
+Đường dẫn tương đối là tương đối với thư mục làm việc, tức là "nhà" của dự án.
+Khi Hadley viết `data/diamonds.csv` ở trên, đó là viết tắt của `/Users/hadley/Documents/r4ds/data/diamonds.csv`.
+Nhưng quan trọng là, nếu Mine chạy mã này trên máy cô ấy, nó sẽ trỏ đến `/Users/Mine/Documents/r4ds/data/diamonds.csv`.
+Đây là lý do đường dẫn tương đối quan trọng: chúng hoạt động bất kể thư mục dự án R ở đâu.
 
-Absolute paths point to the same place regardless of your working directory.
-They look a little different depending on your operating system.
-On Windows they start with a drive letter (e.g., `C:`) or two backslashes (e.g., `\\servername`) and on Mac/Linux they start with a slash "/" (e.g., `/users/hadley`).
-You should **never** use absolute paths in your scripts, because they hinder sharing: no one else will have exactly the same directory configuration as you.
+Đường dẫn tuyệt đối trỏ đến cùng vị trí bất kể thư mục làm việc.
+Chúng trông hơi khác tùy theo hệ điều hành.
+Trên Windows chúng bắt đầu bằng ký tự ổ đĩa (ví dụ, `C:`) hoặc hai dấu gạch chéo ngược (ví dụ, `\\servername`) và trên Mac/Linux chúng bắt đầu bằng dấu gạch chéo "/" (ví dụ, `/users/hadley`).
+Bạn **không bao giờ** nên dùng đường dẫn tuyệt đối trong tập lệnh, vì chúng cản trở việc chia sẻ: không ai khác có cấu trúc thư mục giống hệt bạn.
 
-There's another important difference between operating systems: how you separate the components of the path.
-Mac and Linux uses slashes (e.g., `data/diamonds.csv`) and Windows uses backslashes (e.g., `data\diamonds.csv`).
-R can work with either type (no matter what platform you're currently using), but unfortunately, backslashes mean something special to R, and to get a single backslash in the path, you need to type two backslashes!
-That makes life frustrating, so we recommend always using the Linux/Mac style with forward slashes.
+Có sự khác biệt quan trọng khác giữa các hệ điều hành: cách bạn phân cách các thành phần của đường dẫn.
+Mac và Linux sử dụng dấu gạch chéo (ví dụ, `data/diamonds.csv`) và Windows sử dụng dấu gạch chéo ngược (ví dụ, `data\diamonds.csv`).
+R có thể hoạt động với cả hai loại (bất kể bạn đang dùng nền tảng nào), nhưng thật không may, dấu gạch chéo ngược có ý nghĩa đặc biệt trong R, và để có một dấu gạch chéo ngược trong đường dẫn, bạn cần gõ hai dấu gạch chéo ngược!
+Điều đó khiến cuộc sống khó chịu, vì vậy chúng tôi khuyến nghị luôn sử dụng kiểu Linux/Mac với dấu gạch chéo thuận.
 
-## Exercises
+## Bài tập
 
-1.  Go to the RStudio Tips Twitter account, <https://twitter.com/rstudiotips> and find one tip that looks interesting.
-    Practice using it!
+1.  Truy cập tài khoản Twitter RStudio Tips, <https://twitter.com/rstudiotips> và tìm một mẹo có vẻ thú vị.
+    Thực hành sử dụng nó!
 
-2.  What other common mistakes will RStudio diagnostics report?
-    Read <https://support.posit.co/hc/en-us/articles/205753617-Code-Diagnostics> to find out.
+2.  RStudio diagnostics báo cáo những lỗi phổ biến nào khác?
+    Đọc <https://support.posit.co/hc/en-us/articles/205753617-Code-Diagnostics> để tìm hiểu.
 
-## Summary
+## Tóm tắt
 
-In this chapter, you've learned how to organize your R code in scripts (files) and projects (directories).
-Much like code style, this may feel like busywork at first.
-But as you accumulate more code across multiple projects, you'll learn to appreciate how a little up front organisation can save you a bunch of time down the road.
+Trong chương này, bạn đã học cách tổ chức mã R trong tập lệnh (file) và dự án (thư mục).
+Giống như phong cách mã, ban đầu điều này có thể cảm thấy như việc vặt.
+Nhưng khi bạn tích lũy nhiều mã hơn qua nhiều dự án, bạn sẽ học cách trân trọng việc tổ chức ban đầu có thể tiết kiệm rất nhiều thời gian sau này.
 
-In summary, scripts and projects give you a solid workflow that will serve you well in the future:
+Tóm lại, tập lệnh và dự án mang lại cho bạn quy trình làm việc vững chắc phục vụ tốt trong tương lai:
 
--   Create one RStudio project for each data analysis project.
--   Save your scripts (with informative names) in the project, edit them, run them in bits or as a whole. Restart R frequently to make sure you've captured everything in your scripts.
--   Only ever use relative paths, not absolute paths.
+-   Tạo một dự án RStudio cho mỗi dự án phân tích dữ liệu.
+-   Lưu tập lệnh (với tên mang tính mô tả) trong dự án, chỉnh sửa, chạy từng phần hoặc toàn bộ. Khởi động lại R thường xuyên để đảm bảo bạn đã nắm bắt mọi thứ trong tập lệnh.
+-   Chỉ sử dụng đường dẫn tương đối, không sử dụng đường dẫn tuyệt đối.
 
-Then everything you need is in one place and cleanly separated from all the other projects that you are working on.
+Sau đó mọi thứ bạn cần đều ở một nơi và được tách biệt rõ ràng khỏi tất cả các dự án khác bạn đang làm.
 
-So far, we've worked with datasets bundled inside of R packages.
-This makes it easier to get some practice on pre-prepared data, but obviously your data won't be available in this way.
-So in the next chapter, you're going to learn how to load data from disk into your R session using the readr package.
+Cho đến nay, chúng ta đã làm việc với các tập dữ liệu được đóng gói bên trong các gói R.
+Điều này giúp dễ dàng hơn khi thực hành trên dữ liệu đã chuẩn bị sẵn, nhưng rõ ràng dữ liệu của bạn sẽ không có sẵn theo cách này.
+Vì vậy trong chương tiếp theo, bạn sẽ học cách tải dữ liệu từ đĩa vào phiên R bằng gói readr.

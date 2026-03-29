@@ -1,36 +1,37 @@
-# Visualize {#sec-visualize .unnumbered}
+# Trực quan hóa {#sec-visualize .unnumbered}
 
 ```{r}
 #| echo: false
 source("_common.R")
 ```
 
-After reading the first part of the book, you understand (at least superficially) the most important tools for doing data science.
-Now it's time to start diving into the details.
-In this part of the book, you'll learn about visualizing data in further depth.
+Sau khi đọc phần đầu tiên của cuốn sách, bạn đã hiểu (ít nhất là ở mức bề mặt) các công cụ quan trọng nhất để thực hiện khoa học dữ liệu.
+Bây giờ là lúc bắt đầu đi sâu vào chi tiết.
+Trong phần này của cuốn sách, bạn sẽ tìm hiểu sâu hơn về trực quan hóa dữ liệu.
 
 ```{r}
 #| label: fig-ds-visualize
 #| echo: false
 #| fig-cap: |
-#|   Data visualization is often the first step in data exploration.
+#|   Trực quan hóa dữ liệu thường là bước đầu tiên trong khám phá dữ liệu.
 #| fig-alt: |
-#|   Our data science model, with visualize highlighted in blue.
+#|   Mô hình khoa học dữ liệu của chúng tôi, với phần trực quan hóa được
+#|   đánh dấu bằng màu xanh.
 #| out.width: NULL
 knitr::include_graphics("diagrams/data-science/visualize.png", dpi = 270)
 ```
 
-Each chapter addresses one to a few aspects of creating a data visualization.
+Mỗi chương đề cập đến một hoặc vài khía cạnh của việc tạo trực quan hóa dữ liệu.
 
--   In @sec-layers you will learn about the layered grammar of graphics.
+-   Trong @sec-layers bạn sẽ học về ngữ pháp đồ họa theo lớp (layered grammar of graphics).
 
--   In @sec-exploratory-data-analysis, you'll combine visualization with your curiosity and skepticism to ask and answer interesting questions about data.
+-   Trong @sec-exploratory-data-analysis, bạn sẽ kết hợp trực quan hóa với sự tò mò và hoài nghi để đặt ra và trả lời các câu hỏi thú vị về dữ liệu.
 
--   Finally, in @sec-communication you will learn how to take your exploratory graphics, elevate them, and turn them into expository graphics, graphics that help the newcomer to your analysis understand what's going on as quickly and easily as possible.
+-   Cuối cùng, trong @sec-communication bạn sẽ học cách lấy các biểu đồ khám phá, nâng cao chúng, và biến chúng thành các biểu đồ trình bày, những biểu đồ giúp người mới đến với phân tích của bạn hiểu được chuyện gì đang xảy ra nhanh chóng và dễ dàng nhất có thể.
 
-These three chapters get you started in the world of visualization, but there is much more to learn.
-The absolute best place to learn more is the ggplot2 book: [*ggplot2: Elegant graphics for data analysis*](https://ggplot2-book.org/).
-It goes into much more depth about the underlying theory, and has many more examples of how to combine the individual pieces to solve practical problems.
-Another great resource is the ggplot2 extensions gallery <https://exts.ggplot2.tidyverse.org/gallery/>.
-This site lists many of the packages that extend ggplot2 with new geoms and scales.
-It's a great place to start if you're trying to do something that seems hard with ggplot2.
+Ba chương này giúp bạn bắt đầu trong thế giới trực quan hóa, nhưng còn rất nhiều điều để học.
+Nơi tốt nhất tuyệt đối để tìm hiểu thêm là cuốn sách ggplot2: [*ggplot2: Elegant graphics for data analysis*](https://ggplot2-book.org/).
+Nó đi sâu hơn nhiều vào lý thuyết nền tảng, và có nhiều ví dụ hơn về cách kết hợp các thành phần riêng lẻ để giải quyết các vấn đề thực tế.
+Một tài nguyên tuyệt vời khác là thư viện mở rộng ggplot2 <https://exts.ggplot2.tidyverse.org/gallery/>.
+Trang web này liệt kê nhiều gói mở rộng ggplot2 với các geom và thang đo mới.
+Đây là nơi tuyệt vời để bắt đầu nếu bạn đang cố gắng làm điều gì đó có vẻ khó với ggplot2.

@@ -1,30 +1,30 @@
-# Welcome {.unnumbered}
+# Chào mừng {.unnumbered}
 
-This is the website for the 2nd edition of **"R for Data Science"**.
-This book will teach you how to do data science with R: You'll learn how to get your data into R, get it into the most useful structure, transform it and visualize.
+Đây là trang web cho phiên bản thứ 2 của **"R cho Khoa học Dữ liệu"**.
+Cuốn sách này sẽ dạy bạn cách thực hiện khoa học dữ liệu (data science) với R: Bạn sẽ học cách đưa dữ liệu vào R, chuyển đổi nó sang cấu trúc hữu ích nhất, biến đổi và trực quan hóa.
 
-In this book, you will find a practicum of skills for data science.
-Just as a chemist learns how to clean test tubes and stock a lab, you'll learn how to clean data and draw plots---and many other things besides.
-These are the skills that allow data science to happen, and here you will find the best practices for doing each of these things with R.
-You'll learn how to use the grammar of graphics, literate programming, and reproducible research to save time.
-You'll also learn how to manage cognitive resources to facilitate discoveries when wrangling, visualizing, and exploring data.
+Trong cuốn sách này, bạn sẽ tìm thấy một bộ kỹ năng thực hành cho khoa học dữ liệu.
+Giống như một nhà hóa học học cách rửa ống nghiệm và trang bị phòng thí nghiệm, bạn sẽ học cách làm sạch dữ liệu và vẽ biểu đồ---cùng nhiều thứ khác nữa.
+Đây là những kỹ năng giúp khoa học dữ liệu trở thành hiện thực, và ở đây bạn sẽ tìm thấy các phương pháp tốt nhất để thực hiện từng công việc này với R.
+Bạn sẽ học cách sử dụng ngữ pháp đồ họa (grammar of graphics), lập trình văn học (literate programming), và nghiên cứu tái lập (reproducible research) để tiết kiệm thời gian.
+Bạn cũng sẽ học cách quản lý nguồn lực nhận thức để hỗ trợ việc khám phá khi xử lý, trực quan hóa và khảo sát dữ liệu.
 
-This website is and will always be free, licensed under the [CC BY-NC-ND 3.0](https://creativecommons.org/licenses/by-nc-nd/3.0/us/) License.
-If you'd like a physical copy of the book, you can order it on [Amazon](https://www.amazon.com/dp/1492097403?&tag=hadlwick-20).
-If you appreciate reading the book for free and would like to give back, please make a donation to [Kākāpō Recovery](https://www.doc.govt.nz/kakapo-donate): the [kākāpō](https://www.youtube.com/watch?v=9T1vfsHYiKY) (which appears on the cover of R4DS) is a critically endangered parrot native to New Zealand; there are only 244 left.
+Trang web này miễn phí và sẽ luôn miễn phí, được cấp phép theo giấy phép [CC BY-NC-ND 3.0](https://creativecommons.org/licenses/by-nc-nd/3.0/us/).
+Nếu bạn muốn có một bản in, bạn có thể đặt mua trên [Amazon](https://www.amazon.com/dp/1492097403?&tag=hadlwick-20).
+Nếu bạn trân trọng việc đọc sách miễn phí và muốn đóng góp lại, xin hãy quyên góp cho [Kākāpō Recovery](https://www.doc.govt.nz/kakapo-donate): loài [kākāpō](https://www.youtube.com/watch?v=9T1vfsHYiKY) (xuất hiện trên bìa R4DS) là một loài vẹt cực kỳ nguy cấp có nguồn gốc từ New Zealand; hiện chỉ còn 244 con.
 
-If you speak another language, you might be interested in the freely available translations of the 1st edition:
+Nếu bạn nói một ngôn ngữ khác, bạn có thể quan tâm đến các bản dịch miễn phí của phiên bản thứ 1:
 
--   [Spanish](http://es.r4ds.hadley.nz)
--   [Italian](https://it.r4ds.hadley.nz)
--   [Turkish](https://tr.r4ds.hadley.nz)
--   [Portuguese](https://pt.r4ds.hadley.nz)
+-   [Tiếng Tây Ban Nha](http://es.r4ds.hadley.nz)
+-   [Tiếng Ý](https://it.r4ds.hadley.nz)
+-   [Tiếng Thổ Nhĩ Kỳ](https://tr.r4ds.hadley.nz)
+-   [Tiếng Bồ Đào Nha](https://pt.r4ds.hadley.nz)
 
-and 2nd edition
+và phiên bản thứ 2
 
--   [Spanish](https://davidrsch.github.io/r4ds-es/)
+-   [Tiếng Tây Ban Nha](https://davidrsch.github.io/r4ds-es/)
 
-You can find suggested answers to exercises in the book at <https://mine-cetinkaya-rundel.github.io/r4ds-solutions>.
+Bạn có thể tìm các đáp án gợi ý cho bài tập trong sách tại <https://mine-cetinkaya-rundel.github.io/r4ds-solutions>.
 
-Please note that R4DS uses a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
-By contributing to this book, you agree to abide by its terms.
+Xin lưu ý rằng R4DS sử dụng [Quy tắc Ứng xử của Người đóng góp](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
+Bằng việc đóng góp vào cuốn sách này, bạn đồng ý tuân thủ các điều khoản của nó.

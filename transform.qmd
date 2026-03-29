@@ -1,4 +1,4 @@
-# Transform {#sec-transform-intro .unnumbered}
+# Biến đổi {#sec-transform-intro .unnumbered}
 
 ```{r}
 #| results: "asis"
@@ -6,44 +6,45 @@
 source("_common.R")
 ```
 
-The second part of the book was a deep dive into data visualization.
-In this part of the book, you'll learn about the most important types of variables that you'll encounter inside a data frame and learn the tools you can use to work with them.
+Phần thứ hai của cuốn sách là phần đi sâu vào trực quan hóa dữ liệu.
+Trong phần này của cuốn sách, bạn sẽ tìm hiểu về các loại biến quan trọng nhất mà bạn sẽ gặp bên trong một khung dữ liệu (data frame) và học các công cụ bạn có thể sử dụng để làm việc với chúng.
 
 ```{r}
 #| label: fig-ds-transform
 #| echo: false
 #| fig-cap: |
-#|   The options for data transformation depend heavily on the type of 
-#|   data involved, the subject of this part of the book.
+#|   Các tùy chọn biến đổi dữ liệu phụ thuộc rất nhiều vào loại
+#|   dữ liệu liên quan, chủ đề của phần này trong cuốn sách.
 #| fig-alt: |
-#|   Our data science model, with transform highlighted in blue.
+#|   Mô hình khoa học dữ liệu của chúng tôi, với phần biến đổi được
+#|   đánh dấu bằng màu xanh.
 #| out.width: NULL
 knitr::include_graphics("diagrams/data-science/transform.png", dpi = 270)
 ```
 
-You can read these chapters as you need them; they're designed to be largely standalone so that they can be read out of order.
+Bạn có thể đọc các chương này khi cần; chúng được thiết kế phần lớn độc lập để có thể đọc không theo thứ tự.
 
--   @sec-logicals teaches you about logical vectors.
-    These are the simplest types of vectors, but are extremely powerful.
-    You'll learn how to create them with numeric comparisons, how to combine them with Boolean algebra, how to use them in summaries, and how to use them for conditional transformations.
+-   @sec-logicals dạy bạn về vector logic (logical vectors).
+    Đây là loại vector đơn giản nhất, nhưng cực kỳ mạnh mẽ.
+    Bạn sẽ học cách tạo chúng bằng các phép so sánh số, cách kết hợp chúng với đại số Boolean, cách sử dụng chúng trong tóm tắt, và cách sử dụng chúng cho các biến đổi có điều kiện.
 
--   @sec-numbers dives into tools for vectors of numbers, the powerhouse of data science.
-    You'll learn more about counting and a bunch of important transformation and summary functions.
+-   @sec-numbers đi sâu vào các công cụ cho vector số, động lực chính của khoa học dữ liệu.
+    Bạn sẽ học thêm về đếm và một loạt các hàm biến đổi và tóm tắt quan trọng.
 
--   @sec-strings will give you the tools to work with strings: you'll slice them, you'll dice them, and you'll stick them back together again.
-    This chapter mostly focuses on the stringr package, but you'll also learn some more tidyr functions devoted to extracting data from character strings.
+-   @sec-strings sẽ cung cấp cho bạn các công cụ để làm việc với chuỗi ký tự (string): bạn sẽ cắt chúng, chia chúng, và ghép chúng lại với nhau.
+    Chương này chủ yếu tập trung vào gói stringr, nhưng bạn cũng sẽ học thêm một số hàm tidyr dành riêng cho việc trích xuất dữ liệu từ chuỗi ký tự.
 
--   @sec-regular-expressions introduces you to regular expressions, a powerful tool for manipulating strings.
-    This chapter will take you from thinking that a cat walked over your keyboard to reading and writing complex string patterns.
+-   @sec-regular-expressions giới thiệu cho bạn về biểu thức chính quy (regular expression), một công cụ mạnh mẽ để xử lý chuỗi ký tự.
+    Chương này sẽ đưa bạn từ việc nghĩ rằng có con mèo đi trên bàn phím đến việc đọc và viết các mẫu chuỗi phức tạp.
 
--   @sec-factors introduces factors: the data type that R uses to store categorical data.
-    You use a factor when a variable has a fixed set of possible values, or when you want to use a non-alphabetical ordering of a string.
+-   @sec-factors giới thiệu nhân tố (factor): kiểu dữ liệu mà R sử dụng để lưu trữ dữ liệu phân loại.
+    Bạn sử dụng nhân tố khi một biến có tập hợp cố định các giá trị có thể, hoặc khi bạn muốn sử dụng thứ tự không theo bảng chữ cái của chuỗi.
 
--   @sec-dates-and-times will give you the key tools for working with dates and date-times.
-    Unfortunately, the more you learn about date-times, the more complicated they seem to get, but with the help of the lubridate package, you'll learn how to overcome the most common challenges.
+-   @sec-dates-and-times sẽ cung cấp cho bạn các công cụ chính để làm việc với ngày và ngày-giờ (date-time).
+    Thật không may, bạn càng tìm hiểu về ngày-giờ, chúng càng có vẻ phức tạp hơn, nhưng với sự hỗ trợ của gói lubridate, bạn sẽ học cách vượt qua những thách thức phổ biến nhất.
 
--   @sec-missing-values discusses missing values in depth.
-    We've discussed them a couple of times in isolation, but now it's time to discuss them holistically, helping you come to grips with the difference between implicit and explicit missing values, and how and why you might convert between them.
+-   @sec-missing-values thảo luận sâu về giá trị khuyết (missing value).
+    Chúng tôi đã thảo luận về chúng vài lần riêng lẻ, nhưng bây giờ là lúc thảo luận một cách toàn diện, giúp bạn nắm bắt sự khác biệt giữa giá trị khuyết ẩn và hiện, và cách thức cũng như lý do bạn có thể chuyển đổi giữa chúng.
 
--   @sec-joins finishes up this part of the book by giving you tools to join two (or more) data frames together.
-    Learning about joins will force you to grapple with the idea of keys, and think about how you identify each row in a dataset.
+-   @sec-joins kết thúc phần này của cuốn sách bằng cách cung cấp cho bạn các công cụ để nối (join) hai (hoặc nhiều) khung dữ liệu lại với nhau.
+    Việc học về nối sẽ buộc bạn phải đối mặt với khái niệm khóa (key), và suy nghĩ về cách bạn xác định từng hàng trong tập dữ liệu.

@@ -1,53 +1,53 @@
-# Workflow: getting help {#sec-workflow-getting-help}
+# Quy trình làm việc: tìm kiếm trợ giúp {#sec-workflow-getting-help}
 
 ```{r}
 #| echo: false
 source("_common.R")
 ```
 
-This book is not an island; there is no single resource that will allow you to master R.
-As you begin to apply the techniques described in this book to your own data, you will soon find questions that we do not answer.
-This section describes a few tips on how to get help and to help you keep learning.
+Cuốn sách này không phải là một hòn đảo; không có tài nguyên duy nhất nào cho phép bạn thành thạo R.
+Khi bạn bắt đầu áp dụng các kỹ thuật được mô tả trong cuốn sách này vào dữ liệu của riêng mình, bạn sẽ sớm tìm thấy những câu hỏi mà chúng tôi không trả lời.
+Phần này mô tả một số mẹo về cách tìm kiếm trợ giúp và giúp bạn tiếp tục học hỏi.
 
-## Google is your friend
+## Google là bạn của bạn
 
-If you get stuck, start with Google.
-Typically adding "R" to a query is enough to restrict it to relevant results: if the search isn't useful, it often means that there aren't any R-specific results available.
-Additionally, adding package names like "tidyverse" or "ggplot2" will help narrow down the results to code that will feel more familiar to you as well, e.g., "how to make a boxplot in R" vs. "how to make a boxplot in R with ggplot2".
-Google is particularly useful for error messages.
-If you get an error message and you have no idea what it means, try googling it!
-Chances are that someone else has been confused by it in the past, and there will be help somewhere on the web.
-(If the error message isn't in English, run `Sys.setenv(LANGUAGE = "en")` and re-run the code; you're more likely to find help for English error messages.)
+Nếu bạn bị mắc kẹt, hãy bắt đầu với Google.
+Thông thường việc thêm "R" vào truy vấn là đủ để giới hạn kết quả liên quan: nếu tìm kiếm không hữu ích, thường có nghĩa là không có kết quả dành riêng cho R.
+Ngoài ra, việc thêm tên gói như "tidyverse" hoặc "ggplot2" sẽ giúp thu hẹp kết quả thành mã quen thuộc hơn với bạn, ví dụ, "how to make a boxplot in R" so với "how to make a boxplot in R with ggplot2".
+Google đặc biệt hữu ích cho thông báo lỗi.
+Nếu bạn nhận được thông báo lỗi và không biết nó có nghĩa gì, hãy thử tìm kiếm trên Google!
+Rất có thể ai đó khác đã bị nhầm lẫn bởi nó trước đây, và sẽ có trợ giúp ở đâu đó trên web.
+(Nếu thông báo lỗi không bằng tiếng Anh, chạy `Sys.setenv(LANGUAGE = "en")` và chạy lại mã; bạn có nhiều khả năng tìm thấy trợ giúp cho thông báo lỗi tiếng Anh hơn.)
 
-If Google doesn't help, try [Stack Overflow](https://stackoverflow.com).
-Start by spending a little time searching for an existing answer, including `[R]`, to restrict your search to questions and answers that use R.
+Nếu Google không giúp được, hãy thử [Stack Overflow](https://stackoverflow.com).
+Bắt đầu bằng cách dành một chút thời gian tìm kiếm câu trả lời hiện có, bao gồm `[R]`, để giới hạn tìm kiếm cho các câu hỏi và câu trả lời sử dụng R.
 
-## Making a reprex
+## Tạo reprex
 
-If your googling doesn't find anything useful, it's a really good idea to prepare a **reprex,** short for minimal **repr**oducible **ex**ample.
-A good reprex makes it easier for other people to help you, and often you'll figure out the problem yourself in the course of making it.
-There are two parts to creating a reprex:
+Nếu tìm kiếm trên Google không tìm thấy gì hữu ích, thì nên chuẩn bị một **reprex,** viết tắt của ví dụ tái lập tối thiểu (minimal **repr**oducible **ex**ample).
+Một reprex tốt giúp người khác dễ giúp bạn hơn, và thường bạn sẽ tự tìm ra vấn đề trong quá trình tạo nó.
+Có hai phần để tạo reprex:
 
--   First, you need to make your code reproducible.
-    This means that you need to capture everything, i.e. include any `library()` calls and create all necessary objects.
-    The easiest way to make sure you've done this is using the reprex package.
+-   Đầu tiên, bạn cần làm cho mã của mình có thể tái lập.
+    Điều này có nghĩa là bạn cần nắm bắt mọi thứ, tức là bao gồm mọi lệnh `library()` và tạo tất cả các đối tượng cần thiết.
+    Cách dễ nhất để đảm bảo bạn đã làm điều này là sử dụng gói reprex.
 
--   Second, you need to make it minimal.
-    Strip away everything that is not directly related to your problem.
-    This usually involves creating a much smaller and simpler R object than the one you're facing in real life or even using built-in data.
+-   Thứ hai, bạn cần làm cho nó tối thiểu.
+    Loại bỏ mọi thứ không liên quan trực tiếp đến vấn đề của bạn.
+    Điều này thường bao gồm việc tạo một đối tượng R nhỏ hơn và đơn giản hơn nhiều so với thứ bạn đang gặp trong thực tế hoặc thậm chí sử dụng dữ liệu tích hợp sẵn.
 
-That sounds like a lot of work!
-And it can be, but it has a great payoff:
+Nghe có vẻ tốn nhiều công sức!
+Và có thể là vậy, nhưng nó mang lại lợi ích lớn:
 
--   80% of the time, creating an excellent reprex reveals the source of your problem.
-    It's amazing how often the process of writing up a self-contained and minimal example allows you to answer your own question.
+-   80% thời gian, việc tạo một reprex xuất sắc sẽ tiết lộ nguồn gốc vấn đề của bạn.
+    Thật đáng kinh ngạc khi quá trình viết một ví dụ độc lập và tối thiểu cho phép bạn tự trả lời câu hỏi của mình.
 
--   The other 20% of the time, you will have captured the essence of your problem in a way that is easy for others to play with.
-    This substantially improves your chances of getting help!
+-   20% thời gian còn lại, bạn sẽ nắm bắt được bản chất vấn đề theo cách dễ dàng cho người khác thử nghiệm.
+    Điều này cải thiện đáng kể cơ hội nhận được trợ giúp!
 
-When creating a reprex by hand, it's easy to accidentally miss something, meaning your code can't be run on someone else's computer.
-Avoid this problem by using the reprex package, which is installed as part of the tidyverse.
-Let's say you copy this code onto your clipboard (or, on RStudio Server or Cloud, select it):
+Khi tạo reprex bằng tay, dễ vô tình bỏ sót thứ gì đó, nghĩa là mã của bạn không chạy được trên máy tính của người khác.
+Tránh vấn đề này bằng cách sử dụng gói reprex, được cài đặt như một phần của tidyverse.
+Giả sử bạn sao chép đoạn mã này vào clipboard (hoặc, trên RStudio Server hay Cloud, chọn nó):
 
 ```{r}
 #| eval: false
@@ -55,16 +55,16 @@ y <- 1:4
 mean(y)
 ```
 
-Then call `reprex()`, where the default output is formatted for GitHub:
+Sau đó gọi `reprex()`, trong đó đầu ra mặc định được định dạng cho GitHub:
 
 ``` r
 reprex::reprex()
 ```
 
-A nicely rendered HTML preview will display in RStudio's Viewer (if you're in RStudio) or your default browser otherwise.
-The reprex is automatically copied to your clipboard (on RStudio Server or Cloud, you will need to copy this yourself):
+Một bản xem trước HTML được render đẹp sẽ hiển thị trong Viewer của RStudio (nếu bạn đang dùng RStudio) hoặc trình duyệt mặc định.
+Reprex tự động được sao chép vào clipboard (trên RStudio Server hoặc Cloud, bạn sẽ cần tự sao chép):
 
-````         
+````
 ``` r
 y <- 1:4
 mean(y)
@@ -72,8 +72,8 @@ mean(y)
 ```
 ````
 
-This text is formatted in a special way, called Markdown, which can be pasted to sites like Stack Overflow or GitHub and they will automatically render it to look like code.
-Here's what that Markdown would look like rendered on GitHub:
+Văn bản này được định dạng theo cách đặc biệt, gọi là Markdown, có thể dán vào các trang như Stack Overflow hoặc GitHub và chúng sẽ tự động render thành dạng mã.
+Đây là cách Markdown đó trông khi được render trên GitHub:
 
 ```{r}
 #| eval: false
@@ -82,49 +82,49 @@ mean(y)
 #> [1] 2.5
 ```
 
-Anyone else can copy, paste, and run this immediately.
+Bất kỳ ai khác đều có thể sao chép, dán, và chạy ngay lập tức.
 
-There are three things you need to include to make your example reproducible: required packages, data, and code.
+Có ba thứ bạn cần bao gồm để làm ví dụ có thể tái lập: các gói cần thiết, dữ liệu, và mã.
 
-1.  **Packages** should be loaded at the top of the script so it's easy to see which ones the example needs.
-    This is a good time to check that you're using the latest version of each package; you may have discovered a bug that's been fixed since you installed or last updated the package.
-    For packages in the tidyverse, the easiest way to check is to run `tidyverse_update()`.
+1.  **Gói** nên được tải ở đầu tập lệnh để dễ thấy ví dụ cần những gì.
+    Đây là thời điểm tốt để kiểm tra bạn đang sử dụng phiên bản mới nhất của mỗi gói; bạn có thể đã phát hiện lỗi đã được sửa kể từ khi bạn cài đặt hoặc cập nhật gói lần cuối.
+    Với các gói trong tidyverse, cách dễ nhất để kiểm tra là chạy `tidyverse_update()`.
 
-2.  The easiest way to include **data** is to use `dput()` to generate the R code needed to recreate it.
-    For example, to recreate the `mtcars` dataset in R, perform the following steps:
+2.  Cách dễ nhất để bao gồm **dữ liệu** là sử dụng `dput()` để tạo mã R cần thiết để tái tạo nó.
+    Ví dụ, để tái tạo tập dữ liệu `mtcars` trong R, thực hiện các bước sau:
 
-    1.  Run `dput(mtcars)` in R
-    2.  Copy the output
-    3.  In reprex, type `mtcars <-`, then paste.
+    1.  Chạy `dput(mtcars)` trong R
+    2.  Sao chép đầu ra
+    3.  Trong reprex, gõ `mtcars <-`, rồi dán.
 
-    Try to use the smallest subset of your data that still reveals the problem.
+    Cố gắng sử dụng tập con nhỏ nhất của dữ liệu vẫn cho thấy vấn đề.
 
-3.  Spend a little bit of time ensuring that your **code** is easy for others to read:
+3.  Dành một chút thời gian đảm bảo **mã** của bạn dễ đọc cho người khác:
 
-    -   Make sure you've used spaces and your variable names are concise yet informative.
+    -   Đảm bảo bạn đã sử dụng dấu cách và tên biến ngắn gọn nhưng mang tính mô tả.
 
-    -   Use comments to indicate where your problem lies.
+    -   Sử dụng chú thích để chỉ ra vấn đề của bạn nằm ở đâu.
 
-    -   Do your best to remove everything that is not related to the problem.
+    -   Cố gắng hết sức để loại bỏ mọi thứ không liên quan đến vấn đề.
 
-    The shorter your code is, the easier it is to understand and the easier it is to fix.
+    Mã càng ngắn, càng dễ hiểu và dễ sửa.
 
-Finish by checking that you have actually made a reproducible example by starting a fresh R session and copying and pasting your script.
+Kết thúc bằng cách kiểm tra rằng bạn thực sự đã tạo một ví dụ có thể tái lập bằng cách bắt đầu phiên R mới và sao chép dán tập lệnh.
 
-Creating reprexes is not trivial, and it will take some practice to learn to create good, truly minimal reprexes.
-However, learning to ask questions that include the code, and investing the time to make it reproducible will continue to pay off as you learn and master R.
+Tạo reprex không phải là chuyện nhỏ, và sẽ cần thực hành để học cách tạo reprex tốt, thực sự tối thiểu.
+Tuy nhiên, việc học cách đặt câu hỏi có kèm mã, và đầu tư thời gian để làm cho nó có thể tái lập sẽ tiếp tục mang lại lợi ích khi bạn học và thành thạo R.
 
-## Investing in yourself
+## Đầu tư vào bản thân
 
-You should also spend some time preparing yourself to solve problems before they occur.
-Investing a little time in learning R each day will pay off handsomely in the long run.
-One way is to follow what the tidyverse team is doing on the [tidyverse blog](https://www.tidyverse.org/blog/).
-To keep up with the R community more broadly, we recommend reading [R Weekly](https://rweekly.org): it's a community effort to aggregate the most interesting news in the R community each week.
+Bạn cũng nên dành thời gian chuẩn bị để giải quyết vấn đề trước khi chúng xảy ra.
+Đầu tư một chút thời gian học R mỗi ngày sẽ mang lại lợi ích lớn trong dài hạn.
+Một cách là theo dõi những gì nhóm tidyverse đang làm trên [blog tidyverse](https://www.tidyverse.org/blog/).
+Để theo kịp cộng đồng R rộng hơn, chúng tôi khuyến nghị đọc [R Weekly](https://rweekly.org): đây là nỗ lực cộng đồng để tổng hợp tin tức thú vị nhất trong cộng đồng R mỗi tuần.
 
-## Summary
+## Tóm tắt
 
-This chapter concludes the Whole Game part of the book.
-You've now seen the most important parts of the data science process: visualization, transformation, tidying and importing.
-Now you've got a holistic view of the whole process, and we start to get into the details of small pieces.
+Chương này kết thúc phần Toàn cảnh của cuốn sách.
+Bạn đã thấy các phần quan trọng nhất của quy trình khoa học dữ liệu: trực quan hóa, biến đổi, sắp xếp và nhập dữ liệu.
+Bây giờ bạn đã có cái nhìn tổng thể về toàn bộ quy trình, và chúng ta bắt đầu đi vào chi tiết của từng phần nhỏ.
 
-The next part of the book, Visualize, does a deeper dive into the grammar of graphics and creating data visualizations with ggplot2, showcases how to use the tools you've learned so far to conduct exploratory data analysis, and introduces good practices for creating plots for communication.
+Phần tiếp theo của cuốn sách, Trực quan hóa, đi sâu hơn vào ngữ pháp đồ họa và tạo trực quan hóa dữ liệu với ggplot2, trình bày cách sử dụng các công cụ bạn đã học để tiến hành phân tích dữ liệu khám phá, và giới thiệu các phương pháp tốt để tạo biểu đồ cho truyền đạt.

@@ -1,259 +1,259 @@
-# Introduction {#sec-intro .unnumbered}
+# Giới thiệu {#sec-intro .unnumbered}
 
 ```{r}
 #| echo: false
 source("_common.R")
 ```
 
-Data science is an exciting discipline that allows you to transform raw data into understanding, insight, and knowledge.
-The goal of "R for Data Science" is to help you learn the most important tools in R that will allow you to do data science efficiently and reproducibly, and to have some fun along the way 😃.
-After reading this book, you'll have the tools to tackle a wide variety of data science challenges using the best parts of R.
+Khoa học dữ liệu (data science) là một lĩnh vực thú vị cho phép bạn biến đổi dữ liệu thô thành sự hiểu biết, cái nhìn sâu sắc, và tri thức.
+Mục tiêu của "R cho Khoa học Dữ liệu" là giúp bạn học những công cụ quan trọng nhất trong R để thực hiện khoa học dữ liệu một cách hiệu quả và có tính tái lập, đồng thời có chút vui vẻ trên hành trình này 😃.
+Sau khi đọc xong cuốn sách này, bạn sẽ có các công cụ để giải quyết nhiều thách thức khoa học dữ liệu đa dạng bằng những phần tốt nhất của R.
 
-## What you will learn
+## Bạn sẽ học được gì
 
-Data science is a vast field, and there's no way you can master it all by reading a single book.
-This book aims to give you a solid foundation in the most important tools and enough knowledge to find the resources to learn more when necessary.
-Our model of the steps of a typical data science project looks something like @fig-ds-diagram.
+Khoa học dữ liệu là một lĩnh vực rộng lớn, và không có cách nào bạn có thể thành thạo tất cả chỉ bằng việc đọc một cuốn sách duy nhất.
+Cuốn sách này nhằm cung cấp cho bạn nền tảng vững chắc về các công cụ quan trọng nhất và đủ kiến thức để tìm thêm tài nguyên học hỏi khi cần thiết.
+Mô hình của chúng tôi về các bước của một dự án khoa học dữ liệu điển hình trông giống như @fig-ds-diagram.
 
 ```{r}
 #| label: fig-ds-diagram
 #| echo: false
 #| fig-cap: |
-#|   In our model of the data science process, you start with data import
-#|   and tidying. Next, you understand your data with an iterative cycle of
-#|   transforming, visualizing, and modeling. You finish the process 
-#|   by communicating your results to other humans.
+#|   Trong mô hình quy trình khoa học dữ liệu của chúng tôi, bạn bắt đầu với việc
+#|   nhập và sắp xếp dữ liệu. Tiếp theo, bạn hiểu dữ liệu của mình thông qua
+#|   một chu trình lặp đi lặp lại gồm biến đổi, trực quan hóa, và mô hình hóa.
+#|   Bạn kết thúc quy trình bằng việc truyền đạt kết quả đến người khác.
 #| fig-alt: |
-#|   A diagram displaying the data science cycle: Import -> Tidy -> Understand 
-#|   (which has the phases Transform -> Visualize -> Model in a cycle) -> 
-#|   Communicate. Surrounding all of these is Program.
+#|   Sơ đồ hiển thị chu trình khoa học dữ liệu: Nhập -> Sắp xếp -> Hiểu
+#|   (bao gồm các giai đoạn Biến đổi -> Trực quan hóa -> Mô hình hóa trong
+#|   một chu trình) -> Truyền đạt. Bao quanh tất cả là Lập trình.
 #| out.width: NULL
 knitr::include_graphics("diagrams/data-science/base.png", dpi = 270)
 ```
 
-First, you must **import** your data into R.
-This typically means that you take data stored in a file, database, or web application programming interface (API) and load it into a data frame in R.
-If you can't get your data into R, you can't do data science on it!
+Đầu tiên, bạn phải **nhập** dữ liệu vào R.
+Điều này thường có nghĩa là bạn lấy dữ liệu được lưu trữ trong một file, cơ sở dữ liệu, hoặc giao diện lập trình ứng dụng web (API) và tải nó vào một khung dữ liệu (data frame) trong R.
+Nếu bạn không thể đưa dữ liệu vào R, bạn không thể thực hiện khoa học dữ liệu trên nó!
 
-Once you've imported your data, it is a good idea to **tidy** it.
-Tidying your data means storing it in a consistent form that matches the semantics of the dataset with how it is stored.
-In brief, when your data is tidy, each column is a variable and each row is an observation.
-Tidy data is important because the consistent structure lets you focus your efforts on answering questions about the data, not fighting to get the data into the right form for different functions.
+Sau khi đã nhập dữ liệu, bạn nên **sắp xếp** nó cho gọn gàng.
+Sắp xếp dữ liệu gọn gàng (tidying) có nghĩa là lưu trữ nó theo một dạng nhất quán, trong đó ngữ nghĩa của tập dữ liệu tương ứng với cách nó được lưu trữ.
+Nói ngắn gọn, khi dữ liệu của bạn gọn gàng (tidy), mỗi cột là một biến (variable) và mỗi hàng là một quan sát (observation).
+Dữ liệu gọn gàng (tidy data) rất quan trọng vì cấu trúc nhất quán cho phép bạn tập trung nỗ lực vào việc trả lời các câu hỏi về dữ liệu, thay vì phải vật lộn để đưa dữ liệu vào đúng dạng cho các hàm khác nhau.
 
-Once you have tidy data, a common next step is to **transform** it.
-Transformation includes narrowing in on observations of interest (like all people in one city or all data from the last year), creating new variables that are functions of existing variables (like computing speed from distance and time), and calculating a set of summary statistics (like counts or means).
-Together, tidying and transforming are called **wrangling** because getting your data in a form that's natural to work with often feels like a fight!
+Khi đã có dữ liệu gọn gàng, bước tiếp theo phổ biến là **biến đổi** nó.
+Biến đổi (transformation) bao gồm thu hẹp phạm vi vào các quan sát mà bạn quan tâm (như tất cả người dân trong một thành phố hoặc tất cả dữ liệu từ năm trước), tạo các biến mới là hàm của các biến hiện có (như tính tốc độ từ khoảng cách và thời gian), và tính toán một tập hợp thống kê tóm tắt (như số đếm hoặc giá trị trung bình).
+Kết hợp lại, sắp xếp và biến đổi được gọi là **xử lý dữ liệu** (wrangling) vì việc đưa dữ liệu vào dạng tự nhiên để làm việc thường cảm thấy như một cuộc chiến!
 
-Once you have tidy data with the variables you need, there are two main engines of knowledge generation: visualization and modeling.
-These have complementary strengths and weaknesses, so any real data analysis will iterate between them many times.
+Khi đã có dữ liệu gọn gàng với các biến bạn cần, có hai động cơ chính để tạo ra tri thức: trực quan hóa và mô hình hóa.
+Chúng có những điểm mạnh và điểm yếu bổ sung cho nhau, vì vậy bất kỳ phân tích dữ liệu thực tế nào cũng sẽ lặp đi lặp lại giữa chúng nhiều lần.
 
-**Visualization** is a fundamentally human activity.
-A good visualization will show you things you did not expect or raise new questions about the data.
-A good visualization might also hint that you're asking the wrong question or that you need to collect different data.
-Visualizations can surprise you, but they don't scale particularly well because they require a human to interpret them.
+**Trực quan hóa** (visualization) về cơ bản là một hoạt động của con người.
+Một hình trực quan tốt sẽ cho bạn thấy những điều bạn không ngờ đến hoặc đặt ra những câu hỏi mới về dữ liệu.
+Một hình trực quan tốt cũng có thể gợi ý rằng bạn đang đặt sai câu hỏi hoặc bạn cần thu thập dữ liệu khác.
+Trực quan hóa có thể mang đến bất ngờ, nhưng chúng không mở rộng quy mô tốt lắm vì chúng cần con người để diễn giải.
 
-**Models** are complementary tools to visualization.
-Once you have made your questions sufficiently precise, you can use a model to answer them.
-Models are fundamentally mathematical or computational tools, so they generally scale well.
-Even when they don't, it's usually cheaper to buy more computers than it is to buy more brains!
-But every model makes assumptions, and by its very nature, a model cannot question its own assumptions.
-That means a model cannot fundamentally surprise you.
+**Mô hình** (model) là công cụ bổ sung cho trực quan hóa.
+Khi bạn đã làm cho câu hỏi của mình đủ chính xác, bạn có thể sử dụng mô hình để trả lời chúng.
+Mô hình về cơ bản là công cụ toán học hoặc tính toán, vì vậy chúng thường mở rộng quy mô tốt.
+Ngay cả khi không, thường thì mua thêm máy tính rẻ hơn mua thêm bộ não!
+Nhưng mọi mô hình đều đưa ra giả định, và theo bản chất, mô hình không thể tự đặt câu hỏi về giả định của mình.
+Điều đó có nghĩa là mô hình không thể mang đến bất ngờ cho bạn một cách căn bản.
 
-The last step of data science is **communication**, an absolutely critical part of any data analysis project.
-It doesn't matter how well your models and visualization have led you to understand the data unless you can also communicate your results to others.
+Bước cuối cùng của khoa học dữ liệu là **truyền đạt** (communication), một phần vô cùng quan trọng của bất kỳ dự án phân tích dữ liệu nào.
+Dù mô hình và trực quan hóa đã giúp bạn hiểu dữ liệu tốt đến đâu, điều đó cũng không quan trọng nếu bạn không thể truyền đạt kết quả đến người khác.
 
-Surrounding all these tools is **programming**.
-Programming is a cross-cutting tool that you use in nearly every part of a data science project.
-You don't need to be an expert programmer to be a successful data scientist, but learning more about programming pays off because becoming a better programmer allows you to automate common tasks and solve new problems with greater ease.
+Bao quanh tất cả các công cụ này là **lập trình** (programming).
+Lập trình là một công cụ xuyên suốt mà bạn sử dụng trong hầu hết mọi phần của dự án khoa học dữ liệu.
+Bạn không cần phải là một lập trình viên chuyên gia để trở thành một nhà khoa học dữ liệu thành công, nhưng việc học thêm về lập trình sẽ mang lại lợi ích vì trở thành lập trình viên giỏi hơn cho phép bạn tự động hóa các tác vụ phổ biến và giải quyết vấn đề mới dễ dàng hơn.
 
-You'll use these tools in every data science project, but they're not enough for most projects.
-There's a rough 80/20 rule at play: you can tackle about 80% of every project using the tools you'll learn in this book, but you'll need other tools to tackle the remaining 20%.
-Throughout this book, we'll point you to resources where you can learn more.
+Bạn sẽ sử dụng các công cụ này trong mọi dự án khoa học dữ liệu, nhưng chúng chưa đủ cho hầu hết các dự án.
+Có một quy tắc 80/20 ở đây: bạn có thể giải quyết khoảng 80% mỗi dự án bằng các công cụ bạn sẽ học trong cuốn sách này, nhưng bạn sẽ cần các công cụ khác để giải quyết 20% còn lại.
+Xuyên suốt cuốn sách, chúng tôi sẽ chỉ cho bạn các tài nguyên để bạn có thể tìm hiểu thêm.
 
-## How this book is organized
+## Cuốn sách này được tổ chức như thế nào
 
-The previous description of the tools of data science is organized roughly according to the order in which you use them in an analysis (although, of course, you'll iterate through them multiple times).
-In our experience, however, learning data importing and tidying first is suboptimal because, 80% of the time, it's routine and boring, and the other 20% of the time, it's weird and frustrating.
-That's a bad place to start learning a new subject!
-Instead, we'll start with visualization and transformation of data that's already been imported and tidied.
-That way, when you ingest and tidy your own data, your motivation will stay high because you know the pain is worth the effort.
+Phần mô tả trước đó về các công cụ khoa học dữ liệu được tổ chức đại khái theo thứ tự mà bạn sử dụng chúng trong một phân tích (mặc dù, tất nhiên, bạn sẽ lặp qua chúng nhiều lần).
+Tuy nhiên, theo kinh nghiệm của chúng tôi, việc học nhập và sắp xếp dữ liệu trước không phải là tối ưu vì 80% thời gian, nó nhàm chán và lặp đi lặp lại, còn 20% thời gian còn lại thì kỳ lạ và khó chịu.
+Đó không phải là nơi tốt để bắt đầu học một chủ đề mới!
+Thay vào đó, chúng ta sẽ bắt đầu với trực quan hóa và biến đổi dữ liệu đã được nhập và sắp xếp sẵn.
+Bằng cách đó, khi bạn nhập và sắp xếp dữ liệu của riêng mình, động lực của bạn sẽ vẫn cao vì bạn biết rằng nỗi vất vả đó xứng đáng.
 
-Within each chapter, we try to adhere to a consistent pattern: start with some motivating examples so you can see the bigger picture, and then dive into the details.
-Each section of the book is paired with exercises to help you practice what you've learned.
-Although it can be tempting to skip the exercises, there's no better way to learn than by practicing on real problems.
+Trong mỗi chương, chúng tôi cố gắng tuân theo một mô hình nhất quán: bắt đầu với một số ví dụ tạo động lực để bạn có thể thấy bức tranh lớn hơn, sau đó đi vào chi tiết.
+Mỗi phần của cuốn sách đi kèm với các bài tập để giúp bạn thực hành những gì đã học.
+Mặc dù có thể hấp dẫn khi bỏ qua các bài tập, không có cách nào tốt hơn để học ngoài việc thực hành trên các vấn đề thực tế.
 
-## What you won't learn
+## Những gì bạn sẽ không học
 
-There are several important topics that this book doesn't cover.
-We believe it's important to stay ruthlessly focused on the essentials so you can get up and running as quickly as possible.
-That means this book can't cover every important topic.
+Có một số chủ đề quan trọng mà cuốn sách này không đề cập.
+Chúng tôi tin rằng điều quan trọng là phải tập trung vào những điều cốt lõi để bạn có thể bắt đầu nhanh nhất có thể.
+Điều đó có nghĩa là cuốn sách này không thể đề cập mọi chủ đề quan trọng.
 
-### Modeling
+### Mô hình hóa
 
-Modeling is super important for data science, but it's a big topic, and unfortunately, we just don't have the space to give it the coverage it deserves here.
-To learn more about modeling, we highly recommend [Tidy Modeling with R](https://www.tmwr.org) by our colleagues Max Kuhn and Julia Silge.
-This book will teach you the tidymodels family of packages, which, as you might guess from the name, share many conventions with the tidyverse packages we use in this book.
+Mô hình hóa (modeling) cực kỳ quan trọng cho khoa học dữ liệu, nhưng đó là một chủ đề lớn, và thật không may, chúng tôi không có đủ không gian để trình bày nó xứng đáng ở đây.
+Để tìm hiểu thêm về mô hình hóa, chúng tôi rất khuyến nghị [Tidy Modeling with R](https://www.tmwr.org) của các đồng nghiệp Max Kuhn và Julia Silge.
+Cuốn sách này sẽ dạy bạn họ gói tidymodels, mà như bạn có thể đoán từ tên gọi, chia sẻ nhiều quy ước với các gói tidyverse mà chúng ta sử dụng trong cuốn sách này.
 
-### Big data
+### Dữ liệu lớn
 
-This book proudly and primarily focuses on small, in-memory datasets.
-This is the right place to start because you can't tackle big data unless you have experience with small data.
-The tools you'll learn throughout the majority of this book will easily handle hundreds of megabytes of data, and with a bit of care, you can typically use them to work with a few gigabytes of data.
-We'll also show you how to get data out of databases and parquet files, both of which are often used to store big data.
-You won't necessarily be able to work with the entire dataset, but that's not a problem because you only need a subset or subsample to answer the question that you're interested in.
+Cuốn sách này tự hào tập trung chủ yếu vào các tập dữ liệu nhỏ, nằm trong bộ nhớ.
+Đây là nơi đúng đắn để bắt đầu vì bạn không thể xử lý dữ liệu lớn (big data) trừ khi bạn có kinh nghiệm với dữ liệu nhỏ.
+Các công cụ bạn sẽ học trong phần lớn cuốn sách này có thể dễ dàng xử lý hàng trăm megabyte dữ liệu, và với một chút cẩn thận, bạn thường có thể dùng chúng để làm việc với vài gigabyte dữ liệu.
+Chúng tôi cũng sẽ chỉ cho bạn cách lấy dữ liệu từ cơ sở dữ liệu và file parquet, cả hai thường được dùng để lưu trữ dữ liệu lớn.
+Bạn không nhất thiết phải làm việc với toàn bộ tập dữ liệu, nhưng đó không phải vấn đề vì bạn chỉ cần một tập con hoặc mẫu con để trả lời câu hỏi mà bạn quan tâm.
 
-If you're routinely working with larger data (10--100 GB, say), we recommend learning more about [data.table](https://github.com/Rdatatable/data.table).
-We don't teach it here because it uses a different interface than the tidyverse and requires you to learn some different conventions.
-However, it is incredibly fast, and the performance payoff is worth investing some time in learning it if you're working with large data.
+Nếu bạn thường xuyên làm việc với dữ liệu lớn hơn (10--100 GB chẳng hạn), chúng tôi khuyến nghị tìm hiểu thêm về [data.table](https://github.com/Rdatatable/data.table).
+Chúng tôi không dạy nó ở đây vì nó sử dụng giao diện khác với tidyverse và yêu cầu bạn học một số quy ước khác nhau.
+Tuy nhiên, nó nhanh đến kinh ngạc, và lợi ích về hiệu suất xứng đáng để đầu tư thời gian học nếu bạn đang làm việc với dữ liệu lớn.
 
-### Python, Julia, and friends
+### Python, Julia, và những ngôn ngữ khác
 
-In this book, you won't learn anything about Python, Julia, or any other programming language useful for data science.
-This isn't because we think these tools are bad.
-They're not!
-And in practice, most data science teams use a mix of languages, often at least R and Python.
-But we strongly believe that it's best to master one tool at a time, and R is a great place to start.
+Trong cuốn sách này, bạn sẽ không học bất cứ điều gì về Python, Julia, hay bất kỳ ngôn ngữ lập trình nào khác hữu ích cho khoa học dữ liệu.
+Điều này không phải vì chúng tôi nghĩ những công cụ đó không tốt.
+Chúng rất tốt!
+Và trong thực tế, hầu hết các nhóm khoa học dữ liệu sử dụng kết hợp nhiều ngôn ngữ, thường ít nhất là R và Python.
+Nhưng chúng tôi tin chắc rằng tốt nhất là thành thạo một công cụ tại một thời điểm, và R là nơi tuyệt vời để bắt đầu.
 
-## Prerequisites
+## Điều kiện tiên quyết
 
-We've made a few assumptions about what you already know to get the most out of this book.
-You should be generally numerically literate, and it's helpful if you have some basic programming experience already.
-If you've never programmed before, you might find [Hands on Programming with R](https://rstudio-education.github.io/hopr/) by Garrett to be a valuable adjunct to this book.
+Chúng tôi đã đưa ra một số giả định về những gì bạn đã biết để tận dụng tốt nhất cuốn sách này.
+Bạn nên có kiến thức số học cơ bản, và sẽ hữu ích nếu bạn đã có chút kinh nghiệm lập trình.
+Nếu bạn chưa bao giờ lập trình, bạn có thể thấy [Hands on Programming with R](https://rstudio-education.github.io/hopr/) của Garrett là một tài liệu bổ trợ quý giá cho cuốn sách này.
 
-You need four things to run the code in this book: R, RStudio, a collection of R packages called the **tidyverse**, and a handful of other packages.
-Packages are the fundamental units of reproducible R code.
-They include reusable functions, documentation that describes how to use them, and sample data.
+Bạn cần bốn thứ để chạy mã trong cuốn sách này: R, RStudio, một bộ sưu tập các gói R gọi là **tidyverse**, và một số gói khác.
+Gói (package) là đơn vị cơ bản của mã R có tính tái lập.
+Chúng bao gồm các hàm có thể tái sử dụng, tài liệu mô tả cách sử dụng chúng, và dữ liệu mẫu.
 
 ### R
 
-To download R, go to CRAN, the **c**omprehensive **R** **a**rchive **n**etwork, <https://cloud.r-project.org>.
-A new major version of R comes out once a year, and there are 2-3 minor releases each year.
-It's a good idea to update regularly.
-Upgrading can be a bit of a hassle, especially for major versions that require you to re-install all your packages, but putting it off only makes it worse.
-We recommend R 4.2.0 or later for this book.
+Để tải R, hãy truy cập CRAN, mạng lưu trữ R toàn diện (**c**omprehensive **R** **a**rchive **n**etwork), <https://cloud.r-project.org>.
+Một phiên bản chính mới của R được phát hành mỗi năm một lần, và có 2-3 bản cập nhật phụ mỗi năm.
+Nên cập nhật thường xuyên.
+Việc nâng cấp có thể hơi phiền phức, đặc biệt với các phiên bản chính yêu cầu bạn cài đặt lại tất cả các gói, nhưng trì hoãn chỉ làm mọi thứ tệ hơn.
+Chúng tôi khuyến nghị R 4.2.0 trở lên cho cuốn sách này.
 
 ### RStudio
 
-RStudio is an integrated development environment, or IDE, for R programming, which you can download from <https://posit.co/download/rstudio-desktop/>.
-RStudio is updated a couple of times a year, and it will automatically let you know when a new version is out, so there's no need to check back.
-It's a good idea to upgrade regularly to take advantage of the latest and greatest features.
-For this book, make sure you have at least RStudio 2022.02.0.
+RStudio là một môi trường phát triển tích hợp (IDE) cho lập trình R, bạn có thể tải từ <https://posit.co/download/rstudio-desktop/>.
+RStudio được cập nhật vài lần mỗi năm, và nó sẽ tự động thông báo cho bạn khi có phiên bản mới, vì vậy không cần phải kiểm tra lại.
+Nên nâng cấp thường xuyên để tận dụng các tính năng mới nhất và tốt nhất.
+Cho cuốn sách này, hãy đảm bảo bạn có ít nhất RStudio 2022.02.0.
 
-When you start RStudio, @fig-rstudio-console, you'll see two key regions in the interface: the console pane and the output pane.
-For now, all you need to know is that you type the R code in the console pane and press enter to run it.
-You'll learn more as we go along![^intro-1]
+Khi bạn khởi động RStudio, @fig-rstudio-console, bạn sẽ thấy hai vùng chính trong giao diện: bảng điều khiển (console pane) và bảng đầu ra (output pane).
+Hiện tại, tất cả những gì bạn cần biết là bạn gõ mã R vào bảng điều khiển và nhấn enter để chạy.
+Bạn sẽ tìm hiểu thêm khi chúng ta tiếp tục![^intro-1]
 
-[^intro-1]: If you'd like a comprehensive overview of all of RStudio's features, see the RStudio User Guide at <https://docs.posit.co/ide/user>.
+[^intro-1]: Nếu bạn muốn có cái nhìn tổng quan toàn diện về tất cả các tính năng của RStudio, xem Hướng dẫn Sử dụng RStudio tại <https://docs.posit.co/ide/user>.
 
 ```{r}
 #| label: fig-rstudio-console
 #| echo: false
 #| out-width: ~
 #| fig-cap: |
-#|   The RStudio IDE has two key regions: type R code in the console pane
-#|   on the left, and look for plots in the output pane on the right.
+#|   IDE RStudio có hai vùng chính: gõ mã R trong bảng điều khiển (console)
+#|   bên trái, và xem biểu đồ trong bảng đầu ra (output) bên phải.
 #| fig-alt: |
-#|   The RStudio IDE with the panes Console and Output highlighted.
+#|   IDE RStudio với các bảng Console và Output được đánh dấu.
 knitr::include_graphics("diagrams/rstudio/console.png", dpi = 270)
 ```
 
-### The tidyverse
+### Tidyverse
 
-You'll also need to install some R packages.
-An R **package** is a collection of functions, data, and documentation that extends the capabilities of base R.
-Using packages is key to the successful use of R.
-The majority of the packages that you will learn in this book are part of the so-called tidyverse.
-All packages in the tidyverse share a common philosophy of data and R programming and are designed to work together.
+Bạn cũng cần cài đặt một số gói R.
+Một **gói** (package) R là một bộ sưu tập các hàm, dữ liệu, và tài liệu mở rộng khả năng của R cơ bản.
+Sử dụng gói là chìa khóa để sử dụng R thành công.
+Phần lớn các gói bạn sẽ học trong cuốn sách này thuộc về cái gọi là tidyverse.
+Tất cả các gói trong tidyverse chia sẻ một triết lý chung về dữ liệu và lập trình R, và được thiết kế để hoạt động cùng nhau.
 
-You can install the complete tidyverse with a single line of code:
+Bạn có thể cài đặt toàn bộ tidyverse bằng một dòng mã:
 
 ```{r}
 #| eval: false
 install.packages("tidyverse")
 ```
 
-On your computer, type that line of code in the console, and then press enter to run it.
-R will download the packages from CRAN and install them on your computer.
+Trên máy tính của bạn, gõ dòng mã đó vào bảng điều khiển, rồi nhấn enter để chạy.
+R sẽ tải các gói từ CRAN và cài đặt chúng trên máy tính của bạn.
 
-You will not be able to use the functions, objects, or help files in a package until you load it with `library()`.
-Once you have installed a package, you can load it using the `library()` function:
+Bạn sẽ không thể sử dụng các hàm, đối tượng, hay file trợ giúp trong một gói cho đến khi bạn tải nó bằng `library()`.
+Sau khi đã cài đặt một gói, bạn có thể tải nó bằng hàm `library()`:
 
 ```{r}
 library(tidyverse)
 ```
 
-This tells you that tidyverse loads nine packages: dplyr, forcats, ggplot2, lubridate, purrr, readr, stringr, tibble, tidyr.
-These are considered the **core** of the tidyverse because you'll use them in almost every analysis.
+Điều này cho bạn biết rằng tidyverse tải chín gói: dplyr, forcats, ggplot2, lubridate, purrr, readr, stringr, tibble, tidyr.
+Chúng được coi là **lõi** của tidyverse vì bạn sẽ sử dụng chúng trong hầu hết mọi phân tích.
 
-Packages in the tidyverse change fairly frequently.
-You can see if updates are available by running `tidyverse_update()`.
+Các gói trong tidyverse thay đổi khá thường xuyên.
+Bạn có thể kiểm tra xem có bản cập nhật nào không bằng cách chạy `tidyverse_update()`.
 
-### Other packages
+### Các gói khác
 
-There are many other excellent packages that are not part of the tidyverse because they solve problems in a different domain or are designed with a different set of underlying principles.
-This doesn't make them better or worse; it just makes them different.
-In other words, the complement to the tidyverse is not the messyverse but many other universes of interrelated packages.
-As you tackle more data science projects with R, you'll learn new packages and new ways of thinking about data.
+Có nhiều gói xuất sắc khác không thuộc tidyverse vì chúng giải quyết vấn đề trong lĩnh vực khác hoặc được thiết kế với bộ nguyên tắc cơ bản khác.
+Điều này không làm chúng tốt hơn hay tệ hơn; nó chỉ làm chúng khác biệt.
+Nói cách khác, phần bổ sung cho tidyverse không phải là messyverse mà là nhiều vũ trụ khác của các gói liên quan.
+Khi bạn giải quyết thêm nhiều dự án khoa học dữ liệu với R, bạn sẽ học các gói mới và cách tư duy mới về dữ liệu.
 
-We'll use many packages from outside the tidyverse in this book.
-For example, we'll use the following packages because they provide interesting datasets for us to work with in the process of learning R:
+Chúng tôi sẽ sử dụng nhiều gói ngoài tidyverse trong cuốn sách này.
+Ví dụ, chúng tôi sẽ sử dụng các gói sau đây vì chúng cung cấp các tập dữ liệu thú vị để chúng ta làm việc trong quá trình học R:
 
 ```{r}
 #| eval: false
 install.packages(
-  c("arrow", "babynames", "curl", "duckdb", "gapminder", 
-    "ggrepel", "ggridges", "ggthemes", "hexbin", "janitor", "Lahman", 
-    "leaflet", "maps", "nycflights13", "openxlsx", "palmerpenguins", 
+  c("arrow", "babynames", "curl", "duckdb", "gapminder",
+    "ggrepel", "ggridges", "ggthemes", "hexbin", "janitor", "Lahman",
+    "leaflet", "maps", "nycflights13", "openxlsx", "palmerpenguins",
     "repurrrsive", "tidymodels", "writexl")
   )
 ```
 
-We'll also use a selection of other packages for one off examples.
-You don't need to install them now, just remember that whenever you see an error like this:
+Chúng tôi cũng sẽ sử dụng một số gói khác cho các ví dụ đơn lẻ.
+Bạn không cần cài đặt chúng ngay bây giờ, chỉ cần nhớ rằng bất cứ khi nào bạn thấy lỗi như thế này:
 
 ```{r}
 #| eval: false
 library(ggrepel)
-#> Error in library(ggrepel) : there is no package called ‘ggrepel’
+#> Error in library(ggrepel) : there is no package called 'ggrepel'
 ```
 
-You need to run `install.packages("ggrepel")` to install the package.
+Bạn cần chạy `install.packages("ggrepel")` để cài đặt gói đó.
 
-## Running R code
+## Chạy mã R
 
-The previous section showed you several examples of running R code.
-The code in the book looks like this:
+Phần trước đã cho bạn thấy một số ví dụ về việc chạy mã R.
+Mã trong cuốn sách trông như thế này:
 
 ```{r}
 #| eval: true
 1 + 2
 ```
 
-If you run the same code in your local console, it will look like this:
+Nếu bạn chạy cùng đoạn mã trong bảng điều khiển của mình, nó sẽ trông như thế này:
 
-```         
+```
 > 1 + 2
 [1] 3
 ```
 
-There are two main differences.
-In your console, you type after the `>`, called the **prompt**; we don't show the prompt in the book.
-In the book, the output is commented out with `#>`; in your console, it appears directly after your code.
-These two differences mean that if you're working with an electronic version of the book, you can easily copy code out of the book and paste it into the console.
+Có hai khác biệt chính.
+Trong bảng điều khiển của bạn, bạn gõ sau dấu `>`, gọi là **dấu nhắc** (prompt); chúng tôi không hiển thị dấu nhắc trong sách.
+Trong sách, đầu ra được chú thích bằng `#>`; trong bảng điều khiển của bạn, nó xuất hiện trực tiếp sau mã của bạn.
+Hai khác biệt này có nghĩa là nếu bạn đang làm việc với phiên bản điện tử của cuốn sách, bạn có thể dễ dàng sao chép mã từ sách và dán vào bảng điều khiển.
 
-Throughout the book, we use a consistent set of conventions to refer to code:
+Xuyên suốt cuốn sách, chúng tôi sử dụng một bộ quy ước nhất quán để tham chiếu đến mã:
 
--   Functions are displayed in a code font and followed by parentheses, like `sum()` or `mean()`.
+-   Hàm được hiển thị bằng phông chữ mã và theo sau bởi dấu ngoặc đơn, như `sum()` hoặc `mean()`.
 
--   Other R objects (such as data or function arguments) are in a code font, without parentheses, like `flights` or `x`.
+-   Các đối tượng R khác (như dữ liệu hoặc đối số của hàm) được hiển thị bằng phông chữ mã, không có dấu ngoặc đơn, như `flights` hoặc `x`.
 
--   Sometimes, to make it clear which package an object comes from, we'll use the package name followed by two colons, like `dplyr::mutate()` or `nycflights13::flights`.
-    This is also valid R code.
+-   Đôi khi, để làm rõ một đối tượng đến từ gói nào, chúng tôi sẽ dùng tên gói theo sau bởi hai dấu hai chấm, như `dplyr::mutate()` hoặc `nycflights13::flights`.
+    Đây cũng là mã R hợp lệ.
 
-## Acknowledgments
+## Lời cảm ơn
 
-This book isn't just the product of Hadley, Mine, and Garrett but is the result of many conversations (in person and online) that we've had with many people in the R community.
-We're incredibly grateful for all the conversations we've had with y'all; thank you so much!
+Cuốn sách này không chỉ là sản phẩm của Hadley, Mine, và Garrett mà là kết quả của nhiều cuộc trò chuyện (trực tiếp và trực tuyến) mà chúng tôi đã có với nhiều người trong cộng đồng R.
+Chúng tôi vô cùng biết ơn tất cả các cuộc trò chuyện mà chúng tôi đã có với các bạn; cảm ơn rất nhiều!
 
 ```{r}
 #| eval: false
@@ -272,9 +272,9 @@ contribs_all <- tibble(
 contribs_old <- read_csv("contributors.csv", col_types = list())
 contribs_new <- contribs_all |> anti_join(contribs_old, by = "login")
 
-# Get info for new contributors
+# Lấy thông tin cho người đóng góp mới
 needed_json <- map(
-  contribs_new$login, 
+  contribs_new$login,
   ~ gh::gh("/users/:username", username = .x),
   .progress = TRUE
 )
@@ -286,8 +286,8 @@ info_new <- tibble(
 info_old <- contribs_old |> select(login, name, blog)
 info_all <- bind_rows(info_old, info_new)
 
-contribs_all <- contribs_all |> 
-  left_join(info_all, by = "login") |> 
+contribs_all <- contribs_all |>
+  left_join(info_all, by = "login") |>
   mutate(login_lowercase = str_to_lower(login)) |>
   arrange(login_lowercase) |>
   select(-login_lowercase)
@@ -300,24 +300,24 @@ write_csv(contribs_all, "contributors.csv")
 #| message: false
 library(dplyr)
 contributors <- readr::read_csv("contributors.csv")
-contributors <- contributors |> 
-  filter(!login %in% c("hadley", "garrettgman", "mine-cetinkaya-rundel")) |> 
+contributors <- contributors |>
+  filter(!login %in% c("hadley", "garrettgman", "mine-cetinkaya-rundel")) |>
   mutate(
     login = paste0("\\@", login),
     desc = ifelse(is.na(name), login, paste0(name, " (", login, ")"))
   )
 
-cat("This book was written in the open, and many people contributed via pull requests. A special thanks to all ",nrow(contributors), " of you who contributed improvements via GitHub pull requests (in alphabetical order by username): ", sep = "")
+cat("Cuốn sách này được viết công khai, và nhiều người đã đóng góp qua pull request. Xin gửi lời cảm ơn đặc biệt đến tất cả ",nrow(contributors), " bạn đã đóng góp cải tiến qua GitHub pull request (theo thứ tự bảng chữ cái theo tên người dùng): ", sep = "")
 cat(paste0(contributors$desc, collapse = ", "))
 cat(".\n")
 ```
 
-## Colophon
+## Thông tin xuất bản
 
-An online version of this book is available at <https://r4ds.hadley.nz>.
-It will continue to evolve in between reprints of the physical book.
-The source of the book is available at <https://github.com/hadley/r4ds>.
-The book is powered by [Quarto](https://quarto.org), which makes it easy to write books that combine text and executable code.
+Phiên bản trực tuyến của cuốn sách này có tại <https://r4ds.hadley.nz>.
+Nó sẽ tiếp tục được cập nhật giữa các lần tái bản sách in.
+Mã nguồn của cuốn sách có tại <https://github.com/hadley/r4ds>.
+Cuốn sách được hỗ trợ bởi [Quarto](https://quarto.org), giúp dễ dàng viết sách kết hợp văn bản và mã thực thi.
 
 ```{r}
 #| eval: false

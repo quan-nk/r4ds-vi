@@ -1,21 +1,21 @@
-# Workflow: basics {#sec-workflow-basics}
+# Quy trình làm việc: cơ bản {#sec-workflow-basics}
 
 ```{r}
 #| echo: false
 source("_common.R")
 ```
 
-You now have some experience running R code.
-We didn't give you many details, but you've obviously figured out the basics, or you would've thrown this book away in frustration!
-Frustration is natural when you start programming in R because it is such a stickler for punctuation, and even one character out of place can cause it to complain.
-But while you should expect to be a little frustrated, take comfort in that this experience is typical and temporary: it happens to everyone, and the only way to get over it is to keep trying.
+Bây giờ bạn đã có chút kinh nghiệm chạy mã R.
+Chúng tôi không đưa ra nhiều chi tiết, nhưng rõ ràng bạn đã nắm được những điều cơ bản, nếu không bạn đã ném cuốn sách này đi vì thất vọng rồi!
+Thất vọng là điều tự nhiên khi bạn bắt đầu lập trình bằng R vì nó rất khó tính về dấu câu, và chỉ một ký tự sai chỗ cũng có thể khiến nó phàn nàn.
+Nhưng trong khi bạn nên mong đợi sẽ hơi thất vọng, hãy an tâm rằng trải nghiệm này là bình thường và tạm thời: nó xảy ra với tất cả mọi người, và cách duy nhất để vượt qua là tiếp tục cố gắng.
 
-Before we go any further, let's ensure you've got a solid foundation in running R code and that you know some of the most helpful RStudio features.
+Trước khi đi xa hơn, hãy đảm bảo bạn có nền tảng vững chắc trong việc chạy mã R và biết một số tính năng hữu ích nhất của RStudio.
 
-## Coding basics
+## Cơ bản về lập trình
 
-Let's review some basics we've omitted so far in the interest of getting you plotting as quickly as possible.
-You can use R to do basic math calculations:
+Hãy xem lại một số kiến thức cơ bản mà chúng tôi đã bỏ qua cho đến nay vì muốn đưa bạn vào vẽ biểu đồ nhanh nhất có thể.
+Bạn có thể sử dụng R để thực hiện các phép tính toán cơ bản:
 
 ```{r}
 1 / 200 * 30
@@ -23,77 +23,77 @@ You can use R to do basic math calculations:
 sin(pi / 2)
 ```
 
-You can create new objects with the assignment operator `<-`:
+Bạn có thể tạo đối tượng mới bằng toán tử gán (assignment operator) `<-`:
 
 ```{r}
 x <- 3 * 4
 ```
 
-Note that the value of `x` is not printed, it's just stored.
-If you want to view the value, type `x` in the console.
+Lưu ý rằng giá trị của `x` không được in ra, nó chỉ được lưu trữ.
+Nếu bạn muốn xem giá trị, gõ `x` vào bảng điều khiển.
 
-You can **c**ombine multiple elements into a vector with `c()`:
+Bạn có thể **k**ết hợp nhiều phần tử thành một vector với `c()`:
 
 ```{r}
 primes <- c(2, 3, 5, 7, 11, 13)
 ```
 
-And basic arithmetic on vectors is applied to every element of the vector:
+Và phép tính số học cơ bản trên vector được áp dụng cho mọi phần tử của vector:
 
 ```{r}
 primes * 2
 primes - 1
 ```
 
-All R statements where you create objects, **assignment** statements, have the same form:
+Tất cả các lệnh R tạo đối tượng, các lệnh **gán** (assignment), đều có cùng dạng:
 
 ```{r}
 #| eval: false
 object_name <- value
 ```
 
-When reading that code, say "object name gets value" in your head.
+Khi đọc đoạn mã đó, hãy đọc trong đầu "tên đối tượng nhận giá trị".
 
-You will make lots of assignments, and `<-` is a pain to type.
-You can save time with RStudio's keyboard shortcut: Alt + - (the minus sign).
-Notice that RStudio automatically surrounds `<-` with spaces, which is a good code formatting practice.
-Code can be miserable to read on a good day, so giveyoureyesabreak and use spaces.
+Bạn sẽ thực hiện rất nhiều phép gán, và `<-` khá phiền để gõ.
+Bạn có thể tiết kiệm thời gian với phím tắt của RStudio: Alt + - (dấu trừ).
+Lưu ý rằng RStudio tự động bao quanh `<-` bằng dấu cách, đây là thói quen định dạng mã tốt.
+Mã có thể rất khó đọc vào một ngày đẹp trời, vì vậy hãychodôimắtnghỉngơi và sử dụng dấu cách.
 
-## Comments
+## Chú thích
 
-R will ignore any text after `#` for that line.
-This allows you to write **comments**, text that is ignored by R but read by other humans.
-We'll sometimes include comments in examples explaining what's happening with the code.
+R sẽ bỏ qua mọi văn bản sau `#` trên dòng đó.
+Điều này cho phép bạn viết **chú thích** (comment), văn bản được R bỏ qua nhưng được người khác đọc.
+Đôi khi chúng tôi sẽ bao gồm chú thích trong ví dụ để giải thích điều gì đang xảy ra với mã.
 
-Comments can be helpful for briefly describing what the following code does.
+Chú thích có thể hữu ích để mô tả ngắn gọn đoạn mã tiếp theo làm gì.
 
 ```{r}
-# create vector of primes
+# tạo vector các số nguyên tố
 primes <- c(2, 3, 5, 7, 11, 13)
 
-# multiply primes by 2
+# nhân các số nguyên tố với 2
 primes * 2
 ```
 
-With short pieces of code like this, leaving a comment for every single line of code might not be necessary.
-But as the code you're writing gets more complex, comments can save you (and your collaborators) a lot of time figuring out what was done in the code.
+Với các đoạn mã ngắn như thế này, việc để chú thích cho mọi dòng mã có thể không cần thiết.
+Nhưng khi mã bạn viết trở nên phức tạp hơn, chú thích có thể giúp bạn (và cộng sự) tiết kiệm rất nhiều thời gian tìm hiểu điều gì đã được thực hiện trong mã.
 
-Use comments to explain the *why* of your code, not the *how* or the *what*.
-The *what* and *how* of your code are always possible to figure out, even if it might be tedious, by carefully reading it.
-If you describe every step in the comments, and then change the code, you will have to remember to update the comments as well or it will be confusing when you return to your code in the future.
+Sử dụng chú thích để giải thích *tại sao* của mã, không phải *như thế nào* hay *cái gì*.
+*Cái gì* và *như thế nào* của mã luôn có thể tìm ra, dù có thể tẻ nhạt, bằng cách đọc kỹ nó.
+Nếu bạn mô tả mọi bước trong chú thích, rồi thay đổi mã, bạn sẽ phải nhớ cập nhật chú thích nữa, nếu không sẽ gây nhầm lẫn khi bạn quay lại mã trong tương lai.
 
-Figuring out *why* something was done is much more difficult, if not impossible.
-For example, `geom_smooth()` has an argument called `span`, which controls the smoothness of the curve, with larger values yielding a smoother curve.
-Suppose you decide to change the value of `span` from its default of 0.75 to 0.9: it's easy for a future reader to understand *what* is happening, but unless you note your thinking in a comment, no one will understand *why* you changed the default.
+Tìm hiểu *tại sao* điều gì đó được thực hiện khó hơn nhiều, nếu không muốn nói là không thể.
+Ví dụ, `geom_smooth()` có đối số gọi là `span`, kiểm soát độ mượt của đường cong, với giá trị lớn hơn tạo đường cong mượt hơn.
+Giả sử bạn quyết định thay đổi giá trị `span` từ mặc định 0.75 thành 0.9: người đọc tương lai dễ dàng hiểu *cái gì* đang xảy ra, nhưng trừ khi bạn ghi lại suy nghĩ trong chú thích, không ai sẽ hiểu *tại sao* bạn thay đổi giá trị mặc định.
 
-For data analysis code, use comments to explain your overall plan of attack and record important insights as you encounter them.
-There's no way to re-capture this knowledge from the code itself.
+Với mã phân tích dữ liệu, sử dụng chú thích để giải thích kế hoạch tổng thể và ghi lại các phát hiện quan trọng khi bạn gặp chúng.
+Không có cách nào lấy lại kiến thức này chỉ từ mã nguồn.
 
-## What's in a name? {#sec-whats-in-a-name}
+## Có gì trong một cái tên? {#sec-whats-in-a-name}
 
-Object names must start with a letter and can only contain letters, numbers, `_`, and `.`.
-You want your object names to be descriptive, so you'll need to adopt a convention for multiple words.
-We recommend **snake_case**, where you separate lowercase words with `_`.
+Tên đối tượng phải bắt đầu bằng một chữ cái và chỉ có thể chứa chữ cái, số, `_`, và `.`.
+Bạn muốn tên đối tượng mang tính mô tả, vì vậy bạn sẽ cần áp dụng một quy ước cho nhiều từ.
+Chúng tôi khuyến nghị **snake_case**, trong đó bạn phân cách các từ viết thường bằng `_`.
 
 ```{r}
 #| eval: false
@@ -103,36 +103,36 @@ some.people.use.periods
 And_aFew.People_RENOUNCEconvention
 ```
 
-We'll return to names again when we discuss code style in @sec-workflow-style.
+Chúng ta sẽ quay lại chủ đề đặt tên khi thảo luận về phong cách mã trong @sec-workflow-style.
 
-You can inspect an object by typing its name:
+Bạn có thể kiểm tra một đối tượng bằng cách gõ tên của nó:
 
 ```{r}
 x
 ```
 
-Make another assignment:
+Thực hiện một phép gán khác:
 
 ```{r}
 this_is_a_really_long_name <- 2.5
 ```
 
-To inspect this object, try out RStudio's completion facility: type "this", press TAB, add characters until you have a unique prefix, then press return.
+Để kiểm tra đối tượng này, hãy thử tính năng tự động hoàn thành của RStudio: gõ "this", nhấn TAB, thêm ký tự cho đến khi bạn có tiền tố duy nhất, rồi nhấn return.
 
-Let's assume you made a mistake, and that the value of `this_is_a_really_long_name` should be 3.5, not 2.5.
-You can use another keyboard shortcut to help you fix it.
-For example, you can press ↑ to bring the last command you typed and edit it.
-Or, type "this" then press Cmd/Ctrl + ↑ to list all the commands you've typed that start with those letters.
-Use the arrow keys to navigate, then press enter to retype the command.
-Change 2.5 to 3.5 and rerun.
+Giả sử bạn đã mắc lỗi, và giá trị của `this_is_a_really_long_name` nên là 3.5, không phải 2.5.
+Bạn có thể sử dụng phím tắt khác để sửa nó.
+Ví dụ, bạn có thể nhấn ↑ để hiển thị lệnh cuối cùng bạn đã gõ và chỉnh sửa nó.
+Hoặc, gõ "this" rồi nhấn Cmd/Ctrl + ↑ để liệt kê tất cả các lệnh bạn đã gõ bắt đầu bằng các chữ cái đó.
+Sử dụng phím mũi tên để điều hướng, rồi nhấn enter để gõ lại lệnh.
+Thay 2.5 thành 3.5 và chạy lại.
 
-Make yet another assignment:
+Thực hiện thêm một phép gán nữa:
 
 ```{r}
 r_rocks <- 2^3
 ```
 
-Let's try to inspect it:
+Hãy thử kiểm tra nó:
 
 ```{r}
 #| eval: false
@@ -142,74 +142,74 @@ R_rocks
 #> Error: object 'R_rocks' not found
 ```
 
-This illustrates the implied contract between you and R: R will do the tedious computations for you, but in exchange, you must be completely precise in your instructions.
-If not, you're likely to get an error that says the object you're looking for was not found.
-Typos matter; R can't read your mind and say, "oh, they probably meant `r_rocks` when they typed `r_rock`".
-Case matters; similarly, R can't read your mind and say, "oh, they probably meant `r_rocks` when they typed `R_rocks`".
+Điều này minh họa hợp đồng ngầm giữa bạn và R: R sẽ thực hiện các phép tính tẻ nhạt cho bạn, nhưng đổi lại, bạn phải hoàn toàn chính xác trong các chỉ dẫn của mình.
+Nếu không, bạn có thể sẽ nhận được lỗi nói rằng đối tượng bạn đang tìm không được tìm thấy.
+Lỗi chính tả rất quan trọng; R không thể đọc suy nghĩ của bạn và nói, "ồ, họ có lẽ muốn nói `r_rocks` khi gõ `r_rock`".
+Chữ hoa chữ thường rất quan trọng; tương tự, R không thể đọc suy nghĩ của bạn và nói, "ồ, họ có lẽ muốn nói `r_rocks` khi gõ `R_rocks`".
 
-## Calling functions
+## Gọi hàm
 
-R has a large collection of built-in functions that are called like this:
+R có một bộ sưu tập lớn các hàm tích hợp sẵn được gọi như thế này:
 
 ```{r}
 #| eval: false
 function_name(argument1 = value1, argument2 = value2, ...)
 ```
 
-Let's try using `seq()`, which makes regular **seq**uences of numbers, and while we're at it, learn more helpful features of RStudio.
-Type `se` and hit TAB.
-A popup shows you possible completions.
-Specify `seq()` by typing more (a `q`) to disambiguate or by using ↑/↓ arrows to select.
-Notice the floating tooltip that pops up, reminding you of the function's arguments and purpose.
-If you want more help, press F1 to get all the details in the help tab in the lower right pane.
+Hãy thử sử dụng `seq()`, tạo ra các **dãy số** đều đặn, và trong khi đó, học thêm các tính năng hữu ích của RStudio.
+Gõ `se` và nhấn TAB.
+Một cửa sổ bật lên hiển thị các gợi ý hoàn thành.
+Chỉ định `seq()` bằng cách gõ thêm (chữ `q`) để phân biệt hoặc bằng cách sử dụng mũi tên ↑/↓ để chọn.
+Chú ý tooltip nổi xuất hiện, nhắc bạn về các đối số và mục đích của hàm.
+Nếu bạn muốn thêm trợ giúp, nhấn F1 để xem tất cả chi tiết trong tab trợ giúp ở bảng phải bên dưới.
 
-When you've selected the function you want, press TAB again.
-RStudio will add matching opening (`(`) and closing (`)`) parentheses for you.
-Type the name of the first argument, `from`, and set it equal to `1`.
-Then, type the name of the second argument, `to`, and set it equal to `10`.
-Finally, hit return.
+Khi bạn đã chọn hàm mong muốn, nhấn TAB lần nữa.
+RStudio sẽ thêm cặp ngoặc mở (`(`) và đóng (`)`) cho bạn.
+Gõ tên đối số đầu tiên, `from`, và đặt bằng `1`.
+Sau đó, gõ tên đối số thứ hai, `to`, và đặt bằng `10`.
+Cuối cùng, nhấn return.
 
 ```{r}
 seq(from = 1, to = 10)
 ```
 
-We often omit the names of the first several arguments in function calls, so we can rewrite this as follows:
+Chúng ta thường bỏ qua tên của các đối số đầu tiên trong lệnh gọi hàm, vì vậy chúng ta có thể viết lại như sau:
 
 ```{r}
 seq(1, 10)
 ```
 
-Type the following code and notice that RStudio provides similar assistance with the paired quotation marks:
+Gõ đoạn mã sau và chú ý rằng RStudio cung cấp hỗ trợ tương tự với cặp dấu ngoặc kép:
 
 ```{r}
 x <- "hello world"
 ```
 
-Quotation marks and parentheses must always come in a pair.
-RStudio does its best to help you, but it's still possible to mess up and end up with a mismatch.
-If this happens, R will show you the continuation character "+":
+Dấu ngoặc kép và dấu ngoặc đơn luôn phải đi theo cặp.
+RStudio cố gắng hết sức để giúp bạn, nhưng vẫn có thể mắc lỗi và kết thúc với cặp không khớp.
+Nếu điều này xảy ra, R sẽ hiển thị ký tự tiếp tục "+":
 
-```         
+```
 > x <- "hello
 +
 ```
 
-The `+` tells you that R is waiting for more input; it doesn't think you're done yet.
-Usually, this means you've forgotten either a `"` or a `)`. Either add the missing pair, or press ESCAPE to abort the expression and try again.
+Dấu `+` cho bạn biết R đang chờ thêm đầu vào; nó nghĩ bạn chưa xong.
+Thông thường, điều này có nghĩa là bạn đã quên một `"` hoặc `)`. Hãy thêm cặp còn thiếu, hoặc nhấn ESCAPE để hủy biểu thức và thử lại.
 
-Note that the environment tab in the upper right pane displays all of the objects that you've created:
+Lưu ý rằng tab môi trường ở bảng phải phía trên hiển thị tất cả các đối tượng bạn đã tạo:
 
 ```{r}
 #| echo: false
 #| fig-alt: |
-#|   Environment tab of RStudio which shows r_rocks, this_is_a_really_long_name, 
-#|   x, and y in the Global Environment.
+#|   Tab Environment của RStudio hiển thị r_rocks, this_is_a_really_long_name,
+#|   x, và y trong Global Environment.
 knitr::include_graphics("screenshots/rstudio-env.png")
 ```
 
-## Exercises
+## Bài tập
 
-1.  Why does this code not work?
+1.  Tại sao đoạn mã này không chạy được?
 
     ```{r}
     #| error: true
@@ -217,28 +217,28 @@ knitr::include_graphics("screenshots/rstudio-env.png")
     my_varıable
     ```
 
-    Look carefully!
-    (This may seem like an exercise in pointlessness, but training your brain to notice even the tiniest difference will pay off when programming.)
+    Hãy nhìn kỹ!
+    (Điều này có vẻ như là bài tập vô nghĩa, nhưng việc rèn luyện não bộ để nhận ra ngay cả sự khác biệt nhỏ nhất sẽ rất có ích khi lập trình.)
 
-2.  Tweak each of the following R commands so that they run correctly:
+2.  Chỉnh sửa từng lệnh R sau đây để chúng chạy đúng:
 
     ```{r}
     #| eval: false
     libary(todyverse)
 
-    ggplot(dTA = mpg) + 
+    ggplot(dTA = mpg) +
       geom_point(maping = aes(x = displ y = hwy)) +
       geom_smooth(method = "lm)
     ```
 
-3.  Press Option + Shift + K / Alt + Shift + K.
-    What happens?
-    How can you get to the same place using the menus?
+3.  Nhấn Option + Shift + K / Alt + Shift + K.
+    Điều gì xảy ra?
+    Làm thế nào bạn có thể đến cùng vị trí đó bằng menu?
 
-4.  Let's revisit an exercise from the @sec-ggsave.
-    Run the following lines of code.
-    Which of the two plots is saved as `mpg-plot.png`?
-    Why?
+4.  Hãy xem lại bài tập từ @sec-ggsave.
+    Chạy các dòng mã sau.
+    Biểu đồ nào trong hai biểu đồ được lưu thành `mpg-plot.png`?
+    Tại sao?
 
     ```{r}
     #| eval: false
@@ -249,7 +249,7 @@ knitr::include_graphics("screenshots/rstudio-env.png")
     ggsave(filename = "mpg-plot.png", plot = my_bar_plot)
     ```
 
-## Summary
+## Tóm tắt
 
-Now that you've learned a little more about how R code works, and some tips to help you understand your code when you come back to it in the future.
-In the next chapter, we'll continue your data science journey by teaching you about dplyr, the tidyverse package that helps you transform data, whether it's selecting important variables, filtering down to rows of interest, or computing summary statistics.
+Bây giờ bạn đã học thêm một chút về cách mã R hoạt động, và một số mẹo để giúp bạn hiểu mã khi quay lại trong tương lai.
+Trong chương tiếp theo, chúng tôi sẽ tiếp tục hành trình khoa học dữ liệu của bạn bằng cách dạy bạn về dplyr, gói tidyverse giúp bạn biến đổi dữ liệu, dù là chọn biến quan trọng, lọc các hàng quan tâm, hay tính toán thống kê tóm tắt.

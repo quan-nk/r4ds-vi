@@ -1,36 +1,36 @@
-# Workflow: code style {#sec-workflow-style}
+# Quy trình làm việc: phong cách mã {#sec-workflow-style}
 
 ```{r}
 #| echo: false
 source("_common.R")
 ```
 
-Good coding style is like correct punctuation: you can manage without it, butitsuremakesthingseasiertoread.
-Even as a very new programmer, it's a good idea to work on your code style.
-Using a consistent style makes it easier for others (including future-you!) to read your work and is particularly important if you need to get help from someone else.
-This chapter will introduce the most important points of the [tidyverse style guide](https://style.tidyverse.org), which is used throughout this book.
+Phong cách mã tốt giống như dấu câu đúng: bạncóthểxoaysởkhôngnhưngnóchắcchắnlàmviệcdễđọchơn.
+Ngay cả khi là lập trình viên rất mới, bạn nên chú ý đến phong cách mã.
+Sử dụng phong cách nhất quán giúp người khác (bao gồm bạn-trong-tương-lai!) dễ đọc công việc của bạn hơn và đặc biệt quan trọng nếu bạn cần nhờ người khác giúp đỡ.
+Chương này sẽ giới thiệu các điểm quan trọng nhất của [hướng dẫn phong cách tidyverse](https://style.tidyverse.org), được sử dụng xuyên suốt cuốn sách này.
 
-Styling your code will feel a bit tedious to start with, but if you practice it, it will soon become second nature.
-Additionally, there are some great tools to quickly restyle existing code, like the [**styler**](https://styler.r-lib.org) package by Lorenz Walthert.
-Once you've installed it with `install.packages("styler")`, an easy way to use it is via RStudio's **command palette**.
-The command palette lets you use any built-in RStudio command and many addins provided by packages.
-Open the palette by pressing Cmd/Ctrl + Shift + P, then type "styler" to see all the shortcuts offered by styler.
-@fig-styler shows the results.
+Việc tạo phong cách cho mã sẽ hơi tẻ nhạt lúc đầu, nhưng nếu bạn thực hành, nó sẽ sớm trở thành bản năng.
+Ngoài ra, có một số công cụ tuyệt vời để nhanh chóng định dạng lại mã hiện có, như gói [**styler**](https://styler.r-lib.org) của Lorenz Walthert.
+Sau khi cài đặt bằng `install.packages("styler")`, cách dễ nhất để sử dụng là qua **bảng lệnh** (command palette) của RStudio.
+Bảng lệnh cho phép bạn sử dụng bất kỳ lệnh RStudio tích hợp nào và nhiều tiện ích bổ sung từ các gói.
+Mở bảng lệnh bằng cách nhấn Cmd/Ctrl + Shift + P, sau đó gõ "styler" để xem tất cả phím tắt do styler cung cấp.
+@fig-styler hiển thị kết quả.
 
 ```{r}
 #| label: fig-styler
 #| echo: false
 #| out-width: null
-#| fig-cap: | 
-#|   RStudio's command palette makes it easy to access every RStudio command
-#|   using only the keyboard.
+#| fig-cap: |
+#|   Bảng lệnh của RStudio giúp dễ dàng truy cập mọi lệnh RStudio
+#|   chỉ bằng bàn phím.
 #| fig-alt: |
-#|   A screenshot showing the command palette after typing "styler", showing
-#|   the four styling tools provided by the package.
+#|   Ảnh chụp màn hình hiển thị bảng lệnh sau khi gõ "styler", cho thấy
+#|   bốn công cụ định dạng được cung cấp bởi gói.
 knitr::include_graphics("screenshots/rstudio-palette.png")
 ```
 
-We'll use the tidyverse and nycflights13 packages for code examples in this chapter.
+Chúng ta sẽ sử dụng các gói tidyverse và nycflights13 cho các ví dụ mã trong chương này.
 
 ```{r}
 #| label: setup
@@ -39,62 +39,62 @@ library(tidyverse)
 library(nycflights13)
 ```
 
-## Names
+## Tên
 
-We talked briefly about names in @sec-whats-in-a-name.
-Remember that variable names (those created by `<-` and those created by `mutate()`) should use only lowercase letters, numbers, and `_`.
-Use `_` to separate words within a name.
+Chúng ta đã nói ngắn gọn về tên trong @sec-whats-in-a-name.
+Hãy nhớ rằng tên biến (những tên được tạo bởi `<-` và những tên được tạo bởi `mutate()`) chỉ nên sử dụng chữ cái viết thường, số, và `_`.
+Sử dụng `_` để phân cách các từ trong tên.
 
 ```{r}
 #| eval: false
-# Strive for:
+# Nên:
 short_flights <- flights |> filter(air_time < 60)
 
-# Avoid:
+# Tránh:
 SHORTFLIGHTS <- flights |> filter(air_time < 60)
 ```
 
-As a general rule of thumb, it's better to prefer long, descriptive names that are easy to understand rather than concise names that are fast to type.
-Short names save relatively little time when writing code (especially since autocomplete will help you finish typing them), but it can be time-consuming when you come back to old code and are forced to puzzle out a cryptic abbreviation.
+Theo nguyên tắc chung, tốt hơn là nên ưu tiên tên dài, mang tính mô tả và dễ hiểu hơn là tên ngắn gọn, gõ nhanh.
+Tên ngắn tiết kiệm tương đối ít thời gian khi viết mã (đặc biệt vì tự động hoàn thành sẽ giúp bạn gõ xong), nhưng có thể tốn thời gian khi bạn quay lại mã cũ và phải giải mã một chữ viết tắt khó hiểu.
 
-If you have a bunch of names for related things, do your best to be consistent.
-It's easy for inconsistencies to arise when you forget a previous convention, so don't feel bad if you have to go back and rename things.
-In general, if you have a bunch of variables that are a variation on a theme, you're better off giving them a common prefix rather than a common suffix because autocomplete works best on the start of a variable.
+Nếu bạn có nhiều tên cho những thứ liên quan, hãy cố gắng nhất quán.
+Sự không nhất quán dễ phát sinh khi bạn quên quy ước trước đó, nên đừng cảm thấy tệ nếu phải quay lại và đổi tên.
+Nói chung, nếu bạn có nhiều biến là biến thể của một chủ đề, tốt hơn là đặt tiền tố chung thay vì hậu tố chung vì tự động hoàn thành hoạt động tốt nhất ở đầu biến.
 
-## Spaces
+## Dấu cách
 
-Put spaces on either side of mathematical operators apart from `^` (i.e. `+`, `-`, `==`, `<`, ...), and around the assignment operator (`<-`).
+Đặt dấu cách ở cả hai bên toán tử toán học ngoại trừ `^` (tức là `+`, `-`, `==`, `<`, ...), và xung quanh toán tử gán (`<-`).
 
 ```{r}
 #| eval: false
-# Strive for
+# Nên
 z <- (a + b)^2 / d
 
-# Avoid
+# Tránh
 z<-( a + b ) ^ 2/d
 ```
 
-Don't put spaces inside or outside parentheses for regular function calls.
-Always put a space after a comma, just like in standard English.
+Không đặt dấu cách bên trong hoặc bên ngoài dấu ngoặc cho lệnh gọi hàm thông thường.
+Luôn đặt dấu cách sau dấu phẩy, giống như trong tiếng Việt chuẩn.
 
 ```{r}
 #| eval: false
-# Strive for
+# Nên
 mean(x, na.rm = TRUE)
 
-# Avoid
+# Tránh
 mean (x ,na.rm=TRUE)
 ```
 
-It's OK to add extra spaces if it improves alignment.
-For example, if you're creating multiple variables in `mutate()`, you might want to add spaces so that all the `=` line up.[^workflow-style-1]
-This makes it easier to skim the code.
+Có thể thêm dấu cách phụ nếu nó cải thiện sự căn chỉnh.
+Ví dụ, nếu bạn đang tạo nhiều biến trong `mutate()`, bạn có thể muốn thêm dấu cách để tất cả các `=` thẳng hàng.[^workflow-style-1]
+Điều này giúp dễ dàng lướt qua mã hơn.
 
-[^workflow-style-1]: Since `dep_time` is in `HMM` or `HHMM` format, we use integer division (`%/%`) to get hour and remainder (also known as modulo, `%%`) to get minute.
+[^workflow-style-1]: Vì `dep_time` ở định dạng `HMM` hoặc `HHMM`, chúng ta sử dụng phép chia nguyên (`%/%`) để lấy giờ và phần dư (còn gọi là modulo, `%%`) để lấy phút.
 
 ```{r}
 #| eval: false
-flights |> 
+flights |>
   mutate(
     speed      = distance / air_time,
     dep_hour   = dep_time %/% 100,
@@ -102,165 +102,165 @@ flights |>
   )
 ```
 
-## Pipes {#sec-pipes}
+## Pipe {#sec-pipes}
 
-`|>` should always have a space before it and should typically be the last thing on a line.
-This makes it easier to add new steps, rearrange existing steps, modify elements within a step, and get a 10,000 ft view by skimming the verbs on the left-hand side.
+`|>` luôn phải có dấu cách phía trước và thường nên là thứ cuối cùng trên dòng.
+Điều này giúp dễ dàng thêm bước mới, sắp xếp lại các bước hiện có, sửa đổi phần tử trong một bước, và có cái nhìn tổng quan bằng cách lướt qua các động từ ở phía bên trái.
 
 ```{r}
 #| eval: false
-# Strive for 
-flights |>  
-  filter(!is.na(arr_delay), !is.na(tailnum)) |> 
+# Nên
+flights |>
+  filter(!is.na(arr_delay), !is.na(tailnum)) |>
   count(dest)
 
-# Avoid
+# Tránh
 flights|>filter(!is.na(arr_delay), !is.na(tailnum))|>count(dest)
 ```
 
-If the function you're piping into has named arguments (like `mutate()` or `summarize()`), put each argument on a new line.
-If the function doesn't have named arguments (like `select()` or `filter()`), keep everything on one line unless it doesn't fit, in which case you should put each argument on its own line.
+Nếu hàm bạn đang dẫn vào có đối số được đặt tên (như `mutate()` hoặc `summarize()`), đặt mỗi đối số trên một dòng mới.
+Nếu hàm không có đối số được đặt tên (như `select()` hoặc `filter()`), giữ mọi thứ trên một dòng trừ khi không vừa, trong trường hợp đó bạn nên đặt mỗi đối số trên dòng riêng.
 
 ```{r}
 #| eval: false
-# Strive for
-flights |>  
-  group_by(tailnum) |> 
+# Nên
+flights |>
+  group_by(tailnum) |>
   summarize(
     delay = mean(arr_delay, na.rm = TRUE),
     n = n()
   )
 
-# Avoid
+# Tránh
 flights |>
   group_by(
     tailnum
-  ) |> 
+  ) |>
   summarize(delay = mean(arr_delay, na.rm = TRUE), n = n())
 ```
 
-After the first step of the pipeline, indent each line by two spaces.
-RStudio will automatically put the spaces in for you after a line break following a `|>` .
-If you're putting each argument on its own line, indent by an extra two spaces.
-Make sure `)` is on its own line, and un-indented to match the horizontal position of the function name.
+Sau bước đầu tiên của pipeline, thụt lề mỗi dòng hai dấu cách.
+RStudio sẽ tự động đặt dấu cách cho bạn sau khi xuống dòng theo sau `|>`.
+Nếu bạn đặt mỗi đối số trên dòng riêng, thụt lề thêm hai dấu cách nữa.
+Đảm bảo `)` nằm trên dòng riêng, và không thụt lề để khớp với vị trí ngang của tên hàm.
 
 ```{r}
 #| eval: false
-# Strive for 
-flights |>  
-  group_by(tailnum) |> 
+# Nên
+flights |>
+  group_by(tailnum) |>
   summarize(
     delay = mean(arr_delay, na.rm = TRUE),
     n = n()
   )
 
-# Avoid
+# Tránh
 flights|>
-  group_by(tailnum) |> 
+  group_by(tailnum) |>
   summarize(
-             delay = mean(arr_delay, na.rm = TRUE), 
+             delay = mean(arr_delay, na.rm = TRUE),
              n = n()
            )
 
-# Avoid
+# Tránh
 flights|>
-  group_by(tailnum) |> 
+  group_by(tailnum) |>
   summarize(
-  delay = mean(arr_delay, na.rm = TRUE), 
+  delay = mean(arr_delay, na.rm = TRUE),
   n = n()
   )
 ```
 
-It's OK to shirk some of these rules if your pipeline fits easily on one line.
-But in our collective experience, it's common for short snippets to grow longer, so you'll usually save time in the long run by starting with all the vertical space you need.
+Có thể bỏ qua một số quy tắc này nếu pipeline của bạn vừa gọn trên một dòng.
+Nhưng theo kinh nghiệm chung của chúng tôi, các đoạn mã ngắn thường phát triển dài hơn, vì vậy bạn thường sẽ tiết kiệm thời gian lâu dài bằng cách bắt đầu với tất cả không gian dọc bạn cần.
 
 ```{r}
 #| eval: false
-# This fits compactly on one line
+# Đoạn này vừa gọn trên một dòng
 df |> mutate(y = x + 1)
 
-# While this takes up 4x as many lines, it's easily extended to 
-# more variables and more steps in the future
-df |> 
+# Trong khi đoạn này chiếm gấp 4 lần số dòng, nó dễ dàng
+# mở rộng cho thêm biến và bước trong tương lai
+df |>
   mutate(
     y = x + 1
   )
 ```
 
-Finally, be wary of writing very long pipes, say longer than 10-15 lines.
-Try to break them up into smaller sub-tasks, giving each task an informative name.
-The names will help cue the reader into what's happening and make it easier to check that intermediate results are as expected.
-Whenever you can give something an informative name, you should give it an informative name, for example when you fundamentally change the structure of the data, e.g., after pivoting or summarizing.
-Don't expect to get it right the first time!
-This means breaking up long pipelines if there are intermediate states that can get good names.
+Cuối cùng, hãy cẩn thận với việc viết pipe rất dài, ví dụ dài hơn 10-15 dòng.
+Hãy cố gắng chia chúng thành các tác vụ con nhỏ hơn, đặt cho mỗi tác vụ một tên mang tính mô tả.
+Tên sẽ giúp người đọc hiểu điều gì đang xảy ra và dễ dàng kiểm tra rằng kết quả trung gian đúng như mong đợi.
+Bất cứ khi nào bạn có thể đặt cho thứ gì đó một tên mang tính mô tả, bạn nên làm, ví dụ khi bạn thay đổi cơ bản cấu trúc dữ liệu, ví dụ sau khi xoay (pivot) hoặc tóm tắt (summarize).
+Đừng mong đợi làm đúng ngay lần đầu!
+Điều này có nghĩa là chia nhỏ pipeline dài nếu có các trạng thái trung gian có thể đặt tên tốt.
 
 ## ggplot2
 
-The same basic rules that apply to the pipe also apply to ggplot2; just treat `+` the same way as `|>`.
+Các quy tắc cơ bản áp dụng cho pipe cũng áp dụng cho ggplot2; chỉ cần xử lý `+` giống như `|>`.
 
 ```{r}
 #| eval: false
-flights |> 
-  group_by(month) |> 
+flights |>
+  group_by(month) |>
   summarize(
     delay = mean(arr_delay, na.rm = TRUE)
-  ) |> 
+  ) |>
   ggplot(aes(x = month, y = delay)) +
-  geom_point() + 
+  geom_point() +
   geom_line()
 ```
 
-Again, if you can't fit all of the arguments to a function on to a single line, put each argument on its own line:
+Một lần nữa, nếu bạn không thể đặt tất cả đối số của hàm trên một dòng, đặt mỗi đối số trên dòng riêng:
 
 ```{r}
 #| eval: false
-flights |> 
-  group_by(dest) |> 
+flights |>
+  group_by(dest) |>
   summarize(
     distance = mean(distance),
     speed = mean(distance / air_time, na.rm = TRUE)
-  ) |> 
+  ) |>
   ggplot(aes(x = distance, y = speed)) +
   geom_smooth(
     method = "loess",
     span = 0.5,
-    se = FALSE, 
-    color = "white", 
+    se = FALSE,
+    color = "white",
     linewidth = 4
   ) +
   geom_point()
 ```
 
-Watch for the transition from `|>` to `+`.
-We wish this transition wasn't necessary, but unfortunately, ggplot2 was written before the pipe was discovered.
+Chú ý sự chuyển đổi từ `|>` sang `+`.
+Chúng tôi ước sự chuyển đổi này không cần thiết, nhưng thật không may, ggplot2 được viết trước khi pipe được phát hiện.
 
-## Sectioning comments
+## Chú thích phân đoạn
 
-As your scripts get longer, you can use **sectioning** comments to break up your file into manageable pieces:
+Khi tập lệnh của bạn dài hơn, bạn có thể sử dụng chú thích **phân đoạn** để chia file thành các phần dễ quản lý:
 
 ```{r}
 #| eval: false
-# Load data --------------------------------------
+# Tải dữ liệu --------------------------------------
 
-# Plot data --------------------------------------
+# Vẽ biểu đồ dữ liệu --------------------------------------
 ```
 
-RStudio provides a keyboard shortcut to create these headers (Cmd/Ctrl + Shift + R), and will display them in the code navigation drop-down at the bottom-left of the editor, as shown in @fig-rstudio-sections.
+RStudio cung cấp phím tắt để tạo các tiêu đề này (Cmd/Ctrl + Shift + R), và sẽ hiển thị chúng trong menu điều hướng mã thả xuống ở góc dưới bên trái trình soạn thảo, như trong @fig-rstudio-sections.
 
 ```{r}
 #| label: fig-rstudio-sections
 #| echo: false
 #| out-width: null
-#| fig-cap: | 
-#|   After adding sectioning comments to your script, you can
-#|   easily navigate to them using the code navigation tool in the
-#|   bottom-left of the script editor.
+#| fig-cap: |
+#|   Sau khi thêm chú thích phân đoạn vào tập lệnh, bạn có thể
+#|   dễ dàng điều hướng đến chúng bằng công cụ điều hướng mã ở
+#|   góc dưới bên trái trình soạn thảo.
 knitr::include_graphics("screenshots/rstudio-nav.png")
 ```
 
-## Exercises
+## Bài tập
 
-1.  Restyle the following pipelines following the guidelines above.
+1.  Định dạng lại các pipeline sau theo hướng dẫn ở trên.
 
     ```{r}
     #| eval: false
@@ -272,14 +272,14 @@ knitr::include_graphics("screenshots/rstudio-nav.png")
     arr_delay,na.rm=TRUE),cancelled=sum(is.na(arr_delay)),n=n())|>filter(n>10)
     ```
 
-## Summary
+## Tóm tắt
 
-In this chapter, you've learned the most important principles of code style.
-These may feel like a set of arbitrary rules to start with (because they are!) but over time, as you write more code, and share code with more people, you'll see how important a consistent style is.
-And don't forget about the styler package: it's a great way to quickly improve the quality of poorly styled code.
+Trong chương này, bạn đã học các nguyên tắc quan trọng nhất về phong cách mã.
+Ban đầu chúng có thể cảm thấy như một tập hợp các quy tắc tùy ý (vì đúng là vậy!) nhưng theo thời gian, khi bạn viết nhiều mã hơn và chia sẻ mã với nhiều người hơn, bạn sẽ thấy phong cách nhất quán quan trọng như thế nào.
+Và đừng quên gói styler: đây là cách tuyệt vời để nhanh chóng cải thiện chất lượng mã có phong cách kém.
 
-In the next chapter, we switch back to data science tools, learning about tidy data.
-Tidy data is a consistent way of organizing your data frames that is used throughout the tidyverse.
-This consistency makes your life easier because once you have tidy data, it just works with the vast majority of tidyverse functions.
-Of course, life is never easy, and most datasets you encounter in the wild will not already be tidy.
-So we'll also teach you how to use the tidyr package to tidy your untidy data.
+Trong chương tiếp theo, chúng ta quay lại các công cụ khoa học dữ liệu, học về dữ liệu gọn gàng (tidy data).
+Dữ liệu gọn gàng là cách nhất quán để tổ chức khung dữ liệu được sử dụng xuyên suốt tidyverse.
+Sự nhất quán này giúp cuộc sống của bạn dễ dàng hơn vì khi bạn có dữ liệu gọn gàng, nó hoạt động với phần lớn các hàm tidyverse.
+Tất nhiên, cuộc sống không bao giờ dễ dàng, và hầu hết các tập dữ liệu bạn gặp ngoài thực tế sẽ chưa gọn gàng sẵn.
+Vì vậy chúng tôi cũng sẽ dạy bạn cách sử dụng gói tidyr để sắp xếp dữ liệu chưa gọn gàng.

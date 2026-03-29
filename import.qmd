@@ -1,39 +1,40 @@
-# Import {#sec-import .unnumbered}
+# Nhập dữ liệu {#sec-import .unnumbered}
 
 ```{r}
 #| echo: false
 source("_common.R")
 ```
 
-In this part of the book, you'll learn how to import a wider range of data into R, as well as how to get it into a form useful for analysis.
-Sometimes this is just a matter of calling a function from the appropriate data import package.
-But in more complex cases it might require both tidying and transformation in order to get to the tidy rectangle that you'd prefer to work with.
+Trong phần này của cuốn sách, bạn sẽ học cách nhập nhiều loại dữ liệu hơn vào R, cũng như cách đưa chúng vào dạng hữu ích cho phân tích.
+Đôi khi đây chỉ là việc gọi một hàm từ gói nhập dữ liệu phù hợp.
+Nhưng trong các trường hợp phức tạp hơn, có thể cần cả sắp xếp và biến đổi để có được bảng dữ liệu gọn gàng mà bạn muốn làm việc.
 
 ```{r}
 #| label: fig-ds-import
 #| echo: false
 #| fig-cap: |
-#|   Data import is the beginning of the data science process; without
-#|   data you can't do data science!
+#|   Nhập dữ liệu là bước đầu tiên của quy trình khoa học dữ liệu; không có
+#|   dữ liệu thì bạn không thể thực hiện khoa học dữ liệu!
 #| fig-alt: |
-#|   Our data science model with import highlighted in blue.
+#|   Mô hình khoa học dữ liệu của chúng tôi với phần nhập dữ liệu được
+#|   đánh dấu bằng màu xanh.
 #| out.width: NULL
 knitr::include_graphics("diagrams/data-science/import.png", dpi = 270)
 ```
 
-In this part of the book you'll learn how to access data stored in the following ways:
+Trong phần này của cuốn sách bạn sẽ học cách truy cập dữ liệu được lưu trữ theo các cách sau:
 
--   In @sec-import-spreadsheets, you'll learn how to import data from Excel spreadsheets and Google Sheets.
+-   Trong @sec-import-spreadsheets, bạn sẽ học cách nhập dữ liệu từ bảng tính Excel và Google Sheets.
 
--   In @sec-import-databases, you'll learn about getting data out of a database and into R (and you'll also learn a little about how to get data out of R and into a database).
+-   Trong @sec-import-databases, bạn sẽ học về cách lấy dữ liệu từ cơ sở dữ liệu vào R (và bạn cũng sẽ học một chút về cách đưa dữ liệu từ R vào cơ sở dữ liệu).
 
--   In @sec-arrow, you'll learn about Arrow, a powerful tool for working with out-of-memory data, particularly when it's stored in the parquet format.
+-   Trong @sec-arrow, bạn sẽ học về Arrow, một công cụ mạnh mẽ để làm việc với dữ liệu ngoài bộ nhớ, đặc biệt khi nó được lưu trữ ở định dạng parquet.
 
--   In @sec-rectangling, you'll learn how to work with hierarchical data, including the deeply nested lists produced by data stored in the JSON format.
+-   Trong @sec-rectangling, bạn sẽ học cách làm việc với dữ liệu phân cấp, bao gồm các danh sách lồng nhau sâu được tạo ra bởi dữ liệu lưu trữ ở định dạng JSON.
 
--   In @sec-scraping, you'll learn web "scraping", the art and science of extracting data from web pages.
+-   Trong @sec-scraping, bạn sẽ học về "scraping" web, nghệ thuật và khoa học của việc trích xuất dữ liệu từ các trang web.
 
-There are two important tidyverse packages that we don't discuss here: haven and xml2.
-If you're working with data from SPSS, Stata, and SAS files, check out the **haven** package, <https://haven.tidyverse.org>.
-If you're working with XML data, check out the **xml2** package, <https://xml2.r-lib.org>.
-Otherwise, you'll need to do some research to figure out which package you'll need to use; google is your friend here 😃.
+Có hai gói tidyverse quan trọng mà chúng tôi không thảo luận ở đây: haven và xml2.
+Nếu bạn đang làm việc với dữ liệu từ file SPSS, Stata, và SAS, hãy xem gói **haven**, <https://haven.tidyverse.org>.
+Nếu bạn đang làm việc với dữ liệu XML, hãy xem gói **xml2**, <https://xml2.r-lib.org>.
+Nếu không, bạn sẽ cần nghiên cứu thêm để tìm ra gói nào bạn cần sử dụng; google là người bạn tốt nhất của bạn ở đây 😃.
