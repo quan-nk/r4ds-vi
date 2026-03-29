@@ -1,30 +1,30 @@
-# Data tidying {#sec-data-tidy}
+# Chỉnh trang dữ liệu {#sec-data-tidy}
 
 ```{r}
 #| echo: false
 source("_common.R")
 ```
 
-## Introduction
+## Giới thiệu
 
-> "Happy families are all alike; every unhappy family is unhappy in its own way."\
+> "Mọi gia đình hạnh phúc đều giống nhau; mỗi gia đình bất hạnh thì bất hạnh theo cách riêng của mình."\
 > --- Leo Tolstoy
 
-> "Tidy datasets are all alike, but every messy dataset is messy in its own way."\
+> "Mọi tập dữ liệu gọn gàng đều giống nhau, nhưng mỗi tập dữ liệu lộn xộn thì lộn xộn theo cách riêng của nó."\
 > --- Hadley Wickham
 
-In this chapter, you will learn a consistent way to organize your data in R using a system called **tidy data**.
-Getting your data into this format requires some work up front, but that work pays off in the long term.
-Once you have tidy data and the tidy tools provided by packages in the tidyverse, you will spend much less time munging data from one representation to another, allowing you to spend more time on the data questions you care about.
+Trong chương này, bạn sẽ học một cách nhất quán để tổ chức dữ liệu trong R bằng một hệ thống gọi là **dữ liệu gọn gàng (tidy data)**.
+Việc đưa dữ liệu vào định dạng này đòi hỏi một chút công sức ban đầu, nhưng công sức đó sẽ được đền đáp về lâu dài.
+Khi bạn đã có dữ liệu gọn gàng và các công cụ gọn gàng được cung cấp bởi các gói trong tidyverse, bạn sẽ tốn ít thời gian hơn nhiều để chuyển đổi dữ liệu từ dạng biểu diễn này sang dạng khác, cho phép bạn dành nhiều thời gian hơn cho những câu hỏi về dữ liệu mà bạn quan tâm.
 
-In this chapter, you'll first learn the definition of tidy data and see it applied to a simple toy dataset.
-Then we'll dive into the primary tool you'll use for tidying data: pivoting.
-Pivoting allows you to change the form of your data without changing any of the values.
+Trong chương này, đầu tiên bạn sẽ tìm hiểu định nghĩa của dữ liệu gọn gàng và xem nó được áp dụng vào một tập dữ liệu đồ chơi đơn giản.
+Sau đó chúng ta sẽ đi sâu vào công cụ chính mà bạn sẽ sử dụng để chỉnh trang dữ liệu: xoay (pivoting).
+Xoay cho phép bạn thay đổi hình dạng dữ liệu mà không thay đổi bất kỳ giá trị nào.
 
-### Prerequisites
+### Điều kiện tiên quyết
 
-In this chapter, we'll focus on tidyr, a package that provides a bunch of tools to help tidy up your messy datasets.
-tidyr is a member of the core tidyverse.
+Trong chương này, chúng ta sẽ tập trung vào tidyr, một gói cung cấp hàng loạt công cụ giúp chỉnh trang các tập dữ liệu lộn xộn.
+tidyr là một thành viên của tidyverse cốt lõi.
 
 ```{r}
 #| label: setup
@@ -32,13 +32,13 @@ tidyr is a member of the core tidyverse.
 library(tidyverse)
 ```
 
-From this chapter on, we'll suppress the loading message from `library(tidyverse)`.
+Từ chương này trở đi, chúng ta sẽ ẩn thông báo tải từ `library(tidyverse)`.
 
-## Tidy data {#sec-tidy-data}
+## Dữ liệu gọn gàng {#sec-tidy-data}
 
-You can represent the same underlying data in multiple ways.
-The example below shows the same data organized in three different ways.
-Each dataset shows the same values of four variables: *country*, *year*, *population*, and number of documented *cases* of TB (tuberculosis), but each dataset organizes the values in a different way.
+Bạn có thể biểu diễn cùng một dữ liệu cơ bản theo nhiều cách khác nhau.
+Ví dụ bên dưới cho thấy cùng một dữ liệu được tổ chức theo ba cách khác nhau.
+Mỗi tập dữ liệu đều hiển thị cùng các giá trị (value) của bốn biến (variable): *country*, *year*, *population*, và số ca *cases* được ghi nhận của TB (bệnh lao), nhưng mỗi tập dữ liệu tổ chức các giá trị theo cách khác nhau.
 
 ```{r}
 table1
@@ -48,209 +48,209 @@ table2
 table3
 ```
 
-These are all representations of the same underlying data, but they are not equally easy to use.
-One of them, `table1`, will be much easier to work with inside the tidyverse because it's **tidy**.
+Đây đều là các cách biểu diễn cùng một dữ liệu cơ bản, nhưng chúng không dễ sử dụng như nhau.
+Một trong số đó, `table1`, sẽ dễ làm việc hơn nhiều trong tidyverse vì nó là **dữ liệu gọn gàng**.
 
-There are three interrelated rules that make a dataset tidy:
+Có ba quy tắc liên quan với nhau tạo nên một tập dữ liệu gọn gàng:
 
-1.  Each variable is a column; each column is a variable.
-2.  Each observation is a row; each row is an observation.
-3.  Each value is a cell; each cell is a single value.
+1.  Mỗi biến là một cột (column); mỗi cột là một biến.
+2.  Mỗi quan sát (observation) là một hàng (row); mỗi hàng là một quan sát.
+3.  Mỗi giá trị là một ô; mỗi ô là một giá trị duy nhất.
 
-@fig-tidy-structure shows the rules visually.
+@fig-tidy-structure minh họa các quy tắc này một cách trực quan.
 
 ```{r}
 #| label: fig-tidy-structure
 #| echo: false
-#| fig-cap: | 
-#|   The following three rules make a dataset tidy: variables are columns,
-#|   observations are rows, and values are cells.
-#| fig-alt: | 
-#|   Three panels, each representing a tidy data frame. The first panel
-#|   shows that each variable is a column. The second panel shows that each
-#|   observation is a row. The third panel shows that each value is
-#|   a cell.
+#| fig-cap: |
+#|   Ba quy tắc sau đây tạo nên một tập dữ liệu gọn gàng: các biến là các cột,
+#|   các quan sát là các hàng, và các giá trị là các ô.
+#| fig-alt: |
+#|   Ba bảng, mỗi bảng đại diện cho một khung dữ liệu gọn gàng. Bảng đầu tiên
+#|   cho thấy mỗi biến là một cột. Bảng thứ hai cho thấy mỗi
+#|   quan sát là một hàng. Bảng thứ ba cho thấy mỗi giá trị là
+#|   một ô.
 knitr::include_graphics("images/tidy-1.png", dpi = 270)
 ```
 
-Why ensure that your data is tidy?
-There are two main advantages:
+Tại sao phải đảm bảo dữ liệu của bạn là gọn gàng?
+Có hai lợi thế chính:
 
-1.  There's a general advantage to picking one consistent way of storing data.
-    If you have a consistent data structure, it's easier to learn the tools that work with it because they have an underlying uniformity.
+1.  Có một lợi thế chung khi chọn một cách nhất quán để lưu trữ dữ liệu.
+    Nếu bạn có một cấu trúc dữ liệu nhất quán, sẽ dễ dàng hơn để học các công cụ làm việc với nó vì chúng có sự đồng nhất cơ bản.
 
-2.  There's a specific advantage to placing variables in columns because it allows R's vectorized nature to shine.
-    As you learned in @sec-mutate and @sec-summarize, most built-in R functions work with vectors of values.
-    That makes transforming tidy data feel particularly natural.
+2.  Có một lợi thế cụ thể khi đặt các biến vào các cột vì nó cho phép bản chất vector hóa của R tỏa sáng.
+    Như bạn đã học trong @sec-mutate và @sec-summarize, hầu hết các hàm tích hợp sẵn trong R đều hoạt động với các vector giá trị.
+    Điều đó làm cho việc biến đổi dữ liệu gọn gàng trở nên đặc biệt tự nhiên.
 
-dplyr, ggplot2, and all the other packages in the tidyverse are designed to work with tidy data.
-Here are a few small examples showing how you might work with `table1`.
+dplyr, ggplot2, và tất cả các gói khác trong tidyverse đều được thiết kế để hoạt động với dữ liệu gọn gàng.
+Dưới đây là một vài ví dụ nhỏ cho thấy cách bạn có thể làm việc với `table1`.
 
 ```{r}
 #| fig-width: 5
 #| fig-alt: |
-#|   This figure shows the number of cases in 1999 and 2000 for 
-#|   Afghanistan, Brazil, and China, with year on the x-axis and number 
-#|   of cases on the y-axis. Each point on the plot represents the number 
-#|   of cases in a given country in a given year. The points for each
-#|   country are differentiated from others by color and shape and connected
-#|   with a line, resulting in three, non-parallel, non-intersecting lines.
-#|   The numbers of cases in China are highest for both 1999 and 2000, with
-#|   values above 200,000 for both years. The number of cases in Brazil is
-#|   approximately 40,000 in 1999 and approximately 75,000 in 2000. The
-#|   numbers of cases in Afghanistan are lowest for both 1999 and 2000, with
-#|   values that appear to be very close to 0 on this scale.
-# Compute rate per 10,000
+#|   Hình này cho thấy số ca bệnh trong năm 1999 và 2000 cho
+#|   Afghanistan, Brazil, và Trung Quốc, với năm trên trục x và số
+#|   ca bệnh trên trục y. Mỗi điểm trên biểu đồ đại diện cho số
+#|   ca bệnh ở một quốc gia nhất định trong một năm nhất định. Các điểm cho mỗi
+#|   quốc gia được phân biệt với các quốc gia khác bằng màu sắc và hình dạng và được nối
+#|   bằng một đường, tạo ra ba đường không song song, không giao nhau.
+#|   Số ca bệnh ở Trung Quốc cao nhất cho cả năm 1999 và 2000, với
+#|   giá trị trên 200.000 cho cả hai năm. Số ca bệnh ở Brazil là
+#|   khoảng 40.000 vào năm 1999 và khoảng 75.000 vào năm 2000.
+#|   Số ca bệnh ở Afghanistan thấp nhất cho cả năm 1999 và 2000, với
+#|   giá trị dường như rất gần 0 trên thang đo này.
+# Tính tỷ lệ trên 10.000 người
 table1 |>
   mutate(rate = cases / population * 10000)
 
-# Compute total cases per year
-table1 |> 
-  group_by(year) |> 
+# Tính tổng số ca bệnh theo năm
+table1 |>
+  group_by(year) |>
   summarize(total_cases = sum(cases))
 
-# Visualize changes over time
+# Trực quan hóa sự thay đổi theo thời gian
 ggplot(table1, aes(x = year, y = cases)) +
   geom_line(aes(group = country), color = "grey50") +
   geom_point(aes(color = country, shape = country)) +
-  scale_x_continuous(breaks = c(1999, 2000)) # x-axis breaks at 1999 and 2000
+  scale_x_continuous(breaks = c(1999, 2000)) # Các mốc trục x tại 1999 và 2000
 ```
 
-### Exercises
+### Bài tập
 
-1.  For each of the sample tables, describe what each observation and each column represents.
+1.  Đối với mỗi bảng mẫu, hãy mô tả mỗi quan sát và mỗi cột đại diện cho điều gì.
 
-2.  Sketch out the process you'd use to calculate the `rate` for `table2` and `table3`.
-    You will need to perform four operations:
+2.  Hãy phác thảo quy trình bạn sẽ sử dụng để tính `rate` cho `table2` và `table3`.
+    Bạn sẽ cần thực hiện bốn thao tác:
 
-    a.  Extract the number of TB cases per country per year.
-    b.  Extract the matching population per country per year.
-    c.  Divide cases by population, and multiply by 10000.
-    d.  Store back in the appropriate place.
+    a.  Trích xuất số ca TB theo từng quốc gia theo từng năm.
+    b.  Trích xuất dân số tương ứng theo từng quốc gia theo từng năm.
+    c.  Chia số ca bệnh cho dân số, và nhân với 10000.
+    d.  Lưu lại vào vị trí thích hợp.
 
-    You haven't yet learned all the functions you'd need to actually perform these operations, but you should still be able to think through the transformations you'd need.
+    Bạn chưa học tất cả các hàm cần thiết để thực sự thực hiện các thao tác này, nhưng bạn vẫn nên có thể suy nghĩ về các phép biến đổi mà bạn cần.
 
-## Lengthening data {#sec-pivoting}
+## Kéo dài dữ liệu {#sec-pivoting}
 
-The principles of tidy data might seem so obvious that you wonder if you'll ever encounter a dataset that isn't tidy.
-Unfortunately, however, most real data is untidy.
-There are two main reasons:
+Các nguyên tắc của dữ liệu gọn gàng có thể hiển nhiên đến mức bạn tự hỏi liệu bạn có bao giờ gặp một tập dữ liệu không gọn gàng không.
+Tuy nhiên, thật không may, hầu hết dữ liệu thực tế đều không gọn gàng.
+Có hai lý do chính:
 
-1.  Data is often organized to facilitate some goal other than analysis.
-    For example, it's common for data to be structured to make data entry, not analysis, easy.
+1.  Dữ liệu thường được tổ chức để phục vụ một mục tiêu khác ngoài phân tích.
+    Ví dụ, việc cấu trúc dữ liệu để giúp nhập liệu dễ dàng, chứ không phải phân tích, là rất phổ biến.
 
-2.  Most people aren't familiar with the principles of tidy data, and it's hard to derive them yourself unless you spend a lot of time working with data.
+2.  Hầu hết mọi người không quen thuộc với các nguyên tắc của dữ liệu gọn gàng, và rất khó để tự suy ra chúng trừ khi bạn dành nhiều thời gian làm việc với dữ liệu.
 
-This means that most real analyses will require at least a little tidying.
-You'll begin by figuring out what the underlying variables and observations are.
-Sometimes this is easy; other times you'll need to consult with the people who originally generated the data.
-Next, you'll **pivot** your data into a tidy form, with variables in the columns and observations in the rows.
+Điều này có nghĩa là hầu hết các phân tích thực tế sẽ đòi hỏi ít nhất một chút chỉnh trang.
+Bạn sẽ bắt đầu bằng cách tìm hiểu các biến và quan sát cơ bản là gì.
+Đôi khi điều này dễ dàng; lúc khác bạn sẽ cần tham khảo ý kiến của những người tạo ra dữ liệu ban đầu.
+Tiếp theo, bạn sẽ **xoay** dữ liệu thành dạng gọn gàng, với các biến trong các cột và các quan sát trong các hàng.
 
-tidyr provides two functions for pivoting data: `pivot_longer()` and `pivot_wider()`.
-We'll first start with `pivot_longer()` because it's the most common case.
-Let's dive into some examples.
+tidyr cung cấp hai hàm để xoay dữ liệu: `pivot_longer()` và `pivot_wider()`.
+Chúng ta sẽ bắt đầu với `pivot_longer()` trước vì đây là trường hợp phổ biến nhất.
+Hãy cùng đi vào một số ví dụ.
 
-### Data in column names {#sec-billboard}
+### Dữ liệu trong tên cột {#sec-billboard}
 
-The `billboard` dataset records the billboard rank of songs in the year 2000:
+Tập dữ liệu `billboard` ghi lại thứ hạng billboard của các bài hát trong năm 2000:
 
 ```{r}
 billboard
 ```
 
-In this dataset, each observation is a song.
-The first three columns (`artist`, `track` and `date.entered`) are variables that describe the song.
-Then we have 76 columns (`wk1`-`wk76`) that describe the rank of the song in each week[^data-tidy-1].
-Here, the column names are one variable (the `week`) and the cell values are another (the `rank`).
+Trong tập dữ liệu này, mỗi quan sát là một bài hát.
+Ba cột đầu tiên (`artist`, `track` và `date.entered`) là các biến mô tả bài hát.
+Sau đó chúng ta có 76 cột (`wk1`-`wk76`) mô tả thứ hạng của bài hát trong mỗi tuần[^data-tidy-1].
+Ở đây, tên cột là một biến (`week` - tuần) và các giá trị trong ô là một biến khác (`rank` - thứ hạng).
 
-[^data-tidy-1]: The song will be included as long as it was in the top 100 at some point in 2000, and is tracked for up to 72 weeks after it appears.
+[^data-tidy-1]: Bài hát sẽ được đưa vào danh sách miễn là nó nằm trong top 100 tại một thời điểm nào đó trong năm 2000, và được theo dõi trong tối đa 72 tuần sau khi xuất hiện.
 
-To tidy this data, we'll use `pivot_longer()`:
+Để chỉnh trang dữ liệu này, chúng ta sẽ sử dụng `pivot_longer()`:
 
 ```{r, R.options=list(pillar.print_min = 10)}
-billboard |> 
+billboard |>
   pivot_longer(
-    cols = starts_with("wk"), 
-    names_to = "week", 
+    cols = starts_with("wk"),
+    names_to = "week",
     values_to = "rank"
   )
 ```
 
-After the data, there are three key arguments:
+Sau dữ liệu, có ba đối số quan trọng:
 
--   `cols` specifies which columns need to be pivoted, i.e. which columns aren't variables. This argument uses the same syntax as `select()` so here we could use `!c(artist, track, date.entered)` or `starts_with("wk")`.
--   `names_to` names the variable stored in the column names, we named that variable `week`.
--   `values_to` names the variable stored in the cell values, we named that variable `rank`.
+-   `cols` chỉ định cột nào cần được xoay, tức là cột nào không phải là biến. Đối số này sử dụng cùng cú pháp với `select()` nên ở đây chúng ta có thể dùng `!c(artist, track, date.entered)` hoặc `starts_with("wk")`.
+-   `names_to` đặt tên cho biến được lưu trong tên cột, chúng ta đặt tên biến đó là `week`.
+-   `values_to` đặt tên cho biến được lưu trong giá trị của các ô, chúng ta đặt tên biến đó là `rank`.
 
-Note that in the code `"week"` and `"rank"` are quoted because those are new variables we're creating, they don't yet exist in the data when we run the `pivot_longer()` call.
+Lưu ý rằng trong mã, `"week"` và `"rank"` được đặt trong dấu ngoặc kép vì đó là các biến mới chúng ta đang tạo, chúng chưa tồn tại trong dữ liệu khi chúng ta chạy lệnh `pivot_longer()`.
 
-Now let's turn our attention to the resulting, longer data frame.
-What happens if a song is in the top 100 for less than 76 weeks?
-Take 2 Pac's "Baby Don't Cry", for example.
-The above output suggests that it was only in the top 100 for 7 weeks, and all the remaining weeks are filled in with missing values.
-These `NA`s don't really represent unknown observations; they were forced to exist by the structure of the dataset[^data-tidy-2], so we can ask `pivot_longer()` to get rid of them by setting `values_drop_na = TRUE`:
+Bây giờ hãy chú ý đến khung dữ liệu (data frame) kết quả, dài hơn.
+Điều gì xảy ra nếu một bài hát nằm trong top 100 ít hơn 76 tuần?
+Lấy ví dụ bài "Baby Don't Cry" của 2 Pac.
+Kết quả ở trên cho thấy nó chỉ nằm trong top 100 trong 7 tuần, và tất cả các tuần còn lại được điền bằng giá trị khuyết (missing value).
+Những giá trị `NA` này không thực sự đại diện cho các quan sát chưa biết; chúng bị buộc phải tồn tại bởi cấu trúc của tập dữ liệu[^data-tidy-2], nên chúng ta có thể yêu cầu `pivot_longer()` loại bỏ chúng bằng cách đặt `values_drop_na = TRUE`:
 
-[^data-tidy-2]: We'll come back to this idea in @sec-missing-values.
+[^data-tidy-2]: Chúng ta sẽ quay lại ý tưởng này trong @sec-missing-values.
 
 ```{r}
-billboard |> 
+billboard |>
   pivot_longer(
-    cols = starts_with("wk"), 
-    names_to = "week", 
+    cols = starts_with("wk"),
+    names_to = "week",
     values_to = "rank",
     values_drop_na = TRUE
   )
 ```
 
-The number of rows is now much lower, indicating that many rows with `NA`s were dropped.
+Số hàng bây giờ ít hơn nhiều, cho thấy nhiều hàng chứa `NA` đã bị loại bỏ.
 
-You might also wonder what happens if a song is in the top 100 for more than 76 weeks?
-We can't tell from this data, but you might guess that additional columns `wk77`, `wk78`, ...
-would be added to the dataset.
+Bạn cũng có thể tự hỏi điều gì xảy ra nếu một bài hát nằm trong top 100 hơn 76 tuần?
+Chúng ta không thể biết từ dữ liệu này, nhưng bạn có thể đoán rằng các cột bổ sung `wk77`, `wk78`, ...
+sẽ được thêm vào tập dữ liệu.
 
-This data is now tidy, but we could make future computation a bit easier by converting values of `week` from character strings to numbers using `mutate()` and `readr::parse_number()`.
-`parse_number()` is a handy function that will extract the first number from a string, ignoring all other text.
+Dữ liệu này giờ đã gọn gàng, nhưng chúng ta có thể làm cho việc tính toán trong tương lai dễ dàng hơn một chút bằng cách chuyển đổi các giá trị của `week` từ chuỗi ký tự sang số bằng `mutate()` và `readr::parse_number()`.
+`parse_number()` là một hàm tiện lợi sẽ trích xuất số đầu tiên từ một chuỗi, bỏ qua tất cả các văn bản khác.
 
 ```{r}
-billboard_longer <- billboard |> 
+billboard_longer <- billboard |>
   pivot_longer(
-    cols = starts_with("wk"), 
-    names_to = "week", 
+    cols = starts_with("wk"),
+    names_to = "week",
     values_to = "rank",
     values_drop_na = TRUE
-  ) |> 
+  ) |>
   mutate(
     week = parse_number(week)
   )
 billboard_longer
 ```
 
-Now that we have all the week numbers in one variable and all the rank values in another, we're in a good position to visualize how song ranks vary over time.
-The code is shown below and the result is in @fig-billboard-ranks.
-We can see that very few songs stay in the top 100 for more than 20 weeks.
+Bây giờ tất cả các số tuần đều nằm trong một biến và tất cả các giá trị thứ hạng nằm trong một biến khác, chúng ta đang ở vị trí tốt để trực quan hóa cách thứ hạng bài hát thay đổi theo thời gian.
+Mã được hiển thị bên dưới và kết quả nằm trong @fig-billboard-ranks.
+Chúng ta có thể thấy rằng rất ít bài hát nằm trong top 100 hơn 20 tuần.
 
 ```{r}
 #| label: fig-billboard-ranks
 #| fig-cap: |
-#|   A line plot showing how the rank of a song changes over time.
+#|   Biểu đồ đường cho thấy thứ hạng của một bài hát thay đổi theo thời gian như thế nào.
 #| fig-alt: |
-#|   A line plot with week on the x-axis and rank on the y-axis, where
-#|   each line represents a song. Most songs appear to start at a high rank,
-#|   rapidly accelerate to a low rank, and then decay again. There are
-#|   surprisingly few tracks in the region when week is >20 and rank is
+#|   Biểu đồ đường với tuần trên trục x và thứ hạng trên trục y, trong đó
+#|   mỗi đường đại diện cho một bài hát. Hầu hết các bài hát dường như bắt đầu ở thứ hạng cao,
+#|   nhanh chóng tăng tốc đến thứ hạng thấp, và sau đó giảm dần trở lại. Có
+#|   ít bài hát đáng ngạc nhiên trong vùng khi tuần >20 và thứ hạng
 #|   >50.
-billboard_longer |> 
-  ggplot(aes(x = week, y = rank, group = track)) + 
-  geom_line(alpha = 0.25) + 
+billboard_longer |>
+  ggplot(aes(x = week, y = rank, group = track)) +
+  geom_line(alpha = 0.25) +
   scale_y_reverse()
 ```
 
-### How does pivoting work?
+### Xoay hoạt động như thế nào?
 
-Now that you've seen how we can use pivoting to reshape our data, let's take a little time to gain some intuition about what pivoting does to the data.
-Let's start with a very simple dataset to make it easier to see what's happening.
-Suppose we have three patients with `id`s A, B, and C, and we take two blood pressure measurements on each patient.
-We'll create the data with `tribble()`, a handy function for constructing small tibbles by hand:
+Bây giờ bạn đã thấy cách chúng ta có thể sử dụng xoay để định hình lại dữ liệu, hãy dành chút thời gian để hiểu trực giác về những gì xoay làm với dữ liệu.
+Hãy bắt đầu với một tập dữ liệu rất đơn giản để dễ thấy điều gì đang xảy ra.
+Giả sử chúng ta có ba bệnh nhân với `id` là A, B, và C, và chúng ta thực hiện hai lần đo huyết áp trên mỗi bệnh nhân.
+Chúng ta sẽ tạo dữ liệu với `tribble()`, một hàm tiện lợi để xây dựng các tibble nhỏ bằng tay:
 
 ```{r}
 df <- tribble(
@@ -261,11 +261,11 @@ df <- tribble(
 )
 ```
 
-We want our new dataset to have three variables: `id` (already exists), `measurement` (the column names), and `value` (the cell values).
-To achieve this, we need to pivot `df` longer:
+Chúng ta muốn tập dữ liệu mới có ba biến: `id` (đã tồn tại), `measurement` (tên cột), và `value` (giá trị trong ô).
+Để đạt được điều này, chúng ta cần xoay `df` dài hơn:
 
 ```{r}
-df |> 
+df |>
   pivot_longer(
     cols = bp1:bp2,
     names_to = "measurement",
@@ -273,195 +273,194 @@ df |>
   )
 ```
 
-How does the reshaping work?
-It's easier to see if we think about it column by column.
-As shown in @fig-pivot-variables, the values in a column that was already a variable in the original dataset (`id`) need to be repeated, once for each column that is pivoted.
+Việc định hình lại hoạt động như thế nào?
+Sẽ dễ hơn nếu chúng ta nghĩ theo từng cột.
+Như minh họa trong @fig-pivot-variables, các giá trị trong một cột đã là biến trong tập dữ liệu ban đầu (`id`) cần được lặp lại, một lần cho mỗi cột được xoay.
 
 ```{r}
 #| label: fig-pivot-variables
 #| echo: false
-#| fig-cap: | 
-#|   Columns that are already variables need to be repeated, once for
-#|   each column that is pivoted.
-#| fig-alt: | 
-#|   A diagram showing how `pivot_longer()` transforms a simple
-#|   dataset, using color to highlight how the values in the `id` column
-#|   ("A", "B", "C") are each repeated twice in the output because there are
-#|   two columns being pivoted ("bp1" and "bp2").
+#| fig-cap: |
+#|   Các cột đã là biến cần được lặp lại, một lần cho
+#|   mỗi cột được xoay.
+#| fig-alt: |
+#|   Sơ đồ cho thấy cách `pivot_longer()` biến đổi một tập
+#|   dữ liệu đơn giản, sử dụng màu sắc để làm nổi bật cách các giá trị trong cột `id`
+#|   ("A", "B", "C") được lặp lại hai lần trong kết quả đầu ra vì có
+#|   hai cột đang được xoay ("bp1" và "bp2").
 knitr::include_graphics("diagrams/tidy-data/variables.png", dpi = 270)
 ```
 
-The column names become values in a new variable, whose name is defined by `names_to`, as shown in @fig-pivot-names.
-They need to be repeated once for each row in the original dataset.
+Tên cột trở thành giá trị trong một biến mới, có tên được xác định bởi `names_to`, như minh họa trong @fig-pivot-names.
+Chúng cần được lặp lại một lần cho mỗi hàng trong tập dữ liệu ban đầu.
 
 ```{r}
 #| label: fig-pivot-names
 #| echo: false
 #| fig-cap: |
-#|   The column names of pivoted columns become values in a new column. The 
-#|   values need to be repeated once for each row of the original dataset.
-#| fig-alt: | 
-#|   A diagram showing how `pivot_longer()` transforms a simple
-#|   data set, using color to highlight how column names ("bp1" and 
-#|   "bp2") become the values in a new `measurement` column. They are repeated
-#|   three times because there were three rows in the input.
+#|   Tên cột của các cột được xoay trở thành giá trị trong một cột mới. Các
+#|   giá trị cần được lặp lại một lần cho mỗi hàng của tập dữ liệu ban đầu.
+#| fig-alt: |
+#|   Sơ đồ cho thấy cách `pivot_longer()` biến đổi một tập
+#|   dữ liệu đơn giản, sử dụng màu sắc để làm nổi bật cách tên cột ("bp1" và
+#|   "bp2") trở thành giá trị trong cột `measurement` mới. Chúng được lặp lại
+#|   ba lần vì có ba hàng trong dữ liệu đầu vào.
 knitr::include_graphics("diagrams/tidy-data/column-names.png", dpi = 270)
 ```
 
-The cell values also become values in a new variable, with a name defined by `values_to`.
-They are unwound row by row.
-@fig-pivot-values illustrates the process.
+Các giá trị trong ô cũng trở thành giá trị trong một biến mới, với tên được xác định bởi `values_to`.
+Chúng được tháo ra theo từng hàng.
+@fig-pivot-values minh họa quá trình này.
 
 ```{r}
 #| label: fig-pivot-values
 #| echo: false
 #| fig-cap: |
-#|   The number of values is preserved (not repeated), but unwound
-#|   row-by-row.
-#| fig-alt: | 
-#|   A diagram showing how `pivot_longer()` transforms data,
-#|   using color to highlight how the cell values (blood pressure measurements)
-#|   become the values in a new `value` column. They are unwound row-by-row,
-#|   so the original rows (100,120), then (140,115), then (120,125), become 
-#|   a column running from 100 to 125.
+#|   Số lượng giá trị được bảo toàn (không lặp lại), nhưng được tháo ra
+#|   theo từng hàng.
+#| fig-alt: |
+#|   Sơ đồ cho thấy cách `pivot_longer()` biến đổi dữ liệu,
+#|   sử dụng màu sắc để làm nổi bật cách các giá trị trong ô (các phép đo huyết áp)
+#|   trở thành giá trị trong cột `value` mới. Chúng được tháo ra theo từng hàng,
+#|   nên các hàng ban đầu (100,120), rồi (140,115), rồi (120,125), trở thành
+#|   một cột chạy từ 100 đến 125.
 knitr::include_graphics("diagrams/tidy-data/cell-values.png", dpi = 270)
 ```
 
-### Many variables in column names
+### Nhiều biến trong tên cột
 
-A more challenging situation occurs when you have multiple pieces of information crammed into the column names, and you would like to store these in separate new variables.
-For example, take the `who2` dataset, the source of `table1` and friends that you saw above:
+Một tình huống thách thức hơn xảy ra khi bạn có nhiều mẩu thông tin được nhồi nhét vào tên cột, và bạn muốn lưu trữ chúng trong các biến mới riêng biệt.
+Ví dụ, hãy xem tập dữ liệu `who2`, nguồn của `table1` và các bảng bạn bè mà bạn đã thấy ở trên:
 
 ```{r}
 who2
 ```
 
-This dataset, collected by the World Health Organisation, records information about tuberculosis diagnoses.
-There are two columns that are already variables and are easy to interpret: `country` and `year`.
-They are followed by 56 columns like `sp_m_014`, `ep_m_4554`, and `rel_m_3544`.
-If you stare at these columns for long enough, you'll notice there's a pattern.
-Each column name is made up of three pieces separated by `_`.
-The first piece, `sp`/`rel`/`ep`, describes the method used for the diagnosis, the second piece, `m`/`f` is the `gender` (coded as a binary variable in this dataset), and the third piece, `014`/`1524`/`2534`/`3544`/`4554`/`5564`/`65` is the `age` range (`014` represents 0-14, for example).
+Tập dữ liệu này, được thu thập bởi Tổ chức Y tế Thế giới, ghi nhận thông tin về chẩn đoán bệnh lao.
+Có hai cột đã là biến và dễ diễn giải: `country` và `year`.
+Theo sau là 56 cột như `sp_m_014`, `ep_m_4554`, và `rel_m_3544`.
+Nếu bạn nhìn chăm chú vào các cột này đủ lâu, bạn sẽ nhận ra có một mô hình.
+Mỗi tên cột được tạo thành từ ba phần được phân tách bởi `_`.
+Phần đầu tiên, `sp`/`rel`/`ep`, mô tả phương pháp chẩn đoán, phần thứ hai, `m`/`f` là `gender` (giới tính, được mã hóa như biến nhị phân trong tập dữ liệu này), và phần thứ ba, `014`/`1524`/`2534`/`3544`/`4554`/`5564`/`65` là nhóm `age` (tuổi) (`014` đại diện cho 0-14, ví dụ).
 
-So in this case we have six pieces of information recorded in `who2`: the country and the year (already columns); the method of diagnosis, the gender category, and the age range category (contained in the other column names); and the count of patients in that category (cell values).
-To organize these six pieces of information in six separate columns, we use `pivot_longer()` with a vector of column names for `names_to` and instructors for splitting the original variable names into pieces for `names_sep` as well as a column name for `values_to`:
+Vậy trong trường hợp này chúng ta có sáu mẩu thông tin được ghi nhận trong `who2`: quốc gia và năm (đã là các cột); phương pháp chẩn đoán, nhóm giới tính, và nhóm tuổi (chứa trong tên các cột khác); và số bệnh nhân trong nhóm đó (giá trị trong ô).
+Để tổ chức sáu mẩu thông tin này thành sáu cột riêng biệt, chúng ta sử dụng `pivot_longer()` với một vector tên cột cho `names_to` và hướng dẫn tách tên biến ban đầu thành các phần cho `names_sep` cũng như tên cột cho `values_to`:
 
 ```{r}
-who2 |> 
+who2 |>
   pivot_longer(
     cols = !(country:year),
-    names_to = c("diagnosis", "gender", "age"), 
+    names_to = c("diagnosis", "gender", "age"),
     names_sep = "_",
     values_to = "count"
   )
 ```
 
-An alternative to `names_sep` is `names_pattern`, which you can use to extract variables from more complicated naming scenarios, once you've learned about regular expressions in @sec-regular-expressions.
+Một phương án thay thế cho `names_sep` là `names_pattern`, mà bạn có thể sử dụng để trích xuất các biến từ các tình huống đặt tên phức tạp hơn, khi bạn đã học về biểu thức chính quy trong @sec-regular-expressions.
 
-Conceptually, this is only a minor variation on the simpler case you've already seen.
-@fig-pivot-multiple-names shows the basic idea: now, instead of the column names pivoting into a single column, they pivot into multiple columns.
-You can imagine this happening in two steps (first pivoting and then separating) but under the hood it happens in a single step because that's faster.
+Về mặt khái niệm, đây chỉ là một biến thể nhỏ so với trường hợp đơn giản hơn mà bạn đã thấy.
+@fig-pivot-multiple-names minh họa ý tưởng cơ bản: bây giờ, thay vì tên cột được xoay vào một cột duy nhất, chúng được xoay vào nhiều cột.
+Bạn có thể tưởng tượng điều này xảy ra trong hai bước (xoay trước rồi tách sau) nhưng bên trong nó diễn ra trong một bước duy nhất vì như vậy nhanh hơn.
 
 ```{r}
 #| label: fig-pivot-multiple-names
 #| echo: false
 #| fig-cap: |
-#|   Pivoting columns with multiple pieces of information in the names 
-#|   means that each column name now fills in values in multiple output 
-#|   columns.
+#|   Xoay các cột có nhiều mẩu thông tin trong tên có nghĩa là mỗi
+#|   tên cột bây giờ điền giá trị vào nhiều cột đầu ra.
 #| fig-alt: |
-#|   A diagram that uses color to illustrate how supplying `names_sep` 
-#|   and multiple `names_to` creates multiple variables in the output.
-#|   The input has variable names "x_1" and "y_2" which are split up
-#|   by "_" to create name and number columns in the output. This is
-#|   is similar case with a single `names_to`, but what would have been a
-#|   single output variable is now separated into multiple variables.
+#|   Sơ đồ sử dụng màu sắc để minh họa cách cung cấp `names_sep`
+#|   và nhiều `names_to` tạo ra nhiều biến trong đầu ra.
+#|   Đầu vào có tên biến "x_1" và "y_2" được tách
+#|   bởi "_" để tạo các cột name và number trong đầu ra. Điều này
+#|   tương tự trường hợp với một `names_to` duy nhất, nhưng thứ mà lẽ ra là
+#|   một biến đầu ra duy nhất giờ được tách thành nhiều biến.
 knitr::include_graphics("diagrams/tidy-data/multiple-names.png", dpi = 270)
 ```
 
-### Data and variable names in the column headers
+### Dữ liệu và tên biến trong tiêu đề cột
 
-The next step up in complexity is when the column names include a mix of variable values and variable names.
-For example, take the `household` dataset:
+Bước phức tạp tiếp theo là khi tên cột bao gồm sự kết hợp giữa giá trị biến và tên biến.
+Ví dụ, hãy xem tập dữ liệu `household`:
 
 ```{r}
 household
 ```
 
-This dataset contains data about five families, with the names and dates of birth of up to two children.
-The new challenge in this dataset is that the column names contain the names of two variables (`dob`, `name`) and the values of another (`child`, with values 1 or 2).
-To solve this problem we again need to supply a vector to `names_to` but this time we use the special `".value"` sentinel; this isn't the name of a variable but a unique value that tells `pivot_longer()` to do something different.
-This overrides the usual `values_to` argument to use the first component of the pivoted column name as a variable name in the output.
+Tập dữ liệu này chứa dữ liệu về năm gia đình, với tên và ngày sinh của tối đa hai con.
+Thách thức mới trong tập dữ liệu này là tên cột chứa tên của hai biến (`dob`, `name`) và giá trị của một biến khác (`child`, với giá trị 1 hoặc 2).
+Để giải quyết vấn đề này, chúng ta lại cần cung cấp một vector cho `names_to` nhưng lần này chúng ta sử dụng giá trị đặc biệt `".value"`; đây không phải tên của một biến mà là một giá trị đặc biệt cho `pivot_longer()` biết phải làm điều gì đó khác.
+Điều này ghi đè đối số `values_to` thông thường để sử dụng thành phần đầu tiên của tên cột được xoay làm tên biến trong đầu ra.
 
 ```{r}
-household |> 
+household |>
   pivot_longer(
-    cols = !family, 
-    names_to = c(".value", "child"), 
-    names_sep = "_", 
+    cols = !family,
+    names_to = c(".value", "child"),
+    names_sep = "_",
     values_drop_na = TRUE
   )
 ```
 
-We again use `values_drop_na = TRUE`, since the shape of the input forces the creation of explicit missing variables (e.g., for families with only one child).
+Chúng ta lại sử dụng `values_drop_na = TRUE`, vì hình dạng của dữ liệu đầu vào buộc phải tạo ra các giá trị khuyết rõ ràng (ví dụ, cho các gia đình chỉ có một con).
 
-@fig-pivot-names-and-values illustrates the basic idea with a simpler example.
-When you use `".value"` in `names_to`, the column names in the input contribute to both values and variable names in the output.
+@fig-pivot-names-and-values minh họa ý tưởng cơ bản với một ví dụ đơn giản hơn.
+Khi bạn sử dụng `".value"` trong `names_to`, tên cột trong đầu vào đóng góp vào cả giá trị và tên biến trong đầu ra.
 
 ```{r}
 #| label: fig-pivot-names-and-values
 #| echo: false
 #| fig-cap: |
-#|   Pivoting with `names_to = c(".value", "num")` splits the column names
-#|   into two components: the first part determines the output column
-#|   name (`x` or `y`), and the second part determines the value of the
-#|   `num` column.
+#|   Xoay với `names_to = c(".value", "num")` tách tên cột
+#|   thành hai thành phần: phần đầu tiên xác định tên cột
+#|   đầu ra (`x` hoặc `y`), và phần thứ hai xác định giá trị của
+#|   cột `num`.
 #| fig-alt: |
-#|   A diagram that uses color to illustrate how the special ".value"
-#|   sentinel works. The input has names "x_1", "x_2", "y_1", and "y_2",
-#|   and we want to use the first component ("x", "y") as a variable name
-#|   and the second ("1", "2") as the value for a new "num" column.
+#|   Sơ đồ sử dụng màu sắc để minh họa cách giá trị đặc biệt ".value"
+#|   hoạt động. Đầu vào có tên "x_1", "x_2", "y_1", và "y_2",
+#|   và chúng ta muốn sử dụng thành phần đầu tiên ("x", "y") làm tên biến
+#|   và thành phần thứ hai ("1", "2") làm giá trị cho cột "num" mới.
 knitr::include_graphics("diagrams/tidy-data/names-and-values.png", dpi = 270)
 ```
 
-## Widening data
+## Mở rộng dữ liệu
 
-So far we've used `pivot_longer()` to solve the common class of problems where values have ended up in column names.
-Next we'll pivot (HA HA) to `pivot_wider()`, which makes datasets **wider** by increasing columns and reducing rows and helps when one observation is spread across multiple rows.
-This seems to arise less commonly in the wild, but it does seem to crop up a lot when dealing with governmental data.
+Cho đến nay chúng ta đã sử dụng `pivot_longer()` để giải quyết lớp vấn đề phổ biến khi các giá trị nằm trong tên cột.
+Tiếp theo chúng ta sẽ xoay (HA HA) sang `pivot_wider()`, hàm làm tập dữ liệu **rộng hơn** bằng cách tăng số cột và giảm số hàng và hữu ích khi một quan sát bị trải rộng trên nhiều hàng.
+Điều này dường như ít phổ biến hơn ngoài thực tế, nhưng nó có vẻ xuất hiện nhiều khi làm việc với dữ liệu chính phủ.
 
-We'll start by looking at `cms_patient_experience`, a dataset from the Centers of Medicare and Medicaid services that collects data about patient experiences:
+Chúng ta sẽ bắt đầu bằng cách xem `cms_patient_experience`, một tập dữ liệu từ Trung tâm Dịch vụ Medicare và Medicaid thu thập dữ liệu về trải nghiệm bệnh nhân:
 
 ```{r}
 cms_patient_experience
 ```
 
-The core unit being studied is an organization, but each organization is spread across six rows, with one row for each measurement taken in the survey organization.
-We can see the complete set of values for `measure_cd` and `measure_title` by using `distinct()`:
+Đơn vị cốt lõi được nghiên cứu là một tổ chức, nhưng mỗi tổ chức được trải rộng trên sáu hàng, với một hàng cho mỗi phép đo được thực hiện trong khảo sát tổ chức.
+Chúng ta có thể xem tập đầy đủ các giá trị của `measure_cd` và `measure_title` bằng cách sử dụng `distinct()`:
 
 ```{r}
-cms_patient_experience |> 
+cms_patient_experience |>
   distinct(measure_cd, measure_title)
 ```
 
-Neither of these columns will make particularly great variable names: `measure_cd` doesn't hint at the meaning of the variable and `measure_title` is a long sentence containing spaces.
-We'll use `measure_cd` as the source for our new column names for now, but in a real analysis you might want to create your own variable names that are both short and meaningful.
+Không cột nào trong hai cột này sẽ tạo ra tên biến đặc biệt tốt: `measure_cd` không gợi ý về ý nghĩa của biến và `measure_title` là một câu dài chứa khoảng trắng.
+Chúng ta sẽ sử dụng `measure_cd` làm nguồn cho tên cột mới của chúng ta hiện tại, nhưng trong một phân tích thực tế bạn có thể muốn tạo tên biến riêng vừa ngắn vừa có ý nghĩa.
 
-`pivot_wider()` has the opposite interface to `pivot_longer()`: instead of choosing new column names, we need to provide the existing columns that define the values (`values_from`) and the column name (`names_from`):
+`pivot_wider()` có giao diện ngược lại với `pivot_longer()`: thay vì chọn tên cột mới, chúng ta cần cung cấp các cột hiện có xác định giá trị (`values_from`) và tên cột (`names_from`):
 
 ```{r}
-cms_patient_experience |> 
+cms_patient_experience |>
   pivot_wider(
     names_from = measure_cd,
     values_from = prf_rate
   )
 ```
 
-The output doesn't look quite right; we still seem to have multiple rows for each organization.
-That's because, we also need to tell `pivot_wider()` which column or columns have values that uniquely identify each row; in this case those are the variables starting with `"org"`:
+Kết quả đầu ra trông không hoàn toàn đúng; chúng ta vẫn dường như có nhiều hàng cho mỗi tổ chức.
+Đó là vì chúng ta cũng cần cho `pivot_wider()` biết cột hoặc các cột nào có giá trị xác định duy nhất mỗi hàng; trong trường hợp này đó là các biến bắt đầu bằng `"org"`:
 
 ```{r}
-cms_patient_experience |> 
+cms_patient_experience |>
   pivot_wider(
     id_cols = starts_with("org"),
     names_from = measure_cd,
@@ -469,81 +468,25 @@ cms_patient_experience |>
   )
 ```
 
-This gives us the output that we're looking for.
+Điều này cho chúng ta kết quả đầu ra mà chúng ta mong muốn.
 
-### How does `pivot_wider()` work?
+### `pivot_wider()` hoạt động như thế nào?
 
-To understand how `pivot_wider()` works, let's again start with a very simple dataset.
-This time we have two patients with `id`s A and B, we have three blood pressure measurements on patient A and two on patient B:
+Để hiểu cách `pivot_wider()` hoạt động, hãy bắt đầu lại với một tập dữ liệu rất đơn giản.
+Lần này chúng ta có hai bệnh nhân với `id` là A và B, chúng ta có ba lần đo huyết áp trên bệnh nhân A và hai trên bệnh nhân B:
 
 ```{r}
 df <- tribble(
   ~id, ~measurement, ~value,
   "A",        "bp1",    100,
   "B",        "bp1",    140,
-  "B",        "bp2",    115, 
+  "B",        "bp2",    115,
   "A",        "bp2",    120,
   "A",        "bp3",    105
 )
 ```
 
-We'll take the values from the `value` column and the names from the `measurement` column:
-
-```{r}
-df |> 
-  pivot_wider(
-    names_from = measurement,
-    values_from = value
-  )
-```
-
-To begin the process `pivot_wider()` needs to first figure out what will go in the rows and columns.
-The new column names will be the unique values of `measurement`.
-
-```{r}
-df |> 
-  distinct(measurement) |> 
-  pull()
-```
-
-By default, the rows in the output are determined by all the variables that aren't going into the new names or values.
-These are called the `id_cols`.
-Here there is only one column, but in general there can be any number.
-
-```{r}
-df |> 
-  select(!measurement & !value) |> 
-  distinct()
-```
-
-`pivot_wider()` then combines these results to generate an empty data frame:
-
-```{r}
-df |> 
-  select(!measurement & !value) |> 
-  distinct() |> 
-  mutate(x = NA, y = NA, z = NA)
-```
-
-It then fills in all the missing values using the data in the input.
-In this case, not every cell in the output has a corresponding value in the input as there's no third blood pressure measurement for patient B, so that cell remains missing.
-We'll come back to this idea that `pivot_wider()` can "make" missing values in @sec-missing-values.
-
-You might also wonder what happens if there are multiple rows in the input that correspond to one cell in the output.
-The example below has two rows that correspond to `id` "A" and `measurement` "bp1":
-
-```{r}
-df <- tribble(
-  ~id, ~measurement, ~value,
-  "A",        "bp1",    100,
-  "A",        "bp1",    102,
-  "A",        "bp2",    120,
-  "B",        "bp1",    140, 
-  "B",        "bp2",    115
-)
-```
-
-If we attempt to pivot this we get an output that contains list-columns, which you'll learn more about in @sec-rectangling:
+Chúng ta sẽ lấy giá trị từ cột `value` và tên từ cột `measurement`:
 
 ```{r}
 df |>
@@ -553,30 +496,86 @@ df |>
   )
 ```
 
-Since you don't know how to work with this sort of data yet, you'll want to follow the hint in the warning to figure out where the problem is:
+Để bắt đầu quá trình, `pivot_wider()` cần tìm ra trước cái gì sẽ nằm trong các hàng và cột.
+Tên cột mới sẽ là các giá trị duy nhất của `measurement`.
 
 ```{r}
-df |> 
-  group_by(id, measurement) |> 
-  summarize(n = n(), .groups = "drop") |> 
+df |>
+  distinct(measurement) |>
+  pull()
+```
+
+Theo mặc định, các hàng trong đầu ra được xác định bởi tất cả các biến không đi vào tên hoặc giá trị mới.
+Chúng được gọi là `id_cols`.
+Ở đây chỉ có một cột, nhưng nói chung có thể có bất kỳ số lượng nào.
+
+```{r}
+df |>
+  select(!measurement & !value) |>
+  distinct()
+```
+
+`pivot_wider()` sau đó kết hợp các kết quả này để tạo ra một khung dữ liệu rỗng:
+
+```{r}
+df |>
+  select(!measurement & !value) |>
+  distinct() |>
+  mutate(x = NA, y = NA, z = NA)
+```
+
+Sau đó nó điền tất cả các giá trị khuyết bằng dữ liệu trong đầu vào.
+Trong trường hợp này, không phải mọi ô trong đầu ra đều có giá trị tương ứng trong đầu vào vì không có lần đo huyết áp thứ ba cho bệnh nhân B, nên ô đó vẫn là khuyết.
+Chúng ta sẽ quay lại ý tưởng rằng `pivot_wider()` có thể "tạo ra" giá trị khuyết trong @sec-missing-values.
+
+Bạn cũng có thể tự hỏi điều gì xảy ra nếu có nhiều hàng trong đầu vào tương ứng với một ô trong đầu ra.
+Ví dụ bên dưới có hai hàng tương ứng với `id` "A" và `measurement` "bp1":
+
+```{r}
+df <- tribble(
+  ~id, ~measurement, ~value,
+  "A",        "bp1",    100,
+  "A",        "bp1",    102,
+  "A",        "bp2",    120,
+  "B",        "bp1",    140,
+  "B",        "bp2",    115
+)
+```
+
+Nếu chúng ta cố gắng xoay dữ liệu này, chúng ta nhận được đầu ra chứa các cột danh sách (list-columns), mà bạn sẽ tìm hiểu thêm trong @sec-rectangling:
+
+```{r}
+df |>
+  pivot_wider(
+    names_from = measurement,
+    values_from = value
+  )
+```
+
+Vì bạn chưa biết cách làm việc với loại dữ liệu này, bạn sẽ muốn làm theo gợi ý trong cảnh báo để tìm ra vấn đề ở đâu:
+
+```{r}
+df |>
+  group_by(id, measurement) |>
+  summarize(n = n(), .groups = "drop") |>
   filter(n > 1)
 ```
 
-It's then up to you to figure out what's gone wrong with your data and either repair the underlying damage or use your grouping and summarizing skills to ensure that each combination of row and column values only has a single row.
+Sau đó tùy bạn tìm ra điều gì đã sai với dữ liệu và sửa chữa lỗi cơ bản hoặc sử dụng kỹ năng nhóm và tổng hợp của bạn để đảm bảo rằng mỗi tổ hợp giá trị hàng và cột chỉ có một hàng duy nhất.
 
-## Summary
+## Tóm tắt
 
-In this chapter you learned about tidy data: data that has variables in columns and observations in rows.
-Tidy data makes working in the tidyverse easier, because it's a consistent structure understood by most functions, the main challenge is transforming the data from whatever structure you receive it in to a tidy format.
-To that end, you learned about `pivot_longer()` and `pivot_wider()` which allow you to tidy up many untidy datasets.
-The examples we presented here are a selection of those from `vignette("pivot", package = "tidyr")`, so if you encounter a problem that this chapter doesn't help you with, that vignette is a good place to try next.
+Trong chương này bạn đã học về dữ liệu gọn gàng: dữ liệu có các biến trong các cột và các quan sát trong các hàng.
+Dữ liệu gọn gàng giúp làm việc trong tidyverse dễ dàng hơn, vì nó là một cấu trúc nhất quán được hiểu bởi hầu hết các hàm, thách thức chính là biến đổi dữ liệu từ bất kỳ cấu trúc nào bạn nhận được thành định dạng gọn gàng.
+Để đạt được mục đích đó, bạn đã học về `pivot_longer()` và `pivot_wider()` cho phép bạn chỉnh trang nhiều tập dữ liệu không gọn gàng.
+Các ví dụ chúng ta trình bày ở đây là một phần chọn lọc từ `vignette("pivot", package = "tidyr")`, vì vậy nếu bạn gặp một vấn đề mà chương này không giúp được, vignette đó là nơi tốt để thử tiếp theo.
 
-Another challenge is that, for a given dataset, it can be impossible to label the longer or the wider version as the "tidy" one.
-This is partly a reflection of our definition of tidy data, where we said tidy data has one variable in each column, but we didn't actually define what a variable is (and it's surprisingly hard to do so).
-It's totally fine to be pragmatic and to say a variable is whatever makes your analysis easiest.
-So if you're stuck figuring out how to do some computation, consider switching up the organisation of your data; don't be afraid to untidy, transform, and re-tidy as needed!
+Một thách thức khác là, đối với một tập dữ liệu cho trước, có thể không xác định được phiên bản dài hơn hay rộng hơn là phiên bản "gọn gàng".
+Điều này một phần phản ánh định nghĩa của chúng ta về dữ liệu gọn gàng, khi chúng ta nói dữ liệu gọn gàng có một biến trong mỗi cột, nhưng thực ra chúng ta chưa định nghĩa biến là gì (và điều này khó một cách đáng ngạc nhiên).
+Hoàn toàn ổn khi thực dụng và nói rằng một biến là bất cứ thứ gì giúp phân tích của bạn dễ dàng nhất.
+Vì vậy nếu bạn bị mắc kẹt khi tìm cách thực hiện một phép tính nào đó, hãy cân nhắc thay đổi cách tổ chức dữ liệu; đừng ngại làm cho dữ liệu không gọn gàng, biến đổi, và chỉnh trang lại khi cần!
 
-If you enjoyed this chapter and want to learn more about the underlying theory, you can learn more about the history and theoretical underpinnings in the [Tidy Data](https://www.jstatsoft.org/article/view/v059i10) paper published in the Journal of Statistical Software.
+Nếu bạn thích chương này và muốn tìm hiểu thêm về lý thuyết cơ bản, bạn có thể đọc thêm về lịch sử và nền tảng lý thuyết trong bài báo [Tidy Data](https://www.jstatsoft.org/article/view/v059i10) được xuất bản trên Journal of Statistical Software.
 
-Now that you're writing a substantial amount of R code, it's time to learn more about organizing your code into files and directories.
-In the next chapter, you'll learn all about the advantages of scripts and projects, and some of the many tools that they provide to make your life easier.
+Bây giờ bạn đang viết một lượng đáng kể mã R, đã đến lúc tìm hiểu thêm về cách tổ chức mã của bạn thành các tệp và thư mục.
+Trong chương tiếp theo, bạn sẽ tìm hiểu tất cả về những lợi thế của script và dự án, và một số trong nhiều công cụ mà chúng cung cấp để giúp cuộc sống của bạn dễ dàng hơn.
