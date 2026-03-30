@@ -5,31 +5,31 @@
 source("_common.R")
 ```
 
-## Introduction
+## Giới thiệu
 
-Quarto provides a unified authoring framework for data science, combining your code, its results, and your prose.
-Quarto documents are fully reproducible and support dozens of output formats, like PDFs, Word files, presentations, and more.
+Quarto cung cấp một khung soạn thảo thống nhất cho khoa học dữ liệu, kết hợp mã nguồn, kết quả và phần trình bày văn bản của bạn.
+Tài liệu Quarto hoàn toàn có thể tái tạo (reproducible) và hỗ trợ hàng chục định dạng đầu ra, như PDF, tệp Word, bài thuyết trình, và nhiều hơn nữa.
 
-Quarto files are designed to be used in three ways:
+Tệp Quarto được thiết kế để sử dụng theo ba cách:
 
-1.  For communicating to decision-makers, who want to focus on the conclusions, not the code behind the analysis.
+1.  Để truyền đạt đến người ra quyết định, những người muốn tập trung vào kết luận, không phải mã nguồn đằng sau phân tích.
 
-2.  For collaborating with other data scientists (including future you!), who are interested in both your conclusions, and how you reached them (i.e. the code).
+2.  Để cộng tác với các nhà khoa học dữ liệu khác (bao gồm cả chính bạn trong tương lai!), những người quan tâm đến cả kết luận của bạn và cách bạn đạt được chúng (tức là mã nguồn).
 
-3.  As an environment in which to *do* data science, as a modern-day lab notebook where you can capture not only what you did, but also what you were thinking.
+3.  Như một môi trường để *thực hiện* khoa học dữ liệu, như một cuốn sổ phòng thí nghiệm hiện đại nơi bạn có thể ghi lại không chỉ những gì bạn đã làm, mà còn cả những gì bạn đang suy nghĩ.
 
-Quarto is a command line interface tool, not an R package.
-This means that help is, by-and-large, not available through `?`.
-Instead, as you work through this chapter, and use Quarto in the future, you should refer to the [Quarto documentation](https://quarto.org).
+Quarto là một công cụ giao diện dòng lệnh (command line interface), không phải một gói R.
+Điều này có nghĩa là trợ giúp, nhìn chung, không có sẵn thông qua `?`.
+Thay vào đó, khi bạn làm việc qua chương này, và sử dụng Quarto trong tương lai, bạn nên tham khảo [tài liệu Quarto](https://quarto.org).
 
-If you're an R Markdown user, you might be thinking "Quarto sounds a lot like R Markdown".
-You're not wrong!
-Quarto unifies the functionality of many packages from the R Markdown ecosystem (rmarkdown, bookdown, distill, xaringan, etc.) into a single consistent system as well as extends it with native support for multiple programming languages like Python and Julia in addition to R.
-In a way, Quarto reflects everything that was learned from expanding and supporting the R Markdown ecosystem over a decade.
+Nếu bạn là người dùng R Markdown, bạn có thể nghĩ "Quarto nghe giống R Markdown quá".
+Bạn không sai!
+Quarto hợp nhất chức năng của nhiều gói từ hệ sinh thái R Markdown (rmarkdown, bookdown, distill, xaringan, v.v.) thành một hệ thống nhất quán, đồng thời mở rộng thêm hỗ trợ gốc cho nhiều ngôn ngữ lập trình như Python và Julia ngoài R.
+Theo một cách nào đó, Quarto phản ánh tất cả những gì đã được học từ việc mở rộng và hỗ trợ hệ sinh thái R Markdown trong suốt một thập kỷ.
 
-### Prerequisites
+### Điều kiện tiên quyết
 
-You need the Quarto command line interface (Quarto CLI), but you don't need to explicitly install it or load it, as RStudio automatically does both when needed.
+Bạn cần giao diện dòng lệnh Quarto (Quarto CLI), nhưng bạn không cần cài đặt hay tải nó một cách rõ ràng, vì RStudio tự động thực hiện cả hai khi cần thiết.
 
 ```{r}
 #| label: setup
@@ -39,172 +39,172 @@ inline <- function(x = "") paste0("`` `r ", x, "` ``")
 library(tidyverse)
 ```
 
-## Quarto basics
+## Cơ bản về Quarto
 
-This is a Quarto file -- a plain text file that has the extension `.qmd`:
+Đây là một tệp Quarto -- một tệp văn bản thuần có phần mở rộng `.qmd`:
 
 ```{r echo = FALSE, comment = ""}
 cat(readr::read_file("quarto/diamond-sizes.qmd"))
 ```
 
-It contains three important types of content:
+Nó chứa ba loại nội dung quan trọng:
 
-1.  An (optional) **YAML header** surrounded by `---`s.
-2.  **Chunks** of R code surrounded by ```` ``` ````.
-3.  Text mixed with simple text formatting like `# heading` and `_italics_`.
+1.  Một **phần đầu YAML** (tùy chọn) được bao quanh bởi `---`.
+2.  **Các khối mã** (chunk) R được bao quanh bởi ```` ``` ````.
+3.  Văn bản kết hợp với định dạng văn bản đơn giản như `# heading` và `_italics_`.
 
-@fig-diamond-sizes-notebook shows a `.qmd` document in RStudio with notebook interface where code and output are interleaved.
-You can run each code chunk by clicking the Run icon (it looks like a play button at the top of the chunk), or by pressing Cmd/Ctrl + Shift + Enter.
-RStudio executes the code and displays the results inline with the code.
+@fig-diamond-sizes-notebook cho thấy một tài liệu `.qmd` trong RStudio với giao diện notebook nơi mã nguồn và kết quả được xen kẽ nhau.
+Bạn có thể chạy từng khối mã bằng cách nhấp vào biểu tượng Run (trông giống nút phát ở đầu khối mã), hoặc bằng cách nhấn Cmd/Ctrl + Shift + Enter.
+RStudio thực thi mã nguồn và hiển thị kết quả ngay trong dòng cùng với mã.
 
 ```{r}
 #| label: fig-diamond-sizes-notebook
 #| echo: false
 #| out-width: "90%"
 #| fig-cap: |
-#|   A Quarto document in RStudio. Code and output interleaved in 
-#|   the document, with the plot output appearing right underneath the code.
+#|   Một tài liệu Quarto trong RStudio. Mã nguồn và kết quả được xen kẽ trong
+#|   tài liệu, với biểu đồ đầu ra hiển thị ngay bên dưới mã nguồn.
 #| fig-alt: |
-#|   RStudio window with a Quarto document titled "diamond-sizes.qmd" 
-#|   on the left and a blank Viewer window on the right. The Quarto 
-#|   document has a code chunk that creates a frequency plot of diamonds 
-#|   that weigh less than 2.5 carats. The plot shows that the frequency 
+#|   RStudio window with a Quarto document titled "diamond-sizes.qmd"
+#|   on the left and a blank Viewer window on the right. The Quarto
+#|   document has a code chunk that creates a frequency plot of diamonds
+#|   that weigh less than 2.5 carats. The plot shows that the frequency
 #|   decreases as the weight increases.
 knitr::include_graphics("quarto/diamond-sizes-notebook.png")
 ```
 
-If you don't like seeing your plots and output in your document and would rather make use of RStudio's Console and Plot panes, you can click on the gear icon next to "Render" and switch to "Chunk Output in Console", as shown in @fig-diamond-sizes-console-output.
+Nếu bạn không thích nhìn thấy biểu đồ và kết quả đầu ra trong tài liệu và muốn sử dụng bảng Console và Plot của RStudio, bạn có thể nhấp vào biểu tượng bánh răng bên cạnh "Render" và chuyển sang "Chunk Output in Console", như được hiển thị trong @fig-diamond-sizes-console-output.
 
 ```{r}
 #| label: fig-diamond-sizes-console-output
 #| echo: false
 #| out-width: "90%"
 #| fig-cap: |
-#|   A Quarto document in RStudio with the plot output in the Plots pane.
+#|   Một tài liệu Quarto trong RStudio với biểu đồ đầu ra trong bảng Plots.
 #| fig-alt: |
-#|   RStudio window with a Quarto document titled "diamond-sizes.qmd" 
-#|   on the left and the Plot pane on the bottom right. The Quarto 
-#|   document has a code chunk that creates a frequency plot of diamonds 
-#|   that weigh less than 2.5 carats. The plot is displayed in the Plot 
-#|   pane and shows that the frequency decreases as the weight increases. 
-#|   The RStudio option to show Chunk Output in Console is also 
+#|   RStudio window with a Quarto document titled "diamond-sizes.qmd"
+#|   on the left and the Plot pane on the bottom right. The Quarto
+#|   document has a code chunk that creates a frequency plot of diamonds
+#|   that weigh less than 2.5 carats. The plot is displayed in the Plot
+#|   pane and shows that the frequency decreases as the weight increases.
+#|   The RStudio option to show Chunk Output in Console is also
 #|   highlighted.
 knitr::include_graphics("quarto/diamond-sizes-console-output.png")
 ```
 
-To produce a complete report containing all text, code, and results, click "Render" or press Cmd/Ctrl + Shift + K.
-You can also do this programmatically with `quarto::quarto_render("diamond-sizes.qmd")`.
-This will display the report in the viewer pane as shown in @fig-diamond-sizes-report and create an HTML file.
+Để tạo một báo cáo hoàn chỉnh chứa tất cả văn bản, mã nguồn và kết quả, nhấp "Render" hoặc nhấn Cmd/Ctrl + Shift + K.
+Bạn cũng có thể thực hiện điều này bằng lập trình với `quarto::quarto_render("diamond-sizes.qmd")`.
+Thao tác này sẽ hiển thị báo cáo trong bảng viewer như được chỉ ra trong @fig-diamond-sizes-report và tạo một tệp HTML.
 
 ```{r}
 #| label: fig-diamond-sizes-report
 #| echo: false
 #| out-width: "90%"
 #| fig-cap: |
-#|   A Quarto document in RStudio with the rendered document in the 
-#|   Viewer pane.
+#|   Một tài liệu Quarto trong RStudio với tài liệu đã biên dịch trong bảng
+#|   Viewer.
 #| fig-alt: |
-#|   RStudio window with a Quarto document titled "diamond-sizes.qmd" 
-#|   on the left and the Plot pane on the bottom right. The rendered 
-#|   document does not show any of the code, but the code is visible 
+#|   RStudio window with a Quarto document titled "diamond-sizes.qmd"
+#|   on the left and the Plot pane on the bottom right. The rendered
+#|   document does not show any of the code, but the code is visible
 #|   in the source document.
 knitr::include_graphics("quarto/diamond-sizes-report.png")
 ```
 
-When you render the document, Quarto sends the `.qmd` file to **knitr**, <https://yihui.org/knitr/>, which executes all of the code chunks and creates a new markdown (`.md`) document which includes the code and its output.
-The markdown file generated by knitr is then processed by **pandoc**, [https://pandoc.org](https://pandoc.org/){.uri}, which is responsible for creating the finished file.
-This process is shown in @fig-quarto-flow.
-The advantage of this two step workflow is that you can create a very wide range of output formats, as you'll learn about in @sec-quarto-formats.
+Khi bạn biên dịch (render) tài liệu, Quarto gửi tệp `.qmd` đến **knitr**, <https://yihui.org/knitr/>, nơi thực thi tất cả các khối mã và tạo một tài liệu markdown (`.md`) mới bao gồm mã nguồn và kết quả đầu ra.
+Tệp markdown được tạo bởi knitr sau đó được xử lý bởi **pandoc**, [https://pandoc.org](https://pandoc.org/){.uri}, chịu trách nhiệm tạo tệp hoàn chỉnh.
+Quy trình này được minh họa trong @fig-quarto-flow.
+Ưu điểm của quy trình hai bước này là bạn có thể tạo rất nhiều định dạng đầu ra khác nhau, như bạn sẽ tìm hiểu trong @sec-quarto-formats.
 
 ```{r}
 #| label: fig-quarto-flow
 #| echo: false
 #| out-width: "75%"
 #| fig-alt: |
-#|   Workflow diagram starting with a qmd file, then knitr, then md, 
+#|   Workflow diagram starting with a qmd file, then knitr, then md,
 #|   then pandoc, then PDF, MS Word, or HTML.
 #| fig-cap: |
-#|   Diagram of Quarto workflow from qmd, to knitr, to md, to pandoc, 
-#|   to output in PDF, MS Word, or HTML formats.
+#|   Sơ đồ quy trình Quarto từ qmd, đến knitr, đến md, đến pandoc,
+#|   đến đầu ra ở các định dạng PDF, MS Word, hoặc HTML.
 knitr::include_graphics("images/quarto-flow.png")
 ```
 
-To get started with your own `.qmd` file, select *File \> New File \> Quarto Document...* in the menu bar.
-RStudio will launch a wizard that you can use to pre-populate your file with useful content that reminds you how the key features of Quarto work.
+Để bắt đầu với tệp `.qmd` của riêng bạn, chọn *File \> New File \> Quarto Document...* trong thanh menu.
+RStudio sẽ khởi chạy một trình hướng dẫn mà bạn có thể sử dụng để điền trước nội dung hữu ích nhắc nhở bạn cách các tính năng chính của Quarto hoạt động.
 
-The following sections dive into the three components of a Quarto document in more details: the markdown text, the code chunks, and the YAML header.
+Các phần tiếp theo sẽ đi sâu vào ba thành phần của tài liệu Quarto chi tiết hơn: văn bản markdown, các khối mã, và phần đầu YAML.
 
-### Exercises
+### Bài tập
 
-1.  Create a new Quarto document using *File \> New File \> Quarto Document*.
-    Read the instructions.
-    Practice running the chunks individually.
-    Then render the document by clicking the appropriate button and then by using the appropriate keyboard shortcut.
-    Verify that you can modify the code, re-run it, and see modified output.
+1.  Tạo một tài liệu Quarto mới bằng *File \> New File \> Quarto Document*.
+    Đọc hướng dẫn.
+    Thực hành chạy từng khối mã riêng lẻ.
+    Sau đó biên dịch tài liệu bằng cách nhấp nút thích hợp và sau đó sử dụng phím tắt thích hợp.
+    Xác minh rằng bạn có thể sửa đổi mã, chạy lại và xem kết quả đã thay đổi.
 
-2.  Create one new Quarto document for each of the three built-in formats: HTML, PDF and Word.
-    Render each of the three documents.
-    How do the outputs differ?
-    How do the inputs differ?
-    (You may need to install LaTeX in order to build the PDF output --- RStudio will prompt you if this is necessary.)
+2.  Tạo một tài liệu Quarto mới cho mỗi trong ba định dạng có sẵn: HTML, PDF và Word.
+    Biên dịch mỗi tài liệu trong ba tài liệu đó.
+    Kết quả đầu ra khác nhau như thế nào?
+    Đầu vào khác nhau như thế nào?
+    (Bạn có thể cần cài đặt LaTeX để tạo đầu ra PDF --- RStudio sẽ nhắc bạn nếu điều này cần thiết.)
 
-## Visual editor
+## Trình soạn thảo trực quan
 
-The Visual editor in RStudio provides a [WYSIWYM](https://en.wikipedia.org/wiki/WYSIWYM) interface for authoring Quarto documents.
-Under the hood, prose in Quarto documents (`.qmd` files) is written in Markdown, a lightweight set of conventions for formatting plain text files.
-In fact, Quarto uses Pandoc markdown (a slightly extended version of Markdown that Quarto understands), including tables, citations, cross-references, footnotes, divs/spans, definition lists, attributes, raw HTML/TeX, and more as well as support for executing code cells and viewing their output inline.
-While Markdown is designed to be easy to read and write, as you will see in @sec-source-editor, it still requires learning new syntax.
-Therefore, if you're new to computational documents like `.qmd` files but have experience using tools like Google Docs or MS Word, the easiest way to get started with Quarto in RStudio is the visual editor.
+Trình soạn thảo trực quan (Visual editor) trong RStudio cung cấp giao diện [WYSIWYM](https://en.wikipedia.org/wiki/WYSIWYM) để soạn thảo tài liệu Quarto.
+Bên dưới, văn bản trong tài liệu Quarto (tệp `.qmd`) được viết bằng Markdown, một tập hợp quy ước nhẹ để định dạng tệp văn bản thuần.
+Trên thực tế, Quarto sử dụng Pandoc markdown (một phiên bản mở rộng hơi của Markdown mà Quarto hiểu được), bao gồm bảng, trích dẫn, tham chiếu chéo, chú thích cuối trang, div/span, danh sách định nghĩa, thuộc tính, HTML/TeX thô, và nhiều hơn nữa cũng như hỗ trợ thực thi các ô mã và xem kết quả đầu ra ngay trong dòng.
+Mặc dù Markdown được thiết kế để dễ đọc và viết, như bạn sẽ thấy trong @sec-source-editor, nó vẫn yêu cầu học cú pháp mới.
+Do đó, nếu bạn mới làm quen với tài liệu tính toán như tệp `.qmd` nhưng có kinh nghiệm sử dụng các công cụ như Google Docs hay MS Word, cách dễ nhất để bắt đầu với Quarto trong RStudio là trình soạn thảo trực quan.
 
-In the visual editor you can either use the buttons on the menu bar to insert images, tables, cross-references, etc. or you can use the catch-all <kbd>⌘</kbd> + <kbd>/</kbd> or <kbd>Ctrl</kbd> + <kbd>/</kbd> shortcut to insert just about anything.
-If you are at the beginning of a line (as shown in @fig-visual-editor), you can also enter just <kbd>/</kbd> to invoke the shortcut.
+Trong trình soạn thảo trực quan, bạn có thể sử dụng các nút trên thanh menu để chèn hình ảnh, bảng, tham chiếu chéo, v.v. hoặc bạn có thể sử dụng phím tắt tổng hợp <kbd>⌘</kbd> + <kbd>/</kbd> hoặc <kbd>Ctrl</kbd> + <kbd>/</kbd> để chèn hầu như mọi thứ.
+Nếu bạn đang ở đầu dòng (như được hiển thị trong @fig-visual-editor), bạn cũng có thể chỉ nhập <kbd>/</kbd> để gọi phím tắt.
 
 ```{r}
 #| label: fig-visual-editor
 #| echo: false
 #| out-width: "75%"
 #| fig-cap: |
-#|   Quarto visual editor.
+#|   Trình soạn thảo trực quan Quarto.
 #| fig-alt: |
-#|   A Quarto document displaying various features of the 
-#|   visual editor such as text formatting (italic, bold, 
+#|   A Quarto document displaying various features of the
+#|   visual editor such as text formatting (italic, bold,
 #|   underline, small caps, code, superscript, and subscript),
 #|   first through third level headings, bulleted and numbered
-#|   lists, links, linked phrases, and images (along with a 
-#|   pop-up window for customizing image size, adding a 
-#|   caption and alt text, etc.), tables with a header row, 
-#|   and the insert anything tool with options to insert an 
-#|   R code chunk, a Python code chunk, a div, a bullet list, 
-#|   a numbered list, or a first level heading (the top few 
+#|   lists, links, linked phrases, and images (along with a
+#|   pop-up window for customizing image size, adding a
+#|   caption and alt text, etc.), tables with a header row,
+#|   and the insert anything tool with options to insert an
+#|   R code chunk, a Python code chunk, a div, a bullet list,
+#|   a numbered list, or a first level heading (the top few
 #|   choices in the tool).
 knitr::include_graphics("quarto/quarto-visual-editor.png")
 ```
 
-Inserting images and customizing how they are displayed is also facilitated with the visual editor.
-You can either paste an image from your clipboard directly into the visual editor (and RStudio will place a copy of that image in the project directory and link to it) or you can use the visual editor's Insert \> Figure / Image menu to browse to the image you want to insert or paste its URL.
-In addition, using the same menu you can resize the image as well as add a caption, alternative text, and a link.
+Việc chèn hình ảnh và tùy chỉnh cách hiển thị chúng cũng được hỗ trợ bởi trình soạn thảo trực quan.
+Bạn có thể dán hình ảnh từ clipboard trực tiếp vào trình soạn thảo trực quan (và RStudio sẽ đặt một bản sao của hình ảnh đó trong thư mục dự án và liên kết đến nó) hoặc bạn có thể sử dụng menu Insert \> Figure / Image của trình soạn thảo trực quan để duyệt đến hình ảnh bạn muốn chèn hoặc dán URL của nó.
+Ngoài ra, sử dụng cùng menu đó, bạn có thể thay đổi kích thước hình ảnh cũng như thêm chú thích, văn bản thay thế, và liên kết.
 
-The visual editor has many more features that we haven't enumerated here that you might find useful as you gain experience authoring with it.
+Trình soạn thảo trực quan có nhiều tính năng khác mà chúng tôi chưa liệt kê ở đây mà bạn có thể thấy hữu ích khi tích lũy kinh nghiệm soạn thảo với nó.
 
-Most importantly, while the visual editor displays your content with formatting, under the hood, it saves your content in plain Markdown and you can switch back and forth between the visual and source editors to view and edit your content using either tool.
+Quan trọng nhất, mặc dù trình soạn thảo trực quan hiển thị nội dung của bạn với định dạng, bên dưới nó lưu nội dung dưới dạng Markdown thuần và bạn có thể chuyển đổi qua lại giữa trình soạn thảo trực quan và trình soạn thảo mã nguồn để xem và chỉnh sửa nội dung bằng cả hai công cụ.
 
-### Exercises
+### Bài tập
 
-1.  Re-create the document in @fig-visual-editor using the visual editor.
-2.  Using the visual editor, insert a code chunk using the Insert menu and then the insert anything tool.
-3.  Using the visual editor, figure out how to:
-    a.  Add a footnote.
-    b.  Add a horizontal rule.
-    c.  Add a block quote.
-4.  In the visual editor, go to Insert \> Citation and insert a citation to the paper titled [Welcome to the Tidyverse](https://joss.theoj.org/papers/10.21105/joss.01686) using its DOI (digital object identifier), which is [10.21105/joss.01686](https://doi.org/10.21105/joss.01686). Render the document and observe how the reference shows up in the document. What change do you observe in the YAML of your document?
+1.  Tạo lại tài liệu trong @fig-visual-editor bằng trình soạn thảo trực quan.
+2.  Sử dụng trình soạn thảo trực quan, chèn một khối mã bằng menu Insert và sau đó công cụ insert anything.
+3.  Sử dụng trình soạn thảo trực quan, tìm hiểu cách:
+    a.  Thêm chú thích cuối trang.
+    b.  Thêm đường kẻ ngang.
+    c.  Thêm khối trích dẫn.
+4.  Trong trình soạn thảo trực quan, vào Insert \> Citation và chèn một trích dẫn cho bài báo có tiêu đề [Welcome to the Tidyverse](https://joss.theoj.org/papers/10.21105/joss.01686) sử dụng DOI (mã định danh đối tượng số) của nó, là [10.21105/joss.01686](https://doi.org/10.21105/joss.01686). Biên dịch tài liệu và quan sát cách tham chiếu hiển thị trong tài liệu. Bạn quan sát thấy thay đổi gì trong YAML của tài liệu?
 
-## Source editor {#sec-source-editor}
+## Trình soạn thảo mã nguồn {#sec-source-editor}
 
-You can also edit Quarto documents using the Source editor in RStudio, without the assistance of the Visual editor.
-While the Visual editor will feel familiar to those with experience writing in tools like Google docs, the Source editor will feel familiar to those with experience writing R scripts or R Markdown documents.
-The Source editor can also be useful for debugging any Quarto syntax errors since it's often easier to catch these in plain text.
+Bạn cũng có thể chỉnh sửa tài liệu Quarto bằng trình soạn thảo mã nguồn (Source editor) trong RStudio, mà không cần sự hỗ trợ của trình soạn thảo trực quan.
+Trong khi trình soạn thảo trực quan sẽ quen thuộc với những ai có kinh nghiệm viết trong các công cụ như Google Docs, trình soạn thảo mã nguồn sẽ quen thuộc với những ai có kinh nghiệm viết tập lệnh R hoặc tài liệu R Markdown.
+Trình soạn thảo mã nguồn cũng hữu ích để gỡ lỗi bất kỳ lỗi cú pháp Quarto nào vì thường dễ phát hiện chúng hơn trong văn bản thuần.
 
-The guide below shows how to use Pandoc's Markdown for authoring Quarto documents in the source editor.
+Hướng dẫn bên dưới cho thấy cách sử dụng Markdown của Pandoc để soạn thảo tài liệu Quarto trong trình soạn thảo mã nguồn.
 
 ```{r}
 #| echo: false
@@ -212,54 +212,54 @@ The guide below shows how to use Pandoc's Markdown for authoring Quarto document
 cat(readr::read_file("quarto/markdown.qmd"))
 ```
 
-The best way to learn these is simply to try them out.
-It will take a few days, but soon they will become second nature, and you won't need to think about them.
-If you forget, you can get to a handy reference sheet with *Help \> Markdown Quick Reference*.
+Cách tốt nhất để học những điều này là đơn giản thử chúng.
+Sẽ mất vài ngày, nhưng sớm thôi chúng sẽ trở thành thói quen tự nhiên, và bạn sẽ không cần phải nghĩ về chúng.
+Nếu bạn quên, bạn có thể truy cập bảng tham khảo nhanh tiện dụng bằng *Help \> Markdown Quick Reference*.
 
-### Exercises
+### Bài tập
 
-1.  Practice what you've learned by creating a brief CV.
-    The title should be your name, and you should include headings for (at least) education or employment.
-    Each of the sections should include a bulleted list of jobs/degrees.
-    Highlight the year in bold.
+1.  Thực hành những gì bạn đã học bằng cách tạo một CV ngắn gọn.
+    Tiêu đề nên là tên của bạn, và bạn nên bao gồm các đề mục cho (ít nhất) học vấn hoặc kinh nghiệm làm việc.
+    Mỗi phần nên bao gồm một danh sách có dấu đầu dòng các công việc/bằng cấp.
+    Đánh đậm năm.
 
-2.  Using the source editor and the Markdown quick reference, figure out how to:
+2.  Sử dụng trình soạn thảo mã nguồn và bảng tham khảo nhanh Markdown, tìm hiểu cách:
 
-    a.  Add a footnote.
-    b.  Add a horizontal rule.
-    c.  Add a block quote.
+    a.  Thêm chú thích cuối trang.
+    b.  Thêm đường kẻ ngang.
+    c.  Thêm khối trích dẫn.
 
-3.  Copy and paste the contents of `diamond-sizes.qmd` from <https://github.com/hadley/r4ds/tree/main/quarto> into a local R Quarto document.
-    Check that you can run it, then add text after the frequency polygon that describes its most striking features.
+3.  Sao chép và dán nội dung của `diamond-sizes.qmd` từ <https://github.com/hadley/r4ds/tree/main/quarto> vào một tài liệu R Quarto cục bộ.
+    Kiểm tra rằng bạn có thể chạy nó, sau đó thêm văn bản sau đa giác tần suất mô tả các đặc điểm nổi bật nhất của nó.
 
-4.  Create a document in a Google doc or MS Word (or locate a document you have created previously) with some content in it such as headings, hyperlinks, formatted text, etc.
-    Copy the contents of this document and paste it into a Quarto document in the visual editor.
-    Then, switch over to the source editor and inspect the source code.
+4.  Tạo một tài liệu trong Google Docs hoặc MS Word (hoặc tìm một tài liệu bạn đã tạo trước đó) với một số nội dung như tiêu đề, siêu liên kết, văn bản định dạng, v.v.
+    Sao chép nội dung của tài liệu này và dán vào một tài liệu Quarto trong trình soạn thảo trực quan.
+    Sau đó, chuyển sang trình soạn thảo mã nguồn và kiểm tra mã nguồn.
 
-## Code chunks
+## Khối mã
 
-To run code inside a Quarto document, you need to insert a chunk.
-There are three ways to do so:
+Để chạy mã bên trong một tài liệu Quarto, bạn cần chèn một khối mã (chunk).
+Có ba cách để làm điều đó:
 
-1.  The keyboard shortcut Cmd + Option + I / Ctrl + Alt + I.
+1.  Phím tắt Cmd + Option + I / Ctrl + Alt + I.
 
-2.  The "Insert" button icon in the editor toolbar.
+2.  Nút biểu tượng "Insert" trên thanh công cụ trình soạn thảo.
 
-3.  By manually typing the chunk delimiters ```` ```{r} ```` and ```` ``` ````.
+3.  Bằng cách gõ thủ công các dấu phân cách khối mã ```` ```{r} ```` và ```` ``` ````.
 
-We'd recommend you learn the keyboard shortcut.
-It will save you a lot of time in the long run!
+Chúng tôi khuyên bạn nên học phím tắt.
+Nó sẽ tiết kiệm cho bạn rất nhiều thời gian về lâu dài!
 
-You can continue to run the code using the keyboard shortcut that by now (we hope!) you know and love: Cmd/Ctrl + Enter.
-However, chunks get a new keyboard shortcut: Cmd/Ctrl + Shift + Enter, which runs all the code in the chunk.
-Think of a chunk like a function.
-A chunk should be relatively self-contained, and focused around a single task.
+Bạn có thể tiếp tục chạy mã bằng phím tắt mà đến giờ (chúng tôi hy vọng!) bạn đã biết và yêu thích: Cmd/Ctrl + Enter.
+Tuy nhiên, khối mã có thêm một phím tắt mới: Cmd/Ctrl + Shift + Enter, chạy tất cả mã trong khối mã.
+Hãy nghĩ về khối mã như một hàm.
+Một khối mã nên tương đối độc lập và tập trung vào một nhiệm vụ duy nhất.
 
-The following sections describe the chunk header which consists of ```` ```{r} ````, followed by an optional chunk label and various other chunk options, each on their own line, marked by `#|`.
+Các phần tiếp theo mô tả phần đầu khối mã bao gồm ```` ```{r} ````, theo sau là nhãn khối mã tùy chọn và các tùy chọn khối mã khác nhau, mỗi tùy chọn trên dòng riêng, được đánh dấu bằng `#|`.
 
-### Chunk label
+### Nhãn khối mã
 
-Chunks can be given an optional label, e.g.
+Các khối mã có thể được gán một nhãn (label) tùy chọn, ví dụ:
 
 ```{r}
 #| echo: fenced
@@ -267,65 +267,65 @@ Chunks can be given an optional label, e.g.
 1 + 1
 ```
 
-This has three advantages:
+Điều này có ba ưu điểm:
 
-1.  You can more easily navigate to specific chunks using the drop-down code navigator in the bottom-left of the script editor:
+1.  Bạn có thể dễ dàng điều hướng đến các khối mã cụ thể bằng trình điều hướng mã thả xuống ở góc dưới bên trái của trình soạn thảo tập lệnh:
 
     ```{r}
     #| echo: false
     #| out-width: "30%"
     #| fig-alt: |
-    #|   Snippet of RStudio IDE showing only the drop-down code navigator 
-    #|   which shows three chunks. Chunk 1 is setup. Chunk 2 is cars and 
-    #|   it is in a section called Quarto. Chunk 3 is pressure and it is in 
+    #|   Snippet of RStudio IDE showing only the drop-down code navigator
+    #|   which shows three chunks. Chunk 1 is setup. Chunk 2 is cars and
+    #|   it is in a section called Quarto. Chunk 3 is pressure and it is in
     #|   a section called Including plots.
     knitr::include_graphics("screenshots/quarto-chunk-nav.png")
     ```
 
-2.  Graphics produced by the chunks will have useful names that make them easier to use elsewhere.
-    More on that in @sec-figures.
+2.  Đồ họa được tạo bởi các khối mã sẽ có tên hữu ích giúp chúng dễ sử dụng ở nơi khác hơn.
+    Thêm về điều này trong @sec-figures.
 
-3.  You can set up networks of cached chunks to avoid re-performing expensive computations on every run.
-    More on that in @sec-caching.
+3.  Bạn có thể thiết lập mạng lưới các khối mã được lưu bộ nhớ đệm (cache) để tránh thực hiện lại các phép tính tốn kém mỗi lần chạy.
+    Thêm về điều này trong @sec-caching.
 
-Your chunk labels should be short but evocative and should not contain spaces.
-We recommend using dashes (`-`) to separate words (instead of underscores, `_`) and avoiding other special characters in chunk labels.
+Nhãn khối mã của bạn nên ngắn gọn nhưng gợi nhớ và không nên chứa khoảng trắng.
+Chúng tôi khuyên sử dụng dấu gạch ngang (`-`) để phân tách các từ (thay vì dấu gạch dưới, `_`) và tránh các ký tự đặc biệt khác trong nhãn khối mã.
 
-You are generally free to label your chunk however you like, but there is one chunk name that imbues special behavior: `setup`.
-When you're in a notebook mode, the chunk named setup will be run automatically once, before any other code is run.
+Bạn thường được tự do đặt tên khối mã theo ý muốn, nhưng có một tên khối mã mang hành vi đặc biệt: `setup`.
+Khi bạn ở chế độ notebook, khối mã có tên setup sẽ được chạy tự động một lần, trước bất kỳ mã nào khác được chạy.
 
-Additionally, chunk labels cannot be duplicated.
-Each chunk label must be unique.
+Ngoài ra, nhãn khối mã không thể bị trùng lặp.
+Mỗi nhãn khối mã phải là duy nhất.
 
-### Chunk options
+### Tùy chọn khối mã
 
-Chunk output can be customized with **options**, fields supplied to chunk header.
-Knitr provides almost 60 options that you can use to customize your code chunks.
-Here we'll cover the most important chunk options that you'll use frequently.
-You can see the full list at [https://yihui.org/knitr/options](https://yihui.org/knitr/options/){.uri}.
+Kết quả đầu ra của khối mã có thể được tùy chỉnh bằng các **tùy chọn** (option), các trường được cung cấp cho phần đầu khối mã.
+Knitr cung cấp gần 60 tùy chọn mà bạn có thể sử dụng để tùy chỉnh các khối mã của mình.
+Ở đây chúng tôi sẽ đề cập đến các tùy chọn khối mã quan trọng nhất mà bạn sẽ sử dụng thường xuyên.
+Bạn có thể xem danh sách đầy đủ tại [https://yihui.org/knitr/options](https://yihui.org/knitr/options/){.uri}.
 
-The most important set of options controls if your code block is executed and what results are inserted in the finished report:
+Tập hợp tùy chọn quan trọng nhất kiểm soát liệu khối mã của bạn có được thực thi hay không và kết quả nào được chèn vào báo cáo hoàn chỉnh:
 
--   `eval: false` prevents code from being evaluated.
-    (And obviously if the code is not run, no results will be generated).
-    This is useful for displaying example code, or for disabling a large block of code without commenting each line.
+-   `eval: false` ngăn mã không được thực thi.
+    (Và hiển nhiên nếu mã không được chạy, không có kết quả nào được tạo ra).
+    Điều này hữu ích để hiển thị mã ví dụ, hoặc để vô hiệu hóa một khối mã lớn mà không cần chú thích từng dòng.
 
--   `include: false` runs the code, but doesn't show the code or results in the final document.
-    Use this for setup code that you don't want cluttering your report.
+-   `include: false` chạy mã, nhưng không hiển thị mã hoặc kết quả trong tài liệu cuối cùng.
+    Sử dụng điều này cho mã thiết lập mà bạn không muốn làm rối báo cáo.
 
--   `echo: false` prevents code, but not the results, from appearing in the finished file.
-    Use this when writing reports aimed at people who don't want to see the underlying R code.
+-   `echo: false` ngăn mã, nhưng không ngăn kết quả, xuất hiện trong tệp hoàn chỉnh.
+    Sử dụng điều này khi viết báo cáo nhắm đến những người không muốn xem mã R bên dưới.
 
--   `message: false` or `warning: false` prevents messages or warnings from appearing in the finished file.
+-   `message: false` hoặc `warning: false` ngăn thông báo hoặc cảnh báo xuất hiện trong tệp hoàn chỉnh.
 
--   `results: hide` hides printed output; `fig-show: hide` hides plots.
+-   `results: hide` ẩn kết quả in ra; `fig-show: hide` ẩn biểu đồ.
 
--   `error: true` causes the render to continue even if code returns an error.
-    This is rarely something you'll want to include in the final version of your report, but can be very useful if you need to debug exactly what is going on inside your `.qmd`.
-    It's also useful if you're teaching R and want to deliberately include an error.
-    The default, `error: false` causes rendering to fail if there is a single error in the document.
+-   `error: true` cho phép quá trình biên dịch tiếp tục ngay cả khi mã trả về lỗi.
+    Đây hiếm khi là điều bạn muốn bao gồm trong phiên bản cuối cùng của báo cáo, nhưng có thể rất hữu ích nếu bạn cần gỡ lỗi chính xác điều gì đang xảy ra bên trong tệp `.qmd` của bạn.
+    Nó cũng hữu ích nếu bạn đang dạy R và muốn cố tình bao gồm một lỗi.
+    Mặc định, `error: false` khiến quá trình biên dịch thất bại nếu có một lỗi duy nhất trong tài liệu.
 
-Each of these chunk options get added to the header of the chunk, following `#|`, e.g., in the following chunk the result is not printed since `eval` is set to false.
+Mỗi tùy chọn khối mã này được thêm vào phần đầu của khối mã, theo sau `#|`, ví dụ, trong khối mã sau kết quả không được in ra vì `eval` được đặt thành false.
 
 ```{r}
 #| echo: fenced
@@ -334,9 +334,9 @@ Each of these chunk options get added to the header of the chunk, following `#|`
 2 * 2
 ```
 
-The following table summarizes which types of output each option suppresses:
+Bảng sau tóm tắt loại kết quả đầu ra nào mà mỗi tùy chọn triệt tiêu:
 
-| Option           | Run code | Show code | Output | Plots | Messages | Warnings |
+| Tùy chọn         | Chạy mã  | Hiện mã   | Kết quả | Biểu đồ | Thông báo | Cảnh báo |
 |------------------|:--------:|:---------:|:------:|:-----:|:--------:|:--------:|
 | `eval: false`    |    X     |           |   X    |   X   |    X     |    X     |
 | `include: false` |          |     X     |   X    |   X   |    X     |    X     |
@@ -346,14 +346,14 @@ The following table summarizes which types of output each option suppresses:
 | `message: false` |          |           |        |       |    X     |          |
 | `warning: false` |          |           |        |       |          |    X     |
 
-### Global options
+### Tùy chọn toàn cục
 
-As you work more with knitr, you will discover that some of the default chunk options don't fit your needs and you want to change them.
+Khi bạn làm việc nhiều hơn với knitr, bạn sẽ phát hiện rằng một số tùy chọn khối mã mặc định không phù hợp với nhu cầu của bạn và bạn muốn thay đổi chúng.
 
-You can do this by adding the preferred options in the document YAML, under `execute`.
-For example, if you are preparing a report for an audience who does not need to see your code but only your results and narrative, you might set `echo: false` at the document level.
-That will hide the code by default, so only showing the chunks you deliberately choose to show (with `echo: true`).
-You might consider setting `message: false` and `warning: false`, but that would make it harder to debug problems because you wouldn't see any messages in the final document.
+Bạn có thể làm điều này bằng cách thêm các tùy chọn ưa thích trong YAML của tài liệu, dưới `execute`.
+Ví dụ, nếu bạn đang chuẩn bị báo cáo cho đối tượng không cần xem mã của bạn mà chỉ cần kết quả và phần trình bày, bạn có thể đặt `echo: false` ở cấp tài liệu.
+Điều đó sẽ ẩn mã theo mặc định, chỉ hiển thị các khối mã mà bạn chủ ý chọn hiển thị (với `echo: true`).
+Bạn có thể cân nhắc đặt `message: false` và `warning: false`, nhưng điều đó sẽ khiến việc gỡ lỗi khó khăn hơn vì bạn sẽ không thấy bất kỳ thông báo nào trong tài liệu cuối cùng.
 
 ``` yaml
 title: "My report"
@@ -361,9 +361,9 @@ execute:
   echo: false
 ```
 
-Since Quarto is designed to be multi-lingual (works with R as well as other languages like Python, Julia, etc.), all of the knitr options are not available at the document execution level since some of them only work with knitr and not other engines Quarto uses for running code in other languages (e.g., Jupyter).
-You can, however, still set these as global options for your document under the `knitr` field, under `opts_chunk`.
-For example, when writing books and tutorials we set:
+Vì Quarto được thiết kế đa ngôn ngữ (hoạt động với R cũng như các ngôn ngữ khác như Python, Julia, v.v.), không phải tất cả tùy chọn knitr đều có sẵn ở cấp thực thi tài liệu vì một số chỉ hoạt động với knitr chứ không hoạt động với các engine khác mà Quarto sử dụng để chạy mã trong các ngôn ngữ khác (ví dụ, Jupyter).
+Tuy nhiên, bạn vẫn có thể đặt chúng làm tùy chọn toàn cục cho tài liệu dưới trường `knitr`, trong `opts_chunk`.
+Ví dụ, khi viết sách và hướng dẫn, chúng tôi đặt:
 
 ``` yaml
 title: "Tutorial"
@@ -373,27 +373,27 @@ knitr:
     collapse: true
 ```
 
-This uses our preferred comment formatting and ensures that the code and output are kept closely entwined.
+Điều này sử dụng định dạng chú thích ưa thích của chúng tôi và đảm bảo rằng mã nguồn và kết quả đầu ra được giữ gắn kết chặt chẽ.
 
-### Inline code
+### Mã nội tuyến
 
-There is one other way to embed R code into a Quarto document: directly into the text, with: `r inline()`.
-This can be very useful if you mention properties of your data in the text.
-For example, the example document used at the start of the chapter had:
+Có một cách khác để nhúng mã R vào tài liệu Quarto: trực tiếp vào văn bản, với: `r inline()`.
+Điều này có thể rất hữu ích nếu bạn đề cập đến các thuộc tính của dữ liệu trong văn bản.
+Ví dụ, tài liệu mẫu được sử dụng ở đầu chương có:
 
 > We have data about `r inline('nrow(diamonds)')` diamonds.
 > Only `r inline('nrow(diamonds) - nrow(smaller)')` are larger than 2.5 carats.
 > The distribution of the remainder is shown below:
 
-When the report is rendered, the results of these computations are inserted into the text:
+Khi báo cáo được biên dịch, kết quả của các phép tính này được chèn vào văn bản:
 
 > We have data about 53940 diamonds.
 > Only 126 are larger than 2.5 carats.
 > The distribution of the remainder is shown below:
 
-When inserting numbers into text, `format()` is your friend.
-It allows you to set the number of `digits` so you don't print to a ridiculous degree of precision, and a `big.mark` to make numbers easier to read.
-You might combine these into a helper function:
+Khi chèn số vào văn bản, `format()` là người bạn đồng hành của bạn.
+Nó cho phép bạn đặt số chữ số `digits` để không in với độ chính xác quá mức, và `big.mark` để làm cho số dễ đọc hơn.
+Bạn có thể kết hợp chúng thành một hàm trợ giúp:
 
 ```{r}
 comma <- function(x) format(x, digits = 2, big.mark = ",")
@@ -401,52 +401,52 @@ comma(3452345)
 comma(.12358124331)
 ```
 
-### Exercises
+### Bài tập
 
-1.  Add a section that explores how diamond sizes vary by cut, color, and clarity.
-    Assume you're writing a report for someone who doesn't know R, and instead of setting `echo: false` on each chunk, set a global option.
+1.  Thêm một phần khám phá cách kích thước kim cương thay đổi theo cut, color, và clarity.
+    Giả sử bạn đang viết báo cáo cho người không biết R, và thay vì đặt `echo: false` trên mỗi khối mã, hãy đặt tùy chọn toàn cục.
 
-2.  Download `diamond-sizes.qmd` from <https://github.com/hadley/r4ds/tree/main/quarto>.
-    Add a section that describes the largest 20 diamonds, including a table that displays their most important attributes.
+2.  Tải `diamond-sizes.qmd` từ <https://github.com/hadley/r4ds/tree/main/quarto>.
+    Thêm một phần mô tả 20 viên kim cương lớn nhất, bao gồm một bảng hiển thị các thuộc tính quan trọng nhất của chúng.
 
-3.  Modify `diamonds-sizes.qmd` to use `label_comma()` to produce nicely formatted output.
-    Also include the percentage of diamonds that are larger than 2.5 carats.
+3.  Sửa đổi `diamonds-sizes.qmd` để sử dụng `label_comma()` để tạo kết quả đầu ra được định dạng đẹp.
+    Cũng bao gồm phần trăm kim cương lớn hơn 2.5 carat.
 
-## Figures {#sec-figures}
+## Hình ảnh {#sec-figures}
 
-The figures in a Quarto document can be embedded (e.g., a PNG or JPEG file) or generated as a result of a code chunk.
+Hình ảnh trong tài liệu Quarto có thể được nhúng (ví dụ, tệp PNG hoặc JPEG) hoặc được tạo ra từ kết quả của một khối mã.
 
-To embed an image from an external file, you can use the Insert menu in the Visual Editor in RStudio and select Figure / Image.
-This will pop open a menu where you can browse to the image you want to insert as well as add alternative text or caption to it and adjust its size.
-In the visual editor you can also simply paste an image from your clipboard into your document and RStudio will place a copy of that image in your project folder.
+Để nhúng hình ảnh từ tệp bên ngoài, bạn có thể sử dụng menu Insert trong trình soạn thảo trực quan của RStudio và chọn Figure / Image.
+Thao tác này sẽ mở ra một menu nơi bạn có thể duyệt đến hình ảnh bạn muốn chèn cũng như thêm văn bản thay thế hoặc chú thích và điều chỉnh kích thước.
+Trong trình soạn thảo trực quan, bạn cũng có thể đơn giản dán hình ảnh từ clipboard vào tài liệu và RStudio sẽ đặt một bản sao của hình ảnh đó trong thư mục dự án của bạn.
 
-If you include a code chunk that generates a figure (e.g., includes a `ggplot()` call), the resulting figure will be automatically included in your Quarto document.
+Nếu bạn bao gồm một khối mã tạo ra hình ảnh (ví dụ, chứa lệnh gọi `ggplot()`), hình ảnh kết quả sẽ tự động được bao gồm trong tài liệu Quarto của bạn.
 
-### Figure sizing
+### Kích thước hình ảnh
 
-The biggest challenge of graphics in Quarto is getting your figures the right size and shape.
-There are five main options that control figure sizing: `fig-width`, `fig-height`, `fig-asp`, `out-width` and `out-height`.
-Image sizing is challenging because there are two sizes (the size of the figure created by R and the size at which it is inserted in the output document), and multiple ways of specifying the size (i.e. height, width, and aspect ratio: pick two of three).
+Thách thức lớn nhất của đồ họa trong Quarto là đạt được kích thước và hình dạng phù hợp cho hình ảnh.
+Có năm tùy chọn chính kiểm soát kích thước hình ảnh: `fig-width`, `fig-height`, `fig-asp`, `out-width` và `out-height`.
+Kích thước hình ảnh là một thách thức vì có hai kích thước (kích thước hình ảnh do R tạo ra và kích thước khi nó được chèn vào tài liệu đầu ra), và nhiều cách chỉ định kích thước (tức là chiều cao, chiều rộng, và tỷ lệ khung hình: chọn hai trong ba).
 
-We recommend three of the five options:
+Chúng tôi khuyên dùng ba trong năm tùy chọn:
 
--   Plots tend to be more aesthetically pleasing if they have consistent width.
-    To enforce this, set `fig-width: 6` (6") and `fig-asp: 0.618` (the golden ratio) in the defaults.
-    Then in individual chunks, only adjust `fig-asp`.
+-   Biểu đồ có xu hướng đẹp hơn về mặt thẩm mỹ nếu chúng có chiều rộng nhất quán.
+    Để thực thi điều này, đặt `fig-width: 6` (6") và `fig-asp: 0.618` (tỷ lệ vàng) trong giá trị mặc định.
+    Sau đó trong từng khối mã riêng lẻ, chỉ điều chỉnh `fig-asp`.
 
--   Control the output size with `out-width` and set it to a percentage of the body width of the output document.
-    We suggest to `out-width: "70%"` and `fig-align: center`.
+-   Kiểm soát kích thước đầu ra với `out-width` và đặt nó thành phần trăm chiều rộng phần thân của tài liệu đầu ra.
+    Chúng tôi gợi ý `out-width: "70%"` và `fig-align: center`.
 
-    That gives plots room to breathe, without taking up too much space.
+    Điều đó cho biểu đồ không gian thoáng, mà không chiếm quá nhiều chỗ.
 
--   To put multiple plots in a single row, set the `layout-ncol` to 2 for two plots, 3 for three plots, etc.
-    This effectively sets `out-width` to "50%" for each of your plots if `layout-ncol` is 2, "33%" if `layout-ncol` is 3, etc.
-    Depending on what you're trying to illustrate (e.g., show data or show plot variations), you might also tweak `fig-width`, as discussed below.
+-   Để đặt nhiều biểu đồ trong một hàng, đặt `layout-ncol` thành 2 cho hai biểu đồ, 3 cho ba biểu đồ, v.v.
+    Điều này thực tế đặt `out-width` thành "50%" cho mỗi biểu đồ nếu `layout-ncol` là 2, "33%" nếu `layout-ncol` là 3, v.v.
+    Tùy thuộc vào những gì bạn đang cố minh họa (ví dụ, hiển thị dữ liệu hoặc hiển thị các biến thể biểu đồ), bạn cũng có thể điều chỉnh `fig-width`, như được thảo luận bên dưới.
 
-If you find that you're having to squint to read the text in your plot, you need to tweak `fig-width`.
-If `fig-width` is larger than the size the figure is rendered in the final doc, the text will be too small; if `fig-width` is smaller, the text will be too big.
-You'll often need to do a little experimentation to figure out the right ratio between the `fig-width` and the eventual width in your document.
-To illustrate the principle, the following three plots have `fig-width` of 4, 6, and 8 respectively:
+Nếu bạn thấy mình phải nheo mắt để đọc chữ trong biểu đồ, bạn cần điều chỉnh `fig-width`.
+Nếu `fig-width` lớn hơn kích thước mà hình ảnh được biên dịch trong tài liệu cuối cùng, chữ sẽ quá nhỏ; nếu `fig-width` nhỏ hơn, chữ sẽ quá lớn.
+Bạn thường sẽ cần thử nghiệm một chút để tìm ra tỷ lệ phù hợp giữa `fig-width` và chiều rộng cuối cùng trong tài liệu của bạn.
+Để minh họa nguyên tắc, ba biểu đồ sau có `fig-width` lần lượt là 4, 6, và 8:
 
 ```{r}
 #| include: false
@@ -458,8 +458,8 @@ plot <- ggplot(mpg, aes(x = displ, y = hwy)) + geom_point()
 #| fig-width: 4
 #| out-width: "50%"
 #| fig-alt: |
-#|   Scatterplot of highway mileage vs. displacement of cars, where the points 
-#|   are normally sized and the axis text and labels are in similar font size 
+#|   Scatterplot of highway mileage vs. displacement of cars, where the points
+#|   are normally sized and the axis text and labels are in similar font size
 #|   to the surrounding text.
 plot
 ```
@@ -469,8 +469,8 @@ plot
 #| fig-width: 6
 #| out-width: "50%"
 #| fig-alt: |
-#|   Scatterplot of highway mileage vs. displacement of cars, where the points 
-#|   are smaller than in the previous plot and the axis text and labels are 
+#|   Scatterplot of highway mileage vs. displacement of cars, where the points
+#|   are smaller than in the previous plot and the axis text and labels are
 #|   smaller than the surrounding text.
 plot
 ```
@@ -480,40 +480,40 @@ plot
 #| fig-width: 8
 #| out-width: "50%"
 #| fig-alt: |
-#|   Scatterplot of highway mileage vs. displacement of cars, where the points 
-#|   are even smaller than in the previous plot and the axis text and labels are 
+#|   Scatterplot of highway mileage vs. displacement of cars, where the points
+#|   are even smaller than in the previous plot and the axis text and labels are
 #|   even smaller than the surrounding text.
 plot
 ```
 
-If you want to make sure the font size is consistent across all your figures, whenever you set `out-width`, you'll also need to adjust `fig-width` to maintain the same ratio with your default `out-width`.
-For example, if your default `fig-width` is 6 and `out-width` is "70%", when you set `out-width: "50%"` you'll need to set `fig-width` to 4.3 (6 \* 0.5 / 0.7).
+Nếu bạn muốn đảm bảo cỡ chữ nhất quán trên tất cả hình ảnh, mỗi khi bạn đặt `out-width`, bạn cũng cần điều chỉnh `fig-width` để duy trì cùng tỷ lệ với `out-width` mặc định.
+Ví dụ, nếu `fig-width` mặc định là 6 và `out-width` là "70%", khi bạn đặt `out-width: "50%"` bạn sẽ cần đặt `fig-width` thành 4.3 (6 \* 0.5 / 0.7).
 
-Figure sizing and scaling is an art and science and getting things right can require an iterative trial-and-error approach.
-You can learn more about figure sizing in the [taking control of plot scaling blog post](https://www.tidyverse.org/blog/2020/08/taking-control-of-plot-scaling/).
+Kích thước và tỷ lệ hình ảnh vừa là nghệ thuật vừa là khoa học và việc đạt được kết quả đúng có thể yêu cầu phương pháp thử-và-sai lặp đi lặp lại.
+Bạn có thể tìm hiểu thêm về kích thước hình ảnh trong [bài viết blog về kiểm soát tỷ lệ biểu đồ](https://www.tidyverse.org/blog/2020/08/taking-control-of-plot-scaling/).
 
-### Other important options
+### Các tùy chọn quan trọng khác
 
-When mingling code and text, like in this book, you can set `fig-show: hold` so that plots are shown after the code.
-This has the pleasant side effect of forcing you to break up large blocks of code with their explanations.
+Khi kết hợp mã và văn bản, như trong cuốn sách này, bạn có thể đặt `fig-show: hold` để biểu đồ được hiển thị sau mã.
+Điều này có tác dụng phụ tốt là buộc bạn chia nhỏ các khối mã lớn với phần giải thích của chúng.
 
-To add a caption to the plot, use `fig-cap`.
-In Quarto this will change the figure from inline to "floating".
+Để thêm chú thích cho biểu đồ, sử dụng `fig-cap`.
+Trong Quarto, điều này sẽ thay đổi hình ảnh từ dạng nội tuyến sang dạng "nổi" (floating).
 
-If you're producing PDF output, the default graphics type is PDF.
-This is a good default because PDFs are high quality vector graphics.
-However, they can produce very large and slow plots if you are displaying thousands of points.
-In that case, set `fig-format: "png"` to force the use of PNGs.
-They are slightly lower quality, but will be much more compact.
+Nếu bạn đang tạo đầu ra PDF, loại đồ họa mặc định là PDF.
+Đây là mặc định tốt vì PDF là đồ họa vector chất lượng cao.
+Tuy nhiên, chúng có thể tạo ra các biểu đồ rất lớn và chậm nếu bạn hiển thị hàng nghìn điểm.
+Trong trường hợp đó, đặt `fig-format: "png"` để buộc sử dụng PNG.
+Chúng có chất lượng hơi thấp hơn, nhưng sẽ nhỏ gọn hơn nhiều.
 
-It's a good idea to name code chunks that produce figures, even if you don't routinely label other chunks.
-The chunk label is used to generate the file name of the graphic on disk, so naming your chunks makes it much easier to pick out plots and reuse in other circumstances (e.g., if you want to quickly drop a single plot into an email).
+Đặt tên cho các khối mã tạo ra hình ảnh là một ý tưởng tốt, ngay cả khi bạn không thường xuyên đặt nhãn cho các khối mã khác.
+Nhãn khối mã được sử dụng để tạo tên tệp của đồ họa trên đĩa, vì vậy việc đặt tên khối mã giúp dễ dàng hơn nhiều để chọn ra các biểu đồ và tái sử dụng trong các trường hợp khác (ví dụ, nếu bạn muốn nhanh chóng đưa một biểu đồ đơn lẻ vào email).
 
-### Exercises
+### Bài tập
 
-1.  Open `diamond-sizes.qmd` in the visual editor, find an image of a diamond, copy it, and paste it into the document. Double click on the image and add a caption. Resize the image and render your document. Observe how the image is saved in your current working directory.
-2.  Edit the label of the code chunk in `diamond-sizes.qmd` that generates a plot to start with the prefix `fig-` and add a caption to the figure with the chunk option `fig-cap`. Then, edit the text above the code chunk to add a cross-reference to the figure with Insert \> Cross Reference.
-3.  Change the size of the figure with the following chunk options, one at a time, render your document, and describe how the figure changes.
+1.  Mở `diamond-sizes.qmd` trong trình soạn thảo trực quan, tìm một hình ảnh viên kim cương, sao chép nó, và dán vào tài liệu. Nhấp đúp vào hình ảnh và thêm chú thích. Thay đổi kích thước hình ảnh và biên dịch tài liệu. Quan sát cách hình ảnh được lưu trong thư mục làm việc hiện tại.
+2.  Chỉnh sửa nhãn của khối mã trong `diamond-sizes.qmd` tạo ra biểu đồ để bắt đầu bằng tiền tố `fig-` và thêm chú thích cho hình ảnh bằng tùy chọn khối mã `fig-cap`. Sau đó, chỉnh sửa văn bản phía trên khối mã để thêm tham chiếu chéo đến hình ảnh bằng Insert \> Cross Reference.
+3.  Thay đổi kích thước hình ảnh bằng các tùy chọn khối mã sau, từng cái một, biên dịch tài liệu và mô tả hình ảnh thay đổi như thế nào.
     a.  `fig-width: 10`
 
     b.  `fig-height: 3`
@@ -522,20 +522,20 @@ The chunk label is used to generate the file name of the graphic on disk, so nam
 
     d.  `out-width: "20%"`
 
-## Tables
+## Bảng
 
-Similar to figures, you can include two types of tables in a Quarto document.
-They can be markdown tables that you create directly in your Quarto document (using the Insert Table menu) or they can be tables generated as a result of a code chunk.
-In this section we will focus on the latter, tables generated via computation.
+Tương tự như hình ảnh, bạn có thể bao gồm hai loại bảng trong tài liệu Quarto.
+Chúng có thể là bảng markdown mà bạn tạo trực tiếp trong tài liệu Quarto (sử dụng menu Insert Table) hoặc chúng có thể là bảng được tạo ra từ kết quả của một khối mã.
+Trong phần này, chúng ta sẽ tập trung vào loại sau, bảng được tạo thông qua tính toán.
 
-By default, Quarto prints data frames and matrices as you'd see them in the console:
+Theo mặc định, Quarto in khung dữ liệu (data frame) và ma trận như bạn thấy chúng trong console:
 
 ```{r}
 mtcars[1:5, ]
 ```
 
-If you prefer that data be displayed with additional formatting you can use the `knitr::kable()` function.
-The code below generates @tbl-kable.
+Nếu bạn muốn dữ liệu được hiển thị với định dạng bổ sung, bạn có thể sử dụng hàm `knitr::kable()`.
+Mã bên dưới tạo ra @tbl-kable.
 
 ```{r}
 #| label: tbl-kable
@@ -543,34 +543,34 @@ The code below generates @tbl-kable.
 knitr::kable(mtcars[1:5, ], )
 ```
 
-Read the documentation for `?knitr::kable` to see the other ways in which you can customize the table.
-For even deeper customization, consider the **gt**, **huxtable**, **reactable**, **kableExtra**, **xtable**, **stargazer**, **pander**, **tables**, and **ascii** packages.
-Each provides a set of tools for returning formatted tables from R code.
+Đọc tài liệu cho `?knitr::kable` để xem các cách khác mà bạn có thể tùy chỉnh bảng.
+Để tùy chỉnh sâu hơn, hãy cân nhắc các gói **gt**, **huxtable**, **reactable**, **kableExtra**, **xtable**, **stargazer**, **pander**, **tables**, và **ascii**.
+Mỗi gói cung cấp một bộ công cụ để trả về bảng đã định dạng từ mã R.
 
-### Exercises
+### Bài tập
 
-1.  Open `diamond-sizes.qmd` in the visual editor, insert a code chunk, and add a table with `knitr::kable()` that shows the first 5 rows of the `diamonds` data frame.
-2.  Display the same table with `gt::gt()` instead.
-3.  Add a chunk label that starts with the prefix `tbl-` and add a caption to the table with the chunk option `tbl-cap`. Then, edit the text above the code chunk to add a cross-reference to the table with Insert \> Cross Reference.
+1.  Mở `diamond-sizes.qmd` trong trình soạn thảo trực quan, chèn một khối mã, và thêm một bảng bằng `knitr::kable()` hiển thị 5 hàng đầu tiên của khung dữ liệu `diamonds`.
+2.  Hiển thị cùng bảng đó bằng `gt::gt()` thay thế.
+3.  Thêm nhãn khối mã bắt đầu bằng tiền tố `tbl-` và thêm chú thích cho bảng bằng tùy chọn khối mã `tbl-cap`. Sau đó, chỉnh sửa văn bản phía trên khối mã để thêm tham chiếu chéo đến bảng bằng Insert \> Cross Reference.
 
-## Caching {#sec-caching}
+## Bộ nhớ đệm {#sec-caching}
 
-Normally, each render of a document starts from a completely clean slate.
-This is great for reproducibility, because it ensures that you've captured every important computation in code.
-However, it can be painful if you have some computations that take a long time.
-The solution is `cache: true`.
+Thông thường, mỗi lần biên dịch tài liệu bắt đầu từ một trang hoàn toàn mới.
+Điều này tuyệt vời cho tính tái tạo, vì nó đảm bảo rằng bạn đã ghi lại mọi phép tính quan trọng trong mã.
+Tuy nhiên, nó có thể gây khó chịu nếu bạn có một số phép tính mất nhiều thời gian.
+Giải pháp là `cache: true`.
 
-You can enable the Knitr cache at the document level for caching the results of all computations in a document using standard YAML options:
+Bạn có thể bật bộ nhớ đệm (cache) Knitr ở cấp tài liệu để lưu kết quả của tất cả phép tính trong tài liệu bằng các tùy chọn YAML tiêu chuẩn:
 
 ``` yaml
 ---
 title: "My Document"
-execute: 
+execute:
   cache: true
 ---
 ```
 
-You can also enable caching at the chunk level for caching the results of computation in a specific chunk:
+Bạn cũng có thể bật bộ nhớ đệm ở cấp khối mã để lưu kết quả tính toán trong một khối mã cụ thể:
 
 ```{r}
 #| echo: fenced
@@ -578,13 +578,13 @@ You can also enable caching at the chunk level for caching the results of comput
 # code for lengthy computation...
 ```
 
-When set, this will save the output of the chunk to a specially named file on disk.
-On subsequent runs, knitr will check to see if the code has changed, and if it hasn't, it will reuse the cached results.
+Khi được đặt, điều này sẽ lưu kết quả đầu ra của khối mã vào một tệp có tên đặc biệt trên đĩa.
+Trong các lần chạy tiếp theo, knitr sẽ kiểm tra xem mã có thay đổi không, và nếu không, nó sẽ tái sử dụng kết quả đã lưu trong bộ nhớ đệm.
 
-The caching system must be used with care, because by default it is based on the code only, not its dependencies.
-For example, here the `processed_data` chunk depends on the `raw-data` chunk:
+Hệ thống bộ nhớ đệm phải được sử dụng cẩn thận, vì theo mặc định nó chỉ dựa trên mã, không phải các phụ thuộc của nó.
+Ví dụ, ở đây khối mã `processed_data` phụ thuộc vào khối mã `raw-data`:
 
-````         
+````
 ``` {{r}}
 #| label: raw-data
 #| cache: true
@@ -592,40 +592,40 @@ rawdata <- readr::read_csv("a_very_large_file.csv")
 ```
 ````
 
-````         
+````
 ``` {{r}}
 #| label: processed_data
 #| cache: true
-processed_data <- rawdata |> 
-  filter(!is.na(import_var)) |> 
+processed_data <- rawdata |>
+  filter(!is.na(import_var)) |>
   mutate(new_variable = complicated_transformation(x, y, z))
 ```
 ````
 
-Caching the `processed_data` chunk means that it will get re-run if the dplyr pipeline is changed, but it won't get rerun if the `read_csv()` call changes.
-You can avoid that problem with the `dependson` chunk option:
+Lưu bộ nhớ đệm cho khối mã `processed_data` có nghĩa là nó sẽ được chạy lại nếu pipeline dplyr thay đổi, nhưng nó sẽ không được chạy lại nếu lệnh gọi `read_csv()` thay đổi.
+Bạn có thể tránh vấn đề đó với tùy chọn khối mã `dependson`:
 
-````         
+````
 ``` {{r}}
 #| label: processed-data
 #| cache: true
 #| dependson: "raw-data"
-processed_data <- rawdata |> 
-  filter(!is.na(import_var)) |> 
+processed_data <- rawdata |>
+  filter(!is.na(import_var)) |>
   mutate(new_variable = complicated_transformation(x, y, z))
 ```
 ````
 
-`dependson` should contain a character vector of *every* chunk that the cached chunk depends on.
-Knitr will update the results for the cached chunk whenever it detects that one of its dependencies have changed.
+`dependson` nên chứa một vector ký tự của *mọi* khối mã mà khối mã được lưu đệm phụ thuộc vào.
+Knitr sẽ cập nhật kết quả cho khối mã được lưu đệm bất cứ khi nào nó phát hiện rằng một trong các phụ thuộc đã thay đổi.
 
-Note that the chunks won't update if `a_very_large_file.csv` changes, because knitr caching only tracks changes within the `.qmd` file.
-If you want to also track changes to that file you can use the `cache.extra` option.
-This is an arbitrary R expression that will invalidate the cache whenever it changes.
-A good function to use is `file.mtime()`: it returns when it was last modified.
-Then you can write:
+Lưu ý rằng các khối mã sẽ không cập nhật nếu `a_very_large_file.csv` thay đổi, vì bộ nhớ đệm knitr chỉ theo dõi thay đổi trong tệp `.qmd`.
+Nếu bạn muốn cũng theo dõi thay đổi của tệp đó, bạn có thể sử dụng tùy chọn `cache.extra`.
+Đây là một biểu thức R tùy ý sẽ vô hiệu hóa bộ nhớ đệm bất cứ khi nào nó thay đổi.
+Một hàm tốt để sử dụng là `file.mtime()`: nó trả về thời điểm tệp được sửa đổi lần cuối.
+Khi đó bạn có thể viết:
 
-````         
+````
 ``` {{r}}
 #| label: raw-data
 #| cache: true
@@ -634,49 +634,49 @@ rawdata <- readr::read_csv("a_very_large_file.csv")
 ```
 ````
 
-We've followed the advice of [David Robinson](https://twitter.com/drob/status/738786604731490304) to name these chunks: each chunk is named after the primary object that it creates.
-This makes it easier to understand the `dependson` specification.
+Chúng tôi đã tuân theo lời khuyên của [David Robinson](https://twitter.com/drob/status/738786604731490304) để đặt tên cho các khối mã này: mỗi khối mã được đặt tên theo đối tượng chính mà nó tạo ra.
+Điều này giúp dễ hiểu hơn đặc tả `dependson`.
 
-As your caching strategies get progressively more complicated, it's a good idea to regularly clear out all your caches with `knitr::clean_cache()`.
+Khi chiến lược bộ nhớ đệm của bạn ngày càng phức tạp hơn, bạn nên thường xuyên xóa tất cả bộ nhớ đệm bằng `knitr::clean_cache()`.
 
-### Exercises
+### Bài tập
 
-1.  Set up a network of chunks where `d` depends on `c` and `b`, and both `b` and `c` depend on `a`. Have each chunk print `lubridate::now()`, set `cache: true`, then verify your understanding of caching.
+1.  Thiết lập một mạng lưới các khối mã trong đó `d` phụ thuộc vào `c` và `b`, và cả `b` lẫn `c` đều phụ thuộc vào `a`. Cho mỗi khối mã in `lubridate::now()`, đặt `cache: true`, sau đó xác minh hiểu biết của bạn về bộ nhớ đệm.
 
-## Troubleshooting
+## Khắc phục sự cố
 
-Troubleshooting Quarto documents can be challenging because you are no longer in an interactive R environment, and you will need to learn some new tricks.
-Additionally, the error could be due to issues with the Quarto document itself or due to the R code in the Quarto document.
+Khắc phục sự cố cho tài liệu Quarto có thể khó khăn vì bạn không còn ở trong môi trường R tương tác, và bạn sẽ cần học một số mẹo mới.
+Ngoài ra, lỗi có thể do vấn đề với chính tài liệu Quarto hoặc do mã R trong tài liệu Quarto.
 
-One common error in documents with code chunks is duplicated chunk labels, which are especially pervasive if your workflow involves copying and pasting code chunks.
-To address this issue, all you need to do is to change one of your duplicated labels.
+Một lỗi phổ biến trong tài liệu có khối mã là nhãn khối mã bị trùng lặp, đặc biệt hay gặp nếu quy trình làm việc của bạn liên quan đến việc sao chép và dán khối mã.
+Để giải quyết vấn đề này, tất cả những gì bạn cần làm là thay đổi một trong các nhãn bị trùng.
 
-If the errors are due to the R code in the document, the first thing you should always try is to recreate the problem in an interactive session.
-Restart R, then "Run all chunks", either from the Code menu, under Run region or with the keyboard shortcut Ctrl + Alt + R.
-If you're lucky, that will recreate the problem, and you can figure out what's going on interactively.
+Nếu lỗi do mã R trong tài liệu, điều đầu tiên bạn nên luôn thử là tái tạo vấn đề trong một phiên tương tác.
+Khởi động lại R, sau đó "Run all chunks", từ menu Code, dưới Run region hoặc với phím tắt Ctrl + Alt + R.
+Nếu may mắn, điều đó sẽ tái tạo vấn đề, và bạn có thể tìm hiểu chuyện gì đang xảy ra một cách tương tác.
 
-If that doesn't help, there must be something different between your interactive environment and the Quarto environment.
-You're going to need to systematically explore the options.
-The most common difference is the working directory: the working directory of a Quarto is the directory in which it lives.
-Check the working directory is what you expect by including `getwd()` in a chunk.
+Nếu điều đó không giúp ích, phải có điều gì đó khác biệt giữa môi trường tương tác và môi trường Quarto.
+Bạn sẽ cần khám phá các tùy chọn một cách có hệ thống.
+Sự khác biệt phổ biến nhất là thư mục làm việc: thư mục làm việc của Quarto là thư mục chứa nó.
+Kiểm tra thư mục làm việc có đúng như bạn mong đợi bằng cách thêm `getwd()` vào một khối mã.
 
-Next, brainstorm all the things that might cause the bug.
-You'll need to systematically check that they're the same in your R session and your Quarto session.
-The easiest way to do that is to set `error: true` on the chunk causing the problem, then use `print()` and `str()` to check that settings are as you expect.
+Tiếp theo, liệt kê tất cả những thứ có thể gây ra lỗi.
+Bạn sẽ cần kiểm tra một cách có hệ thống rằng chúng giống nhau trong phiên R và phiên Quarto.
+Cách dễ nhất để làm điều đó là đặt `error: true` trên khối mã gây ra vấn đề, sau đó sử dụng `print()` và `str()` để kiểm tra rằng các cài đặt đúng như bạn mong đợi.
 
-## YAML header
+## Phần đầu YAML
 
-You can control many other "whole document" settings by tweaking the parameters of the YAML header.
-You might wonder what YAML stands for: it's "YAML Ain't Markup Language", which is designed for representing hierarchical data in a way that's easy for humans to read and write.
-Quarto uses it to control many details of the output.
-Here we'll discuss three: self-contained documents, document parameters, and bibliographies.
+Bạn có thể kiểm soát nhiều cài đặt "toàn bộ tài liệu" khác bằng cách điều chỉnh các tham số của phần đầu YAML.
+Bạn có thể thắc mắc YAML là viết tắt của gì: đó là "YAML Ain't Markup Language", được thiết kế để biểu diễn dữ liệu phân cấp theo cách dễ đọc và viết cho con người.
+Quarto sử dụng nó để kiểm soát nhiều chi tiết của đầu ra.
+Ở đây chúng ta sẽ thảo luận ba nội dung: tài liệu độc lập, tham số tài liệu, và thư mục tham khảo.
 
-### Self-contained
+### Tài liệu độc lập
 
-HTML documents typically have a number of external dependencies (e.g., images, CSS style sheets, JavaScript, etc.) and, by default, Quarto places these dependencies in a `_files` folder in the same directory as your `.qmd` file.
-If you publish the HTML file on a hosting platform (e.g., QuartoPub, <https://quartopub.com/>), the dependencies in this directory are published with your document and hence are available in the published report.
-However, if you want to email the report to a colleague, you might prefer to have a single, self-contained, HTML document that embeds all of its dependencies.
-You can do this by specifying the `embed-resources` option:
+Tài liệu HTML thường có một số phụ thuộc bên ngoài (ví dụ, hình ảnh, bảng định kiểu CSS, JavaScript, v.v.) và theo mặc định, Quarto đặt các phụ thuộc này trong thư mục `_files` cùng thư mục với tệp `.qmd` của bạn.
+Nếu bạn xuất bản tệp HTML trên một nền tảng lưu trữ (ví dụ, QuartoPub, <https://quartopub.com/>), các phụ thuộc trong thư mục này được xuất bản cùng tài liệu của bạn và do đó có sẵn trong báo cáo đã xuất bản.
+Tuy nhiên, nếu bạn muốn gửi email báo cáo cho đồng nghiệp, bạn có thể muốn có một tệp HTML đơn lẻ, độc lập, nhúng tất cả phụ thuộc.
+Bạn có thể làm điều này bằng cách chỉ định tùy chọn `embed-resources`:
 
 ``` yaml
 format:
@@ -684,16 +684,16 @@ format:
     embed-resources: true
 ```
 
-The resulting file will be self-contained, such that it will need no external files and no internet access to be displayed properly by a browser.
+Tệp kết quả sẽ hoàn toàn độc lập, không cần tệp bên ngoài và không cần truy cập internet để hiển thị đúng trong trình duyệt.
 
-### Parameters
+### Tham số
 
-Quarto documents can include one or more parameters whose values can be set when you render the report.
-Parameters are useful when you want to re-render the same report with distinct values for various key inputs.
-For example, you might be producing sales reports per branch, exam results by student, or demographic summaries by country.
-To declare one or more parameters, use the `params` field.
+Tài liệu Quarto có thể bao gồm một hoặc nhiều tham số (parameter) mà giá trị của chúng có thể được đặt khi bạn biên dịch báo cáo.
+Tham số hữu ích khi bạn muốn biên dịch lại cùng một báo cáo với các giá trị khác nhau cho các đầu vào chính.
+Ví dụ, bạn có thể đang tạo báo cáo bán hàng theo chi nhánh, kết quả thi theo sinh viên, hoặc tóm tắt nhân khẩu học theo quốc gia.
+Để khai báo một hoặc nhiều tham số, sử dụng trường `params`.
 
-This example uses a `my_class` parameter to determine which class of cars to display:
+Ví dụ này sử dụng tham số `my_class` để xác định lớp xe nào sẽ hiển thị:
 
 ```{r}
 #| echo: false
@@ -702,11 +702,11 @@ This example uses a `my_class` parameter to determine which class of cars to dis
 cat(readr::read_file("quarto/fuel-economy.qmd"))
 ```
 
-As you can see, parameters are available within the code chunks as a read-only list named `params`.
+Như bạn có thể thấy, tham số có sẵn trong các khối mã dưới dạng danh sách chỉ đọc có tên `params`.
 
-You can write atomic vectors directly into the YAML header.
-You can also run arbitrary R expressions by prefacing the parameter value with `!expr`.
-This is a good way to specify date/time parameters.
+Bạn có thể viết vector nguyên tử trực tiếp vào phần đầu YAML.
+Bạn cũng có thể chạy biểu thức R tùy ý bằng cách thêm tiền tố `!expr` trước giá trị tham số.
+Đây là cách tốt để chỉ định tham số ngày/giờ.
 
 ``` yaml
 params:
@@ -714,140 +714,140 @@ params:
   snapshot: !expr lubridate::ymd_hms("2015-01-01 12:30:00")
 ```
 
-### Bibliographies and Citations
+### Thư mục tham khảo và trích dẫn
 
-Quarto can automatically generate citations and a bibliography in a number of styles.
-The most straightforward way of adding citations and bibliographies to a Quarto document is using the visual editor in RStudio.
+Quarto có thể tự động tạo trích dẫn và thư mục tham khảo (bibliography) theo nhiều kiểu.
+Cách đơn giản nhất để thêm trích dẫn và thư mục tham khảo vào tài liệu Quarto là sử dụng trình soạn thảo trực quan trong RStudio.
 
-To add a citation using the visual editor, go to Insert \> Citation.
-Citations can be inserted from a variety of sources:
+Để thêm trích dẫn bằng trình soạn thảo trực quan, vào Insert \> Citation.
+Trích dẫn có thể được chèn từ nhiều nguồn khác nhau:
 
-1.  [DOI](https://quarto.org/docs/visual-editor/technical.html#citations-from-dois) (Document Object Identifier) references.
+1.  Tham chiếu [DOI](https://quarto.org/docs/visual-editor/technical.html#citations-from-dois) (Document Object Identifier).
 
-2.  [Zotero](https://quarto.org/docs/visual-editor/technical.html#citations-from-zotero) personal or group libraries.
+2.  Thư viện cá nhân hoặc nhóm [Zotero](https://quarto.org/docs/visual-editor/technical.html#citations-from-zotero).
 
-3.  Searches of [Crossref](https://www.crossref.org/), [DataCite](https://datacite.org/), or [PubMed](https://pubmed.ncbi.nlm.nih.gov/).
+3.  Tìm kiếm [Crossref](https://www.crossref.org/), [DataCite](https://datacite.org/), hoặc [PubMed](https://pubmed.ncbi.nlm.nih.gov/).
 
-4.  Your document bibliography (a `.bib` file in the directory of your document)
+4.  Thư mục tham khảo tài liệu của bạn (tệp `.bib` trong thư mục tài liệu)
 
-Under the hood, the visual mode uses the standard Pandoc markdown representation for citations (e.g., `[@citation]`).
+Bên dưới, chế độ trực quan sử dụng biểu diễn Pandoc markdown tiêu chuẩn cho trích dẫn (ví dụ, `[@citation]`).
 
-If you add a citation using one of the first three methods, the visual editor will automatically create a `bibliography.bib` file for you and add the reference to it.
-It will also add a `bibliography` field to the document YAML.
-As you add more references, this file will get populated with their citations.
-You can also directly edit this file using many common bibliography formats including BibLaTeX, BibTeX, EndNote, Medline.
+Nếu bạn thêm trích dẫn bằng một trong ba phương pháp đầu tiên, trình soạn thảo trực quan sẽ tự động tạo tệp `bibliography.bib` cho bạn và thêm tham chiếu vào đó.
+Nó cũng sẽ thêm trường `bibliography` vào YAML của tài liệu.
+Khi bạn thêm nhiều tham chiếu hơn, tệp này sẽ được điền các trích dẫn.
+Bạn cũng có thể chỉnh sửa trực tiếp tệp này bằng nhiều định dạng thư mục tham khảo phổ biến bao gồm BibLaTeX, BibTeX, EndNote, Medline.
 
-To create a citation within your .qmd file in the source editor, use a key composed of '\@' + the citation identifier from the bibliography file.
-Then place the citation in square brackets.
-Here are some examples:
+Để tạo trích dẫn trong tệp .qmd bằng trình soạn thảo mã nguồn, sử dụng khóa gồm '\@' + mã định danh trích dẫn từ tệp thư mục tham khảo.
+Sau đó đặt trích dẫn trong ngoặc vuông.
+Dưới đây là một số ví dụ:
 
 ``` markdown
 Separate multiple citations with a `;`: Blah blah [@smith04; @doe99].
 
-You can add arbitrary comments inside the square brackets: 
+You can add arbitrary comments inside the square brackets:
 Blah blah [see @doe99, pp. 33-35; also @smith04, ch. 1].
 
-Remove the square brackets to create an in-text citation: @smith04 
+Remove the square brackets to create an in-text citation: @smith04
 says blah, or @smith04 [p. 33] says blah.
 
-Add a `-` before the citation to suppress the author's name: 
+Add a `-` before the citation to suppress the author's name:
 Smith says blah [-@smith04].
 ```
 
-When Quarto renders your file, it will build and append a bibliography to the end of your document.
-The bibliography will contain each of the cited references from your bibliography file, but it will not contain a section heading.
-As a result it is common practice to end your file with a section header for the bibliography, such as `# References` or `# Bibliography`.
+Khi Quarto biên dịch tệp, nó sẽ xây dựng và thêm thư mục tham khảo vào cuối tài liệu.
+Thư mục tham khảo sẽ chứa mỗi tham chiếu được trích dẫn từ tệp thư mục tham khảo, nhưng nó sẽ không chứa tiêu đề phần.
+Do đó, thực hành phổ biến là kết thúc tệp bằng tiêu đề phần cho thư mục tham khảo, như `# References` hoặc `# Bibliography`.
 
-You can change the style of your citations and bibliography by referencing a CSL (citation style language) file in the `csl` field:
+Bạn có thể thay đổi kiểu trích dẫn và thư mục tham khảo bằng cách tham chiếu tệp CSL (citation style language) trong trường `csl`:
 
 ``` yaml
 bibliography: rmarkdown.bib
 csl: apa.csl
 ```
 
-As with the bibliography field, your csl file should contain a path to the file.
-Here we assume that the csl file is in the same directory as the .qmd file.
-A good place to find CSL style files for common bibliography styles is <https://github.com/citation-style-language/styles>.
+Giống như trường bibliography, tệp csl của bạn nên chứa đường dẫn đến tệp.
+Ở đây chúng ta giả sử rằng tệp csl nằm trong cùng thư mục với tệp .qmd.
+Một nơi tốt để tìm tệp kiểu CSL cho các kiểu thư mục tham khảo phổ biến là <https://github.com/citation-style-language/styles>.
 
-## Workflow
+## Quy trình làm việc
 
-Earlier, we discussed a basic workflow for capturing your R code where you work interactively in the *console*, then capture what works in the *script editor*.
-Quarto brings together the console and the script editor, blurring the lines between interactive exploration and long-term code capture.
-You can rapidly iterate within a chunk, editing and re-executing with Cmd/Ctrl + Shift + Enter.
-When you're happy, you move on and start a new chunk.
+Trước đó, chúng ta đã thảo luận về một quy trình làm việc cơ bản để ghi lại mã R nơi bạn làm việc tương tác trong *console*, sau đó ghi lại những gì hoạt động trong *trình soạn thảo tập lệnh*.
+Quarto kết hợp console và trình soạn thảo tập lệnh, làm mờ ranh giới giữa khám phá tương tác và ghi lại mã lâu dài.
+Bạn có thể lặp nhanh trong một khối mã, chỉnh sửa và thực thi lại với Cmd/Ctrl + Shift + Enter.
+Khi bạn hài lòng, bạn chuyển sang và bắt đầu một khối mã mới.
 
-Quarto is also important because it so tightly integrates prose and code.
-This makes it a great **analysis notebook** because it lets you develop code and record your thoughts.
-An analysis notebook shares many of the same goals as a classic lab notebook in the physical sciences.
-It:
+Quarto cũng quan trọng vì nó tích hợp chặt chẽ văn bản và mã.
+Điều này làm cho nó trở thành một **sổ phân tích** (analysis notebook) tuyệt vời vì nó cho phép bạn phát triển mã và ghi lại suy nghĩ.
+Sổ phân tích chia sẻ nhiều mục tiêu giống với sổ phòng thí nghiệm cổ điển trong khoa học vật lý.
+Nó:
 
--   Records what you did and why you did it.
-    Regardless of how great your memory is, if you don't record what you do, there will come a time when you have forgotten important details.
-    Write them down so you don't forget!
+-   Ghi lại những gì bạn đã làm và tại sao bạn làm điều đó.
+    Bất kể trí nhớ của bạn tốt đến đâu, nếu bạn không ghi lại những gì mình làm, sẽ có lúc bạn quên những chi tiết quan trọng.
+    Viết chúng ra để bạn không quên!
 
--   Supports rigorous thinking.
-    You are more likely to come up with a strong analysis if you record your thoughts as you go, and continue to reflect on them.
-    This also saves you time when you eventually write up your analysis to share with others.
+-   Hỗ trợ tư duy nghiêm ngặt.
+    Bạn có khả năng đưa ra phân tích mạnh mẽ hơn nếu bạn ghi lại suy nghĩ trong quá trình và tiếp tục suy ngẫm về chúng.
+    Điều này cũng tiết kiệm thời gian khi cuối cùng bạn viết phân tích để chia sẻ với người khác.
 
--   Helps others understand your work.
-    It is rare to do data analysis by yourself, and you'll often be working as part of a team.
-    A lab notebook helps you share not only what you've done, but why you did it with your colleagues or lab mates.
+-   Giúp người khác hiểu công việc của bạn.
+    Hiếm khi bạn phân tích dữ liệu một mình, và bạn thường sẽ làm việc trong một nhóm.
+    Sổ phòng thí nghiệm giúp bạn chia sẻ không chỉ những gì bạn đã làm, mà còn tại sao bạn làm điều đó với đồng nghiệp hoặc bạn cùng phòng thí nghiệm.
 
-Much of the good advice about using lab notebooks effectively can also be translated to analysis notebooks.
-We've drawn on our own experiences and Colin Purrington's advice on lab notebooks (<https://colinpurrington.com/tips/lab-notebooks>) to come up with the following tips:
+Nhiều lời khuyên tốt về việc sử dụng sổ phòng thí nghiệm hiệu quả cũng có thể được áp dụng cho sổ phân tích.
+Chúng tôi đã rút ra từ kinh nghiệm của mình và lời khuyên của Colin Purrington về sổ phòng thí nghiệm (<https://colinpurrington.com/tips/lab-notebooks>) để đưa ra các mẹo sau:
 
--   Ensure each notebook has a descriptive title, an evocative file name, and a first paragraph that briefly describes the aims of the analysis.
+-   Đảm bảo mỗi sổ có tiêu đề mô tả, tên tệp gợi nhớ, và đoạn đầu tiên mô tả ngắn gọn mục tiêu của phân tích.
 
--   Use the YAML header date field to record the date you started working on the notebook:
+-   Sử dụng trường date trong phần đầu YAML để ghi lại ngày bạn bắt đầu làm việc trên sổ:
 
     ``` yaml
     date: 2016-08-23
     ```
 
-    Use ISO8601 YYYY-MM-DD format so that's there no ambiguity.
-    Use it even if you don't normally write dates that way!
+    Sử dụng định dạng ISO8601 YYYY-MM-DD để không có sự nhầm lẫn.
+    Sử dụng nó ngay cả khi bạn thường không viết ngày theo cách đó!
 
--   If you spend a lot of time on an analysis idea and it turns out to be a dead end, don't delete it!
-    Write up a brief note about why it failed and leave it in the notebook.
-    That will help you avoid going down the same dead end when you come back to the analysis in the future.
+-   Nếu bạn dành nhiều thời gian cho một ý tưởng phân tích và hóa ra nó là ngõ cụt, đừng xóa nó!
+    Viết một ghi chú ngắn về lý do nó thất bại và để nó trong sổ.
+    Điều đó sẽ giúp bạn tránh đi vào cùng ngõ cụt khi quay lại phân tích trong tương lai.
 
--   Generally, you're better off doing data entry outside of R.
-    But if you do need to record a small snippet of data, clearly lay it out using `tibble::tribble()`.
+-   Nói chung, bạn nên nhập dữ liệu bên ngoài R.
+    Nhưng nếu bạn cần ghi lại một đoạn dữ liệu nhỏ, hãy trình bày rõ ràng bằng `tibble::tribble()`.
 
--   If you discover an error in a data file, never modify it directly, but instead write code to correct the value.
-    Explain why you made the fix.
+-   Nếu bạn phát hiện lỗi trong tệp dữ liệu, đừng bao giờ sửa trực tiếp, mà thay vào đó viết mã để sửa giá trị.
+    Giải thích tại sao bạn thực hiện sửa chữa đó.
 
--   Before you finish for the day, make sure you can render the notebook.
-    If you're using caching, make sure to clear the caches.
-    That will let you fix any problems while the code is still fresh in your mind.
+-   Trước khi kết thúc ngày làm việc, hãy đảm bảo bạn có thể biên dịch sổ.
+    Nếu bạn đang sử dụng bộ nhớ đệm, hãy đảm bảo xóa bộ nhớ đệm.
+    Điều đó sẽ cho phép bạn sửa bất kỳ vấn đề nào khi mã vẫn còn tươi mới trong tâm trí.
 
--   If you want your code to be reproducible in the long-run (i.e. so you can come back to run it next month or next year), you'll need to track the versions of the packages that your code uses.
-    A rigorous approach is to use **renv**, <https://rstudio.github.io/renv/index.html>, which stores packages in your project directory.
-    A quick and dirty hack is to include a chunk that runs `sessionInfo()` --- that won't let you easily recreate your packages as they are today, but at least you'll know what they were.
+-   Nếu bạn muốn mã của mình có thể tái tạo lâu dài (tức là để bạn có thể quay lại chạy nó vào tháng sau hoặc năm sau), bạn sẽ cần theo dõi phiên bản của các gói mà mã sử dụng.
+    Một cách tiếp cận nghiêm ngặt là sử dụng **renv**, <https://rstudio.github.io/renv/index.html>, lưu trữ các gói trong thư mục dự án.
+    Một cách nhanh và đơn giản là thêm một khối mã chạy `sessionInfo()` --- điều đó sẽ không cho phép bạn dễ dàng tái tạo các gói như chúng ở hiện tại, nhưng ít nhất bạn sẽ biết chúng là gì.
 
--   You are going to create many, many, many analysis notebooks over the course of your career.
-    How are you going to organize them so you can find them again in the future?
-    We recommend storing them in individual projects, and coming up with a good naming scheme.
+-   Bạn sẽ tạo rất nhiều, rất nhiều sổ phân tích trong suốt sự nghiệp.
+    Bạn sẽ tổ chức chúng như thế nào để có thể tìm lại trong tương lai?
+    Chúng tôi khuyên lưu trữ chúng trong các dự án riêng lẻ, và đưa ra một sơ đồ đặt tên tốt.
 
-## Summary
+## Tổng kết
 
-In this chapter we introduced you to Quarto for authoring and publishing reproducible computational documents that include your code and your prose in one place.
-You've learned about writing Quarto documents in RStudio with the visual or the source editor, how code chunks work and how to customize options for them, how to include figures and tables in your Quarto documents, and options for caching for computations.
-Additionally, you've learned about adjusting YAML header options for creating self-contained or parametrized documents as well as including citations and bibliography.
-We have also given you some troubleshooting and workflow tips.
+Trong chương này, chúng tôi đã giới thiệu Quarto để soạn thảo và xuất bản tài liệu tính toán tái tạo bao gồm mã nguồn và văn bản của bạn ở cùng một nơi.
+Bạn đã học về cách viết tài liệu Quarto trong RStudio với trình soạn thảo trực quan hoặc trình soạn thảo mã nguồn, cách khối mã hoạt động và cách tùy chỉnh các tùy chọn cho chúng, cách bao gồm hình ảnh và bảng trong tài liệu Quarto, và các tùy chọn bộ nhớ đệm cho tính toán.
+Ngoài ra, bạn đã học về cách điều chỉnh các tùy chọn phần đầu YAML để tạo tài liệu độc lập hoặc tài liệu có tham số cũng như bao gồm trích dẫn và thư mục tham khảo.
+Chúng tôi cũng đã cung cấp một số mẹo khắc phục sự cố và quy trình làm việc.
 
-While this introduction should be sufficient to get you started with Quarto, there is still a lot more to learn.
-Quarto is still relatively young, and is still growing rapidly.
-The best place to stay on top of innovations is the official Quarto website: [https://quarto.org](https://quarto.org/){.uri}.
+Mặc dù phần giới thiệu này đủ để giúp bạn bắt đầu với Quarto, vẫn còn rất nhiều điều để học.
+Quarto vẫn còn tương đối mới, và vẫn đang phát triển nhanh chóng.
+Nơi tốt nhất để cập nhật các tính năng mới là trang web chính thức của Quarto: [https://quarto.org](https://quarto.org/){.uri}.
 
-There are two important topics that we haven't covered here: collaboration and the details of accurately communicating your ideas to other humans.
-Collaboration is a vital part of modern data science, and you can make your life much easier by using version control tools, like Git and GitHub.
-We recommend "Happy Git with R", a user friendly introduction to Git and GitHub from R users, by Jenny Bryan.
-The book is freely available online: <https://happygitwithr.com>.
+Có hai chủ đề quan trọng mà chúng tôi chưa đề cập ở đây: cộng tác và chi tiết truyền đạt chính xác ý tưởng đến người khác.
+Cộng tác là một phần quan trọng của khoa học dữ liệu hiện đại, và bạn có thể làm cuộc sống dễ dàng hơn nhiều bằng cách sử dụng các công cụ quản lý phiên bản, như Git và GitHub.
+Chúng tôi khuyên đọc "Happy Git with R", một giới thiệu thân thiện về Git và GitHub dành cho người dùng R, bởi Jenny Bryan.
+Cuốn sách có sẵn miễn phí trực tuyến: <https://happygitwithr.com>.
 
-We have also not touched on what you should actually write in order to clearly communicate the results of your analysis.
-To improve your writing, we highly recommend reading either [*Style: Lessons in Clarity and Grace*](https://www.amazon.com/Style-Lessons-Clarity-Grace-12th/dp/0134080416) by Joseph M. Williams & Joseph Bizup, or [*The Sense of Structure: Writing from the Reader's Perspective*](https://www.amazon.com/Sense-Structure-Writing-Readers-Perspective/dp/0205296327) by George Gopen.
-Both books will help you understand the structure of sentences and paragraphs, and give you the tools to make your writing more clear.
-(These books are rather expensive if purchased new, but they're used by many English classes so there are plenty of cheap second-hand copies).
-George Gopen also has a number of short articles on writing at <https://www.georgegopen.com/litigation-articles.html>.
-They are aimed at lawyers, but almost everything applies to data scientists too.
+Chúng tôi cũng chưa đề cập đến những gì bạn thực sự nên viết để truyền đạt rõ ràng kết quả phân tích.
+Để cải thiện kỹ năng viết, chúng tôi rất khuyên bạn đọc [*Style: Lessons in Clarity and Grace*](https://www.amazon.com/Style-Lessons-Clarity-Grace-12th/dp/0134080416) của Joseph M. Williams & Joseph Bizup, hoặc [*The Sense of Structure: Writing from the Reader's Perspective*](https://www.amazon.com/Sense-Structure-Writing-Readers-Perspective/dp/0205296327) của George Gopen.
+Cả hai cuốn sách sẽ giúp bạn hiểu cấu trúc của câu và đoạn văn, và cung cấp cho bạn công cụ để làm cho bài viết rõ ràng hơn.
+(Những cuốn sách này khá đắt nếu mua mới, nhưng chúng được sử dụng bởi nhiều lớp tiếng Anh nên có rất nhiều bản cũ giá rẻ).
+George Gopen cũng có một số bài viết ngắn về kỹ năng viết tại <https://www.georgegopen.com/litigation-articles.html>.
+Chúng nhắm đến luật sư, nhưng hầu hết mọi thứ đều áp dụng được cho nhà khoa học dữ liệu.
