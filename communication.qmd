@@ -27,7 +27,7 @@ Cuốn sách đó không dạy cơ chế tạo trực quan hóa, mà tập trung
 
 Trong chương này, chúng ta sẽ tập trung vào ggplot2 một lần nữa.
 Chúng ta cũng sẽ dùng một chút dplyr để xử lý dữ liệu, **scales** để ghi đè mặc định về break, nhãn, phép biến đổi và bảng màu, và một số gói mở rộng ggplot2, bao gồm **ggrepel** ([https://ggrepel.slowkow.com](https://ggrepel.slowkow.com/)) của Kamil Slowikowski và **patchwork** ([https://patchwork.data-imaginist.com](https://patchwork.data-imaginist.com/)) của Thomas Lin Pedersen.
-Đừng quên cài đặt các gói đó bằng `install.packages()` nếu bạn chưa có.
+Đừng quên cài đặt các gói mở rộng đó bằng `install.packages()` nếu bạn chưa có.
 
 ```{r}
 #| label: setup
@@ -167,8 +167,8 @@ ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
 Lưu ý cách dùng `hjust` (căn ngang) và `vjust` (căn dọc) để kiểm soát vị trí nhãn.
 
 Tuy nhiên, biểu đồ chú thích ở trên khó đọc vì nhãn chồng chéo nhau và với điểm.
-Chúng ta có thể dùng hàm `geom_label_repel()` từ gói ggrepel để giải quyết cả hai vấn đề.
-Gói này tự động điều chỉnh nhãn để không chồng chéo:
+Chúng ta có thể dùng hàm `geom_label_repel()` từ gói mở rộng ggrepel để giải quyết cả hai vấn đề.
+Gói mở rộng này tự động điều chỉnh nhãn để không chồng chéo:
 
 ```{r}
 #| fig-alt: |
@@ -216,7 +216,7 @@ Một vài ý tưởng:
 
 -   Dùng `geom_rect()` để vẽ hình chữ nhật quanh điểm quan tâm.
     Ranh giới được định nghĩa bởi aesthetic `xmin`, `xmax`, `ymin`, `ymax`.
-    Hoặc xem gói [ggforce](https://ggforce.data-imaginist.com/index.html), cụ thể [`geom_mark_hull()`](https://ggforce.data-imaginist.com/reference/geom_mark_hull.html).
+    Hoặc xem gói mở rộng [ggforce](https://ggforce.data-imaginist.com/index.html), cụ thể [`geom_mark_hull()`](https://ggforce.data-imaginist.com/reference/geom_mark_hull.html).
 
 -   Dùng `geom_segment()` với đối số `arrow` để vẽ mũi tên chỉ đến điểm.
     Dùng aesthetic `x` và `y` cho vị trí bắt đầu, `xend` và `yend` cho vị trí kết thúc.
@@ -353,7 +353,7 @@ ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
   scale_color_discrete(labels = c("4" = "4-wheel", "f" = "front", "r" = "rear"))
 ```
 
-Đối số `labels` kết hợp với hàm gắn nhãn từ gói scales cũng hữu ích để định dạng số thành tiền tệ, phần trăm, v.v.
+Đối số `labels` kết hợp với hàm gắn nhãn từ gói mở rộng scales cũng hữu ích để định dạng số thành tiền tệ, phần trăm, v.v.
 Biểu đồ bên trái hiển thị gắn nhãn mặc định với `label_dollar()`, thêm ký hiệu đô la và dấu phẩy phân cách hàng nghìn.
 Biểu đồ bên phải tùy chỉnh thêm bằng cách chia giá trị cho 1.000 và thêm hậu tố "K" cùng break tùy chỉnh.
 Lưu ý `breaks` dùng thang đo gốc của dữ liệu.
@@ -536,7 +536,7 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
   scale_color_brewer(palette = "Set1")
 ```
 
-Thang đo ColorBrewer được tài liệu tại <https://colorbrewer2.org/> và có sẵn trong R qua gói **RColorBrewer**.
+Thang đo ColorBrewer được tài liệu tại <https://colorbrewer2.org/> và có sẵn trong R qua gói mở rộng **RColorBrewer**.
 @fig-brewer hiển thị tất cả bảng màu.
 Bảng màu tuần tự (trên) và phân kỳ (dưới) đặc biệt hữu ích nếu biến phân loại có thứ tự hoặc có "giữa".
 
@@ -773,7 +773,7 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
 ```
 
 ggplot2 bao gồm tám chủ đề trong @fig-themes, với `theme_gray()` là mặc định.[^communication-2]
-Nhiều chủ đề khác có trong gói bổ trợ như **ggthemes** (<https://jrnold.github.io/ggthemes>).
+Nhiều chủ đề khác có trong gói mở rộng bổ trợ như **ggthemes** (<https://jrnold.github.io/ggthemes>).
 Bạn cũng có thể tạo chủ đề riêng để phù hợp với phong cách công ty hoặc tạp chí.
 
 [^communication-2]: Nhiều người thắc mắc tại sao chủ đề mặc định có nền xám.
@@ -825,15 +825,15 @@ Cuốn sách [ggplot2](https://ggplot2-book.org/) cũng là nơi tuyệt vời c
 
 ### Bài tập
 
-1.  Chọn một chủ đề từ gói ggthemes và áp dụng cho biểu đồ cuối bạn đã tạo.
+1.  Chọn một chủ đề từ gói mở rộng ggthemes và áp dụng cho biểu đồ cuối bạn đã tạo.
 2.  Làm nhãn trục của biểu đồ thành màu xanh và in đậm.
 
 ## Bố cục
 
 Cho đến nay chúng ta nói về cách tạo và sửa một biểu đồ.
 Nếu bạn có nhiều biểu đồ muốn bố trí theo cách nhất định thì sao?
-Gói patchwork cho phép kết hợp biểu đồ riêng lẻ thành cùng đồ họa.
-Chúng ta đã tải gói này ở đầu chương.
+Gói mở rộng patchwork cho phép kết hợp biểu đồ riêng lẻ thành cùng đồ họa.
+Chúng ta đã tải gói mở rộng này ở đầu chương.
 
 Để đặt hai biểu đồ cạnh nhau, đơn giản cộng chúng.
 Lưu ý bạn cần tạo biểu đồ và lưu làm đối tượng (ví dụ `p1` và `p2`).
@@ -854,7 +854,7 @@ p1 + p2
 ```
 
 Lưu ý rằng chúng ta không dùng hàm mới từ patchwork.
-Thay vào đó, gói thêm chức năng mới cho toán tử `+`.
+Thay vào đó, gói mở rộng thêm chức năng mới cho toán tử `+`.
 
 Bạn cũng có thể tạo bố cục phức tạp.
 Dưới đây, `|` đặt `p1` và `p3` cạnh nhau và `/` đưa `p2` xuống dòng tiếp theo.
@@ -918,7 +918,7 @@ p5 <- ggplot(mpg, aes(x = cty, y = hwy, color = drv)) +
   theme(legend.position = "top")
 ```
 
-Nếu bạn muốn tìm hiểu thêm về kết hợp và bố trí biểu đồ với patchwork, xem hướng dẫn trên trang web gói: <https://patchwork.data-imaginist.com>.
+Nếu bạn muốn tìm hiểu thêm về kết hợp và bố trí biểu đồ với patchwork, xem hướng dẫn trên trang web gói mở rộng: <https://patchwork.data-imaginist.com>.
 
 ### Bài tập
 

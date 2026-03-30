@@ -11,9 +11,9 @@ Một lượng dữ liệu khổng lồ nằm trong các cơ sở dữ liệu (d
 Đôi khi bạn có thể nhờ ai đó tải một bản sao dữ liệu vào file `.csv` cho bạn, nhưng cách này nhanh chóng trở nên phiền phức: mỗi khi bạn cần thay đổi gì đó, bạn lại phải liên lạc với người khác.
 Bạn muốn có khả năng truy cập trực tiếp vào cơ sở dữ liệu để lấy dữ liệu mình cần, khi mình cần.
 
-Trong chương này, trước tiên bạn sẽ học những kiến thức cơ bản về gói DBI: cách sử dụng nó để kết nối tới cơ sở dữ liệu và sau đó truy xuất dữ liệu bằng một truy vấn (query) SQL[^databases-1].
+Trong chương này, trước tiên bạn sẽ học những kiến thức cơ bản về gói mở rộng DBI: cách sử dụng nó để kết nối tới cơ sở dữ liệu và sau đó truy xuất dữ liệu bằng một truy vấn (query) SQL[^databases-1].
 **SQL**, viết tắt của **s**tructured **q**uery **l**anguage (ngôn ngữ truy vấn có cấu trúc), là ngôn ngữ chung của các cơ sở dữ liệu, và là một ngôn ngữ quan trọng mà mọi nhà khoa học dữ liệu cần học.
-Tuy nhiên, chúng ta sẽ không bắt đầu với SQL, mà thay vào đó sẽ dạy bạn dbplyr, gói có thể dịch mã dplyr của bạn sang SQL.
+Tuy nhiên, chúng ta sẽ không bắt đầu với SQL, mà thay vào đó sẽ dạy bạn dbplyr, gói mở rộng có thể dịch mã dplyr của bạn sang SQL.
 Chúng ta sẽ dùng cách này để dạy bạn một số tính năng quan trọng nhất của SQL.
 Bạn sẽ không trở thành bậc thầy SQL khi kết thúc chương, nhưng bạn sẽ có thể nhận biết các thành phần quan trọng nhất và hiểu chúng làm gì.
 
@@ -57,24 +57,24 @@ Cơ sở dữ liệu được vận hành bởi các hệ quản trị cơ sở 
 
 ## Kết nối tới cơ sở dữ liệu
 
-Để kết nối tới cơ sở dữ liệu từ R, bạn sẽ sử dụng một cặp gói:
+Để kết nối tới cơ sở dữ liệu từ R, bạn sẽ sử dụng một cặp gói mở rộng:
 
 -   Bạn sẽ luôn dùng DBI (**d**ata**b**ase **i**nterface) vì nó cung cấp một tập hợp các hàm tổng quát để kết nối tới cơ sở dữ liệu, tải dữ liệu lên, chạy truy vấn SQL, v.v.
 
--   Bạn cũng sẽ dùng một gói được thiết kế riêng cho DBMS mà bạn đang kết nối.
-    Gói này dịch các lệnh DBI tổng quát thành các chi tiết cụ thể cần thiết cho từng DBMS.
-    Thường mỗi DBMS có một gói riêng, ví dụ
+-   Bạn cũng sẽ dùng một gói mở rộng được thiết kế riêng cho DBMS mà bạn đang kết nối.
+    Gói mở rộng này dịch các lệnh DBI tổng quát thành các chi tiết cụ thể cần thiết cho từng DBMS.
+    Thường mỗi DBMS có một gói mở rộng riêng, ví dụ
     RPostgres cho PostgreSQL và RMariaDB cho MySQL.
 
-Nếu bạn không tìm được gói cụ thể cho DBMS của mình, bạn thường có thể dùng gói odbc thay thế.
-Gói này sử dụng giao thức ODBC được nhiều DBMS hỗ trợ.
-odbc yêu cầu thêm một chút thiết lập vì bạn cũng cần cài đặt driver ODBC và cho gói odbc biết nơi tìm nó.
+Nếu bạn không tìm được gói mở rộng cụ thể cho DBMS của mình, bạn thường có thể dùng gói mở rộng odbc thay thế.
+Gói mở rộng này sử dụng giao thức ODBC được nhiều DBMS hỗ trợ.
+odbc yêu cầu thêm một chút thiết lập vì bạn cũng cần cài đặt driver ODBC và cho gói mở rộng odbc biết nơi tìm nó.
 
 Cụ thể, bạn tạo kết nối cơ sở dữ liệu bằng `DBI::dbConnect()`.
 Đối số đầu tiên chọn DBMS[^databases-2], sau đó đối số thứ hai và các đối số tiếp theo mô tả cách kết nối tới nó (tức là nó ở đâu và thông tin xác thực bạn cần để truy cập).
 Đoạn mã sau đây cho thấy vài ví dụ điển hình:
 
-[^databases-2]: Thường đây là hàm duy nhất bạn sẽ dùng từ gói client, nên chúng tôi khuyên bạn dùng `::` để lấy riêng hàm đó, thay vì tải toàn bộ gói bằng `library()`.
+[^databases-2]: Thường đây là hàm duy nhất bạn sẽ dùng từ gói mở rộng client, nên chúng tôi khuyên bạn dùng `::` để lấy riêng hàm đó, thay vì tải toàn bộ gói mở rộng bằng `library()`.
 
 ```{r}
 #| eval: false
@@ -96,7 +96,7 @@ Việc thiết lập ban đầu thường cần mày mò một chút (và có th
 
 ### Trong cuốn sách này
 
-Việc thiết lập DBMS client-server hoặc đám mây sẽ khá phiền phức cho cuốn sách này, nên thay vào đó chúng ta sẽ dùng DBMS trong tiến trình nằm hoàn toàn trong một gói R: duckdb.
+Việc thiết lập DBMS client-server hoặc đám mây sẽ khá phiền phức cho cuốn sách này, nên thay vào đó chúng ta sẽ dùng DBMS trong tiến trình nằm hoàn toàn trong một gói mở rộng R: duckdb.
 Nhờ sự kỳ diệu của DBI, điểm khác biệt duy nhất giữa việc dùng duckdb và bất kỳ DBMS nào khác là cách bạn kết nối tới cơ sở dữ liệu.
 Điều này khiến nó rất phù hợp để dạy học vì bạn có thể dễ dàng chạy mã này cũng như áp dụng những gì đã học vào nơi khác.
 
@@ -236,7 +236,7 @@ Phần còn lại của chương sẽ dạy bạn một chút SQL thông qua lă
 Đây là cách giới thiệu SQL khá phi truyền thống nhưng chúng tôi hy vọng nó sẽ giúp bạn nhanh chóng nắm được kiến thức cơ bản.
 May mắn thay, nếu bạn hiểu dplyr, bạn đang ở vị trí tuyệt vời để nhanh chóng tiếp thu SQL vì rất nhiều khái niệm giống nhau.
 
-Chúng ta sẽ khám phá mối quan hệ giữa dplyr và SQL bằng một vài người bạn cũ từ gói nycflights13: `flights` và `planes`.
+Chúng ta sẽ khám phá mối quan hệ giữa dplyr và SQL bằng một vài người bạn cũ từ gói mở rộng nycflights13: `flights` và `planes`.
 Các tập dữ liệu này dễ dàng đưa vào cơ sở dữ liệu học tập vì dbplyr có sẵn một hàm sao chép các bảng từ nycflights13 vào cơ sở dữ liệu của chúng ta:
 
 ```{r}
@@ -330,11 +330,11 @@ Ví dụ này cũng cho bạn thấy cách SQL thực hiện đổi tên.
 Trong thuật ngữ SQL, đổi tên được gọi là **đặt bí danh** (aliasing) và được thực hiện bằng `AS`.
 Lưu ý rằng khác với `mutate()`, tên cũ nằm bên trái và tên mới nằm bên phải.
 
-::: callout-note
+:: callout-note
 Trong các ví dụ trên, lưu ý rằng `"year"` và `"type"` được bao trong dấu nháy kép.
 Đó là vì chúng là các **từ dành riêng** (reserved word) trong duckdb, nên dbplyr đặt chúng trong nháy kép để tránh nhầm lẫn giữa tên cột/bảng và toán tử SQL.
 
-Khi làm việc với các cơ sở dữ liệu khác, bạn có thể thấy mọi tên biến đều được đặt trong nháy kép vì chỉ một số ít gói client, như duckdb, biết tất cả các từ dành riêng, nên chúng đặt nháy kép cho mọi thứ để an toàn.
+Khi làm việc với các cơ sở dữ liệu khác, bạn có thể thấy mọi tên biến đều được đặt trong nháy kép vì chỉ một số ít gói mở rộng client, như duckdb, biết tất cả các từ dành riêng, nên chúng đặt nháy kép cho mọi thứ để an toàn.
 
 ``` sql
 SELECT "tailnum", "type", "manufacturer", "model", "year"
@@ -526,7 +526,7 @@ FULL JOIN planes ON (flights.tailnum = planes.tailnum)
 
 Bạn có thể sẽ cần nhiều phép nối khi làm việc với dữ liệu từ cơ sở dữ liệu.
 Đó là vì các bảng cơ sở dữ liệu thường được lưu ở dạng chuẩn hóa (normalized) cao, trong đó mỗi "sự kiện" được lưu ở một nơi duy nhất và để có tập dữ liệu đầy đủ cho phân tích, bạn cần điều hướng qua một mạng lưới phức tạp các bảng được kết nối bằng khóa chính (primary key) và khóa ngoại (foreign key).
-Nếu bạn gặp tình huống này, [gói dm](https://cynkra.github.io/dm/), bởi Tobias Schieferdecker, Kirill Muller, và Darko Bergant, là cứu cánh.
+Nếu bạn gặp tình huống này, [gói mở rộng dm](https://cynkra.github.io/dm/), bởi Tobias Schieferdecker, Kirill Muller, và Darko Bergant, là cứu cánh.
 Nó có thể tự động xác định các kết nối giữa các bảng bằng các ràng buộc mà DBA thường cung cấp, trực quan hóa các kết nối để bạn thấy được bức tranh toàn cảnh, và tạo ra các phép nối bạn cần để kết nối bảng này với bảng khác.
 
 ### Các hàm khác
