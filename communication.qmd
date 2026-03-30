@@ -10,7 +10,7 @@ source("_common.R")
 Trong @sec-exploratory-data-analysis, bạn đã học cách sử dụng biểu đồ như công cụ *khám phá*.
 Khi tạo biểu đồ khám phá, bạn biết---ngay trước khi nhìn---biểu đồ sẽ hiển thị biến nào.
 Bạn tạo mỗi biểu đồ cho một mục đích, xem nhanh, rồi chuyển sang biểu đồ tiếp theo.
-Trong hầu hết phân tích, bạn sẽ tạo hàng chục hoặc hàng trăm biểu đồ, phần lớn bị bỏ ngay.
+Trong hầu hết phân tích, bạn sẽ tạo row chục hoặc row trăm biểu đồ, phần lớn bị bỏ ngay.
 
 Giờ bạn đã hiểu dữ liệu, bạn cần *truyền đạt* sự hiểu biết đến người khác.
 Khán giả có thể không có kiến thức nền tảng như bạn và không đầu tư sâu vào dữ liệu.
@@ -339,7 +339,7 @@ ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
 Bạn có thể dùng `labels` tương tự (vector ký tự cùng độ dài với `breaks`), nhưng cũng có thể đặt thành `NULL` để ẩn nhãn.
 Điều này hữu ích cho bản đồ, hoặc khi không thể chia sẻ số tuyệt đối.
 Bạn cũng có thể dùng `breaks` và `labels` cho chú giải.
-Với thang đo rời rạc cho biến phân loại, `labels` có thể là danh sách đặt tên.
+Với thang đo rời rạc cho biến phân loại, `labels` có thể là list đặt tên.
 
 ```{r}
 #| fig-alt: |
@@ -354,7 +354,7 @@ ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
 ```
 
 Đối số `labels` kết hợp với hàm gắn nhãn từ gói mở rộng scales cũng hữu ích để định dạng số thành tiền tệ, phần trăm, v.v.
-Biểu đồ bên trái hiển thị gắn nhãn mặc định với `label_dollar()`, thêm ký hiệu đô la và dấu phẩy phân cách hàng nghìn.
+Biểu đồ bên trái hiển thị gắn nhãn mặc định với `label_dollar()`, thêm ký hiệu đô la và dấu phẩy phân cách row nghìn.
 Biểu đồ bên phải tùy chỉnh thêm bằng cách chia giá trị cho 1.000 và thêm hậu tố "K" cùng break tùy chỉnh.
 Lưu ý `breaks` dùng thang đo gốc của dữ liệu.
 
@@ -382,7 +382,7 @@ Hàm gắn nhãn tiện dụng khác là `label_percent()`:
 
 ```{r}
 #| fig-alt: |
-#|   Biểu đồ cột phân đoạn cut, tô theo clarity. Nhãn trục y từ 0% đến
+#|   Biểu đồ column phân đoạn cut, tô theo clarity. Nhãn trục y từ 0% đến
 #|   100%, tên trục y là "Percentage".
 ggplot(diamonds, aes(x = cut, fill = clarity)) +
   geom_bar(position = "fill") +
@@ -445,13 +445,13 @@ Nếu biểu đồ ngắn và rộng, đặt chú giải ở trên hoặc dướ
 Bạn cũng có thể dùng `legend.position = "none"` để ẩn chú giải hoàn toàn.
 
 Để kiểm soát hiển thị từng chú giải, dùng `guides()` cùng `guide_legend()` hoặc `guide_colorbar()`.
-Ví dụ sau cho thấy hai thiết lập quan trọng: kiểm soát số hàng với `nrow`, và ghi đè aesthetic để điểm lớn hơn.
+Ví dụ sau cho thấy hai thiết lập quan trọng: kiểm soát số row với `nrow`, và ghi đè aesthetic để điểm lớn hơn.
 Điều này đặc biệt hữu ích nếu dùng `alpha` thấp cho nhiều điểm.
 
 ```{r}
 #| fig-alt: |
 #|   Biểu đồ phân tán hiệu suất nhiên liệu theo dung tích động cơ, tô màu
-#|   theo loại xe. Đường cong trơn được phủ lên. Chú giải ở dưới, hai hàng,
+#|   theo loại xe. Đường cong trơn được phủ lên. Chú giải ở dưới, hai row,
 #|   điểm chú giải lớn hơn điểm biểu đồ.
 ggplot(mpg, aes(x = displ, y = hwy)) +
   geom_point(aes(color = class)) +
@@ -787,7 +787,7 @@ Bạn cũng có thể tạo chủ đề riêng để phù hợp với phong các
 #| echo: false
 #| fig-cap: Tám chủ đề tích hợp trong ggplot2.
 #| fig-alt: |
-#|   Tám biểu đồ cột, mỗi cái với một trong tám chủ đề tích hợp.
+#|   Tám biểu đồ column, mỗi cái với một trong tám chủ đề tích hợp.
 knitr::include_graphics("images/visualization-themes.png")
 ```
 
@@ -947,7 +947,7 @@ Nếu bạn muốn tìm hiểu thêm về kết hợp và bố trí biểu đồ
     #| fig-asp: 0.8
     #| echo: false
     #| fig-alt: |
-    #|   Ba biểu đồ: Plot 1 ở hàng đầu, Plot 2 và 3 ở hàng dưới. Plot 1
+    #|   Ba biểu đồ: Plot 1 ở row đầu, Plot 2 và 3 ở row dưới. Plot 1
     #|   gắn nhãn "Fig. A", Plot 2 gắn nhãn "Fig. B", Plot 3 gắn nhãn "Fig. C".
     p1 / (p2 + p3) +
       plot_annotation(

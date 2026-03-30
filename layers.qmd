@@ -7,13 +7,13 @@ source("_common.R")
 
 ## Giới thiệu
 
-Trong @sec-data-visualization, bạn đã học được nhiều hơn là chỉ cách tạo biểu đồ phân tán (scatter plot), biểu đồ cột (bar chart), và biểu đồ hộp (box plot).
+Trong @sec-data-visualization, bạn đã học được nhiều hơn là chỉ cách tạo biểu đồ phân tán (scatter plot), biểu đồ column (bar chart), và biểu đồ hộp (box plot).
 Bạn đã học được nền tảng mà bạn có thể sử dụng để tạo *bất kỳ* loại biểu đồ nào với ggplot2.
 
 Trong chương này, bạn sẽ mở rộng nền tảng đó khi tìm hiểu về ngữ pháp đồ họa theo lớp (layered grammar of graphics).
 Chúng ta sẽ bắt đầu với việc tìm hiểu sâu hơn về ánh xạ thuộc tính đồ họa (aesthetic mapping), đối tượng đồ họa (geoms), và facet.
 Sau đó, bạn sẽ tìm hiểu về các phép biến đổi thống kê mà ggplot2 thực hiện ngầm khi tạo biểu đồ.
-Các phép biến đổi này được sử dụng để tính toán các giá trị mới để vẽ, chẳng hạn như chiều cao của các thanh trong biểu đồ cột hoặc trung vị trong biểu đồ hộp.
+Các phép biến đổi này được sử dụng để tính toán các giá trị mới để vẽ, chẳng hạn như chiều cao của các thanh trong biểu đồ column hoặc trung vị trong biểu đồ hộp.
 Bạn cũng sẽ tìm hiểu về điều chỉnh vị trí (position adjustment), giúp thay đổi cách các geom được hiển thị trong biểu đồ của bạn.
 Cuối cùng, chúng ta sẽ giới thiệu ngắn gọn về hệ tọa độ (coordinate system).
 
@@ -295,7 +295,7 @@ ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
 
 Lưu ý rằng biểu đồ này chứa hai geom trong cùng một đồ thị.
 
-Nhiều geom, như `geom_smooth()`, sử dụng một geom duy nhất để hiển thị nhiều hàng dữ liệu.
+Nhiều geom, như `geom_smooth()`, sử dụng một geom duy nhất để hiển thị nhiều row dữ liệu.
 Đối với các geom này, bạn có thể đặt thuộc tính đồ họa `group` cho một biến phân loại để vẽ nhiều đối tượng.
 ggplot2 sẽ vẽ một đối tượng riêng biệt cho mỗi giá trị duy nhất của biến nhóm.
 Trong thực tế, ggplot2 sẽ tự động nhóm dữ liệu cho các geom này bất cứ khi nào bạn ánh xạ một thuộc tính đồ họa đến một biến rời rạc (như trong ví dụ `linetype`).
@@ -483,7 +483,7 @@ Trong @sec-data-visualization bạn đã tìm hiểu về facet với `facet_wra
 ```{r}
 #| fig-alt: |
 #|   Biểu đồ phân tán của hiệu suất nhiên liệu đường cao tốc so với dung tích động cơ của xe,
-#|   được chia facet theo số xi-lanh, với các facet trải trên hai hàng.
+#|   được chia facet theo số xi-lanh, với các facet trải trên hai row.
 ggplot(mpg, aes(x = displ, y = hwy)) +
   geom_point() +
   facet_wrap(~cyl)
@@ -495,8 +495,8 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
 ```{r}
 #| fig-alt: |
 #|   Biểu đồ phân tán của hiệu suất nhiên liệu đường cao tốc so với dung tích động cơ của xe, được chia facet
-#|   theo số xi-lanh theo hàng và theo loại hệ dẫn động theo
-#|   cột. Điều này tạo ra lưới 4x3 gồm 12 facet. Một số facet này không có
+#|   theo số xi-lanh theo row và theo loại hệ dẫn động theo
+#|   column. Điều này tạo ra lưới 4x3 gồm 12 facet. Một số facet này không có
 #|   quan sát: 5 xi-lanh và dẫn động bốn bánh, 4 hoặc 5 xi-lanh và dẫn động
 #|   cầu trước.
 ggplot(mpg, aes(x = displ, y = hwy)) +
@@ -506,16 +506,16 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
 
 Mặc định, mỗi facet chia sẻ cùng thang đo và phạm vi cho trục x và y.
 Điều này hữu ích khi bạn muốn so sánh dữ liệu giữa các facet nhưng có thể hạn chế khi bạn muốn trực quan hóa mối quan hệ trong mỗi facet tốt hơn.
-Đặt argument `scales` trong hàm facet thành `"free_x"` sẽ cho phép các thang đo trục x khác nhau giữa các cột, `"free_y"` sẽ cho phép các thang đo trục y khác nhau giữa các hàng, và `"free"` sẽ cho phép cả hai.
+Đặt argument `scales` trong hàm facet thành `"free_x"` sẽ cho phép các thang đo trục x khác nhau giữa các column, `"free_y"` sẽ cho phép các thang đo trục y khác nhau giữa các row, và `"free"` sẽ cho phép cả hai.
 
 ```{r}
 #| fig-alt: |
 #|   Biểu đồ phân tán của hiệu suất nhiên liệu đường cao tốc so với dung tích động cơ của xe,
-#|   được chia facet theo số xi-lanh theo hàng và theo loại hệ dẫn động
-#|   theo cột. Điều này tạo ra lưới 4x3 gồm 12 facet. Một số facet
+#|   được chia facet theo số xi-lanh theo row và theo loại hệ dẫn động
+#|   theo column. Điều này tạo ra lưới 4x3 gồm 12 facet. Một số facet
 #|   này không có quan sát: 5 xi-lanh và dẫn động bốn bánh, 4 hoặc 5
-#|   xi-lanh và dẫn động cầu trước. Các facet trong cùng một hàng chia sẻ cùng
-#|   thang đo y và các facet trong cùng một cột chia sẻ cùng thang đo x.
+#|   xi-lanh và dẫn động cầu trước. Các facet trong cùng một row chia sẻ cùng
+#|   thang đo y và các facet trong cùng một column chia sẻ cùng thang đo x.
 ggplot(mpg, aes(x = displ, y = hwy)) +
   geom_point() +
   facet_grid(drv ~ cyl, scales = "free")
@@ -569,7 +569,7 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
     Tại sao `facet_grid()` không có argument `nrow` và `ncol`?
 
 6.  Biểu đồ nào trong các biểu đồ sau giúp dễ dàng hơn để so sánh dung tích động cơ (`displ`) giữa các xe có hệ dẫn động khác nhau?
-    Điều này cho biết gì về thời điểm nên đặt biến facet theo hàng hay cột?
+    Điều này cho biết gì về thời điểm nên đặt biến facet theo row hay cột?
 
     ```{r}
     #| fig-show: hide
@@ -595,14 +595,14 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
 
 ## Phép biến đổi thống kê
 
-Hãy xem xét một biểu đồ cột cơ bản, được vẽ với `geom_bar()` hoặc `geom_col()`.
+Hãy xem xét một biểu đồ column cơ bản, được vẽ với `geom_bar()` hoặc `geom_col()`.
 Biểu đồ sau hiển thị tổng số kim cương trong bộ dữ liệu `diamonds`, được nhóm theo `cut`.
 Bộ dữ liệu `diamonds` nằm trong gói mở rộng ggplot2 và chứa thông tin về \~54.000 viên kim cương, bao gồm `price`, `carat`, `color`, `clarity`, và `cut` của mỗi viên kim cương.
 Biểu đồ cho thấy nhiều kim cương hơn có sẵn với chất lượng cắt cao hơn so với chất lượng cắt thấp.
 
 ```{r}
 #| fig-alt: |
-#|   Biểu đồ cột của số lượng mỗi loại cắt kim cương. Có khoảng 1500
+#|   Biểu đồ column của số lượng mỗi loại cắt kim cương. Có khoảng 1500
 #|   Fair, 5000 Good, 12000 Very Good, 14000 Premium, và 22000 Ideal
 #|   kim cương.
 ggplot(diamonds, aes(x = cut)) +
@@ -613,9 +613,9 @@ Trên trục x, biểu đồ hiển thị `cut`, một biến từ `diamonds`.
 Trên trục y, nó hiển thị count, nhưng count không phải là biến trong `diamonds`!
 Count đến từ đâu?
 Nhiều biểu đồ, như biểu đồ phân tán, vẽ các giá trị thô của bộ dữ liệu.
-Các biểu đồ khác, như biểu đồ cột, tính toán các giá trị mới để vẽ:
+Các biểu đồ khác, như biểu đồ column, tính toán các giá trị mới để vẽ:
 
--   Biểu đồ cột, biểu đồ tần suất, và đa giác tần suất chia dữ liệu thành các khoảng và sau đó vẽ số đếm của mỗi khoảng, số điểm rơi vào mỗi khoảng.
+-   Biểu đồ column, biểu đồ tần suất, và đa giác tần suất chia dữ liệu thành các khoảng và sau đó vẽ số đếm của mỗi khoảng, số điểm rơi vào mỗi khoảng.
 
 -   Đường trơn khớp một mô hình với dữ liệu của bạn và sau đó vẽ các dự đoán từ mô hình.
 
@@ -629,11 +629,11 @@ Thuật toán được sử dụng để tính toán các giá trị mới cho b
 #| echo: false
 #| out-width: "100%"
 #| fig-cap: |
-#|   Khi tạo biểu đồ cột, đầu tiên chúng ta bắt đầu với dữ liệu thô, sau đó
+#|   Khi tạo biểu đồ column, đầu tiên chúng ta bắt đầu với dữ liệu thô, sau đó
 #|   tổng hợp nó để đếm số quan sát trong mỗi thanh,
 #|   và cuối cùng ánh xạ các biến được tính toán đó đến các thuộc tính đồ họa của biểu đồ.
 #| fig-alt: |
-#|   Một hình minh họa ba bước tạo biểu đồ cột.
+#|   Một hình minh họa ba bước tạo biểu đồ column.
 #|   Bước 1. geom_bar() bắt đầu với bộ dữ liệu diamonds. Bước 2. geom_bar()
 #|   biến đổi dữ liệu bằng stat count, trả về bộ dữ liệu gồm
 #|   giá trị cut và số đếm. Bước 3. geom_bar() sử dụng dữ liệu đã biến đổi để
@@ -657,7 +657,7 @@ Tuy nhiên, có ba lý do tại sao bạn có thể cần sử dụng stat một
     ```{r}
     #| warning: false
     #| fig-alt: |
-    #|   Biểu đồ cột của số lượng mỗi loại cắt kim cương. Có khoảng 1500
+    #|   Biểu đồ column của số lượng mỗi loại cắt kim cương. Có khoảng 1500
     #|   Fair, 5000 Good, 12000 Very Good, 14000 Premium, và 22000 Ideal
     #|   kim cương.
     diamonds |>
@@ -667,11 +667,11 @@ Tuy nhiên, có ba lý do tại sao bạn có thể cần sử dụng stat một
     ```
 
 2.  Bạn có thể muốn ghi đè ánh xạ mặc định từ biến đã biến đổi đến thuộc tính đồ họa.
-    Ví dụ, bạn có thể muốn hiển thị biểu đồ cột tỷ lệ thay vì số đếm:
+    Ví dụ, bạn có thể muốn hiển thị biểu đồ column tỷ lệ thay vì số đếm:
 
     ```{r}
     #| fig-alt: |
-    #|   Biểu đồ cột tỷ lệ của mỗi loại cắt kim cương. Xấp xỉ, kim cương
+    #|   Biểu đồ column tỷ lệ của mỗi loại cắt kim cương. Xấp xỉ, kim cương
     #|   Fair chiếm 0.03, Good 0.09, Very Good 0.22, Premium 0.26, và
     #|   Ideal 0.40.
     ggplot(diamonds, aes(x = cut, y = after_stat(prop), group = 1)) +
@@ -718,7 +718,7 @@ Mỗi stat là một hàm, vì vậy bạn có thể xem trợ giúp theo cách 
 4.  `stat_smooth()` tính toán những biến nào?
     Những argument nào kiểm soát hành vi của nó?
 
-5.  Trong biểu đồ cột tỷ lệ của chúng ta, chúng ta cần đặt `group = 1`.
+5.  Trong biểu đồ column tỷ lệ của chúng ta, chúng ta cần đặt `group = 1`.
     Tại sao?
     Nói cách khác, vấn đề với hai biểu đồ sau là gì?
 
@@ -732,14 +732,14 @@ Mỗi stat là một hàm, vì vậy bạn có thể xem trợ giúp theo cách 
 
 ## Điều chỉnh vị trí
 
-Còn một phép thuật nữa liên quan đến biểu đồ cột.
-Bạn có thể tô màu biểu đồ cột bằng thuộc tính đồ họa `color`, hoặc hữu ích hơn, thuộc tính đồ họa `fill`:
+Còn một phép thuật nữa liên quan đến biểu đồ column.
+Bạn có thể tô màu biểu đồ column bằng thuộc tính đồ họa `color`, hoặc hữu ích hơn, thuộc tính đồ họa `fill`:
 
 ```{r}
 #| layout-ncol: 2
 #| fig-width: 4
 #| fig-alt: |
-#|   Hai biểu đồ cột của loại hệ dẫn động của xe. Trong biểu đồ đầu tiên, các thanh có
+#|   Hai biểu đồ column của loại hệ dẫn động của xe. Trong biểu đồ đầu tiên, các thanh có
 #|   viền màu. Trong biểu đồ thứ hai, chúng được tô đầy màu. Chiều cao
 #|   của các thanh tương ứng với số lượng xe trong mỗi loại drv.
 # Trái
@@ -756,7 +756,7 @@ Mỗi hình chữ nhật có màu đại diện cho một sự kết hợp của
 
 ```{r}
 #| fig-alt: |
-#|   Biểu đồ cột phân đoạn của loại hệ dẫn động của xe, trong đó mỗi thanh được tô
+#|   Biểu đồ column phân đoạn của loại hệ dẫn động của xe, trong đó mỗi thanh được tô
 #|   bằng màu cho các class của xe. Chiều cao của các thanh tương ứng với
 #|   số lượng xe trong mỗi loại hệ dẫn động, và chiều cao của các
 #|   phân đoạn có màu đại diện cho số lượng xe với một mức class
@@ -766,7 +766,7 @@ ggplot(mpg, aes(x = drv, fill = class)) +
 ```
 
 Việc xếp chồng được thực hiện tự động bằng **điều chỉnh vị trí** được chỉ định bởi argument `position`.
-Nếu bạn không muốn biểu đồ cột xếp chồng, bạn có thể sử dụng một trong ba tùy chọn khác: `"identity"`, `"dodge"` hoặc `"fill"`.
+Nếu bạn không muốn biểu đồ column xếp chồng, bạn có thể sử dụng một trong ba tùy chọn khác: `"identity"`, `"dodge"` hoặc `"fill"`.
 
 -   `position = "identity"` sẽ đặt mỗi đối tượng chính xác tại vị trí nó rơi trong ngữ cảnh của biểu đồ.
     Điều này không hữu ích lắm cho các thanh, vì nó chồng chéo chúng.
@@ -776,7 +776,7 @@ Nếu bạn không muốn biểu đồ cột xếp chồng, bạn có thể sử
     #| layout-ncol: 2
     #| fig-width: 4
     #| fig-alt: |
-    #|   Biểu đồ cột phân đoạn của loại hệ dẫn động của xe, trong đó mỗi thanh được tô
+    #|   Biểu đồ column phân đoạn của loại hệ dẫn động của xe, trong đó mỗi thanh được tô
     #|   bằng màu cho các class của xe.
     #|   Chiều cao của các
     #|   phân đoạn có màu đại diện cho số lượng xe với một mức class
@@ -804,11 +804,11 @@ Nếu bạn không muốn biểu đồ cột xếp chồng, bạn có thể sử
     #| layout-ncol: 2
     #| fig-width: 4
     #| fig-alt: |
-    #|   Bên trái, biểu đồ cột phân đoạn của loại hệ dẫn động của xe, trong đó mỗi thanh được
+    #|   Bên trái, biểu đồ column phân đoạn của loại hệ dẫn động của xe, trong đó mỗi thanh được
     #|   tô bằng màu cho các mức class. Chiều cao của mỗi thanh là 1 và
     #|   chiều cao của các phân đoạn có màu đại diện cho tỷ lệ xe
     #|   với một mức class nhất định trong một loại hệ dẫn động nhất định.
-    #|   Bên phải, biểu đồ cột dodge của loại hệ dẫn động của xe. Các thanh dodge được
+    #|   Bên phải, biểu đồ column dodge của loại hệ dẫn động của xe. Các thanh dodge được
     #|   nhóm theo mức hệ dẫn động. Trong mỗi nhóm, các thanh đại diện cho mỗi
     #|   mức class. Một số class được đại diện trong một số loại hệ dẫn động và
     #|   không được đại diện trong các loại khác, dẫn đến số lượng thanh không đều trong mỗi
@@ -823,7 +823,7 @@ Nếu bạn không muốn biểu đồ cột xếp chồng, bạn có thể sử
       geom_bar(position = "dodge")
     ```
 
-Có một loại điều chỉnh khác không hữu ích cho biểu đồ cột, nhưng có thể rất hữu ích cho biểu đồ phân tán.
+Có một loại điều chỉnh khác không hữu ích cho biểu đồ column, nhưng có thể rất hữu ích cho biểu đồ phân tán.
 Hãy nhớ lại biểu đồ phân tán đầu tiên của chúng ta.
 Bạn có nhận ra rằng biểu đồ chỉ hiển thị 126 điểm, mặc dù có 234 quan sát trong bộ dữ liệu không?
 
@@ -915,14 +915,14 @@ Có hai hệ tọa độ khác đôi khi hữu ích.
     ```
 
 -   `coord_polar()` sử dụng tọa độ cực.
-    Tọa độ cực cho thấy một mối liên hệ thú vị giữa biểu đồ cột và biểu đồ Coxcomb.
+    Tọa độ cực cho thấy một mối liên hệ thú vị giữa biểu đồ column và biểu đồ Coxcomb.
 
     ```{r}
     #| layout-ncol: 2
     #| fig-width: 3
     #| fig-asp: 1
     #| fig-alt: |
-    #|   Có hai biểu đồ. Bên trái là biểu đồ cột của clarity của kim cương,
+    #|   Có hai biểu đồ. Bên trái là biểu đồ column của clarity của kim cương,
     #|   bên phải là biểu đồ Coxcomb của cùng dữ liệu.
     bar <- ggplot(data = diamonds) +
       geom_bar(
@@ -938,7 +938,7 @@ Có hai hệ tọa độ khác đôi khi hữu ích.
 
 ### Bài tập
 
-1.  Biến một biểu đồ cột xếp chồng thành biểu đồ tròn bằng `coord_polar()`.
+1.  Biến một biểu đồ column xếp chồng thành biểu đồ tròn bằng `coord_polar()`.
 
 2.  Sự khác biệt giữa `coord_quickmap()` và `coord_map()` là gì?
 
@@ -987,11 +987,11 @@ Sau đó bạn sẽ chọn một hệ tọa độ để đặt các geom vào, s
 #| echo: false
 #| fig-alt: |
 #|   Một hình minh họa các bước đi từ dữ liệu thô đến bảng
-#|   tần suất trong đó mỗi hàng đại diện cho một mức của cut và cột count
+#|   tần suất trong đó mỗi row đại diện cho một mức của cut và column count
 #|   cho thấy có bao nhiêu kim cương ở mức cắt đó. Sau đó, các giá trị này được
 #|   ánh xạ đến chiều cao của các thanh.
 #| fig-cap: |
-#|   Các bước đi từ dữ liệu thô đến bảng tần suất đến biểu đồ cột trong đó
+#|   Các bước đi từ dữ liệu thô đến bảng tần suất đến biểu đồ column trong đó
 #|   chiều cao các thanh đại diện cho tần suất.
 knitr::include_graphics("images/visualization-grammar.png")
 ```
@@ -1000,7 +1000,7 @@ Tại thời điểm này, bạn sẽ có một biểu đồ hoàn chỉnh, như
 Bạn cũng có thể mở rộng biểu đồ bằng cách thêm một hoặc nhiều lớp bổ sung, trong đó mỗi lớp bổ sung sử dụng một bộ dữ liệu, một geom, một tập hợp ánh xạ, một stat, và một điều chỉnh vị trí.
 
 Bạn có thể sử dụng phương pháp này để xây dựng *bất kỳ* biểu đồ nào mà bạn tưởng tượng.
-Nói cách khác, bạn có thể sử dụng mẫu mã mà bạn đã học trong chương này để xây dựng hàng trăm nghìn biểu đồ độc đáo.
+Nói cách khác, bạn có thể sử dụng mẫu mã mà bạn đã học trong chương này để xây dựng row trăm nghìn biểu đồ độc đáo.
 
 Nếu bạn muốn tìm hiểu thêm về nền tảng lý thuyết của ggplot2, bạn có thể thích đọc "[The Layered Grammar of Graphics](https://vita.had.co.nz/papers/layered-grammar.pdf)", bài báo khoa học mô tả chi tiết lý thuyết của ggplot2.
 

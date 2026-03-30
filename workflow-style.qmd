@@ -87,7 +87,7 @@ mean (x ,na.rm=TRUE)
 ```
 
 Có thể thêm dấu cách phụ nếu nó cải thiện sự căn chỉnh.
-Ví dụ, nếu bạn đang tạo nhiều biến trong `mutate()`, bạn có thể muốn thêm dấu cách để tất cả các `=` thẳng hàng.[^workflow-style-1]
+Ví dụ, nếu bạn đang tạo nhiều biến trong `mutate()`, bạn có thể muốn thêm dấu cách để tất cả các `=` thẳng row.[^workflow-style-1]
 Điều này giúp dễ dàng lướt qua mã hơn.
 
 [^workflow-style-1]: Vì `dep_time` ở định dạng `HMM` hoặc `HHMM`, chúng ta sử dụng phép chia nguyên (`%/%`) để lấy giờ và phần dư (còn gọi là modulo, `%%`) để lấy phút.

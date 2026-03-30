@@ -81,8 +81,8 @@ Sau đó nó tiếp tục mô tả các danh mục cụ thể mà nó áp dụng
 Điều này có nghĩa là miễn là bạn giới hạn việc thu thập ở các sự kiện thực tế, bảo hộ bản quyền không áp dụng.
 (Nhưng lưu ý rằng châu Âu có một quyền "[sui generis](https://en.wikipedia.org/wiki/Database_right)" riêng biệt bảo hộ database.)
 
-Như một ví dụ ngắn, ở Hoa Kỳ, danh sách nguyên liệu và hướng dẫn không được bảo hộ bản quyền, vì vậy bản quyền không thể được sử dụng để bảo hộ một công thức nấu ăn.
-Nhưng nếu danh sách công thức đó đi kèm với nội dung văn học mới đáng kể, thì nội dung đó được bảo hộ bản quyền.
+Như một ví dụ ngắn, ở Hoa Kỳ, list nguyên liệu và hướng dẫn không được bảo hộ bản quyền, vì vậy bản quyền không thể được sử dụng để bảo hộ một công thức nấu ăn.
+Nhưng nếu list công thức đó đi kèm với nội dung văn học mới đáng kể, thì nội dung đó được bảo hộ bản quyền.
 Đây là lý do tại sao khi bạn tìm kiếm một công thức nấu ăn trên internet luôn có rất nhiều nội dung trước đó.
 
 Nếu bạn cần thu thập nội dung gốc (như văn bản hoặc hình ảnh), bạn vẫn có thể được bảo hộ theo [học thuyết sử dụng hợp lý (fair use)](https://en.wikipedia.org/wiki/Fair_use).
@@ -124,7 +124,7 @@ Một số phần tử quan trọng nhất là:
 
 -   Mỗi trang HTML phải nằm trong một phần tử `<html>`, và nó phải có hai phần tử con: `<head>`, chứa siêu dữ liệu tài liệu như tiêu đề trang, và `<body>`, chứa nội dung bạn nhìn thấy trong trình duyệt.
 
--   Các thẻ khối (block tags) như `<h1>` (tiêu đề 1), `<section>` (phần), `<p>` (đoạn văn), và `<ol>` (danh sách có thứ tự) tạo thành cấu trúc tổng thể của trang.
+-   Các thẻ khối (block tags) như `<h1>` (tiêu đề 1), `<section>` (phần), `<p>` (đoạn văn), và `<ol>` (list có thứ tự) tạo thành cấu trúc tổng thể của trang.
 
 -   Các thẻ nội tuyến (inline tags) như `<b>` (in đậm), `<i>` (in nghiêng), và `<a>` (liên kết) định dạng văn bản bên trong các thẻ khối.
 
@@ -235,7 +235,7 @@ html |> html_element("b")
 
 Trong hầu hết các trường hợp, bạn sẽ sử dụng `html_elements()` và `html_element()` cùng nhau, thường sử dụng `html_elements()` để xác định các phần tử sẽ trở thành các quan sát (observations) rồi sử dụng `html_element()` để tìm các phần tử sẽ trở thành các biến (variables).
 Hãy xem điều này trong thực tế bằng một ví dụ đơn giản.
-Ở đây chúng ta có một danh sách không có thứ tự (`<ul>`) trong đó mỗi mục danh sách (`<li>`) chứa một số thông tin về bốn nhân vật từ StarWars:
+Ở đây chúng ta có một list không có thứ tự (`<ul>`) trong đó mỗi mục list (`<li>`) chứa một số thông tin về bốn nhân vật từ StarWars:
 
 ```{r}
 html <- minimal_html("
@@ -315,10 +315,10 @@ html |>
 ### Bảng
 
 Nếu bạn may mắn, dữ liệu của bạn sẽ đã được lưu trữ sẵn trong một bảng HTML, và chỉ là vấn đề đọc nó từ bảng đó.
-Thường rất dễ nhận ra một bảng trong trình duyệt của bạn: nó sẽ có cấu trúc hình chữ nhật gồm các hàng và cột, và bạn có thể sao chép và dán nó vào một công cụ như Excel.
+Thường rất dễ nhận ra một bảng trong trình duyệt của bạn: nó sẽ có cấu trúc hình chữ nhật gồm các row và column, và bạn có thể sao chép và dán nó vào một công cụ như Excel.
 
 Bảng HTML được xây dựng từ bốn phần tử chính: `<table>`, `<tr>` (hàng bảng), `<th>` (tiêu đề bảng), và `<td>` (dữ liệu bảng).
-Đây là một bảng HTML đơn giản với hai cột và ba hàng:
+Đây là một bảng HTML đơn giản với hai column và ba row:
 
 ```{r}
 html <- minimal_html("
@@ -332,7 +332,7 @@ html <- minimal_html("
 ```
 
 rvest cung cấp một hàm biết cách đọc loại dữ liệu này: `html_table()`.
-Nó trả về một danh sách chứa một tibble cho mỗi bảng tìm thấy trên trang.
+Nó trả về một list chứa một tibble cho mỗi bảng tìm thấy trên trang.
 Sử dụng `html_element()` để xác định bảng bạn muốn trích xuất:
 
 ```{r}
@@ -395,7 +395,7 @@ Bạn sẽ có thể thấy rằng mỗi bộ phim có một cấu trúc chung t
 </section>
 ```
 
-Mục tiêu của chúng ta là biến dữ liệu này thành một data frame 7 hàng với các biến `title`, `year`, `director`, và `intro`.
+Mục tiêu của chúng ta là biến dữ liệu này thành một data frame 7 row với các biến `title`, `year`, `director`, và `intro`.
 Chúng ta sẽ bắt đầu bằng cách đọc HTML và trích xuất tất cả các phần tử `<section>`:
 
 ```{r}
@@ -439,18 +439,18 @@ tibble(
 
 Chúng tôi đã xử lý thêm một chút cho `released` để có được một biến dễ sử dụng hơn trong phân tích sau này.
 
-### Các phim hàng đầu IMDB
+### Các phim row đầu IMDB
 
-Cho nhiệm vụ tiếp theo, chúng ta sẽ xử lý một thứ khó hơn một chút, trích xuất 250 phim hàng đầu từ database phim internet (IMDb).
+Cho nhiệm vụ tiếp theo, chúng ta sẽ xử lý một thứ khó hơn một chút, trích xuất 250 phim row đầu từ database phim internet (IMDb).
 Vào thời điểm chúng tôi viết chương này, trang trông giống như @fig-scraping-imdb.
 
 ```{r}
 #| label: fig-scraping-imdb
 #| echo: false
 #| fig-cap: | 
-#|   Ảnh chụp màn hình trang web phim hàng đầu IMDb được chụp vào ngày 05-12-2022.
+#|   Ảnh chụp màn hình trang web phim row đầu IMDb được chụp vào ngày 05-12-2022.
 #| fig-alt: |
-#|   Ảnh chụp màn hình hiển thị một bảng với các cột "Rank and Title",
+#|   Ảnh chụp màn hình hiển thị một bảng với các column "Rank and Title",
 #|   "IMDb Rating", và "Your Rating". 9 phim trong top 250
 #|   được hiển thị. Top 5 là the Shawshank Redemption, The Godfather,
 #|   The Dark Knight, The Godfather: Part II, và 12 Angry Men.
@@ -469,10 +469,10 @@ table <- html |>
 table
 ```
 
-Kết quả này bao gồm một vài cột trống, nhưng nhìn chung làm tốt việc nắm bắt thông tin từ bảng.
+Kết quả này bao gồm một vài column trống, nhưng nhìn chung làm tốt việc nắm bắt thông tin từ bảng.
 Tuy nhiên, chúng ta cần thực hiện thêm một số xử lý để làm cho nó dễ sử dụng hơn.
-Đầu tiên, chúng ta sẽ đổi tên các cột để dễ làm việc hơn, và loại bỏ khoảng trắng thừa trong thứ hạng và tiêu đề.
-Chúng ta sẽ làm điều này với `select()` (thay vì `rename()`) để thực hiện việc đổi tên và chọn chỉ hai cột này trong một bước.
+Đầu tiên, chúng ta sẽ đổi tên các column để dễ làm việc hơn, và loại bỏ khoảng trắng thừa trong thứ hạng và tiêu đề.
+Chúng ta sẽ làm điều này với `select()` (thay vì `rename()`) để thực hiện việc đổi tên và chọn chỉ hai column này trong một bước.
 Sau đó chúng ta sẽ loại bỏ các dòng mới và khoảng trắng thừa, và sau đó áp dụng `separate_wider_regex()` (từ @sec-extract-variables) để tách tiêu đề, năm, và thứ hạng vào các biến riêng.
 
 ```{r}
@@ -542,7 +542,7 @@ Hãy kiểm tra [trang web rvest](http://rvest.tidyverse.org/) để biết thê
 
 Trong chương này, bạn đã tìm hiểu về lý do nên, lý do không nên, và cách thu thập dữ liệu từ các trang web.
 Đầu tiên, bạn đã tìm hiểu về những kiến thức cơ bản của HTML và sử dụng bộ chọn CSS để tham chiếu đến các phần tử cụ thể, sau đó bạn đã tìm hiểu về việc sử dụng gói mở rộng rvest để lấy dữ liệu ra khỏi HTML và đưa vào R.
-Sau đó chúng tôi đã minh họa thu thập dữ liệu web với hai nghiên cứu tình huống: một kịch bản đơn giản hơn về thu thập dữ liệu phim StarWars từ trang web của gói mở rộng rvest và một kịch bản phức tạp hơn về thu thập 250 phim hàng đầu từ IMDB.
+Sau đó chúng tôi đã minh họa thu thập dữ liệu web với hai nghiên cứu tình huống: một kịch bản đơn giản hơn về thu thập dữ liệu phim StarWars từ trang web của gói mở rộng rvest và một kịch bản phức tạp hơn về thu thập 250 phim row đầu từ IMDB.
 
 Các chi tiết kỹ thuật của việc thu thập dữ liệu từ web có thể phức tạp, đặc biệt khi xử lý các trang web, tuy nhiên các cân nhắc pháp lý và đạo đức có thể còn phức tạp hơn.
 Điều quan trọng là bạn phải tự tìm hiểu về cả hai điều này trước khi bắt đầu thu thập dữ liệu.

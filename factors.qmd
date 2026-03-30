@@ -50,7 +50,7 @@ Sử dụng chuỗi ký tự để ghi lại biến này có hai vấn đề:
     ```
 
 Bạn có thể khắc phục cả hai vấn đề này với nhân tố.
-Để tạo một nhân tố, bạn phải bắt đầu bằng việc tạo danh sách các **mức** (level) hợp lệ:
+Để tạo một nhân tố, bạn phải bắt đầu bằng việc tạo list các **mức** (level) hợp lệ:
 
 ```{r}
 month_levels <- c(
@@ -68,7 +68,7 @@ y1
 sort(y1)
 ```
 
-Và bất kỳ giá trị nào không nằm trong danh sách mức sẽ được tự động chuyển thành NA:
+Và bất kỳ giá trị nào không nằm trong list mức sẽ được tự động chuyển thành NA:
 
 ```{r}
 y2 <- factor(x2, levels = month_levels)
@@ -118,7 +118,7 @@ df$month
 
 Trong phần còn lại của chương này, chúng ta sẽ sử dụng `forcats::gss_cat`.
 Đây là một mẫu dữ liệu từ [Khảo sát Xã hội Tổng quát](https://gss.norc.org) (General Social Survey), một cuộc khảo sát lâu dài tại Mỹ được thực hiện bởi tổ chức nghiên cứu độc lập NORC tại Đại học Chicago.
-Cuộc khảo sát có hàng nghìn câu hỏi, vì vậy trong `gss_cat` Hadley đã chọn một số câu hỏi minh họa cho các thách thức phổ biến mà bạn sẽ gặp khi làm việc với nhân tố.
+Cuộc khảo sát có row nghìn câu hỏi, vì vậy trong `gss_cat` Hadley đã chọn một số câu hỏi minh họa cho các thách thức phổ biến mà bạn sẽ gặp khi làm việc với nhân tố.
 
 ```{r}
 gss_cat
@@ -140,7 +140,7 @@ Các thao tác đó được mô tả trong các phần bên dưới.
 ### Bài tập
 
 1.  Khám phá phân phối của `rincome` (thu nhập được báo cáo).
-    Điều gì khiến biểu đồ cột mặc định khó hiểu?
+    Điều gì khiến biểu đồ column mặc định khó hiểu?
     Bạn có thể cải thiện biểu đồ như thế nào?
 
 2.  `relig` phổ biến nhất trong khảo sát này là gì?
@@ -278,12 +278,12 @@ ggplot(by_age, aes(x = age, y = prop, color = fct_reorder2(marital, age, prop)))
   labs(color = "marital")
 ```
 
-Cuối cùng, đối với biểu đồ cột, bạn có thể sử dụng `fct_infreq()` để sắp xếp các mức theo tần suất giảm dần: đây là kiểu sắp xếp lại đơn giản nhất vì không cần thêm biến nào.
-Kết hợp nó với `fct_rev()` nếu bạn muốn theo tần suất tăng dần để trong biểu đồ cột các giá trị lớn nhất ở bên phải, không phải bên trái.
+Cuối cùng, đối với biểu đồ column, bạn có thể sử dụng `fct_infreq()` để sắp xếp các mức theo tần suất giảm dần: đây là kiểu sắp xếp lại đơn giản nhất vì không cần thêm biến nào.
+Kết hợp nó với `fct_rev()` nếu bạn muốn theo tần suất tăng dần để trong biểu đồ column các giá trị lớn nhất ở bên phải, không phải bên trái.
 
 ```{r}
 #| fig-alt: |
-#|   Biểu đồ cột về tình trạng hôn nhân sắp xếp từ ít phổ biến nhất đến
+#|   Biểu đồ column về tình trạng hôn nhân sắp xếp từ ít phổ biến nhất đến
 #|   phổ biến nhất: không trả lời (~0), ly thân (~1.000), góa (~2.000),
 #|   ly hôn (~3.000), chưa kết hôn (~5.000), đã kết hôn (~10.000).
 gss_cat |>
@@ -299,7 +299,7 @@ gss_cat |>
 
 2.  Đối với mỗi nhân tố trong `gss_cat`, hãy xác định xem thứ tự các mức là tùy ý hay có nguyên tắc.
 
-3.  Tại sao việc di chuyển "Not applicable" lên đầu danh sách các mức lại khiến nó xuất hiện ở cuối biểu đồ?
+3.  Tại sao việc di chuyển "Not applicable" lên đầu list các mức lại khiến nó xuất hiện ở cuối biểu đồ?
 
 ## Thay đổi giá trị các mức nhân tố
 

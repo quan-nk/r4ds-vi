@@ -12,7 +12,7 @@ Thường thì bạn sẽ cần tạo một số biến (variable) mới hoặc 
 Bạn sẽ học cách làm tất cả những điều đó (và nhiều hơn nữa!) trong chương này, chương sẽ giới thiệu cho bạn về biến đổi dữ liệu (data transformation) bằng gói mở rộng **dplyr** và một tập dữ liệu mới về các chuyến bay khởi hành từ Thành phố New York năm 2013.
 
 Mục tiêu của chương này là cung cấp cho bạn cái nhìn tổng quan về tất cả các công cụ chính để biến đổi một data frame.
-Chúng ta sẽ bắt đầu với các hàm thao tác trên hàng (row) rồi đến cột (column) của data frame, sau đó quay lại nói thêm về pipe (pipe), một công cụ quan trọng mà bạn sử dụng để kết hợp các động từ.
+Chúng ta sẽ bắt đầu với các hàm thao tác trên row (row) rồi đến column (column) của data frame, sau đó quay lại nói thêm về pipe (pipe), một công cụ quan trọng mà bạn sử dụng để kết hợp các động từ.
 Tiếp theo, chúng ta sẽ giới thiệu khả năng làm việc với nhóm (group).
 Chúng ta sẽ kết thúc chương với một nghiên cứu tình huống (case study) minh họa các hàm này trong thực tế.
 Trong các chương sau, chúng ta sẽ quay lại các hàm này chi tiết hơn khi bắt đầu đào sâu vào các loại dữ liệu cụ thể (ví dụ: số, chuỗi ký tự, ngày tháng).
@@ -45,17 +45,17 @@ flights
 ```
 
 `flights` là một tibble, một loại data frame đặc biệt được tidyverse sử dụng để tránh một số lỗi phổ biến.
-Sự khác biệt quan trọng nhất giữa tibble và data frame là cách tibble in ra; chúng được thiết kế cho các tập dữ liệu lớn, nên chỉ hiển thị một vài hàng đầu tiên và chỉ các cột vừa với một màn hình.
+Sự khác biệt quan trọng nhất giữa tibble và data frame là cách tibble in ra; chúng được thiết kế cho các tập dữ liệu lớn, nên chỉ hiển thị một vài row đầu tiên và chỉ các column vừa với một màn hình.
 Có một vài tùy chọn để xem mọi thứ.
 Nếu bạn đang sử dụng RStudio, cách thuận tiện nhất có lẽ là `View(flights)`, mở một chế độ xem tương tác, có thể cuộn và lọc.
-Nếu không, bạn có thể sử dụng `print(flights, width = Inf)` để hiển thị tất cả các cột, hoặc sử dụng `glimpse()`:
+Nếu không, bạn có thể sử dụng `print(flights, width = Inf)` để hiển thị tất cả các column, hoặc sử dụng `glimpse()`:
 
 ```{r}
 glimpse(flights)
 ```
 
 Trong cả hai chế độ xem, tên biến được theo sau bởi các chữ viết tắt cho biết kiểu của mỗi biến: `<int>` là viết tắt của số nguyên (integer), `<dbl>` là viết tắt của số thực (double), `<chr>` cho ký tự (character, hay chuỗi ký tự), và `<dttm>` cho ngày-giờ (date-time).
-Những kiểu này rất quan trọng vì các thao tác bạn có thể thực hiện trên một cột phụ thuộc rất nhiều vào "kiểu" của nó.
+Những kiểu này rất quan trọng vì các thao tác bạn có thể thực hiện trên một column phụ thuộc rất nhiều vào "kiểu" của nó.
 
 ### Cơ bản về dplyr
 
@@ -64,7 +64,7 @@ Nhưng trước khi thảo luận về sự khác biệt riêng lẻ của chún
 
 1.  Đối số đầu tiên luôn là một data frame.
 
-2.  Các argument tiếp theo thường mô tả cột nào cần thao tác bằng cách sử dụng tên biến (không có dấu ngoặc kép).
+2.  Các argument tiếp theo thường mô tả column nào cần thao tác bằng cách sử dụng tên biến (không có dấu ngoặc kép).
 
 3.  Đầu ra luôn là một data frame mới.
 
@@ -84,25 +84,25 @@ flights |>
 ```
 
 Các động từ của dplyr được tổ chức thành bốn nhóm dựa trên đối tượng chúng thao tác: **hàng**, **cột**, **nhóm**, hoặc **bảng**.
-Trong các phần tiếp theo, bạn sẽ học các động từ quan trọng nhất cho hàng, cột và nhóm.
+Trong các phần tiếp theo, bạn sẽ học các động từ quan trọng nhất cho row, column và nhóm.
 Sau đó, chúng ta sẽ quay lại các động từ nối (join) thao tác trên bảng trong @sec-joins.
 Hãy bắt đầu nào!
 
 ## Hàng
 
-Các động từ quan trọng nhất thao tác trên hàng của tập dữ liệu là `filter()`, thay đổi những hàng nào xuất hiện mà không thay đổi thứ tự của chúng, và `arrange()`, thay đổi thứ tự các hàng mà không thay đổi những hàng nào xuất hiện.
-Cả hai hàm chỉ ảnh hưởng đến hàng, còn cột không bị thay đổi.
-Chúng ta cũng sẽ thảo luận về `distinct()` để tìm các hàng có giá trị duy nhất.
-Khác với `arrange()` và `filter()`, nó cũng có thể tùy chọn thay đổi các cột.
+Các động từ quan trọng nhất thao tác trên row của tập dữ liệu là `filter()`, thay đổi những row nào xuất hiện mà không thay đổi thứ tự của chúng, và `arrange()`, thay đổi thứ tự các row mà không thay đổi những row nào xuất hiện.
+Cả hai hàm chỉ ảnh hưởng đến row, còn column không bị thay đổi.
+Chúng ta cũng sẽ thảo luận về `distinct()` để tìm các row có giá trị duy nhất.
+Khác với `arrange()` và `filter()`, nó cũng có thể tùy chọn thay đổi các column.
 
 ### `filter()`
 
-`filter()` cho phép bạn giữ lại các hàng dựa trên giá trị của các cột[^data-transform-1].
+`filter()` cho phép bạn giữ lại các row dựa trên giá trị của các column[^data-transform-1].
 Đối số đầu tiên là data frame.
-Đối số thứ hai và các argument tiếp theo là các điều kiện phải đúng để giữ lại hàng.
+Đối số thứ hai và các argument tiếp theo là các điều kiện phải đúng để giữ lại row.
 Ví dụ, chúng ta có thể tìm tất cả các chuyến bay khởi hành trễ hơn 120 phút (hai giờ):
 
-[^data-transform-1]: Sau này, bạn sẽ học về họ hàm `slice_*()`, cho phép bạn chọn hàng dựa trên vị trí của chúng.
+[^data-transform-1]: Sau này, bạn sẽ học về họ hàm `slice_*()`, cho phép bạn chọn row dựa trên vị trí của chúng.
 
 ```{r}
 flights |>
@@ -123,7 +123,7 @@ flights |>
 ```
 
 Có một phím tắt hữu ích khi bạn kết hợp `|` và `==`: `%in%`.
-Nó giữ lại các hàng mà biến bằng một trong các giá trị ở bên phải:
+Nó giữ lại các row mà biến bằng một trong các giá trị ở bên phải:
 
 ```{r}
 # Cách ngắn hơn để chọn các chuyến bay khởi hành vào tháng 1 hoặc tháng 2
@@ -166,10 +166,10 @@ Chúng ta sẽ tìm hiểu thêm về điều gì đang xảy ra ở đây và t
 
 ### `arrange()`
 
-`arrange()` thay đổi thứ tự các hàng dựa trên giá trị của các cột.
-Nó nhận một data frame và một tập hợp tên cột (hoặc các biểu thức phức tạp hơn) để sắp xếp theo.
-Nếu bạn cung cấp nhiều hơn một tên cột, mỗi cột bổ sung sẽ được sử dụng để phá vỡ các giá trị bằng nhau trong các cột trước.
-Ví dụ, đoạn mã sau sắp xếp theo thời gian khởi hành, được phân bố trên bốn cột.
+`arrange()` thay đổi thứ tự các row dựa trên giá trị của các column.
+Nó nhận một data frame và một tập hợp tên column (hoặc các biểu thức phức tạp hơn) để sắp xếp theo.
+Nếu bạn cung cấp nhiều hơn một tên column, mỗi column bổ sung sẽ được sử dụng để phá vỡ các giá trị bằng nhau trong các column trước.
+Ví dụ, đoạn mã sau sắp xếp theo thời gian khởi hành, được phân bố trên bốn column.
 Chúng ta có được các năm sớm nhất trước, sau đó trong một năm, các tháng sớm nhất, v.v.
 
 ```{r}
@@ -177,7 +177,7 @@ flights |>
   arrange(year, month, day, dep_time)
 ```
 
-Bạn có thể sử dụng `desc()` trên một cột bên trong `arrange()` để sắp xếp lại data frame dựa trên cột đó theo thứ tự giảm dần (từ lớn đến nhỏ).
+Bạn có thể sử dụng `desc()` trên một column bên trong `arrange()` để sắp xếp lại data frame dựa trên column đó theo thứ tự giảm dần (từ lớn đến nhỏ).
 Ví dụ, đoạn mã này sắp xếp các chuyến bay từ trễ nhất đến ít trễ nhất:
 
 ```{r}
@@ -185,15 +185,15 @@ flights |>
   arrange(desc(dep_delay))
 ```
 
-Lưu ý rằng số hàng không thay đổi -- chúng ta chỉ sắp xếp dữ liệu, không lọc nó.
+Lưu ý rằng số row không thay đổi -- chúng ta chỉ sắp xếp dữ liệu, không lọc nó.
 
 ### `distinct()`
 
-`distinct()` tìm tất cả các hàng duy nhất trong một tập dữ liệu, vì vậy về mặt kỹ thuật, nó chủ yếu thao tác trên các hàng.
-Tuy nhiên, phần lớn thời gian bạn sẽ muốn tìm tổ hợp duy nhất của một số biến, vì vậy bạn cũng có thể tùy chọn cung cấp tên cột:
+`distinct()` tìm tất cả các row duy nhất trong một tập dữ liệu, vì vậy về mặt kỹ thuật, nó chủ yếu thao tác trên các row.
+Tuy nhiên, phần lớn thời gian bạn sẽ muốn tìm tổ hợp duy nhất của một số biến, vì vậy bạn cũng có thể tùy chọn cung cấp tên column:
 
 ```{r}
-# Xóa các hàng trùng lặp, nếu có
+# Xóa các row trùng lặp, nếu có
 flights |>
   distinct()
 
@@ -202,14 +202,14 @@ flights |>
   distinct(origin, dest)
 ```
 
-Ngoài ra, nếu bạn muốn giữ các cột khác khi lọc các hàng duy nhất, bạn có thể sử dụng tùy chọn `.keep_all = TRUE`.
+Ngoài ra, nếu bạn muốn giữ các column khác khi lọc các row duy nhất, bạn có thể sử dụng tùy chọn `.keep_all = TRUE`.
 
 ```{r}
 flights |>
   distinct(origin, dest, .keep_all = TRUE)
 ```
 
-Không phải ngẫu nhiên mà tất cả các chuyến bay duy nhất này đều vào ngày 1 tháng 1: `distinct()` sẽ tìm lần xuất hiện đầu tiên của một hàng duy nhất trong tập dữ liệu và loại bỏ phần còn lại.
+Không phải ngẫu nhiên mà tất cả các chuyến bay duy nhất này đều vào ngày 1 tháng 1: `distinct()` sẽ tìm lần xuất hiện đầu tiên của một row duy nhất trong tập dữ liệu và loại bỏ phần còn lại.
 
 Nếu bạn muốn tìm số lần xuất hiện thay vào đó, tốt hơn là thay `distinct()` bằng `count()`.
 Với argument `sort = TRUE`, bạn có thể sắp xếp chúng theo thứ tự giảm dần của số lần xuất hiện.
@@ -248,11 +248,11 @@ flights |>
 
 ## Cột
 
-Có bốn động từ quan trọng ảnh hưởng đến cột mà không thay đổi hàng: `mutate()` tạo các cột mới được tính từ các cột hiện có, `select()` thay đổi những cột nào xuất hiện, `rename()` thay đổi tên của các cột, và `relocate()` thay đổi vị trí của các cột.
+Có bốn động từ quan trọng ảnh hưởng đến column mà không thay đổi row: `mutate()` tạo các column mới được tính từ các column hiện có, `select()` thay đổi những column nào xuất hiện, `rename()` thay đổi tên của các column, và `relocate()` thay đổi vị trí của các column.
 
 ### `mutate()` {#sec-mutate}
 
-Nhiệm vụ của `mutate()` là thêm các cột mới được tính từ các cột hiện có.
+Nhiệm vụ của `mutate()` là thêm các column mới được tính từ các column hiện có.
 Trong các chương biến đổi, bạn sẽ học một tập hợp lớn các hàm mà bạn có thể sử dụng để thao tác với các loại biến khác nhau.
 Hiện tại, chúng ta sẽ sử dụng đại số cơ bản, cho phép tính `gain`, lượng thời gian mà một chuyến bay trễ bù lại trên không, và `speed` tính bằng dặm trên giờ:
 
@@ -264,10 +264,10 @@ flights |>
   )
 ```
 
-Theo mặc định, `mutate()` thêm các cột mới ở phía bên phải của tập dữ liệu, điều này khiến khó nhìn thấy điều gì đang xảy ra ở đây.
+Theo mặc định, `mutate()` thêm các column mới ở phía bên phải của tập dữ liệu, điều này khiến khó nhìn thấy điều gì đang xảy ra ở đây.
 Chúng ta có thể sử dụng argument `.before` để thay vào đó thêm các biến vào phía bên trái[^data-transform-2]:
 
-[^data-transform-2]: Hãy nhớ rằng trong RStudio, cách dễ nhất để xem một tập dữ liệu có nhiều cột là `View()`.
+[^data-transform-2]: Hãy nhớ rằng trong RStudio, cách dễ nhất để xem một tập dữ liệu có nhiều column là `View()`.
 
 ```{r}
 flights |>
@@ -293,7 +293,7 @@ flights |>
 ```
 
 Ngoài ra, bạn có thể kiểm soát những biến nào được giữ lại với argument `.keep`.
-Một argument đặc biệt hữu ích là `"used"` chỉ định rằng chúng ta chỉ giữ các cột có liên quan hoặc được tạo trong bước `mutate()`.
+Một argument đặc biệt hữu ích là `"used"` chỉ định rằng chúng ta chỉ giữ các column có liên quan hoặc được tạo trong bước `mutate()`.
 Ví dụ, đầu ra sau sẽ chỉ chứa các biến `dep_delay`, `arr_delay`, `air_time`, `gain`, `hours`, và `gain_per_hour`.
 
 ```{r}
@@ -313,11 +313,11 @@ Thường thì câu trả lời đúng là một đối tượng mới được 
 
 ### `select()` {#sec-select}
 
-Không hiếm khi bạn nhận được tập dữ liệu với hàng trăm hoặc thậm chí hàng nghìn biến.
+Không hiếm khi bạn nhận được tập dữ liệu với row trăm hoặc thậm chí row nghìn biến.
 Trong tình huống này, thách thức đầu tiên thường chỉ là tập trung vào các biến bạn quan tâm.
 `select()` cho phép bạn nhanh chóng thu hẹp vào một tập con hữu ích bằng các thao tác dựa trên tên của các biến:
 
--   Chọn cột theo tên:
+-   Chọn column theo tên:
 
     ```{r}
     #| results: false
@@ -325,7 +325,7 @@ Trong tình huống này, thách thức đầu tiên thường chỉ là tập t
       select(year, month, day)
     ```
 
--   Chọn tất cả các cột từ year đến day (bao gồm cả hai):
+-   Chọn tất cả các column từ year đến day (bao gồm cả hai):
 
     ```{r}
     #| results: false
@@ -333,7 +333,7 @@ Trong tình huống này, thách thức đầu tiên thường chỉ là tập t
       select(year:day)
     ```
 
--   Chọn tất cả các cột ngoại trừ từ year đến day (bao gồm cả hai):
+-   Chọn tất cả các column ngoại trừ từ year đến day (bao gồm cả hai):
 
     ```{r}
     #| results: false
@@ -345,7 +345,7 @@ Trong tình huống này, thách thức đầu tiên thường chỉ là tập t
     Hai toán tử này phục vụ cùng mục đích nhưng với sự khác biệt tinh tế trong hành vi.
     Chúng tôi khuyên dùng `!` vì nó đọc như "không" (not) và kết hợp tốt với `&` và `|`.
 
--   Chọn tất cả các cột là kiểu ký tự:
+-   Chọn tất cả các column là kiểu ký tự:
 
     ```{r}
     #| results: false
@@ -380,7 +380,7 @@ flights |>
   rename(tail_num = tailnum)
 ```
 
-Nếu bạn có nhiều cột được đặt tên không nhất quán và việc sửa tất cả bằng tay sẽ rất khó khăn, hãy xem `janitor::clean_names()` cung cấp một số chức năng dọn dẹp tự động hữu ích.
+Nếu bạn có nhiều column được đặt tên không nhất quán và việc sửa tất cả bằng tay sẽ rất khó khăn, hãy xem `janitor::clean_names()` cung cấp một số chức năng dọn dẹp tự động hữu ích.
 
 ### `relocate()`
 
@@ -540,7 +540,7 @@ Thứ hai, `|>` đơn giản hơn `%>%` khá nhiều: trong khoảng thời gian
 
 ## Nhóm
 
-Cho đến giờ bạn đã học về các hàm làm việc với hàng và cột.
+Cho đến giờ bạn đã học về các hàm làm việc với row và column.
 dplyr trở nên mạnh mẽ hơn nữa khi bạn thêm khả năng làm việc với nhóm.
 Trong phần này, chúng ta sẽ tập trung vào các hàm quan trọng nhất: `group_by()`, `summarize()`, và họ hàm slice.
 
@@ -559,7 +559,7 @@ flights |>
 
 ### `summarize()` {#sec-summarize}
 
-Thao tác nhóm quan trọng nhất là tóm tắt, nếu được sử dụng để tính một thống kê tóm tắt đơn lẻ, sẽ giảm data frame xuống còn một hàng cho mỗi nhóm.
+Thao tác nhóm quan trọng nhất là tóm tắt, nếu được sử dụng để tính một thống kê tóm tắt đơn lẻ, sẽ giảm data frame xuống còn một row cho mỗi nhóm.
 Trong dplyr, thao tác này được thực hiện bởi `summarize()`[^data-transform-3], như ví dụ sau đây tính độ trễ khởi hành trung bình theo tháng:
 
 [^data-transform-3]: Hoặc `summarise()`, nếu bạn thích tiếng Anh kiểu Anh.
@@ -574,7 +574,7 @@ flights |>
 
 Ồ không!
 Có gì đó sai, và tất cả kết quả của chúng ta đều là `NA` (đọc là "N-A"), ký hiệu của R cho missing value (missing value).
-Điều này xảy ra vì một số chuyến bay có dữ liệu khuyết trong cột delay, và khi chúng ta tính trung bình bao gồm những giá trị đó, chúng ta nhận được kết quả `NA`.
+Điều này xảy ra vì một số chuyến bay có dữ liệu khuyết trong column delay, và khi chúng ta tính trung bình bao gồm những giá trị đó, chúng ta nhận được kết quả `NA`.
 Chúng ta sẽ quay lại thảo luận chi tiết về missing value trong @sec-missing-values, nhưng bây giờ, chúng ta sẽ bảo hàm `mean()` bỏ qua tất cả missing value bằng cách đặt argument `na.rm` thành `TRUE`:
 
 ```{r}
@@ -586,7 +586,7 @@ flights |>
 ```
 
 Bạn có thể tạo bất kỳ số lượng tóm tắt nào trong một lệnh gọi `summarize()` duy nhất.
-Bạn sẽ học các phép tóm tắt hữu ích khác nhau trong các chương sắp tới, nhưng một phép tóm tắt rất hữu ích là `n()`, trả về số hàng trong mỗi nhóm:
+Bạn sẽ học các phép tóm tắt hữu ích khác nhau trong các chương sắp tới, nhưng một phép tóm tắt rất hữu ích là `n()`, trả về số row trong mỗi nhóm:
 
 ```{r}
 flights |>
@@ -601,15 +601,15 @@ Giá trị trung bình và số đếm có thể đưa bạn đi xa một cách 
 
 ### Các hàm `slice_`
 
-Có năm hàm tiện dụng cho phép bạn trích xuất các hàng cụ thể trong mỗi nhóm:
+Có năm hàm tiện dụng cho phép bạn trích xuất các row cụ thể trong mỗi nhóm:
 
--   `df |> slice_head(n = 1)` lấy hàng đầu tiên từ mỗi nhóm.
--   `df |> slice_tail(n = 1)` lấy hàng cuối cùng trong mỗi nhóm.
--   `df |> slice_min(x, n = 1)` lấy hàng có giá trị nhỏ nhất của cột `x`.
--   `df |> slice_max(x, n = 1)` lấy hàng có giá trị lớn nhất của cột `x`.
--   `df |> slice_sample(n = 1)` lấy một hàng ngẫu nhiên.
+-   `df |> slice_head(n = 1)` lấy row đầu tiên từ mỗi nhóm.
+-   `df |> slice_tail(n = 1)` lấy row cuối cùng trong mỗi nhóm.
+-   `df |> slice_min(x, n = 1)` lấy row có giá trị nhỏ nhất của column `x`.
+-   `df |> slice_max(x, n = 1)` lấy row có giá trị lớn nhất của column `x`.
+-   `df |> slice_sample(n = 1)` lấy một row ngẫu nhiên.
 
-Bạn có thể thay đổi `n` để chọn nhiều hơn một hàng, hoặc thay vì `n =`, bạn có thể sử dụng `prop = 0.1` để chọn (ví dụ) 10% số hàng trong mỗi nhóm.
+Bạn có thể thay đổi `n` để chọn nhiều hơn một row, hoặc thay vì `n =`, bạn có thể sử dụng `prop = 0.1` để chọn (ví dụ) 10% số row trong mỗi nhóm.
 Ví dụ, đoạn mã sau tìm các chuyến bay bị trễ nhất khi đến tại mỗi điểm đến:
 
 ```{r}
@@ -619,12 +619,12 @@ flights |>
   relocate(dest)
 ```
 
-Lưu ý rằng có 105 điểm đến nhưng chúng ta nhận được 108 hàng.
+Lưu ý rằng có 105 điểm đến nhưng chúng ta nhận được 108 row.
 Sao vậy?
-`slice_min()` và `slice_max()` giữ lại các giá trị bằng nhau nên `n = 1` có nghĩa là cho chúng ta tất cả các hàng có giá trị cao nhất.
-Nếu bạn muốn chính xác một hàng cho mỗi nhóm, bạn có thể đặt `with_ties = FALSE`.
+`slice_min()` và `slice_max()` giữ lại các giá trị bằng nhau nên `n = 1` có nghĩa là cho chúng ta tất cả các row có giá trị cao nhất.
+Nếu bạn muốn chính xác một row cho mỗi nhóm, bạn có thể đặt `with_ties = FALSE`.
 
-Điều này tương tự với việc tính độ trễ tối đa bằng `summarize()`, nhưng bạn nhận được toàn bộ hàng tương ứng (hoặc các hàng nếu có giá trị bằng nhau) thay vì chỉ một thống kê tóm tắt đơn lẻ.
+Điều này tương tự với việc tính độ trễ tối đa bằng `summarize()`, nhưng bạn nhận được toàn bộ row tương ứng (hoặc các row nếu có giá trị bằng nhau) thay vì chỉ một thống kê tóm tắt đơn lẻ.
 
 ### Nhóm theo nhiều biến
 
@@ -681,7 +681,7 @@ daily |>
   )
 ```
 
-Bạn nhận lại một hàng duy nhất vì dplyr coi tất cả các hàng trong một data frame không được nhóm là thuộc về một nhóm.
+Bạn nhận lại một row duy nhất vì dplyr coi tất cả các row trong một data frame không được nhóm là thuộc về một nhóm.
 
 ### `.by`
 
@@ -860,7 +860,7 @@ Bạn có thể tìm giải thích tốt về vấn đề này và cách khắc 
 ## Tóm tắt
 
 Trong chương này, bạn đã học các công cụ mà dplyr cung cấp để làm việc với data frame.
-Các công cụ được chia thành ba nhóm đại khái: những công cụ thao tác trên hàng (như `filter()` và `arrange()`), những công cụ thao tác trên cột (như `select()` và `mutate()`), và những công cụ thao tác trên nhóm (như `group_by()` và `summarize()`).
+Các công cụ được chia thành ba nhóm đại khái: những công cụ thao tác trên row (như `filter()` và `arrange()`), những công cụ thao tác trên column (như `select()` và `mutate()`), và những công cụ thao tác trên nhóm (như `group_by()` và `summarize()`).
 Trong chương này, chúng ta đã tập trung vào các công cụ "toàn bộ data frame" này, nhưng bạn chưa học nhiều về những gì bạn có thể làm với từng biến riêng lẻ.
 Chúng ta sẽ quay lại điều đó trong phần Biến đổi của cuốn sách, nơi mỗi chương cung cấp các công cụ cho một loại biến cụ thể.
 

@@ -198,7 +198,7 @@ Có một cặp phím tắt tuyệt vời hoạt động cùng nhau để đảm
 1.  Nhấn Cmd/Ctrl + Shift + 0/F10 để khởi động lại R.
 2.  Nhấn Cmd/Ctrl + Shift + S để chạy lại tập lệnh hiện tại.
 
-Chúng tôi cùng nhau sử dụng mẫu này hàng trăm lần mỗi tuần.
+Chúng tôi cùng nhau sử dụng mẫu này row trăm lần mỗi tuần.
 
 Ngoài ra, nếu bạn không sử dụng phím tắt, bạn có thể vào Session \> Restart R rồi bôi đen và chạy lại tập lệnh hiện tại.
 

@@ -144,7 +144,7 @@ age_mary == age_john
 # Chúng ta không biết!
 ```
 
-Vì vậy nếu bạn muốn tìm tất cả các chuyến bay có `dep_time` bị khuyết, đoạn mã sau sẽ không hoạt động vì `dep_time == NA` sẽ trả về `NA` cho mọi hàng, và `filter()` tự động loại bỏ các missing value:
+Vì vậy nếu bạn muốn tìm tất cả các chuyến bay có `dep_time` bị khuyết, đoạn mã sau sẽ không hoạt động vì `dep_time == NA` sẽ trả về `NA` cho mọi row, và `filter()` tự động loại bỏ các missing value:
 
 ```{r}
 flights |>
@@ -163,7 +163,7 @@ is.na(c(1, NA, 3))
 is.na(c("a", NA, "b"))
 ```
 
-Chúng ta có thể sử dụng `is.na()` để tìm tất cả các hàng có `dep_time` bị khuyết:
+Chúng ta có thể sử dụng `is.na()` để tìm tất cả các row có `dep_time` bị khuyết:
 
 ```{r}
 flights |>
@@ -194,7 +194,7 @@ Chúng ta sẽ quay lại đề cập missing value chi tiết hơn trong @sec-m
 
 Khi bạn có nhiều vector logic, bạn có thể kết hợp chúng lại bằng đại số Boole (Boole algebra).
 Trong R, `&` là "và", `|` là "hoặc", `!` là "phủ định", và `xor()` là hoặc loại trừ (exclusive or)[^logicals-2].
-Ví dụ, `df |> filter(!is.na(x))` tìm tất cả các hàng mà `x` không bị khuyết và `df |> filter(x < -10 | x > 0)` tìm tất cả các hàng mà `x` nhỏ hơn -10 hoặc lớn hơn 0.
+Ví dụ, `df |> filter(!is.na(x))` tìm tất cả các row mà `x` không bị khuyết và `df |> filter(x < -10 | x > 0)` tìm tất cả các row mà `x` nhỏ hơn -10 hoặc lớn hơn 0.
 @fig-bool-ops cho thấy các ví dụ về các phép toán Boole thường dùng và cách chúng hoạt động.
 
 [^logicals-2]: Nghĩa là `xor(x, y)` đúng nếu x đúng, hoặc y đúng, nhưng không phải cả hai.
@@ -268,7 +268,7 @@ flights |>
 Chuyện gì đang xảy ra?
 Ở đây, R trước tiên tính `month == 11` tạo ra một vector logic, mà chúng ta gọi là `nov`.
 Nó tính `nov | 12`.
-Khi bạn sử dụng một số với toán tử logic, nó chuyển đổi mọi thứ ngoại trừ 0 thành `TRUE`, vì vậy điều này tương đương với `nov | TRUE` và sẽ luôn là `TRUE`, nên mọi hàng sẽ được chọn:
+Khi bạn sử dụng một số với toán tử logic, nó chuyển đổi mọi thứ ngoại trừ 0 thành `TRUE`, vì vậy điều này tương đương với `nov | TRUE` và sẽ luôn là `TRUE`, nên mọi row sẽ được chọn:
 
 ```{r}
 flights |>
@@ -314,7 +314,7 @@ flights |>
 ### Bài tập
 
 1.  Tìm tất cả các chuyến bay mà `arr_delay` bị khuyết nhưng `dep_delay` thì không. Tìm tất cả các chuyến bay mà cả `arr_time` lẫn `sched_arr_time` đều không bị khuyết, nhưng `arr_delay` thì bị khuyết.
-2.  Có bao nhiêu chuyến bay có `dep_time` bị khuyết? Những biến nào khác cũng bị khuyết trong các hàng này? Những hàng này có thể đại diện cho điều gì?
+2.  Có bao nhiêu chuyến bay có `dep_time` bị khuyết? Những biến nào khác cũng bị khuyết trong các row này? Những row này có thể đại diện cho điều gì?
 3.  Giả sử rằng `dep_time` bị khuyết nghĩa là chuyến bay bị hủy, hãy xem số lượng chuyến bay bị hủy theo ngày. Có quy luật nào không? Có mối liên hệ nào giữa tỷ lệ chuyến bay bị hủy và độ trễ trung bình của các chuyến bay không bị hủy không?
 
 ## Tóm tắt thống kê {#sec-logical-summaries}
@@ -563,8 +563,8 @@ Chúng tôi không mong bạn ghi nhớ các quy tắc này, nhưng chúng sẽ 
 
 3.  Sử dụng `if_else()` để tính giá trị tuyệt đối của một vector số có tên `x`.
 
-4.  Viết một câu lệnh `case_when()` sử dụng các cột `month` và `day` từ `flights` để gán nhãn cho một số ngày lễ quan trọng của Mỹ (ví dụ: Ngày Năm Mới, ngày 4 tháng 7, Lễ Tạ Ơn, và Giáng Sinh).
-    Đầu tiên tạo một cột logic có giá trị `TRUE` hoặc `FALSE`, sau đó tạo một cột ký tự cho tên ngày lễ hoặc là `NA`.
+4.  Viết một câu lệnh `case_when()` sử dụng các column `month` và `day` từ `flights` để gán nhãn cho một số ngày lễ quan trọng của Mỹ (ví dụ: Ngày Năm Mới, ngày 4 tháng 7, Lễ Tạ Ơn, và Giáng Sinh).
+    Đầu tiên tạo một column logic có giá trị `TRUE` hoặc `FALSE`, sau đó tạo một column ký tự cho tên ngày lễ hoặc là `NA`.
 
 ## Tổng kết
 

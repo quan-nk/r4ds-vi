@@ -12,7 +12,7 @@ options(warnPartialMatchArgs = FALSE)
 
 Chương này sẽ hướng dẫn bạn cách làm việc với ngày và giờ trong R.
 Thoạt nhìn, ngày và giờ có vẻ đơn giản.
-Bạn sử dụng chúng hàng ngày trong cuộc sống, và chúng dường như không gây ra nhiều rắc rối.
+Bạn sử dụng chúng row ngày trong cuộc sống, và chúng dường như không gây ra nhiều rắc rối.
 Tuy nhiên, bạn càng tìm hiểu về ngày và giờ, mọi thứ càng trở nên phức tạp hơn!
 
 Để khởi động, hãy nghĩ xem một năm có bao nhiêu ngày, và một ngày có bao nhiêu giờ.
@@ -23,7 +23,7 @@ Số giờ trong một ngày thì ít rõ ràng hơn: hầu hết các ngày có
 [^datetimes-1]: Một năm là năm nhuận nếu chia hết cho 4, trừ khi nó cũng chia hết cho 100, ngoại trừ nếu nó cũng chia hết cho 400.
     Nói cách khác, trong mỗi chu kỳ 400 năm, có 97 năm nhuận.
 
-Ngày và giờ khó xử lý vì chúng phải dung hòa hai hiện tượng vật lý (sự tự quay của Trái Đất và quỹ đạo quay quanh Mặt Trời) với hàng loạt hiện tượng địa chính trị bao gồm tháng, múi giờ (time zone), và giờ mùa hè (DST).
+Ngày và giờ khó xử lý vì chúng phải dung hòa hai hiện tượng vật lý (sự tự quay của Trái Đất và quỹ đạo quay quanh Mặt Trời) với row loạt hiện tượng địa chính trị bao gồm tháng, múi giờ (time zone), và giờ mùa hè (DST).
 Chương này sẽ không dạy bạn mọi chi tiết cuối cùng về ngày và giờ, nhưng sẽ cung cấp cho bạn nền tảng vững chắc về các kỹ năng thực tế giúp bạn giải quyết các thách thức phân tích dữ liệu thường gặp.
 
 Chúng ta sẽ bắt đầu bằng cách hướng dẫn bạn tạo date-time từ nhiều đầu vào khác nhau, và sau khi bạn đã có một date-time, cách trích xuất các thành phần như năm, tháng, và ngày.
@@ -141,7 +141,7 @@ read_csv(csv, col_types = cols(date = col_date("%y/%m/%d")))
 Lưu ý rằng dù bạn chỉ định định dạng ngày theo cách nào, ngày luôn được hiển thị theo cùng một cách khi đã nằm trong R.
 
 Nếu bạn sử dụng `%b` hoặc `%B` và làm việc với ngày không phải tiếng Anh, bạn cũng cần cung cấp `locale()`.
-Xem danh sách các ngôn ngữ được hỗ trợ sẵn trong `date_names_langs()`, hoặc tạo ngôn ngữ riêng với `date_names()`,
+Xem list các ngôn ngữ được hỗ trợ sẵn trong `date_names_langs()`, hoặc tạo ngôn ngữ riêng với `date_names()`,
 
 ### Từ chuỗi ký tự
 
@@ -182,7 +182,7 @@ ymd("2017-01-31", tz = "UTC")
 
 ### Từ các thành phần riêng lẻ
 
-Thay vì một chuỗi ký tự duy nhất, đôi khi bạn sẽ có các thành phần riêng lẻ của date-time nằm rải rác trên nhiều cột.
+Thay vì một chuỗi ký tự duy nhất, đôi khi bạn sẽ có các thành phần riêng lẻ của date-time nằm rải rác trên nhiều column.
 Đây là những gì chúng ta có trong dữ liệu `flights`:
 
 ```{r}
@@ -198,7 +198,7 @@ flights |>
   mutate(departure = make_datetime(year, month, day, hour, minute))
 ```
 
-Hãy làm tương tự cho mỗi cột thời gian trong bốn cột thời gian của `flights`.
+Hãy làm tương tự cho mỗi column thời gian trong bốn column thời gian của `flights`.
 Các giá trị thời gian được biểu diễn ở định dạng hơi đặc biệt, nên chúng ta dùng phép toán chia lấy phần nguyên và chia lấy dư để tách thành phần giờ và phút.
 Sau khi tạo xong các biến date-time, chúng ta tập trung vào các biến mà ta sẽ khám phá trong phần còn lại của chương.
 
@@ -227,7 +227,7 @@ Với dữ liệu này, chúng ta có thể trực quan hóa phân phối thời
 #|   Một đa giác tần suất với thời gian khởi hành (Tháng 1-12 năm 2013) trên trục x
 #|   và số lượng chuyến bay trên trục y (0-1000). Đa giác tần suất
 #|   được chia theo ngày nên bạn thấy chuỗi thời gian chuyến bay theo ngày. Mẫu hình
-#|   bị chi phối bởi mẫu hình hàng tuần; có ít chuyến bay hơn
+#|   bị chi phối bởi mẫu hình row tuần; có ít chuyến bay hơn
 #|   vào cuối tuần. Có vài ngày nổi bật với số chuyến bay ít bất ngờ
 #|   vào đầu tháng 2, đầu tháng 7, cuối tháng 11, và cuối
 #|   tháng 12.
@@ -285,7 +285,7 @@ as_date(365 * 10 + 2)
 2.  Đối số `tzone` của `today()` làm gì?
     Tại sao nó quan trọng?
 
-3.  Với mỗi date-time sau đây, hãy cho thấy cách bạn phân tích nó bằng đặc tả cột readr và hàm lubridate.
+3.  Với mỗi date-time sau đây, hãy cho thấy cách bạn phân tích nó bằng đặc tả column readr và hàm lubridate.
 
     ```{r}
     d1 <- "January 1, 2010"
@@ -331,7 +331,7 @@ Chúng ta có thể dùng `wday()` để thấy rằng có nhiều chuyến bay 
 
 ```{r}
 #| fig-alt: |
-#|   Một biểu đồ cột với các ngày trong tuần trên trục x và số lượng
+#|   Một biểu đồ column với các ngày trong tuần trên trục x và số lượng
 #|   chuyến bay trên trục y. Thứ Hai đến Thứ Sáu có số chuyến bay xấp xỉ nhau,
 #|   ~48.000, giảm nhẹ trong suốt tuần.
 #|   Chủ Nhật thấp hơn một chút (~45.000), và Thứ Bảy thấp hơn nhiều
@@ -707,7 +707,7 @@ Các múi giờ này sử dụng quy ước đặt tên nhất quán `{khu vực
 Ví dụ: "America/New_York", "Europe/Paris", và "Pacific/Auckland".
 
 Bạn có thể thắc mắc tại sao múi giờ dùng tên thành phố, trong khi thông thường bạn nghĩ múi giờ gắn với một quốc gia hoặc vùng trong quốc gia.
-Đó là vì database IANA phải ghi lại hàng thập kỷ quy tắc múi giờ.
+Đó là vì database IANA phải ghi lại row thập kỷ quy tắc múi giờ.
 Trong suốt nhiều thập kỷ, các quốc gia đổi tên (hoặc tách ra) khá thường xuyên, nhưng tên thành phố có xu hướng giữ nguyên.
 Một vấn đề khác là tên cần phản ánh không chỉ hành vi hiện tại, mà còn toàn bộ lịch sử.
 Ví dụ, có múi giờ cho cả "America/New_York" và "America/Detroit".
@@ -722,7 +722,7 @@ Sys.timezone()
 
 (Nếu R không biết, bạn sẽ nhận được `NA`.)
 
-Và xem danh sách đầy đủ tất cả tên múi giờ với `OlsonNames()`:
+Và xem list đầy đủ tất cả tên múi giờ với `OlsonNames()`:
 
 ```{r}
 length(OlsonNames())

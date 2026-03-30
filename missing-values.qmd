@@ -32,7 +32,7 @@ library(tidyverse)
 ### Lấp đầy bằng quan sát cuối cùng
 
 Một trường hợp sử dụng phổ biến của missing value là để thuận tiện cho việc nhập dữ liệu.
-Khi dữ liệu được nhập bằng tay, missing value đôi khi chỉ ra rằng giá trị ở hàng trước đó đã được lặp lại (hay mang xuống):
+Khi dữ liệu được nhập bằng tay, missing value đôi khi chỉ ra rằng giá trị ở row trước đó đã được lặp lại (hay mang xuống):
 
 ```{r}
 treatment <- tribble(
@@ -45,7 +45,7 @@ treatment <- tribble(
 ```
 
 Bạn có thể lấp đầy các missing value này bằng `tidyr::fill()`.
-Nó hoạt động giống `select()`, nhận một tập hợp các cột:
+Nó hoạt động giống `select()`, nhận một tập hợp các column:
 
 ```{r}
 treatment |>
@@ -102,7 +102,7 @@ sqrt(-1)
 ## Giá trị khuyết ẩn {#sec-missing-implicit}
 
 Cho đến giờ chúng ta đã nói về missing value **tường minh** (explicitly missing), tức là bạn có thể thấy `NA` trong dữ liệu.
-Nhưng missing value cũng có thể **ẩn** (implicitly missing), nếu toàn bộ một hàng dữ liệu đơn giản là vắng mặt trong dữ liệu.
+Nhưng missing value cũng có thể **ẩn** (implicitly missing), nếu toàn bộ một row dữ liệu đơn giản là vắng mặt trong dữ liệu.
 Hãy minh họa sự khác biệt với một tập dữ liệu đơn giản ghi lại giá cổ phiếu theo từng quý:
 
 ```{r}
@@ -132,8 +132,8 @@ Các phần tiếp theo sẽ thảo luận một số công cụ để chuyển 
 ### Xoay bảng
 
 Bạn đã thấy một công cụ có thể biến missing value ẩn thành tường minh và ngược lại: xoay bảng (pivot).
-Mở rộng dữ liệu có thể làm cho missing value ẩn trở nên tường minh vì mỗi tổ hợp của các hàng và cột mới đều phải có một giá trị nào đó.
-Ví dụ, nếu chúng ta xoay `stocks` để đặt `quarter` vào các cột, cả hai missing value đều trở nên tường minh:
+Mở rộng dữ liệu có thể làm cho missing value ẩn trở nên tường minh vì mỗi tổ hợp của các row và column mới đều phải có một giá trị nào đó.
+Ví dụ, nếu chúng ta xoay `stocks` để đặt `quarter` vào các column, cả hai missing value đều trở nên tường minh:
 
 ```{r}
 stocks |>
@@ -148,7 +148,7 @@ Xem các ví dụ trong @sec-tidy-data để biết thêm chi tiết.
 
 ### Complete
 
-`tidyr::complete()` cho phép bạn tạo ra các missing value tường minh bằng cách cung cấp một tập hợp các biến xác định tổ hợp hàng nào nên tồn tại.
+`tidyr::complete()` cho phép bạn tạo ra các missing value tường minh bằng cách cung cấp một tập hợp các biến xác định tổ hợp row nào nên tồn tại.
 Ví dụ, chúng ta biết rằng tất cả tổ hợp của `year` và `qtr` nên tồn tại trong dữ liệu `stocks`:
 
 ```{r}
@@ -168,14 +168,14 @@ stocks |>
 Nếu phạm vi của một biến là đúng nhưng không phải tất cả giá trị đều có mặt, bạn có thể sử dụng `full_seq(x, 1)` để tạo tất cả giá trị từ `min(x)` đến `max(x)` với bước nhảy là 1.
 
 Trong một số trường hợp, tập hợp đầy đủ các quan sát không thể được tạo bằng một tổ hợp đơn giản của các biến.
-Trong trường hợp đó, bạn có thể tự làm thủ công những gì `complete()` làm cho bạn: tạo một data frame chứa tất cả các hàng cần tồn tại (sử dụng bất kỳ tổ hợp kỹ thuật nào bạn cần), rồi kết hợp nó với tập dữ liệu gốc bằng `dplyr::full_join()`.
+Trong trường hợp đó, bạn có thể tự làm thủ công những gì `complete()` làm cho bạn: tạo một data frame chứa tất cả các row cần tồn tại (sử dụng bất kỳ tổ hợp kỹ thuật nào bạn cần), rồi kết hợp nó với tập dữ liệu gốc bằng `dplyr::full_join()`.
 
 ### Nối bảng
 
 Điều này đưa chúng ta đến một cách quan trọng khác để phát hiện các quan sát bị khuyết ẩn: nối bảng (join).
 Bạn sẽ tìm hiểu thêm về nối bảng trong @sec-joins, nhưng chúng tôi muốn đề cập nhanh ở đây vì bạn thường chỉ biết rằng các giá trị bị thiếu từ một tập dữ liệu khi so sánh nó với tập dữ liệu khác.
 
-`dplyr::anti_join(x, y)` là một công cụ đặc biệt hữu ích ở đây vì nó chỉ chọn các hàng trong `x` không có hàng khớp trong `y`.
+`dplyr::anti_join(x, y)` là một công cụ đặc biệt hữu ích ở đây vì nó chỉ chọn các row trong `x` không có row khớp trong `y`.
 Ví dụ, chúng ta có thể sử dụng hai `anti_join()` để phát hiện rằng chúng ta đang thiếu thông tin cho bốn sân bay và 722 máy bay được đề cập trong `flights`:
 
 ```{r}
@@ -192,7 +192,7 @@ flights |>
 
 ### Bài tập
 
-1.  Bạn có thể tìm thấy mối quan hệ nào giữa hãng bay và các hàng có vẻ bị thiếu trong `planes` không?
+1.  Bạn có thể tìm thấy mối quan hệ nào giữa hãng bay và các row có vẻ bị thiếu trong `planes` không?
 
 ## Nhân tố và nhóm rỗng
 
@@ -227,9 +227,9 @@ Bạn có thể buộc chúng hiển thị bằng cách cung cấp `drop = FALSE
 #| layout-ncol: 2
 #| fig-width: 3
 #| fig-alt:
-#|   - Một biểu đồ cột với một giá trị duy nhất trên trục x, "no".
-#|   - Cùng biểu đồ cột như hình trước, nhưng giờ có hai giá trị trên
-#|     trục x, "yes" và "no". Không có cột nào cho danh mục "yes".
+#|   - Một biểu đồ column với một giá trị duy nhất trên trục x, "no".
+#|   - Cùng biểu đồ column như hình trước, nhưng giờ có hai giá trị trên
+#|     trục x, "yes" và "no". Không có column nào cho danh mục "yes".
 ggplot(health, aes(x = smoker)) +
   geom_bar() +
   scale_x_discrete()
