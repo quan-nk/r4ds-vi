@@ -1,28 +1,28 @@
-# Databases {#sec-import-databases}
+# Cơ sở dữ liệu {#sec-import-databases}
 
 ```{r}
 #| echo: false
 source("_common.R")
 ```
 
-## Introduction
+## Giới thiệu
 
-A huge amount of data lives in databases, so it's essential that you know how to access it.
-Sometimes you can ask someone to download a snapshot into a `.csv` for you, but this gets painful quickly: every time you need to make a change you'll have to communicate with another human.
-You want to be able to reach into the database directly to get the data you need, when you need it.
+Một lượng dữ liệu khổng lồ nằm trong các cơ sở dữ liệu (database), vì vậy bạn cần biết cách truy cập chúng.
+Đôi khi bạn có thể nhờ ai đó tải một bản sao dữ liệu vào file `.csv` cho bạn, nhưng cách này nhanh chóng trở nên phiền phức: mỗi khi bạn cần thay đổi gì đó, bạn lại phải liên lạc với người khác.
+Bạn muốn có khả năng truy cập trực tiếp vào cơ sở dữ liệu để lấy dữ liệu mình cần, khi mình cần.
 
-In this chapter, you'll first learn the basics of the DBI package: how to use it to connect to a database and then retrieve data with a SQL[^databases-1] query.
-**SQL**, short for **s**tructured **q**uery **l**anguage, is the lingua franca of databases, and is an important language for all data scientists to learn.
-That said, we're not going to start with SQL, but instead we'll teach you dbplyr, which can translate your dplyr code to the SQL.
-We'll use that as a way to teach you some of the most important features of SQL.
-You won't become a SQL master by the end of the chapter, but you will be able to identify the most important components and understand what they do.
+Trong chương này, trước tiên bạn sẽ học những kiến thức cơ bản về gói DBI: cách sử dụng nó để kết nối tới cơ sở dữ liệu và sau đó truy xuất dữ liệu bằng một truy vấn (query) SQL[^databases-1].
+**SQL**, viết tắt của **s**tructured **q**uery **l**anguage (ngôn ngữ truy vấn có cấu trúc), là ngôn ngữ chung của các cơ sở dữ liệu, và là một ngôn ngữ quan trọng mà mọi nhà khoa học dữ liệu cần học.
+Tuy nhiên, chúng ta sẽ không bắt đầu với SQL, mà thay vào đó sẽ dạy bạn dbplyr, gói có thể dịch mã dplyr của bạn sang SQL.
+Chúng ta sẽ dùng cách này để dạy bạn một số tính năng quan trọng nhất của SQL.
+Bạn sẽ không trở thành bậc thầy SQL khi kết thúc chương, nhưng bạn sẽ có thể nhận biết các thành phần quan trọng nhất và hiểu chúng làm gì.
 
-[^databases-1]: SQL is either pronounced "s"-"q"-"l" or "sequel".
+[^databases-1]: SQL được phát âm là "S"-"Q"-"L" hoặc "sequel".
 
-### Prerequisites
+### Điều kiện tiên quyết
 
-In this chapter, we'll introduce DBI and dbplyr.
-DBI is a low-level interface that connects to databases and executes SQL; dbplyr is a high-level interface that translates your dplyr code to SQL queries then executes them with DBI.
+Trong chương này, chúng ta sẽ giới thiệu DBI và dbplyr.
+DBI là một giao diện cấp thấp (low-level interface) kết nối tới cơ sở dữ liệu và thực thi SQL; dbplyr là một giao diện cấp cao (high-level interface) dịch mã dplyr của bạn sang các truy vấn SQL rồi thực thi chúng bằng DBI.
 
 ```{r}
 #| label: setup
@@ -32,144 +32,144 @@ library(dbplyr)
 library(tidyverse)
 ```
 
-## Database basics
+## Kiến thức cơ bản về cơ sở dữ liệu
 
-At the simplest level, you can think about a database as a collection of data frames, called **tables** in database terminology.
-Like a data frame, a database table is a collection of named columns, where every value in the column is the same type.
-There are three high level differences between data frames and database tables:
+Ở mức đơn giản nhất, bạn có thể hình dung cơ sở dữ liệu như một tập hợp các khung dữ liệu (data frame), được gọi là **bảng** (table) trong thuật ngữ cơ sở dữ liệu.
+Giống như khung dữ liệu, một bảng cơ sở dữ liệu là một tập hợp các cột có tên, trong đó mọi giá trị trong cùng một cột đều cùng kiểu dữ liệu.
+Có ba điểm khác biệt lớn giữa khung dữ liệu và bảng cơ sở dữ liệu:
 
--   Database tables are stored on disk and can be arbitrarily large.
-    Data frames are stored in memory, and are fundamentally limited (although that limit is still plenty large for many problems).
+-   Bảng cơ sở dữ liệu được lưu trữ trên đĩa và có thể lớn tùy ý.
+    Khung dữ liệu được lưu trong bộ nhớ, và về cơ bản bị giới hạn kích thước (dù giới hạn này vẫn đủ lớn cho nhiều bài toán).
 
--   Database tables almost always have indexes.
-    Much like the index of a book, a database index makes it possible to quickly find rows of interest without having to look at every single row.
-    Data frames and tibbles don't have indexes, but data.tables do, which is one of the reasons that they're so fast.
+-   Bảng cơ sở dữ liệu hầu như luôn có chỉ mục (index).
+    Giống như mục lục của một cuốn sách, chỉ mục cơ sở dữ liệu giúp tìm nhanh các hàng cần thiết mà không phải duyệt qua từng hàng một.
+    Khung dữ liệu và tibble không có chỉ mục, nhưng data.table thì có, đó là một trong những lý do khiến chúng rất nhanh.
 
--   Most classical databases are optimized for rapidly collecting data, not analyzing existing data.
-    These databases are called **row-oriented** because the data is stored row-by-row, rather than column-by-column like R.
-    More recently, there's been much development of **column-oriented** databases that make analyzing the existing data much faster.
+-   Hầu hết các cơ sở dữ liệu truyền thống được tối ưu hóa cho việc thu thập dữ liệu nhanh chóng, không phải phân tích dữ liệu có sẵn.
+    Các cơ sở dữ liệu này được gọi là **hướng hàng** (row-oriented) vì dữ liệu được lưu trữ theo từng hàng, thay vì theo từng cột như R.
+    Gần đây, đã có nhiều phát triển về cơ sở dữ liệu **hướng cột** (column-oriented) giúp việc phân tích dữ liệu có sẵn nhanh hơn nhiều.
 
-Databases are run by database management systems (**DBMS**'s for short), which come in three basic forms:
+Cơ sở dữ liệu được vận hành bởi các hệ quản trị cơ sở dữ liệu (viết tắt là **DBMS**), có ba dạng cơ bản:
 
--   **Client-server** DBMS's run on a powerful central server, which you connect to from your computer (the client). They are great for sharing data with multiple people in an organization. Popular client-server DBMS's include PostgreSQL, MariaDB, SQL Server, and Oracle.
--   **Cloud** DBMS's, like Snowflake, Amazon's RedShift, and Google's BigQuery, are similar to client server DBMS's, but they run in the cloud. This means that they can easily handle extremely large datasets and can automatically provide more compute resources as needed.
--   **In-process** DBMS's, like SQLite or duckdb, run entirely on your computer. They're great for working with large datasets where you're the primary user.
+-   DBMS **client-server** chạy trên một máy chủ trung tâm mạnh mẽ, mà bạn kết nối từ máy tính của mình (client). Chúng rất phù hợp để chia sẻ dữ liệu với nhiều người trong tổ chức. Các DBMS client-server phổ biến bao gồm PostgreSQL, MariaDB, SQL Server, và Oracle.
+-   DBMS **đám mây** (cloud), như Snowflake, Amazon's RedShift, và Google's BigQuery, tương tự DBMS client-server, nhưng chạy trên đám mây. Điều này có nghĩa là chúng có thể dễ dàng xử lý các tập dữ liệu cực lớn và tự động cung cấp thêm tài nguyên tính toán khi cần.
+-   DBMS **trong tiến trình** (in-process), như SQLite hay duckdb, chạy hoàn toàn trên máy tính của bạn. Chúng rất phù hợp để làm việc với tập dữ liệu lớn khi bạn là người dùng chính.
 
-## Connecting to a database
+## Kết nối tới cơ sở dữ liệu
 
-To connect to the database from R, you'll use a pair of packages:
+Để kết nối tới cơ sở dữ liệu từ R, bạn sẽ sử dụng một cặp gói:
 
--   You'll always use DBI (**d**ata**b**ase **i**nterface) because it provides a set of generic functions that connect to the database, upload data, run SQL queries, etc.
+-   Bạn sẽ luôn dùng DBI (**d**ata**b**ase **i**nterface) vì nó cung cấp một tập hợp các hàm tổng quát để kết nối tới cơ sở dữ liệu, tải dữ liệu lên, chạy truy vấn SQL, v.v.
 
--   You'll also use a package tailored for the DBMS you're connecting to.
-    This package translates the generic DBI commands into the specifics needed for a given DBMS.
-    There's usually one package for each DBMS, e.g.
-    RPostgres for PostgreSQL and RMariaDB for MySQL.
+-   Bạn cũng sẽ dùng một gói được thiết kế riêng cho DBMS mà bạn đang kết nối.
+    Gói này dịch các lệnh DBI tổng quát thành các chi tiết cụ thể cần thiết cho từng DBMS.
+    Thường mỗi DBMS có một gói riêng, ví dụ
+    RPostgres cho PostgreSQL và RMariaDB cho MySQL.
 
-If you can't find a specific package for your DBMS, you can usually use the odbc package instead.
-This uses the ODBC protocol supported by many DBMS.
-odbc requires a little more setup because you'll also need to install an ODBC driver and tell the odbc package where to find it.
+Nếu bạn không tìm được gói cụ thể cho DBMS của mình, bạn thường có thể dùng gói odbc thay thế.
+Gói này sử dụng giao thức ODBC được nhiều DBMS hỗ trợ.
+odbc yêu cầu thêm một chút thiết lập vì bạn cũng cần cài đặt driver ODBC và cho gói odbc biết nơi tìm nó.
 
-Concretely, you create a database connection using `DBI::dbConnect()`.
-The first argument selects the DBMS[^databases-2], then the second and subsequent arguments describe how to connect to it (i.e. where it lives and the credentials that you need to access it).
-The following code shows a couple of typical examples:
+Cụ thể, bạn tạo kết nối cơ sở dữ liệu bằng `DBI::dbConnect()`.
+Đối số đầu tiên chọn DBMS[^databases-2], sau đó đối số thứ hai và các đối số tiếp theo mô tả cách kết nối tới nó (tức là nó ở đâu và thông tin xác thực bạn cần để truy cập).
+Đoạn mã sau đây cho thấy vài ví dụ điển hình:
 
-[^databases-2]: Typically, this is the only function you'll use from the client package, so we recommend using `::` to pull out that one function, rather than loading the complete package with `library()`.
+[^databases-2]: Thường đây là hàm duy nhất bạn sẽ dùng từ gói client, nên chúng tôi khuyên bạn dùng `::` để lấy riêng hàm đó, thay vì tải toàn bộ gói bằng `library()`.
 
 ```{r}
 #| eval: false
 con <- DBI::dbConnect(
-  RMariaDB::MariaDB(), 
+  RMariaDB::MariaDB(),
   username = "foo"
 )
 con <- DBI::dbConnect(
-  RPostgres::Postgres(), 
-  hostname = "databases.mycompany.com", 
+  RPostgres::Postgres(),
+  hostname = "databases.mycompany.com",
   port = 1234
 )
 ```
 
-The precise details of the connection vary a lot from DBMS to DBMS so unfortunately we can't cover all the details here.
-This means you'll need to do a little research on your own.
-Typically you can ask the other data scientists in your team or talk to your DBA (**d**ata**b**ase **a**dministrator).
-The initial setup will often take a little fiddling (and maybe some googling) to get it right, but you'll generally only need to do it once.
+Chi tiết chính xác của kết nối khác nhau rất nhiều giữa các DBMS nên tiếc là chúng tôi không thể trình bày hết ở đây.
+Điều này có nghĩa là bạn sẽ cần tự tìm hiểu thêm một chút.
+Thường bạn có thể hỏi các nhà khoa học dữ liệu khác trong nhóm hoặc nói chuyện với DBA (**d**ata**b**ase **a**dministrator -- quản trị viên cơ sở dữ liệu) của bạn.
+Việc thiết lập ban đầu thường cần mày mò một chút (và có thể phải tìm kiếm trên Google), nhưng bạn thường chỉ cần làm một lần.
 
-### In this book
+### Trong cuốn sách này
 
-Setting up a client-server or cloud DBMS would be a pain for this book, so we'll instead use an in-process DBMS that lives entirely in an R package: duckdb.
-Thanks to the magic of DBI, the only difference between using duckdb and any other DBMS is how you'll connect to the database.
-This makes it great to teach with because you can easily run this code as well as easily take what you learn and apply it elsewhere.
+Việc thiết lập DBMS client-server hoặc đám mây sẽ khá phiền phức cho cuốn sách này, nên thay vào đó chúng ta sẽ dùng DBMS trong tiến trình nằm hoàn toàn trong một gói R: duckdb.
+Nhờ sự kỳ diệu của DBI, điểm khác biệt duy nhất giữa việc dùng duckdb và bất kỳ DBMS nào khác là cách bạn kết nối tới cơ sở dữ liệu.
+Điều này khiến nó rất phù hợp để dạy học vì bạn có thể dễ dàng chạy mã này cũng như áp dụng những gì đã học vào nơi khác.
 
-Connecting to duckdb is particularly simple because the defaults create a temporary database that is deleted when you quit R.
-That's great for learning because it guarantees that you'll start from a clean slate every time you restart R:
+Kết nối tới duckdb đặc biệt đơn giản vì các giá trị mặc định tạo ra một cơ sở dữ liệu tạm thời sẽ bị xóa khi bạn thoát R.
+Điều này rất tốt cho việc học vì nó đảm bảo bạn luôn bắt đầu từ đầu mỗi khi khởi động lại R:
 
 ```{r}
 con <- DBI::dbConnect(duckdb::duckdb())
 ```
 
-duckdb is a high-performance database that's designed very much for the needs of a data scientist.
-We use it here because it's very easy to get started with, but it's also capable of handling gigabytes of data with great speed.
-If you want to use duckdb for a real data analysis project, you'll also need to supply the `dbdir` argument to make a persistent database and tell duckdb where to save it.
-Assuming you're using a project (@sec-workflow-scripts-projects), it's reasonable to store it in the `duckdb` directory of the current project:
+duckdb là một cơ sở dữ liệu hiệu năng cao được thiết kế rất phù hợp cho nhu cầu của nhà khoa học dữ liệu.
+Chúng ta dùng nó ở đây vì rất dễ bắt đầu, nhưng nó cũng có khả năng xử lý hàng gigabyte dữ liệu với tốc độ cao.
+Nếu bạn muốn dùng duckdb cho một dự án phân tích dữ liệu thực tế, bạn cũng cần cung cấp đối số `dbdir` để tạo cơ sở dữ liệu lâu dài và cho duckdb biết nơi lưu nó.
+Giả sử bạn đang dùng dự án (project) (@sec-workflow-scripts-projects), việc lưu nó trong thư mục `duckdb` của dự án hiện tại là hợp lý:
 
 ```{r}
 #| eval: false
 con <- DBI::dbConnect(duckdb::duckdb(), dbdir = "duckdb")
 ```
 
-### Load some data {#sec-load-data}
+### Tải dữ liệu {#sec-load-data}
 
-Since this is a new database, we need to start by adding some data.
-Here we'll add `mpg` and `diamonds` datasets from ggplot2 using `DBI::dbWriteTable()`.
-The simplest usage of `dbWriteTable()` needs three arguments: a database connection, the name of the table to create in the database, and a data frame of data.
+Vì đây là cơ sở dữ liệu mới, chúng ta cần bắt đầu bằng việc thêm dữ liệu vào.
+Ở đây chúng ta sẽ thêm các tập dữ liệu `mpg` và `diamonds` từ ggplot2 bằng `DBI::dbWriteTable()`.
+Cách dùng đơn giản nhất của `dbWriteTable()` cần ba đối số: một kết nối cơ sở dữ liệu, tên bảng cần tạo trong cơ sở dữ liệu, và một khung dữ liệu chứa dữ liệu.
 
 ```{r}
 dbWriteTable(con, "mpg", ggplot2::mpg)
 dbWriteTable(con, "diamonds", ggplot2::diamonds)
 ```
 
-If you're using duckdb in a real project, we highly recommend learning about `duckdb_read_csv()` and `duckdb_register_arrow()`.
-These give you powerful and performant ways to quickly load data directly into duckdb, without having to first load it into R.
-We'll also show off a useful technique for loading multiple files into a database in @sec-save-database.
+Nếu bạn đang dùng duckdb trong một dự án thực tế, chúng tôi rất khuyến khích bạn tìm hiểu về `duckdb_read_csv()` và `duckdb_register_arrow()`.
+Chúng cung cấp cho bạn những cách mạnh mẽ và hiệu quả để tải dữ liệu trực tiếp vào duckdb, mà không cần phải tải vào R trước.
+Chúng ta cũng sẽ trình bày một kỹ thuật hữu ích để tải nhiều file vào cơ sở dữ liệu trong @sec-save-database.
 
-### DBI basics
+### Kiến thức cơ bản về DBI
 
-You can check that the data is loaded correctly by using a couple of other DBI functions: `dbListTables()` lists all tables in the database[^databases-3] and `dbReadTable()` retrieves the contents of a table.
+Bạn có thể kiểm tra xem dữ liệu đã được tải đúng chưa bằng một vài hàm DBI khác: `dbListTables()` liệt kê tất cả các bảng trong cơ sở dữ liệu[^databases-3] và `dbReadTable()` truy xuất nội dung của một bảng.
 
-[^databases-3]: At least, all the tables that you have permission to see.
+[^databases-3]: Ít nhất là tất cả các bảng mà bạn có quyền xem.
 
 ```{r}
 dbListTables(con)
 
-con |> 
-  dbReadTable("diamonds") |> 
+con |>
+  dbReadTable("diamonds") |>
   as_tibble()
 ```
 
-`dbReadTable()` returns a `data.frame` so we use `as_tibble()` to convert it into a tibble so that it prints nicely.
+`dbReadTable()` trả về một `data.frame` nên chúng ta dùng `as_tibble()` để chuyển đổi nó thành tibble để in ra đẹp hơn.
 
-If you already know SQL, you can use `dbGetQuery()` to get the results of running a query on the database:
+Nếu bạn đã biết SQL, bạn có thể dùng `dbGetQuery()` để lấy kết quả của việc chạy một truy vấn trên cơ sở dữ liệu:
 
 ```{r}
 sql <- "
-  SELECT carat, cut, clarity, color, price 
-  FROM diamonds 
+  SELECT carat, cut, clarity, color, price
+  FROM diamonds
   WHERE price > 15000
 "
 as_tibble(dbGetQuery(con, sql))
 ```
 
-If you've never seen SQL before, don't worry!
-You'll learn more about it shortly.
-But if you read it carefully, you might guess that it selects five columns of the diamonds dataset and all the rows where `price` is greater than 15,000.
+Nếu bạn chưa từng thấy SQL trước đây, đừng lo!
+Bạn sẽ tìm hiểu thêm về nó ngay thôi.
+Nhưng nếu đọc kỹ, bạn có thể đoán rằng nó chọn năm cột của tập dữ liệu diamonds và tất cả các hàng mà `price` lớn hơn 15.000.
 
-## dbplyr basics
+## Kiến thức cơ bản về dbplyr
 
-Now that we've connected to a database and loaded up some data, we can start to learn about dbplyr.
-dbplyr is a dplyr **backend**, which means that you keep writing dplyr code but the backend executes it differently.
-In this, dbplyr translates to SQL; other backends include [dtplyr](https://dtplyr.tidyverse.org) which translates to [data.table](https://r-datatable.com), and [multidplyr](https://multidplyr.tidyverse.org) which executes your code on multiple cores.
+Bây giờ chúng ta đã kết nối tới cơ sở dữ liệu và tải lên một số dữ liệu, chúng ta có thể bắt đầu tìm hiểu về dbplyr.
+dbplyr là một **backend** của dplyr, nghĩa là bạn vẫn viết mã dplyr nhưng backend thực thi nó theo cách khác.
+Ở đây, dbplyr dịch sang SQL; các backend khác bao gồm [dtplyr](https://dtplyr.tidyverse.org) dịch sang [data.table](https://r-datatable.com), và [multidplyr](https://multidplyr.tidyverse.org) thực thi mã của bạn trên nhiều lõi.
 
-To use dbplyr, you must first use `tbl()` to create an object that represents a database table:
+Để dùng dbplyr, trước tiên bạn phải dùng `tbl()` để tạo một đối tượng đại diện cho một bảng cơ sở dữ liệu:
 
 ```{r}
 diamonds_db <- tbl(con, "diamonds")
@@ -177,9 +177,9 @@ diamonds_db
 ```
 
 ::: callout-note
-There are two other common ways to interact with a database.
-First, many corporate databases are very large so you need some hierarchy to keep all the tables organized.
-In that case you might need to supply a schema, or a catalog and a schema, in order to pick the table you're interested in:
+Có hai cách phổ biến khác để tương tác với cơ sở dữ liệu.
+Thứ nhất, nhiều cơ sở dữ liệu doanh nghiệp rất lớn nên bạn cần một hệ phân cấp để tổ chức tất cả các bảng.
+Trong trường hợp đó, bạn có thể cần cung cấp một schema, hoặc một catalog và một schema, để chọn bảng bạn muốn:
 
 ```{r}
 #| eval: false
@@ -187,7 +187,7 @@ diamonds_db <- tbl(con, in_schema("sales", "diamonds"))
 diamonds_db <- tbl(con, in_catalog("north_america", "sales", "diamonds"))
 ```
 
-Other times you might want to use your own SQL query as a starting point:
+Những lúc khác bạn có thể muốn dùng truy vấn SQL riêng làm điểm bắt đầu:
 
 ```{r}
 #| eval: false
@@ -195,49 +195,49 @@ diamonds_db <- tbl(con, sql("SELECT * FROM diamonds"))
 ```
 :::
 
-This object is **lazy**; when you use dplyr verbs on it, dplyr doesn't do any work: it just records the sequence of operations that you want to perform and only performs them when needed.
-For example, take the following pipeline:
+Đối tượng này là **lười** (lazy); khi bạn dùng các hàm dplyr trên nó, dplyr không thực hiện công việc nào: nó chỉ ghi lại chuỗi thao tác mà bạn muốn thực hiện và chỉ thực thi khi cần thiết.
+Ví dụ, hãy xem pipeline sau:
 
 ```{r}
-big_diamonds_db <- diamonds_db |> 
-  filter(price > 15000) |> 
+big_diamonds_db <- diamonds_db |>
+  filter(price > 15000) |>
   select(carat:clarity, price)
 
 big_diamonds_db
 ```
 
-You can tell this object represents a database query because it prints the DBMS name at the top, and while it tells you the number of columns, it typically doesn't know the number of rows.
-This is because finding the total number of rows usually requires executing the complete query, something we're trying to avoid.
+Bạn có thể nhận biết đối tượng này đại diện cho một truy vấn cơ sở dữ liệu vì nó in tên DBMS ở trên cùng, và mặc dù nó cho bạn biết số cột, nhưng thường không biết số hàng.
+Đó là vì việc tìm tổng số hàng thường yêu cầu thực thi toàn bộ truy vấn, điều mà chúng ta đang cố tránh.
 
-You can see the SQL code generated by the dplyr function `show_query()`.
-If you know dplyr, this is a great way to learn SQL!
-Write some dplyr code, get dbplyr to translate it to SQL, and then try to figure out how the two languages match up.
+Bạn có thể xem mã SQL được tạo ra bằng hàm dplyr `show_query()`.
+Nếu bạn biết dplyr, đây là cách tuyệt vời để học SQL!
+Viết mã dplyr, để dbplyr dịch sang SQL, rồi cố gắng tìm hiểu xem hai ngôn ngữ khớp nhau như thế nào.
 
 ```{r}
 big_diamonds_db |>
   show_query()
 ```
 
-To get all the data back into R, you call `collect()`.
-Behind the scenes, this generates the SQL, calls `dbGetQuery()` to get the data, then turns the result into a tibble:
+Để lấy tất cả dữ liệu trở lại R, bạn gọi `collect()`.
+Phía sau, nó tạo SQL, gọi `dbGetQuery()` để lấy dữ liệu, rồi chuyển kết quả thành tibble:
 
 ```{r}
-big_diamonds <- big_diamonds_db |> 
+big_diamonds <- big_diamonds_db |>
   collect()
 big_diamonds
 ```
 
-Typically, you'll use dbplyr to select the data you want from the database, performing basic filtering and aggregation using the translations described below.
-Then, once you're ready to analyse the data with functions that are unique to R, you'll `collect()` the data to get an in-memory tibble, and continue your work with pure R code.
+Thông thường, bạn sẽ dùng dbplyr để chọn dữ liệu bạn cần từ cơ sở dữ liệu, thực hiện lọc và tổng hợp cơ bản bằng các phép dịch được mô tả bên dưới.
+Sau đó, khi bạn sẵn sàng phân tích dữ liệu với các hàm chỉ có trong R, bạn sẽ `collect()` dữ liệu để lấy tibble trong bộ nhớ, và tiếp tục công việc với mã R thuần túy.
 
 ## SQL
 
-The rest of the chapter will teach you a little SQL through the lens of dbplyr.
-It's a rather non-traditional introduction to SQL but we hope it will get you quickly up to speed with the basics.
-Luckily, if you understand dplyr you're in a great place to quickly pick up SQL because so many of the concepts are the same.
+Phần còn lại của chương sẽ dạy bạn một chút SQL thông qua lăng kính của dbplyr.
+Đây là cách giới thiệu SQL khá phi truyền thống nhưng chúng tôi hy vọng nó sẽ giúp bạn nhanh chóng nắm được kiến thức cơ bản.
+May mắn thay, nếu bạn hiểu dplyr, bạn đang ở vị trí tuyệt vời để nhanh chóng tiếp thu SQL vì rất nhiều khái niệm giống nhau.
 
-We'll explore the relationship between dplyr and SQL using a couple of old friends from the nycflights13 package: `flights` and `planes`.
-These datasets are easy to get into our learning database because dbplyr comes with a function that copies the tables from nycflights13 to our database:
+Chúng ta sẽ khám phá mối quan hệ giữa dplyr và SQL bằng một vài người bạn cũ từ gói nycflights13: `flights` và `planes`.
+Các tập dữ liệu này dễ dàng đưa vào cơ sở dữ liệu học tập vì dbplyr có sẵn một hàm sao chép các bảng từ nycflights13 vào cơ sở dữ liệu của chúng ta:
 
 ```{r}
 dbplyr::copy_nycflights13(con)
@@ -250,98 +250,98 @@ planes <- tbl(con, "planes")
 options(dplyr.strict_sql = TRUE)
 ```
 
-### SQL basics
+### Kiến thức cơ bản về SQL
 
-The top-level components of SQL are called **statements**.
-Common statements include `CREATE` for defining new tables, `INSERT` for adding data, and `SELECT` for retrieving data.
-We will focus on `SELECT` statements, also called **queries**, because they are almost exclusively what you'll use as a data scientist.
+Các thành phần cấp cao nhất của SQL được gọi là **câu lệnh** (statement).
+Các câu lệnh phổ biến bao gồm `CREATE` để định nghĩa bảng mới, `INSERT` để thêm dữ liệu, và `SELECT` để truy xuất dữ liệu.
+Chúng ta sẽ tập trung vào câu lệnh `SELECT`, còn được gọi là **truy vấn** (query), vì đây gần như là thứ duy nhất bạn sẽ dùng với tư cách nhà khoa học dữ liệu.
 
-A query is made up of **clauses**.
-There are five important clauses: `SELECT`, `FROM`, `WHERE`, `ORDER BY`, and `GROUP BY`. Every query must have the `SELECT`[^databases-4] and `FROM`[^databases-5] clauses and the simplest query is `SELECT * FROM table`, which selects all columns from the specified table
-. This is what dbplyr generates for an unadulterated table
+Một truy vấn được tạo thành từ các **mệnh đề** (clause).
+Có năm mệnh đề quan trọng: `SELECT`, `FROM`, `WHERE`, `ORDER BY`, và `GROUP BY`. Mọi truy vấn đều phải có mệnh đề `SELECT`[^databases-4] và `FROM`[^databases-5] và truy vấn đơn giản nhất là `SELECT * FROM table`, chọn tất cả các cột từ bảng được chỉ định
+. Đây là những gì dbplyr tạo ra cho một bảng chưa được xử lý
 :
 
-[^databases-4]: Confusingly, depending on the context, `SELECT` is either a statement or a clause.
-    To avoid this confusion, we'll generally use `SELECT` query instead of `SELECT` statement.
+[^databases-4]: Gây nhầm lẫn là, tùy thuộc vào ngữ cảnh, `SELECT` có thể là câu lệnh hoặc mệnh đề.
+    Để tránh nhầm lẫn này, chúng ta thường sẽ dùng truy vấn `SELECT` thay vì câu lệnh `SELECT`.
 
-[^databases-5]: Ok, technically, only the `SELECT` is required, since you can write queries like `SELECT 1+1` to perform basic calculations.
-    But if you want to work with data (as you always do!) you'll also need a `FROM` clause.
+[^databases-5]: Về mặt kỹ thuật, chỉ có `SELECT` là bắt buộc, vì bạn có thể viết truy vấn như `SELECT 1+1` để thực hiện các phép tính cơ bản.
+    Nhưng nếu bạn muốn làm việc với dữ liệu (như bạn luôn làm!) thì bạn cũng cần mệnh đề `FROM`.
 
 ```{r}
 flights |> show_query()
 planes |> show_query()
 ```
 
-`WHERE` and `ORDER BY` control which rows are included and how they are ordered:
+`WHERE` và `ORDER BY` kiểm soát hàng nào được bao gồm và cách sắp xếp chúng:
 
 ```{r}
-flights |> 
-  filter(dest == "IAH") |> 
+flights |>
+  filter(dest == "IAH") |>
   arrange(dep_delay) |>
   show_query()
 ```
 
-`GROUP BY` converts the query to a summary, causing aggregation to happen:
+`GROUP BY` chuyển truy vấn thành tóm tắt, khiến phép tổng hợp (aggregation) xảy ra:
 
 ```{r}
-flights |> 
-  group_by(dest) |> 
-  summarize(dep_delay = mean(dep_delay, na.rm = TRUE)) |> 
+flights |>
+  group_by(dest) |>
+  summarize(dep_delay = mean(dep_delay, na.rm = TRUE)) |>
   show_query()
 ```
 
-There are two important differences between dplyr verbs and SELECT clauses:
+Có hai điểm khác biệt quan trọng giữa các hàm dplyr và mệnh đề SELECT:
 
--   In SQL, case doesn't matter: you can write `select`, `SELECT`, or even `SeLeCt`. In this book we'll stick with the common convention of writing SQL keywords in uppercase to distinguish them from table or variables names.
--   In SQL, order matters: you must always write the clauses in the order `SELECT`, `FROM`, `WHERE`, `GROUP BY`, `ORDER BY`. Confusingly, this order doesn't match how the clauses are actually evaluated which is first `FROM`, then `WHERE`, `GROUP BY`, `SELECT`, and `ORDER BY`.
+-   Trong SQL, chữ hoa chữ thường không quan trọng: bạn có thể viết `select`, `SELECT`, hoặc thậm chí `SeLeCt`. Trong cuốn sách này, chúng ta sẽ theo quy ước phổ biến là viết các từ khóa SQL bằng CHỮ HOA để phân biệt chúng với tên bảng hoặc tên biến.
+-   Trong SQL, thứ tự quan trọng: bạn phải luôn viết các mệnh đề theo thứ tự `SELECT`, `FROM`, `WHERE`, `GROUP BY`, `ORDER BY`. Gây nhầm lẫn là, thứ tự này không khớp với thứ tự thực thi thực tế, đó là `FROM` trước, rồi `WHERE`, `GROUP BY`, `SELECT`, và `ORDER BY`.
 
-The following sections explore each clause in more detail.
+Các phần sau sẽ khám phá chi tiết hơn từng mệnh đề.
 
 ::: callout-note
-Note that while SQL is a standard, it is extremely complex and no database follows it exactly.
-While the main components that we'll focus on in this book are very similar between DBMS's, there are many minor variations.
-Fortunately, dbplyr is designed to handle this problem and generates different translations for different databases.
-It's not perfect, but it's continually improving, and if you hit a problem you can file an issue [on GitHub](https://github.com/tidyverse/dbplyr/issues/) to help us do better.
+Lưu ý rằng mặc dù SQL là một tiêu chuẩn, nó cực kỳ phức tạp và không có cơ sở dữ liệu nào tuân theo nó chính xác hoàn toàn.
+Mặc dù các thành phần chính mà chúng ta tập trung trong cuốn sách này rất giống nhau giữa các DBMS, vẫn có nhiều khác biệt nhỏ.
+May mắn thay, dbplyr được thiết kế để xử lý vấn đề này và tạo ra các bản dịch khác nhau cho các cơ sở dữ liệu khác nhau.
+Nó không hoàn hảo, nhưng liên tục được cải thiện, và nếu bạn gặp vấn đề, bạn có thể tạo issue [trên GitHub](https://github.com/tidyverse/dbplyr/issues/) để giúp chúng tôi làm tốt hơn.
 :::
 
 ### SELECT
 
-The `SELECT` clause is the workhorse of queries and performs the same job as `select()`, `mutate()`, `rename()`, `relocate()`, and, as you'll learn in the next section, `summarize()`.
+Mệnh đề `SELECT` là trụ cột của các truy vấn và thực hiện cùng công việc với `select()`, `mutate()`, `rename()`, `relocate()`, và, như bạn sẽ học trong phần tiếp theo, `summarize()`.
 
-`select()`, `rename()`, and `relocate()` have very direct translations to `SELECT` as they just affect where a column appears (if at all) along with its name:
+`select()`, `rename()`, và `relocate()` có các bản dịch rất trực tiếp sang `SELECT` vì chúng chỉ ảnh hưởng đến vị trí xuất hiện của cột (nếu có) cùng với tên của nó:
 
 ```{r}
-planes |> 
-  select(tailnum, type, manufacturer, model, year) |> 
+planes |>
+  select(tailnum, type, manufacturer, model, year) |>
   show_query()
 
-planes |> 
-  select(tailnum, type, manufacturer, model, year) |> 
-  rename(year_built = year) |> 
+planes |>
+  select(tailnum, type, manufacturer, model, year) |>
+  rename(year_built = year) |>
   show_query()
 
-planes |> 
-  select(tailnum, type, manufacturer, model, year) |> 
-  relocate(manufacturer, model, .before = type) |> 
+planes |>
+  select(tailnum, type, manufacturer, model, year) |>
+  relocate(manufacturer, model, .before = type) |>
   show_query()
 ```
 
-This example also shows you how SQL does renaming.
-In SQL terminology renaming is called **aliasing** and is done with `AS`.
-Note that unlike `mutate()`, the old name is on the left and the new name is on the right.
+Ví dụ này cũng cho bạn thấy cách SQL thực hiện đổi tên.
+Trong thuật ngữ SQL, đổi tên được gọi là **đặt bí danh** (aliasing) và được thực hiện bằng `AS`.
+Lưu ý rằng khác với `mutate()`, tên cũ nằm bên trái và tên mới nằm bên phải.
 
 ::: callout-note
-In the examples above note that `"year"` and `"type"` are wrapped in double quotes.
-That's because these are **reserved words** in duckdb, so dbplyr quotes them to avoid any potential confusion between column/table names and SQL operators.
+Trong các ví dụ trên, lưu ý rằng `"year"` và `"type"` được bao trong dấu nháy kép.
+Đó là vì chúng là các **từ dành riêng** (reserved word) trong duckdb, nên dbplyr đặt chúng trong nháy kép để tránh nhầm lẫn giữa tên cột/bảng và toán tử SQL.
 
-When working with other databases you're likely to see every variable name quoted because only a handful of client packages, like duckdb, know what all the reserved words are, so they quote everything to be safe.
+Khi làm việc với các cơ sở dữ liệu khác, bạn có thể thấy mọi tên biến đều được đặt trong nháy kép vì chỉ một số ít gói client, như duckdb, biết tất cả các từ dành riêng, nên chúng đặt nháy kép cho mọi thứ để an toàn.
 
 ``` sql
 SELECT "tailnum", "type", "manufacturer", "model", "year"
 FROM "planes"
 ```
 
-Some other database systems use backticks instead of quotes:
+Một số hệ cơ sở dữ liệu khác dùng dấu backtick thay vì dấu nháy kép:
 
 ``` sql
 SELECT `tailnum`, `type`, `manufacturer`, `model`, `year`
@@ -349,166 +349,166 @@ FROM `planes`
 ```
 :::
 
-The translations for `mutate()` are similarly straightforward: each variable becomes a new expression in `SELECT`:
+Các bản dịch cho `mutate()` cũng tương tự trực tiếp: mỗi biến trở thành một biểu thức mới trong `SELECT`:
 
 ```{r}
-flights |> 
+flights |>
   mutate(
     speed = distance / (air_time / 60)
-  ) |> 
+  ) |>
   show_query()
 ```
 
-We'll come back to the translation of individual components (like `/`) in @sec-sql-expressions.
+Chúng ta sẽ quay lại bản dịch của các thành phần riêng lẻ (như `/`) trong @sec-sql-expressions.
 
 ### FROM
 
-The `FROM` clause defines the data source.
-It's going to be rather uninteresting for a little while, because we're just using single tables.
-You'll see more complex examples once we hit the join functions.
+Mệnh đề `FROM` định nghĩa nguồn dữ liệu.
+Nó sẽ khá đơn điệu trong một lúc, vì chúng ta chỉ dùng các bảng đơn lẻ.
+Bạn sẽ thấy các ví dụ phức tạp hơn khi chúng ta tới các hàm nối (join).
 
 ### GROUP BY
 
-`group_by()` is translated to the `GROUP BY`[^databases-6] clause and `summarize()` is translated to the `SELECT` clause:
+`group_by()` được dịch sang mệnh đề `GROUP BY`[^databases-6] và `summarize()` được dịch sang mệnh đề `SELECT`:
 
-[^databases-6]: This is no coincidence: the dplyr function name was inspired by the SQL clause.
+[^databases-6]: Đây không phải trùng hợp: tên hàm dplyr được lấy cảm hứng từ mệnh đề SQL.
 
 ```{r}
-diamonds_db |> 
-  group_by(cut) |> 
+diamonds_db |>
+  group_by(cut) |>
   summarize(
     n = n(),
     avg_price = mean(price, na.rm = TRUE)
-  ) |> 
+  ) |>
   show_query()
 ```
 
-We'll come back to what's happening with the translation of `n()` and `mean()` in @sec-sql-expressions.
+Chúng ta sẽ quay lại bản dịch của `n()` và `mean()` trong @sec-sql-expressions.
 
 ### WHERE
 
-`filter()` is translated to the `WHERE` clause:
+`filter()` được dịch sang mệnh đề `WHERE`:
 
 ```{r}
-flights |> 
-  filter(dest == "IAH" | dest == "HOU") |> 
+flights |>
+  filter(dest == "IAH" | dest == "HOU") |>
   show_query()
 
-flights |> 
-  filter(arr_delay > 0 & arr_delay < 20) |> 
-  show_query()
-```
-
-There are a few important details to note here:
-
--   `|` becomes `OR` and `&` becomes `AND`.
--   SQL uses `=` for comparison, not `==`. SQL doesn't have assignment, so there's no potential for confusion there.
--   SQL uses only `''` for strings, not `""`. In SQL, `""` is used to identify variables, like R's ``` `` ```.
-
-Another useful SQL operator is `IN`, which is very close to R's `%in%`:
-
-```{r}
-flights |> 
-  filter(dest %in% c("IAH", "HOU")) |> 
+flights |>
+  filter(arr_delay > 0 & arr_delay < 20) |>
   show_query()
 ```
 
-SQL uses `NULL` instead of `NA`.
-`NULL`s behave similarly to `NA`s.
-The main difference is that while they're "infectious" in comparisons and arithmetic, they are silently dropped when summarizing.
-dbplyr will remind you about this behavior the first time you hit it:
+Có một vài chi tiết quan trọng cần lưu ý ở đây:
+
+-   `|` trở thành `OR` và `&` trở thành `AND`.
+-   SQL dùng `=` để so sánh, không phải `==`. SQL không có phép gán, nên không có khả năng nhầm lẫn ở đây.
+-   SQL chỉ dùng `''` cho chuỗi ký tự, không phải `""`. Trong SQL, `""` được dùng để xác định biến, giống như ``` `` ``` trong R.
+
+Một toán tử SQL hữu ích khác là `IN`, rất giống với `%in%` trong R:
 
 ```{r}
-flights |> 
-  group_by(dest) |> 
+flights |>
+  filter(dest %in% c("IAH", "HOU")) |>
+  show_query()
+```
+
+SQL dùng `NULL` thay vì `NA`.
+`NULL` hoạt động tương tự như `NA`.
+Sự khác biệt chính là mặc dù chúng "lây lan" trong các phép so sánh và phép tính, chúng bị bỏ qua một cách im lặng khi tóm tắt.
+dbplyr sẽ nhắc bạn về hành vi này lần đầu tiên bạn gặp nó:
+
+```{r}
+flights |>
+  group_by(dest) |>
   summarize(delay = mean(arr_delay))
 ```
 
-If you want to learn more about how `NULL`s work, you might enjoy "[The Three-Valued Logic of SQL](https://modern-sql.com/concept/three-valued-logic)" by Markus Winand.
+Nếu bạn muốn tìm hiểu thêm về cách `NULL` hoạt động, bạn có thể thích bài viết "[The Three-Valued Logic of SQL](https://modern-sql.com/concept/three-valued-logic)" của Markus Winand.
 
-In general, you can work with `NULL`s using the functions you'd use for `NA`s in R:
+Nói chung, bạn có thể làm việc với `NULL` bằng các hàm mà bạn dùng cho `NA` trong R:
 
 ```{r}
-flights |> 
-  filter(!is.na(dep_delay)) |> 
+flights |>
+  filter(!is.na(dep_delay)) |>
   show_query()
 ```
 
-This SQL query illustrates one of the drawbacks of dbplyr: while the SQL is correct, it isn't as simple as you might write by hand.
-In this case, you could drop the parentheses and use a special operator that's easier to read:
+Truy vấn SQL này minh họa một trong những nhược điểm của dbplyr: mặc dù SQL đúng, nó không đơn giản như khi bạn tự viết bằng tay.
+Trong trường hợp này, bạn có thể bỏ dấu ngoặc đơn và dùng một toán tử đặc biệt dễ đọc hơn:
 
 ``` sql
 WHERE "dep_delay" IS NOT NULL
 ```
 
-Note that if you `filter()` a variable that you created using a summarize, dbplyr will generate a `HAVING` clause, rather than a `WHERE` clause.
-This is a one of the idiosyncrasies of SQL: `WHERE` is evaluated before `SELECT` and `GROUP BY`, so SQL needs another clause that's evaluated afterwards.
+Lưu ý rằng nếu bạn `filter()` một biến mà bạn đã tạo bằng `summarize()`, dbplyr sẽ tạo ra mệnh đề `HAVING`, thay vì mệnh đề `WHERE`.
+Đây là một trong những điều đặc biệt của SQL: `WHERE` được đánh giá trước `SELECT` và `GROUP BY`, nên SQL cần một mệnh đề khác được đánh giá sau đó.
 
 ```{r}
-diamonds_db |> 
-  group_by(cut) |> 
-  summarize(n = n()) |> 
-  filter(n > 100) |> 
+diamonds_db |>
+  group_by(cut) |>
+  summarize(n = n()) |>
+  filter(n > 100) |>
   show_query()
 ```
 
 ### ORDER BY
 
-Ordering rows involves a straightforward translation from `arrange()` to the `ORDER BY` clause:
+Sắp xếp hàng là một bản dịch trực tiếp từ `arrange()` sang mệnh đề `ORDER BY`:
 
 ```{r}
-flights |> 
-  arrange(year, month, day, desc(dep_delay)) |> 
+flights |>
+  arrange(year, month, day, desc(dep_delay)) |>
   show_query()
 ```
 
-Notice how `desc()` is translated to `DESC`: this is one of the many dplyr functions whose name was directly inspired by SQL.
+Lưu ý cách `desc()` được dịch thành `DESC`: đây là một trong nhiều hàm dplyr có tên được lấy cảm hứng trực tiếp từ SQL.
 
-### Subqueries
+### Truy vấn con
 
-Sometimes it's not possible to translate a dplyr pipeline into a single `SELECT` statement and you need to use a subquery.
-A **subquery** is just a query used as a data source in the `FROM` clause, instead of the usual table.
+Đôi khi không thể dịch một pipeline dplyr thành một câu lệnh `SELECT` duy nhất và bạn cần dùng truy vấn con (subquery).
+Một **truy vấn con** (subquery) đơn giản là một truy vấn được dùng làm nguồn dữ liệu trong mệnh đề `FROM`, thay vì bảng thông thường.
 
-dbplyr typically uses subqueries to work around limitations of SQL.
-For example, expressions in the `SELECT` clause can't refer to columns that were just created.
-That means that the following (silly) dplyr pipeline needs to happen in two steps: the first (inner) query computes `year1` and then the second (outer) query can compute `year2`.
+dbplyr thường dùng truy vấn con để khắc phục các giới hạn của SQL.
+Ví dụ, các biểu thức trong mệnh đề `SELECT` không thể tham chiếu đến các cột vừa mới được tạo.
+Điều đó có nghĩa là pipeline dplyr (ngớ ngẩn) sau đây cần xảy ra trong hai bước: truy vấn đầu tiên (bên trong) tính `year1` rồi truy vấn thứ hai (bên ngoài) có thể tính `year2`.
 
 ```{r}
-flights |> 
+flights |>
   mutate(
     year1 = year + 1,
     year2 = year1 + 1
-  ) |> 
+  ) |>
   show_query()
 ```
 
-You'll also see this if you attempted to `filter()` a variable that you just created.
-Remember, even though `WHERE` is written after `SELECT`, it's evaluated before it, so we need a subquery in this (silly) example:
+Bạn cũng sẽ thấy điều này nếu cố `filter()` một biến mà bạn vừa tạo.
+Nhớ rằng, mặc dù `WHERE` được viết sau `SELECT`, nó được đánh giá trước, nên chúng ta cần truy vấn con trong ví dụ (ngớ ngẩn) này:
 
 ```{r}
-flights |> 
-  mutate(year1 = year + 1) |> 
-  filter(year1 == 2014) |> 
+flights |>
+  mutate(year1 = year + 1) |>
+  filter(year1 == 2014) |>
   show_query()
 ```
 
-Sometimes dbplyr will create a subquery where it's not needed because it doesn't yet know how to optimize that translation.
-As dbplyr improves over time, these cases will get rarer but will probably never go away.
+Đôi khi dbplyr sẽ tạo truy vấn con khi không cần thiết vì nó chưa biết cách tối ưu bản dịch đó.
+Khi dbplyr cải thiện theo thời gian, các trường hợp này sẽ ít đi nhưng có lẽ không bao giờ biến mất hoàn toàn.
 
-### Joins
+### Nối bảng
 
-If you're familiar with dplyr's joins, SQL joins are very similar.
-Here's a simple example:
+Nếu bạn quen thuộc với các phép nối (join) của dplyr, các phép nối SQL rất giống.
+Đây là một ví dụ đơn giản:
 
 ```{r}
-flights |> 
-  left_join(planes |> rename(year_built = year), join_by(tailnum)) |> 
+flights |>
+  left_join(planes |> rename(year_built = year), join_by(tailnum)) |>
   show_query()
 ```
 
-The main thing to notice here is the syntax: SQL joins use sub-clauses of the `FROM` clause to bring in additional tables, using `ON` to define how the tables are related.
+Điều chính cần lưu ý ở đây là cú pháp: các phép nối SQL dùng các mệnh đề con của mệnh đề `FROM` để đưa thêm bảng vào, dùng `ON` để định nghĩa cách các bảng liên kết với nhau.
 
-dplyr's names for these functions are so closely connected to SQL that you can easily guess the equivalent SQL for `inner_join()`, `right_join()`, and `full_join()`:
+Tên các hàm dplyr liên kết chặt chẽ với SQL đến mức bạn có thể dễ dàng đoán SQL tương đương cho `inner_join()`, `right_join()`, và `full_join()`:
 
 ``` sql
 SELECT flights.*, "type", manufacturer, model, engines, seats, speed
@@ -524,25 +524,25 @@ FROM flights
 FULL JOIN planes ON (flights.tailnum = planes.tailnum)
 ```
 
-You're likely to need many joins when working with data from a database.
-That's because database tables are often stored in a highly normalized form, where each "fact" is stored in a single place and to keep a complete dataset for analysis you need to navigate a complex network of tables connected by primary and foreign keys.
-If you hit this scenario, the [dm package](https://cynkra.github.io/dm/), by Tobias Schieferdecker, Kirill Müller, and Darko Bergant, is a life saver.
-It can automatically determine the connections between tables using the constraints that DBAs often supply, visualize the connections so you can see what's going on, and generate the joins you need to connect one table to another.
+Bạn có thể sẽ cần nhiều phép nối khi làm việc với dữ liệu từ cơ sở dữ liệu.
+Đó là vì các bảng cơ sở dữ liệu thường được lưu ở dạng chuẩn hóa (normalized) cao, trong đó mỗi "sự kiện" được lưu ở một nơi duy nhất và để có tập dữ liệu đầy đủ cho phân tích, bạn cần điều hướng qua một mạng lưới phức tạp các bảng được kết nối bằng khóa chính (primary key) và khóa ngoại (foreign key).
+Nếu bạn gặp tình huống này, [gói dm](https://cynkra.github.io/dm/), bởi Tobias Schieferdecker, Kirill Muller, và Darko Bergant, là cứu cánh.
+Nó có thể tự động xác định các kết nối giữa các bảng bằng các ràng buộc mà DBA thường cung cấp, trực quan hóa các kết nối để bạn thấy được bức tranh toàn cảnh, và tạo ra các phép nối bạn cần để kết nối bảng này với bảng khác.
 
-### Other verbs
+### Các hàm khác
 
-dbplyr also translates other verbs like `distinct()`, `slice_*()`, and `intersect()`, and a growing selection of tidyr functions like `pivot_longer()` and `pivot_wider()`.
-The easiest way to see the full set of what's currently available is to visit the dbplyr website: <https://dbplyr.tidyverse.org/reference/>.
+dbplyr cũng dịch các hàm khác như `distinct()`, `slice_*()`, và `intersect()`, cùng ngày càng nhiều hàm tidyr như `pivot_longer()` và `pivot_wider()`.
+Cách dễ nhất để xem danh sách đầy đủ những gì hiện có là truy cập trang web dbplyr: <https://dbplyr.tidyverse.org/reference/>.
 
-### Exercises
+### Bài tập
 
-1.  What is `distinct()` translated to?
-    How about `head()`?
+1.  `distinct()` được dịch thành gì?
+    Còn `head()` thì sao?
 
-2.  Explain what each of the following SQL queries do and try recreate them using dbplyr.
+2.  Giải thích mỗi truy vấn SQL sau đây làm gì và thử tạo lại chúng bằng dbplyr.
 
     ``` sql
-    SELECT * 
+    SELECT *
     FROM flights
     WHERE dep_delay < arr_delay
 
@@ -550,115 +550,115 @@ The easiest way to see the full set of what's currently available is to visit th
     FROM flights
     ```
 
-## Function translations {#sec-sql-expressions}
+## Dịch hàm {#sec-sql-expressions}
 
-So far we've focused on the big picture of how dplyr verbs are translated to the clauses of a query.
-Now we're going to zoom in a little and talk about the translation of the R functions that work with individual columns, e.g., what happens when you use `mean(x)` in a `summarize()`?
+Cho đến giờ chúng ta đã tập trung vào bức tranh toàn cảnh về cách các hàm dplyr được dịch sang các mệnh đề của truy vấn.
+Bây giờ chúng ta sẽ phóng to một chút và nói về cách dịch các hàm R làm việc với từng cột riêng lẻ, ví dụ, chuyện gì xảy ra khi bạn dùng `mean(x)` trong `summarize()`?
 
-To help see what's going on, we'll use a couple of little helper functions that run a `summarize()` or `mutate()` and show the generated SQL.
-That will make it a little easier to explore a few variations and see how summaries and transformations can differ.
+Để giúp thấy rõ điều gì đang xảy ra, chúng ta sẽ dùng một vài hàm trợ giúp nhỏ chạy `summarize()` hoặc `mutate()` và hiển thị SQL được tạo ra.
+Điều đó sẽ giúp dễ dàng hơn trong việc khám phá một vài biến thể và xem sự khác biệt giữa tóm tắt và biến đổi.
 
 ```{r}
 summarize_query <- function(df, ...) {
-  df |> 
-    summarize(...) |> 
+  df |>
+    summarize(...) |>
     show_query()
 }
 mutate_query <- function(df, ...) {
-  df |> 
-    mutate(..., .keep = "none") |> 
+  df |>
+    mutate(..., .keep = "none") |>
     show_query()
 }
 ```
 
-Let's dive in with some summaries!
-Looking at the code below you'll notice that some summary functions, like `mean()`, have a relatively simple translation while others, like `median()`, are much more complex.
-The complexity is typically higher for operations that are common in statistics but less common in databases.
+Hãy bắt đầu với một số phép tóm tắt!
+Nhìn vào đoạn mã bên dưới, bạn sẽ thấy rằng một số hàm tóm tắt, như `mean()`, có bản dịch tương đối đơn giản trong khi các hàm khác, như `median()`, phức tạp hơn nhiều.
+Độ phức tạp thường cao hơn cho các phép toán phổ biến trong thống kê nhưng ít phổ biến trong cơ sở dữ liệu.
 
 ```{r}
-flights |> 
-  group_by(year, month, day) |>  
+flights |>
+  group_by(year, month, day) |>
   summarize_query(
     mean = mean(arr_delay, na.rm = TRUE),
     median = median(arr_delay, na.rm = TRUE)
   )
 ```
 
-The translation of summary functions becomes more complicated when you use them inside a `mutate()` because they have to turn into so-called **window** functions.
-In SQL, you turn an ordinary aggregation function into a window function by adding `OVER` after it:
+Bản dịch của các hàm tóm tắt trở nên phức tạp hơn khi bạn dùng chúng bên trong `mutate()` vì chúng phải trở thành cái gọi là hàm **cửa sổ** (window function).
+Trong SQL, bạn biến một hàm tổng hợp thông thường thành hàm cửa sổ bằng cách thêm `OVER` sau nó:
 
 ```{r}
-flights |> 
-  group_by(year, month, day) |>  
+flights |>
+  group_by(year, month, day) |>
   mutate_query(
     mean = mean(arr_delay, na.rm = TRUE),
   )
 ```
 
-In SQL, the `GROUP BY` clause is used exclusively for summaries so here you can see that the grouping has moved from the `GROUP BY` clause to `OVER`.
+Trong SQL, mệnh đề `GROUP BY` được dùng riêng cho các phép tóm tắt nên ở đây bạn có thể thấy nhóm đã chuyển từ mệnh đề `GROUP BY` sang `OVER`.
 
-Window functions include all functions that look forward or backwards, like `lead()` and `lag()` which look at the "previous" or "next" value respectively:
+Hàm cửa sổ bao gồm tất cả các hàm nhìn về phía trước hoặc phía sau, như `lead()` và `lag()` lần lượt nhìn vào giá trị "tiếp theo" hoặc "trước đó":
 
 ```{r}
-flights |> 
-  group_by(dest) |>  
-  arrange(time_hour) |> 
+flights |>
+  group_by(dest) |>
+  arrange(time_hour) |>
   mutate_query(
     lead = lead(arr_delay),
     lag = lag(arr_delay)
   )
 ```
 
-Here it's important to `arrange()` the data, because SQL tables have no intrinsic order.
-In fact, if you don't use `arrange()` you might get the rows back in a different order every time!
-Notice for window functions, the ordering information is repeated: the `ORDER BY` clause of the main query doesn't automatically apply to window functions.
+Ở đây điều quan trọng là phải `arrange()` dữ liệu, vì các bảng SQL không có thứ tự cố định.
+Thực tế, nếu bạn không dùng `arrange()`, bạn có thể nhận được các hàng theo thứ tự khác nhau mỗi lần!
+Lưu ý rằng đối với hàm cửa sổ, thông tin sắp xếp được lặp lại: mệnh đề `ORDER BY` của truy vấn chính không tự động áp dụng cho hàm cửa sổ.
 
-Another important SQL function is `CASE WHEN`. It's used as the translation of `if_else()` and `case_when()`, the dplyr function that it directly inspired.
-Here are a couple of simple examples:
+Một hàm SQL quan trọng khác là `CASE WHEN`. Nó được dùng làm bản dịch của `if_else()` và `case_when()`, hàm dplyr mà nó trực tiếp truyền cảm hứng.
+Đây là một vài ví dụ đơn giản:
 
 ```{r}
-flights |> 
+flights |>
   mutate_query(
     description = if_else(arr_delay > 0, "delayed", "on-time")
   )
-flights |> 
+flights |>
   mutate_query(
-    description = 
+    description =
       case_when(
-        arr_delay < -5 ~ "early", 
+        arr_delay < -5 ~ "early",
         arr_delay < 5 ~ "on-time",
         arr_delay >= 5 ~ "late"
       )
   )
 ```
 
-`CASE WHEN` is also used for some other functions that don't have a direct translation from R to SQL.
-A good example of this is `cut()`:
+`CASE WHEN` cũng được dùng cho một số hàm khác không có bản dịch trực tiếp từ R sang SQL.
+Một ví dụ điển hình là `cut()`:
 
 ```{r}
-flights |> 
+flights |>
   mutate_query(
     description =  cut(
-      arr_delay, 
-      breaks = c(-Inf, -5, 5, Inf), 
+      arr_delay,
+      breaks = c(-Inf, -5, 5, Inf),
       labels = c("early", "on-time", "late")
     )
   )
 ```
 
-dbplyr also translates common string and date-time manipulation functions, which you can learn about in `vignette("translation-function", package = "dbplyr")`.
-dbplyr's translations are certainly not perfect, and there are many R functions that aren't translated yet, but dbplyr does a surprisingly good job covering the functions that you'll use most of the time.
+dbplyr cũng dịch các hàm thao tác chuỗi ký tự và ngày giờ phổ biến, mà bạn có thể tìm hiểu trong `vignette("translation-function", package = "dbplyr")`.
+Các bản dịch của dbplyr chắc chắn không hoàn hảo, và có nhiều hàm R chưa được dịch, nhưng dbplyr làm tốt đáng ngạc nhiên trong việc bao phủ các hàm mà bạn sẽ dùng thường xuyên nhất.
 
-## Summary
+## Tóm tắt
 
-In this chapter you learned how to access data from databases.
-We focused on dbplyr, a dplyr "backend" that allows you to write the dplyr code you're familiar with, and have it be automatically translated to SQL.
-We used that translation to teach you a little SQL; it's important to learn some SQL because it's *the* most commonly used language for working with data and knowing some will make it easier for you to communicate with other data folks who don't use R.
+Trong chương này, bạn đã học cách truy cập dữ liệu từ cơ sở dữ liệu.
+Chúng ta tập trung vào dbplyr, một "backend" của dplyr cho phép bạn viết mã dplyr quen thuộc, và nó tự động được dịch sang SQL.
+Chúng ta đã dùng bản dịch đó để dạy bạn một chút SQL; điều quan trọng là học một ít SQL vì nó là ngôn ngữ được dùng phổ biến *nhất* để làm việc với dữ liệu và biết một ít sẽ giúp bạn dễ dàng giao tiếp hơn với những người làm dữ liệu khác không dùng R.
 
-If you've finished this chapter and would like to learn more about SQL, we have two recommendations:
+Nếu bạn đã hoàn thành chương này và muốn tìm hiểu thêm về SQL, chúng tôi có hai gợi ý:
 
--   [*SQL for Data Scientists*](https://sqlfordatascientists.com) by Renée M. P. Teate is an introduction to SQL designed specifically for the needs of data scientists, and includes examples of the sort of highly interconnected data you're likely to encounter in real organizations.
--   [*Practical SQL*](https://www.practicalsql.com) by Anthony DeBarros is written from the perspective of a data journalist (a data scientist specialized in telling compelling stories) and goes into more detail about getting your data into a database and running your own DBMS.
+-   [*SQL for Data Scientists*](https://sqlfordatascientists.com) của Renee M. P. Teate là phần giới thiệu SQL được thiết kế đặc biệt cho nhu cầu của nhà khoa học dữ liệu, và bao gồm các ví dụ về loại dữ liệu liên kết chặt chẽ mà bạn có thể gặp trong các tổ chức thực tế.
+-   [*Practical SQL*](https://www.practicalsql.com) của Anthony DeBarros được viết từ góc nhìn của một nhà báo dữ liệu (một nhà khoa học dữ liệu chuyên kể các câu chuyện hấp dẫn) và đi sâu hơn vào việc đưa dữ liệu vào cơ sở dữ liệu và vận hành DBMS riêng của bạn.
 
-In the next chapter, we'll learn about another dplyr backend for working with large data: arrow.
-Arrow is designed for working with large files on disk, and is a natural complement to databases.
+Trong chương tiếp theo, chúng ta sẽ tìm hiểu về một backend dplyr khác để làm việc với dữ liệu lớn: arrow.
+Arrow được thiết kế để làm việc với các file lớn trên đĩa, và là sự bổ sung tự nhiên cho cơ sở dữ liệu.
