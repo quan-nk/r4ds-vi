@@ -9,7 +9,7 @@ source("_common.R")
 
 Trực quan hóa (visualization) là một công cụ quan trọng để tạo ra những hiểu biết sâu sắc, nhưng hiếm khi bạn có được dữ liệu ở đúng dạng mà bạn cần để tạo biểu đồ mong muốn.
 Thường thì bạn sẽ cần tạo một số biến (variable) mới hoặc các bảng tóm tắt để trả lời câu hỏi của mình bằng dữ liệu, hoặc có thể bạn chỉ muốn đổi tên các biến hoặc sắp xếp lại các quan sát (observation) để dữ liệu dễ làm việc hơn.
-Bạn sẽ học cách làm tất cả những điều đó (và nhiều hơn nữa!) trong chương này, chương sẽ giới thiệu cho bạn về biến đổi dữ liệu (data transformation) bằng gói **dplyr** và một tập dữ liệu mới về các chuyến bay khởi hành từ Thành phố New York năm 2013.
+Bạn sẽ học cách làm tất cả những điều đó (và nhiều hơn nữa!) trong chương này, chương sẽ giới thiệu cho bạn về biến đổi dữ liệu (data transformation) bằng gói mở rộng **dplyr** và một tập dữ liệu mới về các chuyến bay khởi hành từ Thành phố New York năm 2013.
 
 Mục tiêu của chương này là cung cấp cho bạn cái nhìn tổng quan về tất cả các công cụ chính để biến đổi một khung dữ liệu (data frame).
 Chúng ta sẽ bắt đầu với các hàm thao tác trên hàng (row) rồi đến cột (column) của khung dữ liệu, sau đó quay lại nói thêm về toán tử pipe (pipe), một công cụ quan trọng mà bạn sử dụng để kết hợp các động từ.
@@ -19,8 +19,8 @@ Trong các chương sau, chúng ta sẽ quay lại các hàm này chi tiết hơ
 
 ### Điều kiện tiên quyết
 
-Trong chương này, chúng ta sẽ tập trung vào gói dplyr, một thành viên cốt lõi khác của tidyverse.
-Chúng ta sẽ minh họa các ý tưởng chính bằng dữ liệu từ gói nycflights13 và sử dụng ggplot2 để giúp hiểu dữ liệu.
+Trong chương này, chúng ta sẽ tập trung vào gói mở rộng dplyr, một thành viên cốt lõi khác của tidyverse.
+Chúng ta sẽ minh họa các ý tưởng chính bằng dữ liệu từ gói mở rộng nycflights13 và sử dụng ggplot2 để giúp hiểu dữ liệu.
 
 ```{r}
 #| label: setup
@@ -31,8 +31,8 @@ library(tidyverse)
 Hãy chú ý kỹ thông báo xung đột (conflicts) được in ra khi bạn tải tidyverse.
 Nó cho bạn biết rằng dplyr ghi đè một số hàm trong base R.
 Nếu bạn muốn sử dụng phiên bản base của các hàm này sau khi tải dplyr, bạn sẽ cần sử dụng tên đầy đủ của chúng: `stats::filter()` và `stats::lag()`.
-Cho đến nay, chúng ta hầu như đã bỏ qua việc một hàm đến từ gói nào vì điều đó thường không quan trọng.
-Tuy nhiên, biết gói nào có thể giúp bạn tìm trợ giúp và tìm các hàm liên quan, vì vậy khi cần chính xác về gói mà một hàm đến từ đó, chúng ta sẽ sử dụng cùng cú pháp như R: `packagename::functionname()`.
+Cho đến nay, chúng ta hầu như đã bỏ qua việc một hàm đến từ gói mở rộng nào vì điều đó thường không quan trọng.
+Tuy nhiên, biết gói mở rộng nào có thể giúp bạn tìm trợ giúp và tìm các hàm liên quan, vì vậy khi cần chính xác về gói mở rộng mà một hàm đến từ đó, chúng ta sẽ sử dụng cùng cú pháp như R: `packagename::functionname()`.
 
 ### nycflights13
 
@@ -519,8 +519,8 @@ knitr::include_graphics("screenshots/rstudio-pipe-options.png")
 ::: callout-note
 ## magrittr
 
-Nếu bạn đã sử dụng tidyverse một thời gian, bạn có thể quen thuộc với pipe `%>%` do gói **magrittr** cung cấp.
-Gói magrittr được bao gồm trong tidyverse cốt lõi, vì vậy bạn có thể sử dụng `%>%` bất cứ khi nào bạn tải tidyverse:
+Nếu bạn đã sử dụng tidyverse một thời gian, bạn có thể quen thuộc với pipe `%>%` do gói mở rộng **magrittr** cung cấp.
+Gói mở rộng magrittr được bao gồm trong tidyverse cốt lõi, vì vậy bạn có thể sử dụng `%>%` bất cứ khi nào bạn tải tidyverse:
 
 ```{r}
 #| eval: false
@@ -807,7 +807,7 @@ Bạn có thể tìm hiểu thêm về nó trong [bài blog dplyr 1.1.0](https:/
 
 Bất cứ khi nào bạn thực hiện bất kỳ phép tổng hợp (aggregation) nào, luôn là ý tưởng tốt để bao gồm số đếm (`n()`).
 Bằng cách đó, bạn có thể đảm bảo rằng mình không rút ra kết luận dựa trên lượng dữ liệu rất nhỏ.
-Chúng ta sẽ minh họa điều này với một số dữ liệu bóng chày từ gói **Lahman**.
+Chúng ta sẽ minh họa điều này với một số dữ liệu bóng chày từ gói mở rộng **Lahman**.
 Cụ thể, chúng ta sẽ so sánh tỷ lệ đánh trúng bóng (`H`) so với số lần cố gắng đưa bóng vào cuộc chơi (`AB`):
 
 ```{r}
