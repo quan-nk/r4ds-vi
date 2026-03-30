@@ -1,4 +1,4 @@
-# R for Data Science
+# R cho Khoa học Dữ liệu
 
 <!-- badges: start -->
 
@@ -6,19 +6,19 @@
 
 <!-- badges: end -->
 
-This repository contains the source of [R for Data Science](http://r4ds.hadley.nz) book.
-The book is built using [Quarto](https://quarto.org/).
+Repository này chứa mã nguồn của cuốn sách [R for Data Science](http://r4ds.hadley.nz).
+Cuốn sách được xây dựng bằng [Quarto](https://quarto.org/).
 
-## Images
+## Hình ảnh
 
-### Omnigraffle drawings
+### Bản vẽ Omnigraffle
 
 -   Font: 12pt Guardian Sans Condensed / Ubuntu mono
 
--   Export as 300 dpi png.
+-   Export dưới dạng png 300 dpi.
 
--   Website font is 18 px = 13.5 pt, so scale dpi to match font sizes: 270 = 300 \* 12 / 13.5.
-    (I also verified this empirically by screenshotting.)
+-   Font trên website là 18 px = 13.5 pt, nên điều chỉnh dpi để khớp kích thước font: 270 = 300 \* 12 / 13.5.
+    (Tôi cũng đã xác minh thực nghiệm bằng cách chụp màn hình.)
 
     ``` r
     #| echo: FALSE
@@ -26,14 +26,14 @@ The book is built using [Quarto](https://quarto.org/).
     knitr::include_graphics("diagrams/transform.png", dpi = 270)
     ```
 
-### Screenshots
+### Chụp màn hình
 
--   Make sure you're using a light theme.
-    For small interface elements (eg. toolbars), zoom in twice.
+-   Đảm bảo bạn đang sử dụng giao diện sáng (light theme).
+    Đối với các phần tử giao diện nhỏ (ví dụ thanh công cụ), zoom in hai lần.
 
--   Screenshot with Cmd + Shift + 4.
+-   Chụp màn hình bằng Cmd + Shift + 4.
 
--   Don't need to set dpi:
+-   Không cần đặt dpi:
 
     ``` r
     #| echo: FALSE
@@ -43,7 +43,7 @@ The book is built using [Quarto](https://quarto.org/).
 
 ### O'Reilly
 
-To generate book for O'Reilly, build the book then:
+Để tạo sách cho O'Reilly, build sách rồi:
 
 ```{r}
 # pak::pak("hadley/htmlbook")
@@ -58,9 +58,9 @@ fs::dir_create(unique(dirname(dest)))
 file.copy(pngs, dest, overwrite = TRUE)
 ```
 
-Then commit and push to atlas.
+Sau đó commit và push lên atlas.
 
-## Code of Conduct
+## Quy tắc ứng xử
 
-Please note that r4ds uses a [Contributor Code of Conduct](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
-By contributing to this book, you agree to abide by its terms.
+Lưu ý rằng r4ds tuân theo [Quy tắc Ứng xử của Người Đóng góp](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
+Bằng việc đóng góp cho cuốn sách này, bạn đồng ý tuân thủ các điều khoản của nó.

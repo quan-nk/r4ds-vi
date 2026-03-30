@@ -23,8 +23,8 @@ Một quy tắc hữu ích là hãy cân nhắc viết hàm bất cứ khi nào 
 Trong chương này, bạn sẽ học về ba loại hàm hữu ích:
 
 -   Hàm vector nhận một hoặc nhiều vector làm đầu vào và trả về một vector làm đầu ra.
--   Hàm khung dữ liệu (data frame) nhận một khung dữ liệu làm đầu vào và trả về một khung dữ liệu làm đầu ra.
--   Hàm biểu đồ nhận một khung dữ liệu làm đầu vào và trả về một biểu đồ làm đầu ra.
+-   Hàm data frame nhận một data frame làm đầu vào và trả về một data frame làm đầu ra.
+-   Hàm biểu đồ nhận một data frame làm đầu vào và trả về một biểu đồ làm đầu ra.
 
 Mỗi phần này bao gồm nhiều ví dụ giúp bạn tổng quát hóa các mẫu mà bạn thấy.
 Những ví dụ này sẽ không thể có được nếu thiếu sự giúp đỡ của mọi người trên Twitter, và chúng tôi khuyến khích bạn theo các liên kết trong phần bình luận để xem nguồn cảm hứng gốc.
@@ -232,7 +232,7 @@ clean_number("45%")
 ```
 
 Đôi khi hàm của bạn sẽ rất chuyên biệt cho một bước phân tích dữ liệu cụ thể.
-Ví dụ, nếu bạn có nhiều biến ghi nhận giá trị khuyết (missing value) bằng 997, 998, hoặc 999, bạn có thể muốn viết một hàm để thay thế chúng bằng `NA`:
+Ví dụ, nếu bạn có nhiều biến ghi nhận missing value (missing value) bằng 997, 998, hoặc 999, bạn có thể muốn viết một hàm để thay thế chúng bằng `NA`:
 
 ```{r}
 fix_na <- function(x) {
@@ -341,12 +341,12 @@ Khi bạn bắt đầu viết hàm, có hai phím tắt RStudio cực kỳ hữu
     }
     ```
 
-## Hàm khung dữ liệu
+## Hàm data frame
 
 Hàm vector hữu ích để tách ra mã lặp lại bên trong một động từ dplyr.
 Nhưng bạn thường cũng lặp lại chính các động từ, đặc biệt trong một pipeline lớn.
-Khi bạn nhận thấy mình sao chép-dán nhiều động từ nhiều lần, bạn có thể nghĩ đến việc viết một hàm khung dữ liệu.
-Hàm khung dữ liệu hoạt động giống các động từ dplyr: chúng nhận một khung dữ liệu làm đối số đầu tiên, một số đối số bổ sung cho biết phải làm gì với nó, và trả về một khung dữ liệu hoặc một vector.
+Khi bạn nhận thấy mình sao chép-dán nhiều động từ nhiều lần, bạn có thể nghĩ đến việc viết một hàm data frame.
+Hàm data frame hoạt động giống các động từ dplyr: chúng nhận một data frame làm đối số đầu tiên, một số đối số bổ sung cho biết phải làm gì với nó, và trả về một data frame hoặc một vector.
 
 Để cho phép bạn viết hàm sử dụng các động từ dplyr, trước tiên chúng tôi sẽ giới thiệu thách thức của tham chiếu gián tiếp (indirection) và cách bạn có thể vượt qua nó bằng cách ôm (embracing), `{{ }}`.
 Với lý thuyết này trong tay, chúng ta sẽ chỉ cho bạn hàng loạt ví dụ để minh họa những gì bạn có thể làm với nó.
@@ -372,7 +372,7 @@ Nếu chúng ta thử sử dụng nó, ta sẽ nhận được lỗi:
 diamonds |> grouped_mean(cut, carat)
 ```
 
-Để vấn đề rõ ràng hơn, chúng ta có thể dùng một khung dữ liệu tự tạo:
+Để vấn đề rõ ràng hơn, chúng ta có thể dùng một data frame tự tạo:
 
 ```{r}
 df <- tibble(
@@ -388,9 +388,9 @@ df |> grouped_mean(group, y)
 ```
 
 Bất kể chúng ta gọi `grouped_mean()` thế nào, nó luôn thực hiện `df |> group_by(group_var) |> summarize(mean(mean_var))`, thay vì `df |> group_by(group) |> summarize(mean(x))` hay `df |> group_by(group) |> summarize(mean(y))`.
-Đây là vấn đề tham chiếu gián tiếp, và nó phát sinh vì dplyr sử dụng **đánh giá gọn gàng (tidy evaluation)** để cho phép bạn tham chiếu đến tên biến bên trong khung dữ liệu mà không cần xử lý đặc biệt.
+Đây là vấn đề tham chiếu gián tiếp, và nó phát sinh vì dplyr sử dụng **đánh giá gọn gàng (tidy evaluation)** để cho phép bạn tham chiếu đến tên biến bên trong data frame mà không cần xử lý đặc biệt.
 
-Đánh giá gọn gàng tuyệt vời trong 95% trường hợp vì nó giúp phân tích dữ liệu của bạn rất gọn gàng --- bạn không bao giờ phải nói biến đến từ khung dữ liệu nào; điều đó hiển nhiên từ ngữ cảnh.
+Đánh giá gọn gàng tuyệt vời trong 95% trường hợp vì nó giúp phân tích dữ liệu của bạn rất gọn gàng --- bạn không bao giờ phải nói biến đến từ data frame nào; điều đó hiển nhiên từ ngữ cảnh.
 Nhược điểm của đánh giá gọn gàng xuất hiện khi chúng ta muốn gói gọn mã tidyverse lặp lại vào một hàm.
 Ở đây chúng ta cần một cách nào đó để nói với `group_by()` và `summarize()` đừng coi `group_var` và `mean_var` là tên biến, mà thay vào đó hãy nhìn vào bên trong chúng để tìm biến mà chúng ta thực sự muốn dùng.
 
@@ -415,7 +415,7 @@ Thành công!
 
 ### Khi nào cần ôm? {#sec-embracing}
 
-Vậy thách thức chính khi viết hàm khung dữ liệu là xác định đối số nào cần được ôm.
+Vậy thách thức chính khi viết hàm data frame là xác định đối số nào cần được ôm.
 May mắn thay, điều này rất dễ vì bạn có thể tra cứu trong tài liệu 😄.
 Có hai thuật ngữ cần tìm trong tài liệu, tương ứng với hai kiểu phụ phổ biến nhất của đánh giá gọn gàng:
 
@@ -501,7 +501,7 @@ flights |> unique_where(month == 12, dest)
 
 Ở đây chúng ta ôm `condition` vì nó được truyền cho `filter()` và `var` vì nó được truyền cho `distinct()` và `arrange()`.
 
-Chúng ta đã tạo tất cả các ví dụ này nhận khung dữ liệu làm đối số đầu tiên, nhưng nếu bạn làm việc liên tục với cùng một dữ liệu, việc cố định nó có thể hợp lý.
+Chúng ta đã tạo tất cả các ví dụ này nhận data frame làm đối số đầu tiên, nhưng nếu bạn làm việc liên tục với cùng một dữ liệu, việc cố định nó có thể hợp lý.
 Ví dụ, hàm sau luôn làm việc với tập dữ liệu flights và luôn chọn `time_hour`, `carrier`, và `flight` vì chúng tạo thành khóa chính kết hợp cho phép bạn xác định một hàng.
 
 ```{r}
@@ -624,7 +624,7 @@ Mặc dù các ví dụ của chúng ta chủ yếu tập trung vào dplyr, đá
 
 ## Hàm biểu đồ
 
-Thay vì trả về một khung dữ liệu, bạn có thể muốn trả về một biểu đồ (plot).
+Thay vì trả về một data frame, bạn có thể muốn trả về một biểu đồ (plot).
 May mắn thay, bạn có thể sử dụng cùng các kỹ thuật với ggplot2, vì `aes()` là một hàm che dữ liệu.
 Ví dụ, hãy tưởng tượng bạn đang tạo nhiều biểu đồ tần suất (histogram):
 
@@ -876,7 +876,7 @@ Như bạn thấy, chúng tôi khuyên nên đặt thêm dấu cách bên trong 
 
 ## Tóm tắt
 
-Trong chương này, bạn đã học cách viết hàm cho ba kịch bản hữu ích: tạo vector, tạo khung dữ liệu, hoặc tạo biểu đồ.
+Trong chương này, bạn đã học cách viết hàm cho ba kịch bản hữu ích: tạo vector, tạo data frame, hoặc tạo biểu đồ.
 Trong quá trình đó, bạn đã thấy nhiều ví dụ, hy vọng đã kích thích sự sáng tạo của bạn và cho bạn một số ý tưởng về nơi hàm có thể giúp ích cho mã phân tích của bạn.
 
 Chúng tôi chỉ mới chỉ cho bạn những điều tối thiểu để bắt đầu với hàm và còn rất nhiều điều để học.

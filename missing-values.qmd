@@ -7,12 +7,12 @@ source("_common.R")
 
 ## Giới thiệu
 
-Bạn đã học những kiến thức cơ bản về giá trị khuyết (missing value) ở các phần trước của cuốn sách.
+Bạn đã học những kiến thức cơ bản về missing value ở các phần trước của cuốn sách.
 Bạn lần đầu gặp chúng trong @sec-data-visualization khi chúng gây ra cảnh báo khi vẽ biểu đồ, cũng như trong @sec-summarize khi chúng ảnh hưởng đến việc tính toán các thống kê tóm tắt, và bạn đã tìm hiểu về tính "lây lan" của chúng cũng như cách kiểm tra sự hiện diện của chúng trong @sec-na-comparison.
 Giờ chúng ta sẽ quay lại chủ đề này một cách chi tiết hơn, để bạn có thể hiểu sâu hơn.
 
-Chúng ta sẽ bắt đầu bằng việc thảo luận một số công cụ chung để làm việc với giá trị khuyết được ghi nhận dưới dạng `NA`.
-Tiếp theo, chúng ta sẽ khám phá khái niệm giá trị khuyết ẩn (implicitly missing value) -- những giá trị đơn giản là vắng mặt trong dữ liệu của bạn, và giới thiệu một số công cụ để biến chúng thành giá trị khuyết tường minh (explicitly missing value).
+Chúng ta sẽ bắt đầu bằng việc thảo luận một số công cụ chung để làm việc với missing value được ghi nhận dưới dạng `NA`.
+Tiếp theo, chúng ta sẽ khám phá khái niệm missing value ẩn (implicitly missing value) -- những giá trị đơn giản là vắng mặt trong dữ liệu của bạn, và giới thiệu một số công cụ để biến chúng thành missing value tường minh (explicitly missing value).
 Cuối cùng, chúng ta sẽ kết thúc với một thảo luận liên quan về nhóm rỗng (empty group), xảy ra khi các mức nhân tố (factor level) không xuất hiện trong dữ liệu.
 
 ### Điều kiện tiên quyết
@@ -27,12 +27,12 @@ library(tidyverse)
 
 ## Giá trị khuyết tường minh
 
-Để bắt đầu, hãy khám phá một số công cụ hữu ích để tạo hoặc loại bỏ các giá trị khuyết tường minh, tức là các ô mà bạn thấy `NA`.
+Để bắt đầu, hãy khám phá một số công cụ hữu ích để tạo hoặc loại bỏ các missing value tường minh, tức là các ô mà bạn thấy `NA`.
 
 ### Lấp đầy bằng quan sát cuối cùng
 
-Một trường hợp sử dụng phổ biến của giá trị khuyết là để thuận tiện cho việc nhập dữ liệu.
-Khi dữ liệu được nhập bằng tay, giá trị khuyết đôi khi chỉ ra rằng giá trị ở hàng trước đó đã được lặp lại (hay mang xuống):
+Một trường hợp sử dụng phổ biến của missing value là để thuận tiện cho việc nhập dữ liệu.
+Khi dữ liệu được nhập bằng tay, missing value đôi khi chỉ ra rằng giá trị ở hàng trước đó đã được lặp lại (hay mang xuống):
 
 ```{r}
 treatment <- tribble(
@@ -44,7 +44,7 @@ treatment <- tribble(
 )
 ```
 
-Bạn có thể lấp đầy các giá trị khuyết này bằng `tidyr::fill()`.
+Bạn có thể lấp đầy các missing value này bằng `tidyr::fill()`.
 Nó hoạt động giống `select()`, nhận một tập hợp các cột:
 
 ```{r}
@@ -53,11 +53,11 @@ treatment |>
 ```
 
 Cách xử lý này đôi khi được gọi là "lấp đầy bằng quan sát cuối cùng" (last observation carried forward), hay viết tắt là **locf**.
-Bạn có thể sử dụng đối số `.direction` để lấp đầy các giá trị khuyết được tạo ra theo những cách phức tạp hơn.
+Bạn có thể sử dụng đối số `.direction` để lấp đầy các missing value được tạo ra theo những cách phức tạp hơn.
 
 ### Giá trị cố định
 
-Đôi khi giá trị khuyết đại diện cho một giá trị cố định và đã biết, thường gặp nhất là 0.
+Đôi khi missing value đại diện cho một giá trị cố định và đã biết, thường gặp nhất là 0.
 Bạn có thể sử dụng `dplyr::coalesce()` để thay thế chúng:
 
 ```{r}
@@ -65,8 +65,8 @@ x <- c(1, 4, 5, 7, NA)
 coalesce(x, 0)
 ```
 
-Đôi khi bạn gặp vấn đề ngược lại: một giá trị cụ thể thực ra đại diện cho giá trị khuyết.
-Điều này thường xảy ra với dữ liệu được tạo bởi phần mềm cũ không có cách biểu diễn giá trị khuyết đúng cách, nên phải sử dụng một giá trị đặc biệt như 99 hoặc -999.
+Đôi khi bạn gặp vấn đề ngược lại: một giá trị cụ thể thực ra đại diện cho missing value.
+Điều này thường xảy ra với dữ liệu được tạo bởi phần mềm cũ không có cách biểu diễn missing value đúng cách, nên phải sử dụng một giá trị đặc biệt như 99 hoặc -999.
 
 Nếu có thể, hãy xử lý vấn đề này khi đọc dữ liệu, ví dụ bằng cách sử dụng đối số `na` của `readr::read_csv()`, như `read_csv(path, na = "99")`.
 Nếu bạn phát hiện vấn đề muộn hơn, hoặc nguồn dữ liệu không cung cấp cách xử lý khi đọc, bạn có thể sử dụng `dplyr::na_if()`:
@@ -78,7 +78,7 @@ na_if(x, -99)
 
 ### NaN
 
-Trước khi tiếp tục, có một loại giá trị khuyết đặc biệt mà bạn sẽ thỉnh thoảng gặp: `NaN` (đọc là "nan"), viết tắt của **n**ot **a** **n**umber (không phải số).
+Trước khi tiếp tục, có một loại missing value đặc biệt mà bạn sẽ thỉnh thoảng gặp: `NaN` (đọc là "nan"), viết tắt của **n**ot **a** **n**umber (không phải số).
 Bạn không cần quá quan tâm đến nó vì nó thường hoạt động giống hệt `NA`:
 
 ```{r}
@@ -101,8 +101,8 @@ sqrt(-1)
 
 ## Giá trị khuyết ẩn {#sec-missing-implicit}
 
-Cho đến giờ chúng ta đã nói về giá trị khuyết **tường minh** (explicitly missing), tức là bạn có thể thấy `NA` trong dữ liệu.
-Nhưng giá trị khuyết cũng có thể **ẩn** (implicitly missing), nếu toàn bộ một hàng dữ liệu đơn giản là vắng mặt trong dữ liệu.
+Cho đến giờ chúng ta đã nói về missing value **tường minh** (explicitly missing), tức là bạn có thể thấy `NA` trong dữ liệu.
+Nhưng missing value cũng có thể **ẩn** (implicitly missing), nếu toàn bộ một hàng dữ liệu đơn giản là vắng mặt trong dữ liệu.
 Hãy minh họa sự khác biệt với một tập dữ liệu đơn giản ghi lại giá cổ phiếu theo từng quý:
 
 ```{r}
@@ -125,15 +125,15 @@ Một cách để suy nghĩ về sự khác biệt này là thông qua câu nói
 >
 > Giá trị khuyết ẩn là sự vắng mặt của một sự hiện diện.
 
-Đôi khi bạn muốn biến giá trị khuyết ẩn thành tường minh để có thứ gì đó cụ thể để làm việc.
-Trong các trường hợp khác, giá trị khuyết tường minh bị áp đặt bởi cấu trúc dữ liệu và bạn muốn loại bỏ chúng.
-Các phần tiếp theo sẽ thảo luận một số công cụ để chuyển đổi giữa giá trị khuyết ẩn và tường minh.
+Đôi khi bạn muốn biến missing value ẩn thành tường minh để có thứ gì đó cụ thể để làm việc.
+Trong các trường hợp khác, missing value tường minh bị áp đặt bởi cấu trúc dữ liệu và bạn muốn loại bỏ chúng.
+Các phần tiếp theo sẽ thảo luận một số công cụ để chuyển đổi giữa missing value ẩn và tường minh.
 
 ### Xoay bảng
 
-Bạn đã thấy một công cụ có thể biến giá trị khuyết ẩn thành tường minh và ngược lại: xoay bảng (pivot).
-Mở rộng dữ liệu có thể làm cho giá trị khuyết ẩn trở nên tường minh vì mỗi tổ hợp của các hàng và cột mới đều phải có một giá trị nào đó.
-Ví dụ, nếu chúng ta xoay `stocks` để đặt `quarter` vào các cột, cả hai giá trị khuyết đều trở nên tường minh:
+Bạn đã thấy một công cụ có thể biến missing value ẩn thành tường minh và ngược lại: xoay bảng (pivot).
+Mở rộng dữ liệu có thể làm cho missing value ẩn trở nên tường minh vì mỗi tổ hợp của các hàng và cột mới đều phải có một giá trị nào đó.
+Ví dụ, nếu chúng ta xoay `stocks` để đặt `quarter` vào các cột, cả hai missing value đều trở nên tường minh:
 
 ```{r}
 stocks |>
@@ -143,12 +143,12 @@ stocks |>
   )
 ```
 
-Theo mặc định, kéo dài dữ liệu giữ nguyên giá trị khuyết tường minh, nhưng nếu chúng là giá trị khuyết cấu trúc chỉ tồn tại vì dữ liệu chưa gọn gàng (tidy), bạn có thể loại bỏ chúng (biến thành ẩn) bằng cách đặt `values_drop_na = TRUE`.
+Theo mặc định, kéo dài dữ liệu giữ nguyên missing value tường minh, nhưng nếu chúng là missing value cấu trúc chỉ tồn tại vì dữ liệu chưa gọn gàng (tidy), bạn có thể loại bỏ chúng (biến thành ẩn) bằng cách đặt `values_drop_na = TRUE`.
 Xem các ví dụ trong @sec-tidy-data để biết thêm chi tiết.
 
 ### Complete
 
-`tidyr::complete()` cho phép bạn tạo ra các giá trị khuyết tường minh bằng cách cung cấp một tập hợp các biến xác định tổ hợp hàng nào nên tồn tại.
+`tidyr::complete()` cho phép bạn tạo ra các missing value tường minh bằng cách cung cấp một tập hợp các biến xác định tổ hợp hàng nào nên tồn tại.
 Ví dụ, chúng ta biết rằng tất cả tổ hợp của `year` và `qtr` nên tồn tại trong dữ liệu `stocks`:
 
 ```{r}
@@ -168,7 +168,7 @@ stocks |>
 Nếu phạm vi của một biến là đúng nhưng không phải tất cả giá trị đều có mặt, bạn có thể sử dụng `full_seq(x, 1)` để tạo tất cả giá trị từ `min(x)` đến `max(x)` với bước nhảy là 1.
 
 Trong một số trường hợp, tập hợp đầy đủ các quan sát không thể được tạo bằng một tổ hợp đơn giản của các biến.
-Trong trường hợp đó, bạn có thể tự làm thủ công những gì `complete()` làm cho bạn: tạo một khung dữ liệu chứa tất cả các hàng cần tồn tại (sử dụng bất kỳ tổ hợp kỹ thuật nào bạn cần), rồi kết hợp nó với tập dữ liệu gốc bằng `dplyr::full_join()`.
+Trong trường hợp đó, bạn có thể tự làm thủ công những gì `complete()` làm cho bạn: tạo một data frame chứa tất cả các hàng cần tồn tại (sử dụng bất kỳ tổ hợp kỹ thuật nào bạn cần), rồi kết hợp nó với tập dữ liệu gốc bằng `dplyr::full_join()`.
 
 ### Nối bảng
 
@@ -196,7 +196,7 @@ flights |>
 
 ## Nhân tố và nhóm rỗng
 
-Loại giá trị khuyết cuối cùng là nhóm rỗng, một nhóm không chứa bất kỳ quan sát nào, có thể phát sinh khi làm việc với nhân tố (factor).
+Loại missing value cuối cùng là nhóm rỗng, một nhóm không chứa bất kỳ quan sát nào, có thể phát sinh khi làm việc với nhân tố (factor).
 Ví dụ, hãy tưởng tượng chúng ta có một tập dữ liệu chứa một số thông tin sức khỏe về mọi người:
 
 ```{r}
@@ -256,10 +256,10 @@ health |>
 ```
 
 Chúng ta nhận được một số kết quả thú vị ở đây vì khi tóm tắt một nhóm rỗng, các hàm tóm tắt được áp dụng cho vector có độ dài bằng 0.
-Có một sự phân biệt quan trọng giữa vector rỗng (có độ dài 0) và giá trị khuyết (mỗi giá trị có độ dài 1).
+Có một sự phân biệt quan trọng giữa vector rỗng (có độ dài 0) và missing value (mỗi giá trị có độ dài 1).
 
 ```{r}
-# Một vector chứa hai giá trị khuyết
+# Một vector chứa hai missing value
 x1 <- c(NA, NA)
 length(x1)
 
@@ -274,7 +274,7 @@ Tất cả các hàm tóm tắt đều hoạt động với vector có độ dà
 
 [^missing-values-1]: Nói cách khác, `min(c(x, y))` luôn bằng `min(min(x), min(y))`.
 
-Đôi khi cách tiếp cận đơn giản hơn là thực hiện phép tóm tắt trước rồi biến giá trị khuyết ẩn thành tường minh với `complete()`.
+Đôi khi cách tiếp cận đơn giản hơn là thực hiện phép tóm tắt trước rồi biến missing value ẩn thành tường minh với `complete()`.
 
 ```{r}
 health |>
@@ -295,7 +295,7 @@ Nhược điểm chính của cách tiếp cận này là bạn nhận được 
 
 Giá trị khuyết thật kỳ lạ!
 Đôi khi chúng được ghi nhận dưới dạng `NA` tường minh nhưng đôi khi bạn chỉ nhận ra chúng qua sự vắng mặt.
-Chương này đã cung cấp cho bạn một số công cụ để làm việc với giá trị khuyết tường minh, công cụ để phát hiện giá trị khuyết ẩn, và thảo luận về một số cách mà giá trị khuyết ẩn có thể trở thành tường minh và ngược lại.
+Chương này đã cung cấp cho bạn một số công cụ để làm việc với missing value tường minh, công cụ để phát hiện missing value ẩn, và thảo luận về một số cách mà missing value ẩn có thể trở thành tường minh và ngược lại.
 
 Trong chương tiếp theo, chúng ta sẽ giải quyết chương cuối cùng trong phần này của cuốn sách: nối bảng.
-Đây là một sự thay đổi so với các chương trước vì chúng ta sẽ thảo luận về các công cụ làm việc với toàn bộ khung dữ liệu, chứ không phải thứ gì đó mà bạn đặt bên trong một khung dữ liệu.
+Đây là một sự thay đổi so với các chương trước vì chúng ta sẽ thảo luận về các công cụ làm việc với toàn bộ data frame, chứ không phải thứ gì đó mà bạn đặt bên trong một data frame.

@@ -1,19 +1,19 @@
-# Contributing {#sec-contributing}
+# Đóng góp {#sec-contributing}
 
-This book has been developed in the open, and it wouldn't be nearly as good without your contributions.
-There are a number of ways you can help make the book even better:
+Cuốn sách này được phát triển công khai, và nó sẽ không tốt như bây giờ nếu thiếu những đóng góp của bạn.
+Có nhiều cách bạn có thể giúp cuốn sách trở nên tốt hơn nữa:
 
--   If you don't understand something, please [let me know](mailto:h.wickham@gmail.com).
-    Your feedback on what is confusing or hard to understand is valuable.
+-   Nếu bạn không hiểu điều gì đó, vui lòng [cho tôi biết](mailto:h.wickham@gmail.com).
+    Phản hồi của bạn về những gì gây khó hiểu hoặc khó nắm bắt rất có giá trị.
 
--   If you spot a typo, feel free to edit the underlying page and send a pull request.
-    If you've never done this before, the process is very easy:
+-   Nếu bạn phát hiện lỗi đánh máy, hãy thoải mái chỉnh sửa trang tương ứng và gửi pull request.
+    Nếu bạn chưa làm điều này bao giờ, quy trình rất đơn giản:
 
-    -   Click the edit this page on the sidebar.
+    -   Nhấp vào nút chỉnh sửa trang này (edit this page) trên thanh bên.
 
-    -   Make the changes using GitHub's in-page editor and save.
+    -   Thực hiện thay đổi bằng trình soạn thảo trên trang của GitHub và lưu lại.
 
-    -   Submit a pull request and include a brief description of your changes.
-        "Fixing typos" is perfectly adequate.
+    -   Gửi pull request và bao gồm mô tả ngắn gọn về các thay đổi của bạn.
+        "Sửa lỗi đánh máy" là hoàn toàn đủ.
 
-    -   If you make significant changes, include the phrase "I assign the copyright of this contribution to Hadley Wickham" - I need this so I can publish the printed book.
+    -   Nếu bạn thực hiện các thay đổi đáng kể, hãy bao gồm cụm từ "I assign the copyright of this contribution to Hadley Wickham" - tôi cần điều này để có thể xuất bản cuốn sách in.
