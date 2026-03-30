@@ -1,27 +1,27 @@
-# Joins {#sec-joins}
+# Nối bảng {#sec-joins}
 
 ```{r}
 #| echo: false
 source("_common.R")
 ```
 
-## Introduction
+## Giới thiệu
 
-It's rare that a data analysis involves only a single data frame.
-Typically you have many data frames, and you must **join** them together to answer the questions that you're interested in.
-This chapter will introduce you to two important types of joins:
+Rất hiếm khi một phân tích dữ liệu chỉ liên quan đến một khung dữ liệu (data frame) duy nhất.
+Thông thường bạn có nhiều khung dữ liệu, và bạn phải **nối** (join) chúng lại với nhau để trả lời các câu hỏi mà bạn quan tâm.
+Chương này sẽ giới thiệu cho bạn hai loại nối quan trọng:
 
--   Mutating joins, which add new variables to one data frame from matching observations in another.
--   Filtering joins, which filter observations from one data frame based on whether or not they match an observation in another.
+-   Nối biến đổi (mutating join), thêm các biến mới vào một khung dữ liệu từ các quan sát khớp trong một khung dữ liệu khác.
+-   Nối lọc (filtering join), lọc các quan sát từ một khung dữ liệu dựa trên việc chúng có khớp hay không với một quan sát trong khung dữ liệu khác.
 
-We'll begin by discussing keys, the variables used to connect a pair of data frames in a join.
-We cement the theory with an examination of the keys in the datasets from the nycflights13 package, then use that knowledge to start joining data frames together.
-Next we'll discuss how joins work, focusing on their action on the rows.
-We'll finish up with a discussion of non-equi joins, a family of joins that provide a more flexible way of matching keys than the default equality relationship.
+Chúng ta sẽ bắt đầu bằng việc thảo luận về khóa (key), các biến được sử dụng để kết nối một cặp khung dữ liệu trong một phép nối.
+Chúng ta củng cố lý thuyết bằng cách kiểm tra các khóa trong các tập dữ liệu từ gói nycflights13, sau đó sử dụng kiến thức đó để bắt đầu nối các khung dữ liệu lại với nhau.
+Tiếp theo chúng ta sẽ thảo luận về cách các phép nối hoạt động, tập trung vào tác động của chúng lên các hàng.
+Chúng ta sẽ kết thúc với một cuộc thảo luận về nối không đẳng thức (non-equi join), một họ các phép nối cung cấp cách khớp khóa linh hoạt hơn so với quan hệ bằng mặc định.
 
-### Prerequisites
+### Điều kiện tiên quyết
 
-In this chapter, we'll explore the five related datasets from nycflights13 using the join functions from dplyr.
+Trong chương này, chúng ta sẽ khám phá năm tập dữ liệu liên quan từ nycflights13 sử dụng các hàm nối từ dplyr.
 
 ```{r}
 #| label: setup
@@ -30,27 +30,27 @@ library(tidyverse)
 library(nycflights13)
 ```
 
-## Keys
+## Khóa
 
-To understand joins, you need to first understand how two tables can be connected through a pair of keys, within each table.
-In this section, you'll learn about the two types of key and see examples of both in the datasets of the nycflights13 package.
-You'll also learn how to check that your keys are valid, and what to do if your table lacks a key.
+Để hiểu các phép nối, trước tiên bạn cần hiểu cách hai bảng có thể được kết nối thông qua một cặp khóa, trong mỗi bảng.
+Trong phần này, bạn sẽ tìm hiểu về hai loại khóa và xem các ví dụ về cả hai trong các tập dữ liệu của gói nycflights13.
+Bạn cũng sẽ học cách kiểm tra rằng các khóa của bạn hợp lệ, và phải làm gì khi bảng của bạn thiếu khóa.
 
-### Primary and foreign keys
+### Khóa chính và khóa ngoại
 
-Every join involves a pair of keys: a primary key and a foreign key.
-A **primary key** is a variable or set of variables that uniquely identifies each observation.
-When more than one variable is needed, the key is called a **compound key.** For example, in nycflights13:
+Mỗi phép nối đều liên quan đến một cặp khóa: một khóa chính (primary key) và một khóa ngoại (foreign key).
+**Khóa chính** là một biến hoặc tập hợp các biến xác định duy nhất mỗi quan sát.
+Khi cần nhiều hơn một biến, khóa được gọi là **khóa phức hợp (compound key).** Ví dụ, trong nycflights13:
 
--   `airlines` records two pieces of data about each airline: its carrier code and its full name.
-    You can identify an airline with its two letter carrier code, making `carrier` the primary key.
+-   `airlines` ghi lại hai phần dữ liệu về mỗi hãng hàng không: mã hãng vận chuyển và tên đầy đủ.
+    Bạn có thể xác định một hãng hàng không bằng mã hãng vận chuyển hai chữ cái, làm cho `carrier` trở thành khóa chính.
 
     ```{r}
     airlines
     ```
 
--   `airports` records data about each airport.
-    You can identify each airport by its three letter airport code, making `faa` the primary key.
+-   `airports` ghi lại dữ liệu về mỗi sân bay.
+    Bạn có thể xác định mỗi sân bay bằng mã sân bay ba chữ cái, làm cho `faa` trở thành khóa chính.
 
     ```{r}
     #| R.options:
@@ -58,8 +58,8 @@ When more than one variable is needed, the key is called a **compound key.** For
     airports
     ```
 
--   `planes` records data about each plane.
-    You can identify a plane by its tail number, making `tailnum` the primary key.
+-   `planes` ghi lại dữ liệu về mỗi máy bay.
+    Bạn có thể xác định một máy bay bằng số đuôi của nó, làm cho `tailnum` trở thành khóa chính.
 
     ```{r}
     #| R.options:
@@ -67,8 +67,8 @@ When more than one variable is needed, the key is called a **compound key.** For
     planes
     ```
 
--   `weather` records data about the weather at the origin airports.
-    You can identify each observation by the combination of location and time, making `origin` and `time_hour` the compound primary key.
+-   `weather` ghi lại dữ liệu về thời tiết tại các sân bay xuất phát.
+    Bạn có thể xác định mỗi quan sát bằng tổ hợp vị trí và thời gian, làm cho `origin` và `time_hour` trở thành khóa chính phức hợp.
 
     ```{r}
     #| R.options:
@@ -76,280 +76,280 @@ When more than one variable is needed, the key is called a **compound key.** For
     weather
     ```
 
-A **foreign key** is a variable (or set of variables) that corresponds to a primary key in another table.
-For example:
+**Khóa ngoại** là một biến (hoặc tập hợp các biến) tương ứng với khóa chính trong một bảng khác.
+Ví dụ:
 
--   `flights$tailnum` is a foreign key that corresponds to the primary key `planes$tailnum`.
--   `flights$carrier` is a foreign key that corresponds to the primary key `airlines$carrier`.
--   `flights$origin` is a foreign key that corresponds to the primary key `airports$faa`.
--   `flights$dest` is a foreign key that corresponds to the primary key `airports$faa`.
--   `flights$origin`-`flights$time_hour` is a compound foreign key that corresponds to the compound primary key `weather$origin`-`weather$time_hour`.
+-   `flights$tailnum` là khóa ngoại tương ứng với khóa chính `planes$tailnum`.
+-   `flights$carrier` là khóa ngoại tương ứng với khóa chính `airlines$carrier`.
+-   `flights$origin` là khóa ngoại tương ứng với khóa chính `airports$faa`.
+-   `flights$dest` là khóa ngoại tương ứng với khóa chính `airports$faa`.
+-   `flights$origin`-`flights$time_hour` là khóa ngoại phức hợp tương ứng với khóa chính phức hợp `weather$origin`-`weather$time_hour`.
 
-These relationships are summarized visually in @fig-flights-relationships.
+Các mối quan hệ này được tóm tắt trực quan trong @fig-flights-relationships.
 
 ```{r}
 #| label: fig-flights-relationships
 #| echo: false
 #| out-width: ~
 #| fig-cap: |
-#|   Connections between all five data frames in the nycflights13 package.
-#|   Variables making up a primary key are colored grey, and are connected
-#|   to their corresponding foreign keys with arrows.
+#|   Các kết nối giữa năm khung dữ liệu trong gói nycflights13.
+#|   Các biến tạo thành khóa chính được tô màu xám, và được kết nối
+#|   với các khóa ngoại tương ứng bằng mũi tên.
 #| fig-alt: |
 #|   The relationships between airports, planes, flights, weather, and
 #|   airlines datasets from the nycflights13 package. airports$faa
 #|   connected to the flights$origin and flights$dest. planes$tailnum
 #|   is connected to the flights$tailnum. weather$time_hour and
-#|   weather$origin are jointly connected to flights$time_hour and 
+#|   weather$origin are jointly connected to flights$time_hour and
 #|   flights$origin. airlines$carrier is connected to flights$carrier.
-#|   There are no direct connections between airports, planes, airlines, 
+#|   There are no direct connections between airports, planes, airlines,
 #|   and weather data frames.
 knitr::include_graphics("diagrams/relational.png", dpi = 270)
 ```
 
-You'll notice a nice feature in the design of these keys: the primary and foreign keys almost always have the same names, which, as you'll see shortly, will make your joining life much easier.
-It's also worth noting the opposite relationship: almost every variable name used in multiple tables has the same meaning in each place.
-There's only one exception: `year` means year of departure in `flights` and year manufactured in `planes`.
-This will become important when we start actually joining tables together.
+Bạn sẽ nhận thấy một đặc điểm hay trong thiết kế của các khóa này: khóa chính và khóa ngoại hầu như luôn có cùng tên, điều này, như bạn sẽ thấy ngay, sẽ giúp việc nối bảng của bạn dễ dàng hơn nhiều.
+Cũng đáng lưu ý mối quan hệ ngược lại: hầu hết mọi tên biến được sử dụng trong nhiều bảng đều có cùng ý nghĩa ở mỗi nơi.
+Chỉ có một ngoại lệ: `year` có nghĩa là năm khởi hành trong `flights` và năm sản xuất trong `planes`.
+Điều này sẽ trở nên quan trọng khi chúng ta bắt đầu thực sự nối các bảng lại với nhau.
 
-### Checking primary keys
+### Kiểm tra khóa chính
 
-Now that we've identified the primary keys in each table, it's good practice to verify that they do indeed uniquely identify each observation.
-One way to do that is to `count()` the primary keys and look for entries where `n` is greater than one.
-This reveals that `planes` and `weather` both look good:
+Bây giờ chúng ta đã xác định được các khóa chính trong mỗi bảng, việc xác minh rằng chúng thực sự xác định duy nhất mỗi quan sát là một thực hành tốt.
+Một cách để làm điều đó là `count()` các khóa chính và tìm các mục có `n` lớn hơn một.
+Điều này cho thấy `planes` và `weather` đều ổn:
 
 ```{r}
-planes |> 
-  count(tailnum) |> 
+planes |>
+  count(tailnum) |>
   filter(n > 1)
 
-weather |> 
-  count(time_hour, origin) |> 
+weather |>
+  count(time_hour, origin) |>
   filter(n > 1)
 ```
 
-You should also check for missing values in your primary keys --- if a value is missing then it can't identify an observation!
+Bạn cũng nên kiểm tra giá trị khuyết (missing value) trong các khóa chính --- nếu một giá trị bị khuyết thì nó không thể xác định một quan sát!
 
 ```{r}
-planes |> 
+planes |>
   filter(is.na(tailnum))
 
-weather |> 
+weather |>
   filter(is.na(time_hour) | is.na(origin))
 ```
 
-### Surrogate keys
+### Khóa thay thế
 
-So far we haven't talked about the primary key for `flights`.
-It's not super important here, because there are no data frames that use it as a foreign key, but it's still useful to consider because it's easier to work with observations if we have some way to describe them to others.
+Cho đến giờ chúng ta chưa nói về khóa chính cho `flights`.
+Điều đó không quá quan trọng ở đây, vì không có khung dữ liệu nào sử dụng nó làm khóa ngoại, nhưng vẫn hữu ích để xem xét vì sẽ dễ làm việc với các quan sát hơn nếu chúng ta có cách nào đó để mô tả chúng cho người khác.
 
-After a little thinking and experimentation, we determined that there are three variables that together uniquely identify each flight:
+Sau một chút suy nghĩ và thử nghiệm, chúng tôi xác định rằng có ba biến cùng nhau xác định duy nhất mỗi chuyến bay:
 
 ```{r}
-flights |> 
-  count(time_hour, carrier, flight) |> 
+flights |>
+  count(time_hour, carrier, flight) |>
   filter(n > 1)
 ```
 
-Does the absence of duplicates automatically make `time_hour`-`carrier`-`flight` a primary key?
-It's certainly a good start, but it doesn't guarantee it.
-For example, are altitude and latitude a good primary key for `airports`?
+Việc không có giá trị trùng lặp có tự động làm cho `time_hour`-`carrier`-`flight` trở thành khóa chính không?
+Đó chắc chắn là một khởi đầu tốt, nhưng nó không đảm bảo điều đó.
+Ví dụ, liệu độ cao và vĩ độ có phải là khóa chính tốt cho `airports` không?
 
 ```{r}
 airports |>
-  count(alt, lat) |> 
+  count(alt, lat) |>
   filter(n > 1)
 ```
 
-Identifying an airport by its altitude and latitude is clearly a bad idea, and in general it's not possible to know from the data alone whether or not a combination of variables makes a good a primary key.
-But for flights, the combination of `time_hour`, `carrier`, and `flight` seems reasonable because it would be really confusing for an airline and its customers if there were multiple flights with the same flight number in the air at the same time.
+Xác định một sân bay bằng độ cao và vĩ độ rõ ràng là một ý tưởng tồi, và nói chung không thể chỉ từ dữ liệu mà biết được liệu một tổ hợp biến có tạo thành một khóa chính tốt hay không.
+Nhưng đối với các chuyến bay, tổ hợp `time_hour`, `carrier`, và `flight` có vẻ hợp lý vì sẽ rất khó hiểu nếu một hãng hàng không và hành khách của họ có nhiều chuyến bay cùng số hiệu bay trên không cùng một lúc.
 
-That said, we might be better off introducing a simple numeric surrogate key using the row number:
+Tuy nhiên, chúng ta có thể sẽ tốt hơn nếu tạo một khóa thay thế (surrogate key) số đơn giản sử dụng số thứ tự hàng:
 
 ```{r}
-flights2 <- flights |> 
+flights2 <- flights |>
   mutate(id = row_number(), .before = 1)
 flights2
 ```
 
-Surrogate keys can be particularly useful when communicating to other humans: it's much easier to tell someone to take a look at flight 2001 than to say look at UA430 which departed 9am 2013-01-03.
+Khóa thay thế có thể đặc biệt hữu ích khi giao tiếp với người khác: nói với ai đó hãy xem chuyến bay 2001 dễ hơn nhiều so với nói hãy xem UA430 khởi hành lúc 9 giờ sáng ngày 2013-01-03.
 
-### Exercises
+### Bài tập
 
-1.  We forgot to draw the relationship between `weather` and `airports` in @fig-flights-relationships.
-    What is the relationship and how should it appear in the diagram?
+1.  Chúng ta quên vẽ mối quan hệ giữa `weather` và `airports` trong @fig-flights-relationships.
+    Mối quan hệ đó là gì và nó nên xuất hiện như thế nào trong sơ đồ?
 
-2.  `weather` only contains information for the three origin airports in NYC.
-    If it contained weather records for all airports in the USA, what additional connection would it make to `flights`?
+2.  `weather` chỉ chứa thông tin cho ba sân bay xuất phát ở NYC.
+    Nếu nó chứa bản ghi thời tiết cho tất cả các sân bay ở Mỹ, nó sẽ tạo thêm kết nối nào đến `flights`?
 
-3.  The `year`, `month`, `day`, `hour`, and `origin` variables almost form a compound key for `weather`, but there's one hour that has duplicate observations.
-    Can you figure out what's special about that hour?
+3.  Các biến `year`, `month`, `day`, `hour`, và `origin` gần như tạo thành một khóa phức hợp cho `weather`, nhưng có một giờ có các quan sát trùng lặp.
+    Bạn có thể tìm ra điều gì đặc biệt về giờ đó không?
 
-4.  We know that some days of the year are special and fewer people than usual fly on them (e.g., Christmas eve and Christmas day).
-    How might you represent that data as a data frame?
-    What would be the primary key?
-    How would it connect to the existing data frames?
+4.  Chúng ta biết rằng một số ngày trong năm là đặc biệt và ít người bay hơn bình thường (ví dụ, đêm Giáng sinh và ngày Giáng sinh).
+    Bạn có thể biểu diễn dữ liệu đó dưới dạng khung dữ liệu như thế nào?
+    Khóa chính sẽ là gì?
+    Nó sẽ kết nối với các khung dữ liệu hiện có như thế nào?
 
-5.  Draw a diagram illustrating the connections between the `Batting`, `People`, and `Salaries` data frames in the Lahman package.
-    Draw another diagram that shows the relationship between `People`, `Managers`, `AwardsManagers`.
-    How would you characterize the relationship between the `Batting`, `Pitching`, and `Fielding` data frames?
+5.  Vẽ một sơ đồ minh họa các kết nối giữa các khung dữ liệu `Batting`, `People`, và `Salaries` trong gói Lahman.
+    Vẽ một sơ đồ khác cho thấy mối quan hệ giữa `People`, `Managers`, `AwardsManagers`.
+    Bạn sẽ mô tả mối quan hệ giữa các khung dữ liệu `Batting`, `Pitching`, và `Fielding` như thế nào?
 
-## Basic joins {#sec-mutating-joins}
+## Nối cơ bản {#sec-mutating-joins}
 
-Now that you understand how data frames are connected via keys, we can start using joins to better understand the `flights` dataset.
-dplyr provides six join functions: `left_join()`, `inner_join()`, `right_join()`, `full_join()`, `semi_join()`, and `anti_join().` They all have the same interface: they take a pair of data frames (`x` and `y`) and return a data frame.
-The order of the rows and columns in the output is primarily determined by `x`.
+Bây giờ bạn đã hiểu cách các khung dữ liệu được kết nối thông qua khóa, chúng ta có thể bắt đầu sử dụng các phép nối để hiểu rõ hơn tập dữ liệu `flights`.
+dplyr cung cấp sáu hàm nối: `left_join()`, `inner_join()`, `right_join()`, `full_join()`, `semi_join()`, và `anti_join().` Tất cả đều có cùng giao diện: chúng nhận một cặp khung dữ liệu (`x` và `y`) và trả về một khung dữ liệu.
+Thứ tự của các hàng và cột trong kết quả đầu ra chủ yếu được xác định bởi `x`.
 
-In this section, you'll learn how to use one mutating join, `left_join()`, and two filtering joins, `semi_join()` and `anti_join()`.
-In the next section, you'll learn exactly how these functions work, and about the remaining `inner_join()`, `right_join()` and `full_join()`.
+Trong phần này, bạn sẽ học cách sử dụng một phép nối biến đổi, `left_join()`, và hai phép nối lọc, `semi_join()` và `anti_join()`.
+Trong phần tiếp theo, bạn sẽ học chính xác cách các hàm này hoạt động, và về các hàm còn lại `inner_join()`, `right_join()` và `full_join()`.
 
-### Mutating joins
+### Nối biến đổi
 
-A **mutating join** allows you to combine variables from two data frames: it first matches observations by their keys, then copies across variables from one data frame to the other.
-Like `mutate()`, the join functions add variables to the right, so if your dataset has many variables, you won't see the new ones.
-For these examples, we'll make it easier to see what's going on by creating a narrower dataset with just six variables[^joins-1]:
+Một **nối biến đổi** cho phép bạn kết hợp các biến từ hai khung dữ liệu: nó trước tiên khớp các quan sát theo khóa của chúng, sau đó sao chép các biến từ khung dữ liệu này sang khung dữ liệu kia.
+Giống như `mutate()`, các hàm nối thêm biến vào bên phải, nên nếu tập dữ liệu của bạn có nhiều biến, bạn sẽ không thấy các biến mới.
+Cho các ví dụ này, chúng ta sẽ tạo ra một tập dữ liệu hẹp hơn chỉ với sáu biến để dễ quan sát hơn[^joins-1]:
 
-[^joins-1]: Remember that in RStudio you can also use `View()` to avoid this problem.
+[^joins-1]: Hãy nhớ rằng trong RStudio bạn cũng có thể sử dụng `View()` để tránh vấn đề này.
 
 ```{r}
-flights2 <- flights |> 
+flights2 <- flights |>
   select(year, time_hour, origin, dest, tailnum, carrier)
 flights2
 ```
 
-There are four types of mutating join, but there's one that you'll use almost all of the time: `left_join()`.
-It's special because the output will always have the same rows as `x`, the data frame you're joining to[^joins-2].
-The primary use of `left_join()` is to add in additional metadata.
-For example, we can use `left_join()` to add the full airline name to the `flights2` data:
+Có bốn loại nối biến đổi, nhưng có một loại bạn sẽ dùng hầu như mọi lúc: `left_join()`.
+Nó đặc biệt vì đầu ra sẽ luôn có cùng số hàng với `x`, khung dữ liệu mà bạn đang nối vào[^joins-2].
+Công dụng chính của `left_join()` là bổ sung thêm siêu dữ liệu (metadata).
+Ví dụ, chúng ta có thể sử dụng `left_join()` để thêm tên đầy đủ của hãng hàng không vào dữ liệu `flights2`:
 
-[^joins-2]: That's not 100% true, but you'll get a warning whenever it isn't.
+[^joins-2]: Điều đó không đúng 100%, nhưng bạn sẽ nhận được cảnh báo mỗi khi nó không đúng.
 
 ```{r}
 flights2 |>
   left_join(airlines)
 ```
 
-Or we could find out the temperature and wind speed when each plane departed:
-
-```{r}
-flights2 |> 
-  left_join(weather |> select(origin, time_hour, temp, wind_speed))
-```
-
-Or what size of plane was flying:
-
-```{r}
-flights2 |> 
-  left_join(planes |> select(tailnum, type, engines, seats))
-```
-
-When `left_join()` fails to find a match for a row in `x`, it fills in the new variables with missing values.
-For example, there's no information about the plane with tail number `N3ALAA` so the `type`, `engines`, and `seats` will be missing:
-
-```{r}
-flights2 |> 
-  filter(tailnum == "N3ALAA") |> 
-  left_join(planes |> select(tailnum, type, engines, seats))
-```
-
-We'll come back to this problem a few times in the rest of the chapter.
-
-### Specifying join keys
-
-By default, `left_join()` will use all variables that appear in both data frames as the join key, the so called **natural** join.
-This is a useful heuristic, but it doesn't always work.
-For example, what happens if we try to join `flights2` with the complete `planes` dataset?
-
-```{r}
-flights2 |> 
-  left_join(planes)
-```
-
-We get a lot of missing matches because our join is trying to use `tailnum` and `year` as a compound key.
-Both `flights` and `planes` have a `year` column but they mean different things: `flights$year` is the year the flight occurred and `planes$year` is the year the plane was built.
-We only want to join on `tailnum` so we need to provide an explicit specification with `join_by()`:
-
-```{r}
-flights2 |> 
-  left_join(planes, join_by(tailnum))
-```
-
-Note that the `year` variables are disambiguated in the output with a suffix (`year.x` and `year.y`), which tells you whether the variable came from the `x` or `y` argument.
-You can override the default suffixes with the `suffix` argument.
-
-`join_by(tailnum)` is short for `join_by(tailnum == tailnum)`.
-It's important to know about this fuller form for two reasons.
-Firstly, it describes the relationship between the two tables: the keys must be equal.
-That's why this type of join is often called an **equi join**.
-You'll learn about non-equi joins in @sec-non-equi-joins.
-
-Secondly, it's how you specify different join keys in each table.
-For example, there are two ways to join the `flight2` and `airports` table: either by `dest` or `origin`:
-
-```{r}
-flights2 |> 
-  left_join(airports, join_by(dest == faa))
-
-flights2 |> 
-  left_join(airports, join_by(origin == faa))
-```
-
-In older code you might see a different way of specifying the join keys, using a character vector:
-
--   `by = "x"` corresponds to `join_by(x)`.
--   `by = c("a" = "x")` corresponds to `join_by(a == x)`.
-
-Now that it exists, we prefer `join_by()` since it provides a clearer and more flexible specification.
-
-`inner_join()`, `right_join()`, `full_join()` have the same interface as `left_join()`.
-The difference is which rows they keep: left join keeps all the rows in `x`, the right join keeps all rows in `y`, the full join keeps all rows in either `x` or `y`, and the inner join only keeps rows that occur in both `x` and `y`.
-We'll come back to these in more detail later.
-
-### Filtering joins
-
-As you might guess the primary action of a **filtering join** is to filter the rows.
-There are two types: semi-joins and anti-joins.
-**Semi-joins** keep all rows in `x` that have a match in `y`.
-For example, we could use a semi-join to filter the `airports` dataset to show just the origin airports:
-
-```{r}
-airports |> 
-  semi_join(flights2, join_by(faa == origin))
-```
-
-Or just the destinations:
-
-```{r}
-airports |> 
-  semi_join(flights2, join_by(faa == dest))
-```
-
-**Anti-joins** are the opposite: they return all rows in `x` that don't have a match in `y`.
-They're useful for finding missing values that are **implicit** in the data, the topic of @sec-missing-implicit.
-Implicitly missing values don't show up as `NA`s but instead only exist as an absence.
-For example, we can find rows that are missing from `airports` by looking for flights that don't have a matching destination airport:
-
-```{r}
-flights2 |> 
-  anti_join(airports, join_by(dest == faa)) |> 
-  distinct(dest)
-```
-
-Or we can find which `tailnum`s are missing from `planes`:
+Hoặc chúng ta có thể tìm nhiệt độ và tốc độ gió khi mỗi máy bay khởi hành:
 
 ```{r}
 flights2 |>
-  anti_join(planes, join_by(tailnum)) |> 
+  left_join(weather |> select(origin, time_hour, temp, wind_speed))
+```
+
+Hoặc kích cỡ máy bay đang bay là gì:
+
+```{r}
+flights2 |>
+  left_join(planes |> select(tailnum, type, engines, seats))
+```
+
+Khi `left_join()` không tìm thấy khớp cho một hàng trong `x`, nó điền giá trị khuyết vào các biến mới.
+Ví dụ, không có thông tin về máy bay với số đuôi `N3ALAA` nên `type`, `engines`, và `seats` sẽ bị khuyết:
+
+```{r}
+flights2 |>
+  filter(tailnum == "N3ALAA") |>
+  left_join(planes |> select(tailnum, type, engines, seats))
+```
+
+Chúng ta sẽ quay lại vấn đề này vài lần trong phần còn lại của chương.
+
+### Chỉ định khóa nối
+
+Theo mặc định, `left_join()` sẽ sử dụng tất cả các biến xuất hiện trong cả hai khung dữ liệu làm khóa nối, gọi là phép nối **tự nhiên** (natural join).
+Đây là một phương pháp heuristic hữu ích, nhưng không phải lúc nào cũng hoạt động.
+Ví dụ, điều gì xảy ra nếu chúng ta thử nối `flights2` với tập dữ liệu `planes` đầy đủ?
+
+```{r}
+flights2 |>
+  left_join(planes)
+```
+
+Chúng ta nhận được rất nhiều khớp bị thiếu vì phép nối đang cố sử dụng `tailnum` và `year` làm khóa phức hợp.
+Cả `flights` và `planes` đều có cột `year` nhưng chúng có nghĩa khác nhau: `flights$year` là năm chuyến bay diễn ra và `planes$year` là năm máy bay được sản xuất.
+Chúng ta chỉ muốn nối theo `tailnum` nên cần cung cấp đặc tả rõ ràng với `join_by()`:
+
+```{r}
+flights2 |>
+  left_join(planes, join_by(tailnum))
+```
+
+Lưu ý rằng các biến `year` được phân biệt trong đầu ra bằng hậu tố (`year.x` và `year.y`), cho bạn biết biến đến từ đối số `x` hay `y`.
+Bạn có thể ghi đè hậu tố mặc định bằng đối số `suffix`.
+
+`join_by(tailnum)` là viết tắt của `join_by(tailnum == tailnum)`.
+Điều quan trọng là phải biết về dạng đầy đủ hơn này vì hai lý do.
+Thứ nhất, nó mô tả mối quan hệ giữa hai bảng: các khóa phải bằng nhau.
+Đó là lý do tại sao loại nối này thường được gọi là **nối đẳng thức** (equi join).
+Bạn sẽ tìm hiểu về nối không đẳng thức trong @sec-non-equi-joins.
+
+Thứ hai, đó là cách bạn chỉ định các khóa nối khác nhau trong mỗi bảng.
+Ví dụ, có hai cách để nối bảng `flight2` và `airports`: theo `dest` hoặc `origin`:
+
+```{r}
+flights2 |>
+  left_join(airports, join_by(dest == faa))
+
+flights2 |>
+  left_join(airports, join_by(origin == faa))
+```
+
+Trong code cũ hơn, bạn có thể thấy một cách khác để chỉ định khóa nối, sử dụng một vector ký tự:
+
+-   `by = "x"` tương ứng với `join_by(x)`.
+-   `by = c("a" = "x")` tương ứng với `join_by(a == x)`.
+
+Giờ đây khi đã có `join_by()`, chúng tôi ưu tiên sử dụng nó vì nó cung cấp đặc tả rõ ràng và linh hoạt hơn.
+
+`inner_join()`, `right_join()`, `full_join()` có cùng giao diện với `left_join()`.
+Sự khác biệt là những hàng nào chúng giữ lại: nối trái giữ tất cả các hàng trong `x`, nối phải giữ tất cả các hàng trong `y`, nối đầy đủ giữ tất cả các hàng trong `x` hoặc `y`, và nối trong chỉ giữ các hàng xuất hiện trong cả `x` và `y`.
+Chúng ta sẽ quay lại chi tiết hơn ở phần sau.
+
+### Nối lọc
+
+Như bạn có thể đoán, hành động chính của một **nối lọc** là lọc các hàng.
+Có hai loại: nối bán phần (semi-join) và nối phản (anti-join).
+**Nối bán phần** giữ tất cả các hàng trong `x` có khớp trong `y`.
+Ví dụ, chúng ta có thể sử dụng nối bán phần để lọc tập dữ liệu `airports` chỉ hiển thị các sân bay xuất phát:
+
+```{r}
+airports |>
+  semi_join(flights2, join_by(faa == origin))
+```
+
+Hoặc chỉ các điểm đến:
+
+```{r}
+airports |>
+  semi_join(flights2, join_by(faa == dest))
+```
+
+**Nối phản** thì ngược lại: chúng trả về tất cả các hàng trong `x` không có khớp trong `y`.
+Chúng hữu ích để tìm giá trị khuyết **ngầm** (implicit) trong dữ liệu, chủ đề của @sec-missing-implicit.
+Giá trị khuyết ngầm không hiển thị dưới dạng `NA` mà chỉ tồn tại như một sự vắng mặt.
+Ví dụ, chúng ta có thể tìm các hàng bị thiếu trong `airports` bằng cách tìm các chuyến bay không có sân bay đích khớp:
+
+```{r}
+flights2 |>
+  anti_join(airports, join_by(dest == faa)) |>
+  distinct(dest)
+```
+
+Hoặc chúng ta có thể tìm `tailnum` nào bị thiếu trong `planes`:
+
+```{r}
+flights2 |>
+  anti_join(planes, join_by(tailnum)) |>
   distinct(tailnum)
 ```
 
-### Exercises
+### Bài tập
 
-1.  Find the 48 hours (over the course of the whole year) that have the worst delays.
-    Cross-reference it with the `weather` data.
-    Can you see any patterns?
+1.  Tìm 48 giờ (trong suốt cả năm) có độ trễ tệ nhất.
+    Đối chiếu với dữ liệu `weather`.
+    Bạn có thể thấy quy luật nào không?
 
-2.  Imagine you've found the top 10 most popular destinations using this code:
+2.  Hãy tưởng tượng bạn đã tìm 10 điểm đến phổ biến nhất bằng đoạn code này:
 
     ```{r}
     top_dest <- flights2 |>
@@ -357,22 +357,22 @@ flights2 |>
       head(10)
     ```
 
-    How can you find all flights to those destinations?
+    Bạn có thể tìm tất cả chuyến bay đến các điểm đến đó bằng cách nào?
 
-3.  Does every departing flight have corresponding weather data for that hour?
+3.  Mỗi chuyến bay khởi hành có dữ liệu thời tiết tương ứng cho giờ đó không?
 
-4.  What do the tail numbers that don't have a matching record in `planes` have in common?
-    (Hint: one variable explains \~90% of the problems.)
+4.  Các số đuôi không có bản ghi khớp trong `planes` có điểm gì chung?
+    (Gợi ý: một biến giải thích \~90% vấn đề.)
 
-5.  Add a column to `planes` that lists every `carrier` that has flown that plane.
-    You might expect that there's an implicit relationship between plane and airline, because each plane is flown by a single airline.
-    Confirm or reject this hypothesis using the tools you've learned in previous chapters.
+5.  Thêm một cột vào `planes` liệt kê mọi `carrier` đã bay máy bay đó.
+    Bạn có thể mong đợi rằng có một mối quan hệ ngầm giữa máy bay và hãng hàng không, vì mỗi máy bay được bay bởi một hãng duy nhất.
+    Xác nhận hoặc bác bỏ giả thuyết này bằng các công cụ bạn đã học trong các chương trước.
 
-6.  Add the latitude and the longitude of the origin *and* destination airport to `flights`.
-    Is it easier to rename the columns before or after the join?
+6.  Thêm vĩ độ và kinh độ của sân bay xuất phát *và* sân bay đích vào `flights`.
+    Đổi tên các cột trước hay sau phép nối dễ hơn?
 
-7.  Compute the average delay by destination, then join on the `airports` data frame so you can show the spatial distribution of delays.
-    Here's an easy way to draw a map of the United States:
+7.  Tính độ trễ trung bình theo điểm đến, sau đó nối với khung dữ liệu `airports` để bạn có thể hiển thị phân bố không gian của các độ trễ.
+    Đây là một cách dễ dàng để vẽ bản đồ nước Mỹ:
 
     ```{r}
     #| eval: false
@@ -384,10 +384,10 @@ flights2 |>
         coord_quickmap()
     ```
 
-    You might want to use the `size` or `color` of the points to display the average delay for each airport.
+    Bạn có thể muốn sử dụng `size` hoặc `color` của các điểm để hiển thị độ trễ trung bình cho mỗi sân bay.
 
-8.  What happened on June 13 2013?
-    Draw a map of the delays, and then use Google to cross-reference with the weather.
+8.  Điều gì đã xảy ra vào ngày 13 tháng 6 năm 2013?
+    Vẽ bản đồ các độ trễ, và sau đó sử dụng Google để đối chiếu với thời tiết.
 
     ```{r}
     #| eval: false
@@ -404,11 +404,11 @@ flights2 |>
         coord_quickmap()
     ```
 
-## How do joins work?
+## Phép nối hoạt động như thế nào?
 
-Now that you've used joins a few times it's time to learn more about how they work, focusing on how each row in `x` matches rows in `y`.
-We'll begin by introducing a visual representation of joins, using the simple tibbles defined below and shown in @fig-join-setup.
-In these examples we'll use a single key called `key` and a single value column (`val_x` and `val_y`), but the ideas all generalize to multiple keys and multiple values.
+Bây giờ bạn đã sử dụng phép nối vài lần, đã đến lúc tìm hiểu thêm về cách chúng hoạt động, tập trung vào cách mỗi hàng trong `x` khớp với các hàng trong `y`.
+Chúng ta sẽ bắt đầu bằng cách giới thiệu một biểu diễn trực quan của các phép nối, sử dụng các tibble đơn giản được định nghĩa bên dưới và hiển thị trong @fig-join-setup.
+Trong các ví dụ này, chúng ta sẽ sử dụng một khóa đơn gọi là `key` và một cột giá trị đơn (`val_x` và `val_y`), nhưng các ý tưởng đều khái quát hóa được cho nhiều khóa và nhiều giá trị.
 
 ```{r}
 x <- tribble(
@@ -430,9 +430,9 @@ y <- tribble(
 #| echo: false
 #| out-width: ~
 #| fig-cap: |
-#|   Graphical representation of two simple tables. The colored `key`
-#|   columns map background color to key value. The grey columns represent
-#|   the "value" columns that are carried along for the ride. 
+#|   Biểu diễn đồ họa của hai bảng đơn giản. Các cột `key` được tô màu
+#|   ánh xạ màu nền theo giá trị khóa. Các cột màu xám biểu diễn
+#|   các cột "giá trị" được mang theo.
 #| fig-alt: |
 #|   x and y are two data frames with 2 columns and 3 rows, with contents
 #|   as described in the text. The values of the keys are colored:
@@ -440,36 +440,36 @@ y <- tribble(
 knitr::include_graphics("diagrams/join/setup.png", dpi = 270)
 ```
 
-@fig-join-setup2 introduces the foundation for our visual representation.
-It shows all potential matches between `x` and `y` as the intersection between lines drawn from each row of `x` and each row of `y`.
-The rows and columns in the output are primarily determined by `x`, so the `x` table is horizontal and lines up with the output.
+@fig-join-setup2 giới thiệu nền tảng cho biểu diễn trực quan của chúng ta.
+Nó cho thấy tất cả các khớp tiềm năng giữa `x` và `y` dưới dạng giao điểm giữa các đường vẽ từ mỗi hàng của `x` và mỗi hàng của `y`.
+Các hàng và cột trong đầu ra chủ yếu được xác định bởi `x`, nên bảng `x` nằm ngang và căn chỉnh với đầu ra.
 
 ```{r}
 #| label: fig-join-setup2
 #| echo: false
 #| out-width: ~
-#| fig-cap: | 
-#|   To understand how joins work, it's useful to think of every possible
-#|   match. Here we show that with a grid of connecting lines.
+#| fig-cap: |
+#|   Để hiểu cách phép nối hoạt động, hãy hình dung mọi khớp có thể.
+#|   Ở đây chúng ta thể hiện điều đó bằng một lưới các đường kết nối.
 #| fig-alt: |
-#|   x and y are placed at right-angles, with horizonal lines extending 
-#|   from x and vertical lines extending from y. There are 3 rows in x and 
+#|   x and y are placed at right-angles, with horizonal lines extending
+#|   from x and vertical lines extending from y. There are 3 rows in x and
 #|   3 rows in y, which leads to nine intersections representing nine
 #|   potential matches.
 knitr::include_graphics("diagrams/join/setup2.png", dpi = 270)
 ```
 
-To describe a specific type of join, we indicate matches with dots.
-The matches determine the rows in the output, a new data frame that contains the key, the x values, and the y values.
-For example, @fig-join-inner shows an inner join, where rows are retained if and only if the keys are equal.
+Để mô tả một loại nối cụ thể, chúng ta đánh dấu các khớp bằng chấm tròn.
+Các khớp xác định các hàng trong đầu ra, một khung dữ liệu mới chứa khóa, các giá trị x, và các giá trị y.
+Ví dụ, @fig-join-inner hiển thị một nối trong (inner join), trong đó các hàng được giữ lại nếu và chỉ nếu các khóa bằng nhau.
 
 ```{r}
 #| label: fig-join-inner
 #| echo: false
 #| out-width: ~
 #| fig-cap: |
-#|   An inner join matches each row in `x` to the row in `y` that has the
-#|   same value of `key`. Each match becomes a row in the output.
+#|   Một nối trong khớp mỗi hàng trong `x` với hàng trong `y` có
+#|   cùng giá trị `key`. Mỗi khớp trở thành một hàng trong đầu ra.
 #| fig-alt: |
 #|   x and y are placed at right-angles with lines forming a grid of
 #|   potential matches. Keys 1 and 2 appear in both x and y, so we
@@ -478,21 +478,21 @@ For example, @fig-join-inner shows an inner join, where rows are retained if and
 knitr::include_graphics("diagrams/join/inner.png", dpi = 270)
 ```
 
-We can apply the same principles to explain the **outer joins**, which keep observations that appear in at least one of the data frames.
-These joins work by adding an additional "virtual" observation to each data frame.
-This observation has a key that matches if no other key matches, and values filled with `NA`.
-There are three types of outer joins:
+Chúng ta có thể áp dụng các nguyên tắc tương tự để giải thích các **nối ngoài** (outer join), giữ các quan sát xuất hiện trong ít nhất một khung dữ liệu.
+Các phép nối này hoạt động bằng cách thêm một quan sát "ảo" bổ sung vào mỗi khung dữ liệu.
+Quan sát này có một khóa khớp nếu không có khóa nào khác khớp, và các giá trị được điền bằng `NA`.
+Có ba loại nối ngoài:
 
--   A **left join** keeps all observations in `x`, @fig-join-left.
-    Every row of `x` is preserved in the output because it can fall back to matching a row of `NA`s in `y`.
+-   Một **nối trái** (left join) giữ tất cả các quan sát trong `x`, @fig-join-left.
+    Mỗi hàng của `x` được bảo toàn trong đầu ra vì nó có thể quay về khớp với một hàng `NA` trong `y`.
 
     ```{r}
     #| label: fig-join-left
     #| echo: false
     #| out-width: ~
-    #| fig-cap: | 
-    #|   A visual representation of the left join where every row in `x`
-    #|   appears in the output.
+    #| fig-cap: |
+    #|   Biểu diễn trực quan của nối trái, trong đó mỗi hàng trong `x`
+    #|   đều xuất hiện trong đầu ra.
     #| fig-alt: |
     #|   Compared to the previous diagram showing an inner join, the y table
     #|   gets a new virtual row containing NA that will match any row in x
@@ -502,17 +502,17 @@ There are three types of outer joins:
     knitr::include_graphics("diagrams/join/left.png", dpi = 270)
     ```
 
--   A **right join** keeps all observations in `y`, @fig-join-right.
-    Every row of `y` is preserved in the output because it can fall back to matching a row of `NA`s in `x`.
-    The output still matches `x` as much as possible; any extra rows from `y` are added to the end.
+-   Một **nối phải** (right join) giữ tất cả các quan sát trong `y`, @fig-join-right.
+    Mỗi hàng của `y` được bảo toàn trong đầu ra vì nó có thể quay về khớp với một hàng `NA` trong `x`.
+    Đầu ra vẫn khớp với `x` nhiều nhất có thể; các hàng thừa từ `y` được thêm vào cuối.
 
     ```{r}
     #| label: fig-join-right
     #| echo: false
     #| out-width: ~
-    #| fig-cap: | 
-    #|   A visual representation of the right join where every row of `y` 
-    #|   appears in the output. 
+    #| fig-cap: |
+    #|   Biểu diễn trực quan của nối phải, trong đó mỗi hàng của `y`
+    #|   đều xuất hiện trong đầu ra.
     #| fig-alt: |
     #|   Compared to the previous diagram showing an left join, the x table
     #|   now gains a virtual row so that every row in y gets a match in x.
@@ -520,68 +520,68 @@ There are three types of outer joins:
     knitr::include_graphics("diagrams/join/right.png", dpi = 270)
     ```
 
--   A **full join** keeps all observations that appear in `x` or `y`, @fig-join-full.
-    Every row of `x` and `y` is included in the output because both `x` and `y` have a fall back row of `NA`s.
-    Again, the output starts with all rows from `x`, followed by the remaining unmatched `y` rows.
+-   Một **nối đầy đủ** (full join) giữ tất cả các quan sát xuất hiện trong `x` hoặc `y`, @fig-join-full.
+    Mỗi hàng của `x` và `y` đều có trong đầu ra vì cả `x` và `y` đều có một hàng `NA` dự phòng.
+    Một lần nữa, đầu ra bắt đầu với tất cả các hàng từ `x`, tiếp theo là các hàng `y` chưa khớp còn lại.
 
     ```{r}
     #| label: fig-join-full
     #| echo: false
     #| out-width: ~
-    #| fig-cap: | 
-    #|   A visual representation of the full join where every row in `x`
-    #|   and `y` appears in the output.
+    #| fig-cap: |
+    #|   Biểu diễn trực quan của nối đầy đủ, trong đó mỗi hàng trong `x`
+    #|   và `y` đều xuất hiện trong đầu ra.
     #| fig-alt: |
     #|   Now both x and y have a virtual row that always matches.
-    #|   The result has 4 rows: keys 1, 2, 3, and 4 with all values 
+    #|   The result has 4 rows: keys 1, 2, 3, and 4 with all values
     #|   from val_x and val_y, however key 2, val_y and key 4, val_x are NAs
     #|   since those keys don't have a match in the other data frames.
     knitr::include_graphics("diagrams/join/full.png", dpi = 270)
     ```
 
-Another way to show how the types of outer join differ is with a Venn diagram, as in @fig-join-venn.
-However, this is not a great representation because while it might jog your memory about which rows are preserved, it fails to illustrate what's happening with the columns.
+Một cách khác để thể hiện sự khác biệt giữa các loại nối ngoài là bằng biểu đồ Venn, như trong @fig-join-venn.
+Tuy nhiên, đây không phải là một biểu diễn tuyệt vời vì dù nó có thể giúp bạn nhớ những hàng nào được giữ lại, nhưng nó không minh họa được điều gì đang xảy ra với các cột.
 
 ```{r}
 #| label: fig-join-venn
 #| echo: false
 #| out-width: ~
 #| fig-cap: |
-#|   Venn diagrams showing the difference between inner, left, right, and
-#|   full joins.
+#|   Biểu đồ Venn cho thấy sự khác biệt giữa nối trong, nối trái, nối phải,
+#|   và nối đầy đủ.
 #| fig-alt: |
 #|   Venn diagrams for inner, full, left, and right joins. Each join
 #|   represented with two intersecting circles representing data frames x
 #|   and y, with x on the right and y on the left. Shading indicates the
-#|   result of the join. 
+#|   result of the join.
 #|
-#|   Inner join: the intersection is shaded. 
-#|   Full join: Everything is shaded. 
+#|   Inner join: the intersection is shaded.
+#|   Full join: Everything is shaded.
 #|   Left join: All of x is shaded.
 #|   Right join: All of y is shaded.
 knitr::include_graphics("diagrams/join/venn.png", dpi = 270)
 ```
 
-The joins shown here are the so-called **equi** **joins**, where rows match if the keys are equal.
-Equi joins are the most common type of join, so we'll typically omit the equi prefix, and just say "inner join" rather than "equi inner join".
-We'll come back to non-equi joins in @sec-non-equi-joins.
+Các phép nối được trình bày ở đây là cái gọi là **nối đẳng thức**, trong đó các hàng khớp nếu các khóa bằng nhau.
+Nối đẳng thức là loại nối phổ biến nhất, nên chúng ta thường bỏ qua tiền tố đẳng thức, và chỉ nói "nối trong" thay vì "nối đẳng thức trong".
+Chúng ta sẽ quay lại nối không đẳng thức trong @sec-non-equi-joins.
 
-### Row matching
+### Khớp hàng
 
-So far we've explored what happens if a row in `x` matches zero or one row in `y`.
-What happens if it matches more than one row?
-To understand what's going on let's first narrow our focus to the `inner_join()` and then draw a picture, @fig-join-match-types.
+Cho đến giờ chúng ta đã khám phá điều gì xảy ra khi một hàng trong `x` khớp với không hoặc một hàng trong `y`.
+Điều gì xảy ra nếu nó khớp với nhiều hơn một hàng?
+Để hiểu chuyện gì đang xảy ra, trước tiên hãy thu hẹp tập trung vào `inner_join()` và sau đó vẽ một hình minh họa, @fig-join-match-types.
 
 ```{r}
 #| label: fig-join-match-types
 #| echo: false
 #| out-width: ~
-#| fig-cap: | 
-#|   The three ways a row in `x` can match. `x1` matches
-#|   one row in `y`, `x2` matches two rows in `y`, `x3` matches
-#|   zero rows in y. Note that while there are three rows in
-#|   `x` and three rows in the output, there isn't a direct
-#|   correspondence between the rows.
+#| fig-cap: |
+#|   Ba cách một hàng trong `x` có thể khớp. `x1` khớp
+#|   một hàng trong `y`, `x2` khớp hai hàng trong `y`, `x3` khớp
+#|   không hàng nào trong y. Lưu ý rằng dù có ba hàng trong
+#|   `x` và ba hàng trong đầu ra, không có sự tương ứng trực tiếp
+#|   giữa các hàng.
 #| fig-alt: |
 #|   A join diagram where x has key values 1, 2, and 3, and y has
 #|   key values 1, 2, 2. The output has three rows because key 1 matches
@@ -589,48 +589,48 @@ To understand what's going on let's first narrow our focus to the `inner_join()`
 knitr::include_graphics("diagrams/join/match-types.png", dpi = 270)
 ```
 
-There are three possible outcomes for a row in `x`:
+Có ba kết quả có thể cho một hàng trong `x`:
 
--   If it doesn't match anything, it's dropped.
--   If it matches 1 row in `y`, it's preserved.
--   If it matches more than 1 row in `y`, it's duplicated once for each match.
+-   Nếu nó không khớp gì, nó bị loại bỏ.
+-   Nếu nó khớp 1 hàng trong `y`, nó được giữ lại.
+-   Nếu nó khớp nhiều hơn 1 hàng trong `y`, nó được nhân bản một lần cho mỗi khớp.
 
-In principle, this means that there's no guaranteed correspondence between the rows in the output and the rows in `x`, but in practice, this rarely causes problems.
-There is, however, one particularly dangerous case which can cause a combinatorial explosion of rows.
-Imagine joining the following two tables:
+Về nguyên tắc, điều này có nghĩa là không có sự tương ứng đảm bảo giữa các hàng trong đầu ra và các hàng trong `x`, nhưng trong thực tế, điều này hiếm khi gây ra vấn đề.
+Tuy nhiên, có một trường hợp đặc biệt nguy hiểm có thể gây ra sự bùng nổ tổ hợp các hàng.
+Hãy tưởng tượng nối hai bảng sau:
 
 ```{r}
 df1 <- tibble(key = c(1, 2, 2), val_x = c("x1", "x2", "x3"))
 df2 <- tibble(key = c(1, 2, 2), val_y = c("y1", "y2", "y3"))
 ```
 
-While the first row in `df1` only matches one row in `df2`, the second and third rows both match two rows.
-This is sometimes called a `many-to-many` join, and will cause dplyr to emit a warning:
+Trong khi hàng đầu tiên trong `df1` chỉ khớp một hàng trong `df2`, hàng thứ hai và thứ ba đều khớp hai hàng.
+Điều này đôi khi được gọi là nối `many-to-many` (nhiều-nhiều), và sẽ khiến dplyr phát ra cảnh báo:
 
 ```{r}
-df1 |> 
+df1 |>
   inner_join(df2, join_by(key))
 ```
 
-If you are doing this deliberately, you can set `relationship = "many-to-many"`, as the warning suggests.
+Nếu bạn đang cố ý làm điều này, bạn có thể đặt `relationship = "many-to-many"`, như cảnh báo gợi ý.
 
-### Filtering joins
+### Nối lọc
 
-The number of matches also determines the behavior of the filtering joins.
-The semi-join keeps rows in `x` that have one or more matches in `y`, as in @fig-join-semi.
-The anti-join keeps rows in `x` that match zero rows in `y`, as in @fig-join-anti.
-In both cases, only the existence of a match is important; it doesn't matter how many times it matches.
-This means that filtering joins never duplicate rows like mutating joins do.
+Số lượng khớp cũng xác định hành vi của các phép nối lọc.
+Nối bán phần giữ các hàng trong `x` có một hoặc nhiều khớp trong `y`, như trong @fig-join-semi.
+Nối phản giữ các hàng trong `x` khớp với không hàng nào trong `y`, như trong @fig-join-anti.
+Trong cả hai trường hợp, chỉ sự tồn tại của khớp là quan trọng; không quan trọng nó khớp bao nhiêu lần.
+Điều này có nghĩa là nối lọc không bao giờ nhân bản hàng như nối biến đổi.
 
 ```{r}
 #| label: fig-join-semi
 #| echo: false
 #| out-width: null
 #| fig-cap: |
-#|   In a semi-join it only matters that there is a match; otherwise
-#|   values in `y` don't affect the output.
+#|   Trong nối bán phần, chỉ cần có khớp là đủ; nếu không thì
+#|   các giá trị trong `y` không ảnh hưởng đến đầu ra.
 #| fig-alt: |
-#|   A join diagram with old friends x and y. In a semi join, only the 
+#|   A join diagram with old friends x and y. In a semi join, only the
 #|   presence of a match matters so the output contains the same columns
 #|   as x.
 knitr::include_graphics("diagrams/join/semi.png", dpi = 270)
@@ -641,22 +641,22 @@ knitr::include_graphics("diagrams/join/semi.png", dpi = 270)
 #| echo: false
 #| out-width: null
 #| fig-cap: |
-#|   An anti-join is the inverse of a semi-join, dropping rows from `x`
-#|   that have a match in `y`.
+#|   Nối phản là nghịch đảo của nối bán phần, loại bỏ các hàng từ `x`
+#|   có khớp trong `y`.
 #| fig-alt: |
 #|   An anti-join is the inverse of a semi-join so matches are drawn with
 #|   red lines indicating that they will be dropped from the output.
 knitr::include_graphics("diagrams/join/anti.png", dpi = 270)
 ```
 
-## Non-equi joins {#sec-non-equi-joins}
+## Nối không đẳng thức {#sec-non-equi-joins}
 
-So far you've only seen equi joins, joins where the rows match if the `x` key equals the `y` key.
-Now we're going to relax that restriction and discuss other ways of determining if a pair of rows match.
+Cho đến giờ bạn chỉ thấy nối đẳng thức, các phép nối trong đó các hàng khớp nếu khóa `x` bằng khóa `y`.
+Bây giờ chúng ta sẽ nới lỏng hạn chế đó và thảo luận về các cách khác để xác định liệu một cặp hàng có khớp hay không.
 
-But before we can do that, we need to revisit a simplification we made above.
-In equi joins the `x` keys and `y` are always equal, so we only need to show one in the output.
-We can request that dplyr keep both keys with `keep = TRUE`, leading to the code below and the re-drawn `inner_join()` in @fig-inner-both.
+Nhưng trước khi làm điều đó, chúng ta cần xem lại một phép đơn giản hóa ở trên.
+Trong nối đẳng thức, các khóa `x` và `y` luôn bằng nhau, nên chúng ta chỉ cần hiển thị một trong đầu ra.
+Chúng ta có thể yêu cầu dplyr giữ cả hai khóa với `keep = TRUE`, dẫn đến đoạn code bên dưới và `inner_join()` được vẽ lại trong @fig-inner-both.
 
 ```{r}
 x |> inner_join(y, join_by(key == key), keep = TRUE)
@@ -665,7 +665,7 @@ x |> inner_join(y, join_by(key == key), keep = TRUE)
 ```{r}
 #| label: fig-inner-both
 #| fig-cap: |
-#|   An inner join showing both `x` and `y` keys in the output.
+#|   Một nối trong hiển thị cả khóa `x` và `y` trong đầu ra.
 #| fig-alt: |
 #|   A join diagram showing an inner join between x and y. The result
 #|   now includes four columns: key.x, val_x, key.y, and val_y. The
@@ -676,81 +676,81 @@ x |> inner_join(y, join_by(key == key), keep = TRUE)
 knitr::include_graphics("diagrams/join/inner-both.png", dpi = 270)
 ```
 
-When we move away from equi joins we'll always show the keys, because the key values will often be different.
-For example, instead of matching only when the `x$key` and `y$key` are equal, we could match whenever the `x$key` is greater than or equal to the `y$key`, leading to @fig-join-gte.
-dplyr's join functions understand this distinction equi and non-equi joins so will always show both keys when you perform a non-equi join.
+Khi chúng ta rời khỏi nối đẳng thức, chúng ta sẽ luôn hiển thị các khóa, vì các giá trị khóa thường sẽ khác nhau.
+Ví dụ, thay vì chỉ khớp khi `x$key` và `y$key` bằng nhau, chúng ta có thể khớp khi `x$key` lớn hơn hoặc bằng `y$key`, dẫn đến @fig-join-gte.
+Các hàm nối của dplyr hiểu sự phân biệt giữa nối đẳng thức và không đẳng thức nên sẽ luôn hiển thị cả hai khóa khi bạn thực hiện nối không đẳng thức.
 
 ```{r}
 #| label: fig-join-gte
 #| echo: false
 #| fig-cap: |
-#|   A non-equi join where the `x` key must be greater than or equal to 
-#|   the `y` key. Many rows generate multiple matches.
+#|   Một nối không đẳng thức trong đó khóa `x` phải lớn hơn hoặc bằng
+#|   khóa `y`. Nhiều hàng tạo ra nhiều khớp.
 #| fig-alt: |
 #|   A join diagram illustrating join_by(key >= key). The first row
 #|   of x matches one row of y and the second and thirds rows each match
-#|   two rows. This means the output has five rows containing each of the 
+#|   two rows. This means the output has five rows containing each of the
 #|   following (key.x, key.y) pairs: (1, 1), (2, 1), (2, 2), (3, 1),
 #|   (3, 2).
 knitr::include_graphics("diagrams/join/gte.png", dpi = 270)
 ```
 
-Non-equi join isn't a particularly useful term because it only tells you what the join is not, not what it is. dplyr helps by identifying four particularly useful types of non-equi join:
+Nối không đẳng thức không phải là một thuật ngữ đặc biệt hữu ích vì nó chỉ cho bạn biết phép nối không phải là gì, chứ không phải nó là gì. dplyr giúp bằng cách xác định bốn loại nối không đẳng thức đặc biệt hữu ích:
 
--   **Cross joins** match every pair of rows.
--   **Inequality joins** use `<`, `<=`, `>`, and `>=` instead of `==`.
--   **Rolling joins** are similar to inequality joins but only find the closest match.
--   **Overlap joins** are a special type of inequality join designed to work with ranges.
+-   **Nối chéo** (cross join) khớp mỗi cặp hàng.
+-   **Nối bất đẳng thức** (inequality join) sử dụng `<`, `<=`, `>`, và `>=` thay vì `==`.
+-   **Nối cuộn** (rolling join) tương tự như nối bất đẳng thức nhưng chỉ tìm khớp gần nhất.
+-   **Nối chồng lấp** (overlap join) là một loại nối bất đẳng thức đặc biệt được thiết kế để làm việc với các khoảng.
 
-Each of these is described in more detail in the following sections.
+Mỗi loại được mô tả chi tiết hơn trong các phần sau.
 
-### Cross joins
+### Nối chéo
 
-A cross join matches everything, as in @fig-join-cross, generating the Cartesian product of rows.
-This means the output will have `nrow(x) * nrow(y)` rows.
+Một nối chéo khớp mọi thứ, như trong @fig-join-cross, tạo ra tích Descartes của các hàng.
+Điều này có nghĩa là đầu ra sẽ có `nrow(x) * nrow(y)` hàng.
 
 ```{r}
 #| label: fig-join-cross
 #| echo: false
 #| out-width: ~
 #| fig-cap: |
-#|   A cross join matches each row in `x` with every row in `y`.
+#|   Một nối chéo khớp mỗi hàng trong `x` với mọi hàng trong `y`.
 #| fig-alt: |
 #|   A join diagram showing a dot for every combination of x and y.
 knitr::include_graphics("diagrams/join/cross.png", dpi = 270)
 ```
 
-Cross joins are useful when generating permutations.
-For example, the code below generates every possible pair of names.
-Since we're joining `df` to itself, this is sometimes called a **self-join**.
-Cross joins use a different join function because there's no distinction between inner/left/right/full when you're matching every row.
+Nối chéo hữu ích khi tạo hoán vị.
+Ví dụ, đoạn code dưới đây tạo ra mọi cặp tên có thể.
+Vì chúng ta đang nối `df` với chính nó, điều này đôi khi được gọi là **tự nối** (self-join).
+Nối chéo sử dụng một hàm nối khác vì không có sự phân biệt giữa nối trong/trái/phải/đầy đủ khi bạn khớp mọi hàng.
 
 ```{r}
 df <- tibble(name = c("John", "Simon", "Tracy", "Max"))
 df |> cross_join(df)
 ```
 
-### Inequality joins
+### Nối bất đẳng thức
 
-Inequality joins use `<`, `<=`, `>=`, or `>` to restrict the set of possible matches, as in @fig-join-gte and @fig-join-lt.
+Nối bất đẳng thức sử dụng `<`, `<=`, `>=`, hoặc `>` để hạn chế tập các khớp có thể, như trong @fig-join-gte và @fig-join-lt.
 
 ```{r}
 #| label: fig-join-lt
 #| echo: false
 #| out-width: ~
 #| fig-cap: |
-#|   An inequality join where `x` is joined to `y` on rows where the key 
-#|   of `x` is less than the key of `y`. This makes a triangular
-#|   shape in the top-left corner.
+#|   Một nối bất đẳng thức trong đó `x` được nối với `y` trên các hàng mà khóa
+#|   của `x` nhỏ hơn khóa của `y`. Điều này tạo thành hình tam giác
+#|   ở góc trên bên trái.
 #| fig-alt: |
-#|   A diagram depicting an inequality join where a data frame x is joined by 
-#|   a data frame y where the key of x is less than the key of y, resulting 
+#|   A diagram depicting an inequality join where a data frame x is joined by
+#|   a data frame y where the key of x is less than the key of y, resulting
 #|   in a triangular shape in the top-left corner.
 knitr::include_graphics("diagrams/join/lt.png", dpi = 270)
 ```
 
-Inequality joins are extremely general, so general that it's hard to come up with meaningful specific use cases.
-One small useful technique is to use them to restrict the cross join so that instead of generating all permutations, we generate all combinations:
+Nối bất đẳng thức cực kỳ tổng quát, tổng quát đến mức khó nghĩ ra các trường hợp sử dụng cụ thể có ý nghĩa.
+Một kỹ thuật nhỏ hữu ích là sử dụng chúng để hạn chế nối chéo sao cho thay vì tạo tất cả hoán vị, chúng ta tạo tất cả tổ hợp:
 
 ```{r}
 df <- tibble(id = 1:4, name = c("John", "Simon", "Tracy", "Max"))
@@ -758,32 +758,32 @@ df <- tibble(id = 1:4, name = c("John", "Simon", "Tracy", "Max"))
 df |> inner_join(df, join_by(id < id))
 ```
 
-### Rolling joins
+### Nối cuộn
 
-Rolling joins are a special type of inequality join where instead of getting *every* row that satisfies the inequality, you get just the closest row, as in @fig-join-closest.
-You can turn any inequality join into a rolling join by adding `closest()`.
-For example `join_by(closest(x <= y))` matches the smallest `y` that's greater than or equal to x, and `join_by(closest(x > y))` matches the biggest `y` that's less than `x`.
+Nối cuộn là một loại nối bất đẳng thức đặc biệt, thay vì lấy *mọi* hàng thỏa mãn bất đẳng thức, bạn chỉ lấy hàng gần nhất, như trong @fig-join-closest.
+Bạn có thể biến bất kỳ nối bất đẳng thức nào thành nối cuộn bằng cách thêm `closest()`.
+Ví dụ `join_by(closest(x <= y))` khớp `y` nhỏ nhất lớn hơn hoặc bằng x, và `join_by(closest(x > y))` khớp `y` lớn nhất nhỏ hơn `x`.
 
 ```{r}
 #| label: fig-join-closest
 #| echo: false
 #| out-width: ~
 #| fig-cap: |
-#|   A rolling join is similar to a greater-than-or-equal inequality join
-#|   but only matches the first value.
+#|   Nối cuộn tương tự như nối bất đẳng thức lớn-hơn-hoặc-bằng
+#|   nhưng chỉ khớp giá trị đầu tiên.
 #| fig-alt: |
 #|   A rolling join is a subset of an inequality join so some matches are
-#|   grayed out indicating that they're not used because they're not the 
+#|   grayed out indicating that they're not used because they're not the
 #|   "closest".
 knitr::include_graphics("diagrams/join/closest.png", dpi = 270)
 ```
 
-Rolling joins are particularly useful when you have two tables of dates that don't perfectly line up and you want to find (e.g.) the closest date in table 1 that comes before (or after) some date in table 2.
+Nối cuộn đặc biệt hữu ích khi bạn có hai bảng ngày tháng không căn chỉnh hoàn hảo và bạn muốn tìm (ví dụ) ngày gần nhất trong bảng 1 đến trước (hoặc sau) một ngày nào đó trong bảng 2.
 
-For example, imagine that you're in charge of the party planning commission for your office.
-Your company is rather cheap so instead of having individual parties, you only have a party once each quarter.
-The rules for determining when a party will be held are a little complex: parties are always on a Monday, you skip the first week of January since a lot of people are on holiday, and the first Monday of Q3 2022 is July 4, so that has to be pushed back a week.
-That leads to the following party days:
+Ví dụ, hãy tưởng tượng bạn phụ trách ban tổ chức tiệc cho văn phòng.
+Công ty của bạn khá tiết kiệm nên thay vì tổ chức tiệc riêng, bạn chỉ tổ chức tiệc mỗi quý một lần.
+Các quy tắc để xác định khi nào tổ chức tiệc hơi phức tạp: tiệc luôn vào thứ Hai, bạn bỏ qua tuần đầu tiên của tháng Một vì nhiều người đang nghỉ phép, và thứ Hai đầu tiên của Q3 2022 là ngày 4 tháng 7, nên phải lùi lại một tuần.
+Điều đó dẫn đến các ngày tiệc sau:
 
 ```{r}
 parties <- tibble(
@@ -792,7 +792,7 @@ parties <- tibble(
 )
 ```
 
-Now imagine that you have a table of employee birthdays:
+Bây giờ hãy tưởng tượng bạn có một bảng sinh nhật nhân viên:
 
 ```{r}
 set.seed(123)
@@ -803,34 +803,34 @@ employees <- tibble(
 employees
 ```
 
-And for each employee we want to find the last party date that comes before (or on) their birthday.
-We can express that with a rolling join:
+Và cho mỗi nhân viên, chúng ta muốn tìm ngày tiệc cuối cùng đến trước (hoặc vào) ngày sinh nhật của họ.
+Chúng ta có thể biểu đạt điều đó bằng nối cuộn:
 
 ```{r}
-employees |> 
+employees |>
   left_join(parties, join_by(closest(birthday >= party)))
 ```
 
-There is, however, one problem with this approach: the folks with birthdays before January 10 don't get a party:
+Tuy nhiên, có một vấn đề với cách tiếp cận này: những người có sinh nhật trước ngày 10 tháng 1 không được tham gia tiệc:
 
 ```{r}
-employees |> 
+employees |>
   anti_join(parties, join_by(closest(birthday >= party)))
 ```
 
-To resolve that issue we'll need to tackle the problem a different way, with overlap joins.
+Để giải quyết vấn đề này, chúng ta cần tiếp cận bài toán theo cách khác, với nối chồng lấp.
 
-### Overlap joins
+### Nối chồng lấp
 
-Overlap joins provide three helpers that use inequality joins to make it easier to work with intervals:
+Nối chồng lấp cung cấp ba hàm trợ giúp sử dụng nối bất đẳng thức để giúp làm việc với khoảng dễ hơn:
 
--   `between(x, y_lower, y_upper)` is short for `x >= y_lower, x <= y_upper`.
--   `within(x_lower, x_upper, y_lower, y_upper)` is short for `x_lower >= y_lower, x_upper <= y_upper`.
--   `overlaps(x_lower, x_upper, y_lower, y_upper)` is short for `x_lower <= y_upper, x_upper >= y_lower`.
+-   `between(x, y_lower, y_upper)` là viết tắt của `x >= y_lower, x <= y_upper`.
+-   `within(x_lower, x_upper, y_lower, y_upper)` là viết tắt của `x_lower >= y_lower, x_upper <= y_upper`.
+-   `overlaps(x_lower, x_upper, y_lower, y_upper)` là viết tắt của `x_lower <= y_upper, x_upper >= y_lower`.
 
-Let's continue the birthday example to see how you might use them.
-There's one problem with the strategy we used above: there's no party preceding the birthdays Jan 1-9.
-So it might be better to be explicit about the date ranges that each party spans, and make a special case for those early birthdays:
+Hãy tiếp tục ví dụ sinh nhật để xem bạn có thể sử dụng chúng như thế nào.
+Có một vấn đề với chiến lược chúng ta đã dùng ở trên: không có tiệc nào trước các sinh nhật từ ngày 1-9 tháng 1.
+Vì vậy, có thể tốt hơn nếu chỉ rõ khoảng ngày mà mỗi bữa tiệc bao gồm, và tạo trường hợp đặc biệt cho những sinh nhật sớm:
 
 ```{r}
 parties <- tibble(
@@ -842,16 +842,16 @@ parties <- tibble(
 parties
 ```
 
-Hadley is hopelessly bad at data entry so he also wanted to check that the party periods don't overlap.
-One way to do this is by using a self-join to check if any start-end interval overlap with another:
+Hadley rất tệ trong việc nhập dữ liệu nên anh ấy cũng muốn kiểm tra rằng các khoảng tiệc không chồng lấp nhau.
+Một cách để làm điều này là sử dụng tự nối để kiểm tra xem có khoảng bắt đầu-kết thúc nào chồng lấp với khoảng khác không:
 
 ```{r}
-parties |> 
-  inner_join(parties, join_by(overlaps(start, end, start, end), q < q)) |> 
+parties |>
+  inner_join(parties, join_by(overlaps(start, end, start, end), q < q)) |>
   select(start.x, end.x, start.y, end.y)
 ```
 
-Ooops, there is an overlap, so let's fix that problem and continue:
+Ồ, có sự chồng lấp, vậy hãy sửa vấn đề đó và tiếp tục:
 
 ```{r}
 parties <- tibble(
@@ -862,18 +862,18 @@ parties <- tibble(
 )
 ```
 
-Now we can match each employee to their party.
-This is a good place to use `unmatched = "error"` because we want to quickly find out if any employees didn't get assigned a party.
+Bây giờ chúng ta có thể ghép mỗi nhân viên với bữa tiệc của họ.
+Đây là một chỗ tốt để sử dụng `unmatched = "error"` vì chúng ta muốn nhanh chóng phát hiện nếu có nhân viên nào không được xếp tiệc.
 
 ```{r}
-employees |> 
+employees |>
   inner_join(parties, join_by(between(birthday, start, end)), unmatched = "error")
 ```
 
-### Exercises
+### Bài tập
 
-1.  Can you explain what's happening with the keys in this equi join?
-    Why are they different?
+1.  Bạn có thể giải thích điều gì đang xảy ra với các khóa trong phép nối đẳng thức này không?
+    Tại sao chúng khác nhau?
 
     ```{r}
     x |> full_join(y, join_by(key == key))
@@ -881,18 +881,18 @@ employees |>
     x |> full_join(y, join_by(key == key), keep = TRUE)
     ```
 
-2.  When finding if any party period overlapped with another party period we used `q < q` in the `join_by()`?
-    Why?
-    What happens if you remove this inequality?
+2.  Khi tìm xem có khoảng tiệc nào chồng lấp với khoảng tiệc khác hay không, chúng ta đã sử dụng `q < q` trong `join_by()`?
+    Tại sao?
+    Điều gì xảy ra nếu bạn bỏ bất đẳng thức này?
 
-## Summary
+## Tóm tắt
 
-In this chapter, you've learned how to use mutating and filtering joins to combine data from a pair of data frames.
-Along the way you learned how to identify keys, and the difference between primary and foreign keys.
-You also understand how joins work and how to figure out how many rows the output will have.
-Finally, you've gained a glimpse into the power of non-equi joins and seen a few interesting use cases.
+Trong chương này, bạn đã học cách sử dụng nối biến đổi và nối lọc để kết hợp dữ liệu từ một cặp khung dữ liệu.
+Trên đường đi, bạn đã học cách xác định khóa, và sự khác biệt giữa khóa chính và khóa ngoại.
+Bạn cũng hiểu cách phép nối hoạt động và cách tìm ra số hàng đầu ra sẽ có.
+Cuối cùng, bạn đã có cái nhìn thoáng qua về sức mạnh của nối không đẳng thức và thấy một vài trường hợp sử dụng thú vị.
 
-This chapter concludes the "Transform" part of the book where the focus was on the tools you could use with individual columns and tibbles.
-You learned about dplyr and base functions for working with logical vectors, numbers, and complete tables, stringr functions for working with strings, lubridate functions for working with date-times, and forcats functions for working with factors.
+Chương này kết thúc phần "Biến đổi" của cuốn sách, nơi trọng tâm là các công cụ bạn có thể sử dụng với từng cột và tibble riêng lẻ.
+Bạn đã học về các hàm dplyr và base để làm việc với vector logic, số, và bảng hoàn chỉnh, các hàm stringr để làm việc với chuỗi ký tự, các hàm lubridate để làm việc với ngày-giờ, và các hàm forcats để làm việc với nhân tố.
 
-In the next part of the book, you'll learn more about getting various types of data into R in a tidy form.
+Trong phần tiếp theo của cuốn sách, bạn sẽ tìm hiểu thêm về cách đưa các loại dữ liệu khác nhau vào R ở dạng gọn gàng.
