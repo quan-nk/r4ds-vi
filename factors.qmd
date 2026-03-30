@@ -1,25 +1,25 @@
-# Factors {#sec-factors}
+# Nhân tố {#sec-factors}
 
 ```{r}
 #| echo: false
 source("_common.R")
 ```
 
-## Introduction
+## Giới thiệu
 
-Factors are used for categorical variables, variables that have a fixed and known set of possible values.
-They are also useful when you want to display character vectors in a non-alphabetical order.
+Nhân tố (factor) được sử dụng cho các biến phân loại (categorical variable), tức là các biến có một tập hợp giá trị khả dĩ cố định và đã biết trước.
+Chúng cũng hữu ích khi bạn muốn hiển thị các vector ký tự theo thứ tự không phải bảng chữ cái.
 
-We'll start by motivating why factors are needed for data analysis[^factors-1] and how you can create them with `factor()`. We'll then introduce you to the `gss_cat` dataset which contains a bunch of categorical variables to experiment with.
-You'll then use that dataset to practice modifying the order and values of factors, before we finish up with a discussion of ordered factors.
+Chúng ta sẽ bắt đầu bằng việc giải thích tại sao nhân tố cần thiết cho phân tích dữ liệu[^factors-1] và cách bạn có thể tạo chúng với `factor()`. Sau đó chúng ta sẽ giới thiệu tập dữ liệu `gss_cat` chứa một loạt biến phân loại để bạn thử nghiệm.
+Tiếp theo bạn sẽ sử dụng tập dữ liệu đó để thực hành thay đổi thứ tự và giá trị của các nhân tố, trước khi kết thúc bằng phần thảo luận về nhân tố có thứ tự (ordered factor).
 
-[^factors-1]: They're also really important for modelling.
+[^factors-1]: Chúng cũng rất quan trọng cho việc xây dựng mô hình.
 
-### Prerequisites
+### Điều kiện tiên quyết
 
-Base R provides some basic tools for creating and manipulating factors.
-We'll supplement these with the **forcats** package, which is part of the core tidyverse.
-It provides tools for dealing with **cat**egorical variables (and it's an anagram of factors!) using a wide range of helpers for working with factors.
+R cơ bản cung cấp một số công cụ cơ bản để tạo và thao tác với nhân tố.
+Chúng ta sẽ bổ sung thêm với gói **forcats**, là một phần của tidyverse cốt lõi.
+Gói này cung cấp các công cụ để xử lý các biến **phân loại** (**cat**egorical) bằng một loạt các hàm hỗ trợ để làm việc với nhân tố.
 
 ```{r}
 #| label: setup
@@ -27,30 +27,30 @@ It provides tools for dealing with **cat**egorical variables (and it's an anagra
 library(tidyverse)
 ```
 
-## Factor basics
+## Kiến thức cơ bản về nhân tố
 
-Imagine that you have a variable that records month:
+Hãy tưởng tượng bạn có một biến ghi lại tháng:
 
 ```{r}
 x1 <- c("Dec", "Apr", "Jan", "Mar")
 ```
 
-Using a string to record this variable has two problems:
+Sử dụng chuỗi ký tự để ghi lại biến này có hai vấn đề:
 
-1.  There are only twelve possible months, and there's nothing saving you from typos:
+1.  Chỉ có mười hai tháng hợp lệ, và không có gì ngăn bạn khỏi lỗi đánh máy:
 
     ```{r}
     x2 <- c("Dec", "Apr", "Jam", "Mar")
     ```
 
-2.  It doesn't sort in a useful way:
+2.  Nó không sắp xếp theo cách hữu ích:
 
     ```{r}
     sort(x1)
     ```
 
-You can fix both of these problems with a factor.
-To create a factor you must start by creating a list of the valid **levels**:
+Bạn có thể khắc phục cả hai vấn đề này với nhân tố.
+Để tạo một nhân tố, bạn phải bắt đầu bằng việc tạo danh sách các **mức** (level) hợp lệ:
 
 ```{r}
 month_levels <- c(
@@ -59,7 +59,7 @@ month_levels <- c(
 )
 ```
 
-Now you can create a factor:
+Bây giờ bạn có thể tạo một nhân tố:
 
 ```{r}
 y1 <- factor(x1, levels = month_levels)
@@ -68,40 +68,40 @@ y1
 sort(y1)
 ```
 
-And any values not in the level will be silently converted to NA:
+Và bất kỳ giá trị nào không nằm trong danh sách mức sẽ được tự động chuyển thành NA:
 
 ```{r}
 y2 <- factor(x2, levels = month_levels)
 y2
 ```
 
-This seems risky, so you might want to use `forcats::fct()` instead:
+Điều này có vẻ rủi ro, nên bạn có thể muốn sử dụng `forcats::fct()` thay thế:
 
 ```{r}
 #| error: true
 y2 <- fct(x2, levels = month_levels)
 ```
 
-If you omit the levels, they'll be taken from the data in alphabetical order:
+Nếu bạn bỏ qua các mức, chúng sẽ được lấy từ dữ liệu theo thứ tự bảng chữ cái:
 
 ```{r}
 factor(x1)
 ```
 
-Sorting alphabetically is slightly risky because not every computer will sort strings in the same way.
-So `forcats::fct()` orders by first appearance:
+Sắp xếp theo bảng chữ cái có phần rủi ro vì không phải máy tính nào cũng sắp xếp chuỗi ký tự theo cùng một cách.
+Vì vậy `forcats::fct()` sắp xếp theo thứ tự xuất hiện đầu tiên:
 
 ```{r}
 fct(x1)
 ```
 
-If you ever need to access the set of valid levels directly, you can do so with `levels()`:
+Nếu bạn cần truy cập trực tiếp tập hợp các mức hợp lệ, bạn có thể làm điều đó với `levels()`:
 
 ```{r}
 levels(y2)
 ```
 
-You can also create a factor when reading your data with readr with `col_factor()`:
+Bạn cũng có thể tạo nhân tố khi đọc dữ liệu với readr bằng `col_factor()`:
 
 ```{r}
 csv <- "
@@ -114,52 +114,52 @@ df <- read_csv(csv, col_types = cols(month = col_factor(month_levels)))
 df$month
 ```
 
-## General Social Survey
+## Khảo sát Xã hội Tổng quát
 
-For the rest of this chapter, we're going to use `forcats::gss_cat`.
-It's a sample of data from the [General Social Survey](https://gss.norc.org), a long-running US survey conducted by the independent research organization NORC at the University of Chicago.
-The survey has thousands of questions, so in `gss_cat` Hadley selected a handful that will illustrate some common challenges you'll encounter when working with factors.
+Trong phần còn lại của chương này, chúng ta sẽ sử dụng `forcats::gss_cat`.
+Đây là một mẫu dữ liệu từ [Khảo sát Xã hội Tổng quát](https://gss.norc.org) (General Social Survey), một cuộc khảo sát lâu dài tại Mỹ được thực hiện bởi tổ chức nghiên cứu độc lập NORC tại Đại học Chicago.
+Cuộc khảo sát có hàng nghìn câu hỏi, vì vậy trong `gss_cat` Hadley đã chọn một số câu hỏi minh họa cho các thách thức phổ biến mà bạn sẽ gặp khi làm việc với nhân tố.
 
 ```{r}
 gss_cat
 ```
 
-(Remember, since this dataset is provided by a package, you can get more information about the variables with `?gss_cat`.)
+(Hãy nhớ rằng, vì tập dữ liệu này được cung cấp bởi một gói, bạn có thể xem thêm thông tin về các biến với `?gss_cat`.)
 
-When factors are stored in a tibble, you can't see their levels so easily.
-One way to view them is with `count()`:
+Khi nhân tố được lưu trong một tibble, bạn không thể dễ dàng nhìn thấy các mức của chúng.
+Một cách để xem chúng là dùng `count()`:
 
 ```{r}
 gss_cat |>
   count(race)
 ```
 
-When working with factors, the two most common operations are changing the order of the levels, and changing the values of the levels.
-Those operations are described in the sections below.
+Khi làm việc với nhân tố, hai thao tác phổ biến nhất là thay đổi thứ tự các mức và thay đổi giá trị của các mức.
+Các thao tác đó được mô tả trong các phần bên dưới.
 
-### Exercises
+### Bài tập
 
-1.  Explore the distribution of `rincome` (reported income).
-    What makes the default bar chart hard to understand?
-    How could you improve the plot?
+1.  Khám phá phân phối của `rincome` (thu nhập được báo cáo).
+    Điều gì khiến biểu đồ cột mặc định khó hiểu?
+    Bạn có thể cải thiện biểu đồ như thế nào?
 
-2.  What is the most common `relig` in this survey?
-    What's the most common `partyid`?
+2.  `relig` phổ biến nhất trong khảo sát này là gì?
+    `partyid` phổ biến nhất là gì?
 
-3.  Which `relig` does `denom` (denomination) apply to?
-    How can you find out with a table?
-    How can you find out with a visualization?
+3.  `denom` (giáo phái) áp dụng cho `relig` nào?
+    Bạn có thể tìm ra bằng bảng như thế nào?
+    Bạn có thể tìm ra bằng trực quan hóa như thế nào?
 
-## Modifying factor order {#sec-modifying-factor-order}
+## Thay đổi thứ tự nhân tố {#sec-modifying-factor-order}
 
-It's often useful to change the order of the factor levels in a visualization.
-For example, imagine you want to explore the average number of hours spent watching TV per day across religions:
+Việc thay đổi thứ tự các mức nhân tố trong biểu đồ thường rất hữu ích.
+Ví dụ, hãy tưởng tượng bạn muốn khám phá số giờ trung bình xem TV mỗi ngày theo các tôn giáo:
 
 ```{r}
 #| fig-alt: |
-#|   A scatterplot of with tvhours on the x-axis and religion on the y-axis.
-#|   The y-axis is ordered seemingly arbitrarily making it hard to get
-#|   any sense of overall pattern.
+#|   Biểu đồ phân tán với tvhours trên trục x và religion trên trục y.
+#|   Trục y được sắp xếp dường như tùy ý khiến khó nhận ra
+#|   bất kỳ mô hình tổng thể nào.
 relig_summary <- gss_cat |>
   group_by(relig) |>
   summarize(
@@ -171,27 +171,27 @@ ggplot(relig_summary, aes(x = tvhours, y = relig)) +
   geom_point()
 ```
 
-It is hard to read this plot because there's no overall pattern.
-We can improve it by reordering the levels of `relig` using `fct_reorder()`.
-`fct_reorder()` takes three arguments:
+Biểu đồ này khó đọc vì không có mô hình tổng thể nào.
+Chúng ta có thể cải thiện nó bằng cách sắp xếp lại các mức của `relig` sử dụng `fct_reorder()`.
+`fct_reorder()` nhận ba đối số:
 
--   `.f`, the factor whose levels you want to modify.
--   `.x`, a numeric vector that you want to use to reorder the levels.
--   Optionally, `.fun`, a function that's used if there are multiple values of `.x` for each value of `.f`. The default value is `median`.
+-   `.f`, nhân tố mà bạn muốn thay đổi các mức.
+-   `.x`, một vector số mà bạn muốn dùng để sắp xếp lại các mức.
+-   Tùy chọn, `.fun`, một hàm được sử dụng nếu có nhiều giá trị `.x` cho mỗi giá trị `.f`. Giá trị mặc định là `median`.
 
 ```{r}
 #| fig-alt: |
-#|   The same scatterplot as above, but now the religion is displayed in
-#|   increasing order of tvhours. "Other eastern" has the fewest tvhours
-#|   under 2, and "Don't know" has the highest (over 5).
+#|   Cùng biểu đồ phân tán như trên, nhưng bây giờ tôn giáo được hiển thị theo
+#|   thứ tự tăng dần của tvhours. "Other eastern" có ít tvhours nhất
+#|   dưới 2, và "Don't know" có nhiều nhất (trên 5).
 ggplot(relig_summary, aes(x = tvhours, y = fct_reorder(relig, tvhours))) +
   geom_point()
 ```
 
-Reordering religion makes it much easier to see that people in the "Don't know" category watch much more TV, and Hinduism & Other Eastern religions watch much less.
+Sắp xếp lại tôn giáo giúp dễ dàng nhận ra rằng những người trong danh mục "Don't know" xem TV nhiều hơn hẳn, còn Hindu giáo & Các tôn giáo phương Đông khác xem ít hơn nhiều.
 
-As you start making more complicated transformations, we recommend moving them out of `aes()` and into a separate `mutate()` step.
-For example, you could rewrite the plot above as:
+Khi bạn bắt đầu thực hiện các biến đổi phức tạp hơn, chúng tôi khuyên bạn nên chuyển chúng ra khỏi `aes()` và vào một bước `mutate()` riêng.
+Ví dụ, bạn có thể viết lại biểu đồ trên như sau:
 
 ```{r}
 #| eval: false
@@ -203,14 +203,14 @@ relig_summary |>
   geom_point()
 ```
 
-What if we create a similar plot looking at how average age varies across reported income level?
+Nếu chúng ta tạo một biểu đồ tương tự xem tuổi trung bình thay đổi như thế nào theo mức thu nhập được báo cáo thì sao?
 
 ```{r}
 #| fig-alt: |
-#|   A scatterplot with age on the x-axis and income on the y-axis. Income
-#|   has been reordered in order of average age which doesn't make much
-#|   sense. One section of the y-axis goes from $6000-6999, then <$1000,
-#|   then $8000-9999.
+#|   Biểu đồ phân tán với age trên trục x và income trên trục y. Income
+#|   đã được sắp xếp lại theo thứ tự tuổi trung bình, điều này không hợp lý
+#|   lắm. Một đoạn trên trục y đi từ $6000-6999, rồi <$1000,
+#|   rồi $8000-9999.
 rincome_summary <- gss_cat |>
   group_by(rincome) |>
   summarize(
@@ -222,44 +222,44 @@ ggplot(rincome_summary, aes(x = age, y = fct_reorder(rincome, age))) +
   geom_point()
 ```
 
-Here, arbitrarily reordering the levels isn't a good idea!
-That's because `rincome` already has a principled order that we shouldn't mess with.
-Reserve `fct_reorder()` for factors whose levels are arbitrarily ordered.
+Ở đây, việc sắp xếp lại các mức một cách tùy ý không phải là ý hay!
+Đó là vì `rincome` đã có một thứ tự có nguyên tắc mà chúng ta không nên phá vỡ.
+Hãy dành `fct_reorder()` cho các nhân tố có các mức được sắp xếp tùy ý.
 
-However, it does make sense to pull "Not applicable" to the front with the other special levels.
-You can use `fct_relevel()`.
-It takes a factor, `.f`, and then any number of levels that you want to move to the front of the line.
+Tuy nhiên, việc kéo "Not applicable" lên phía trước cùng với các mức đặc biệt khác là hợp lý.
+Bạn có thể sử dụng `fct_relevel()`.
+Hàm này nhận một nhân tố, `.f`, và sau đó bất kỳ số lượng mức nào mà bạn muốn di chuyển lên đầu.
 
 ```{r}
 #| fig-alt: |
-#|   The same scatterplot but now "Not Applicable" is displayed at the
-#|   bottom of the y-axis. Generally there is a positive association
-#|   between income and age, and the income band with the highest average
-#|   age is "Not applicable".
+#|   Cùng biểu đồ phân tán nhưng bây giờ "Not Applicable" được hiển thị ở
+#|   cuối trục y. Nhìn chung có mối liên hệ thuận giữa
+#|   thu nhập và tuổi, và khoảng thu nhập có tuổi trung bình cao nhất
+#|   là "Not applicable".
 ggplot(rincome_summary, aes(x = age, y = fct_relevel(rincome, "Not applicable"))) +
   geom_point()
 ```
 
-Why do you think the average age for "Not applicable" is so high?
+Theo bạn tại sao tuổi trung bình của "Not applicable" lại cao như vậy?
 
-Another type of reordering is useful when you are coloring the lines on a plot.
-`fct_reorder2(.f, .x, .y)` reorders the factor `.f` by the `.y` values associated with the largest `.x` values.
-This makes the plot easier to read because the colors of the line at the far right of the plot will line up with the legend.
+Một kiểu sắp xếp lại khác hữu ích khi bạn tô màu các đường trên biểu đồ.
+`fct_reorder2(.f, .x, .y)` sắp xếp lại nhân tố `.f` theo các giá trị `.y` tương ứng với các giá trị `.x` lớn nhất.
+Điều này giúp biểu đồ dễ đọc hơn vì màu sắc của các đường ở phía ngoài cùng bên phải sẽ khớp với chú giải.
 
 ```{r}
 #| layout-ncol: 2
 #| fig-width: 3
 #| fig-alt: |
-#|     A line plot with age on the x-axis and proportion on the y-axis.
-#|     There is one line for each category of marital status: no answer,
-#|     never married, separated, divorced, widowed, and married. It is
-#|     a little hard to read the plot because the order of the legend is
-#|     unrelated to the lines on the plot. Rearranging the legend makes
-#|     the plot easier to read because the legend colors now match the
-#|     order of the lines on the far right of the plot. You can see some
-#|     unsurprising patterns: the proportion never married decreases with
-#|     age, married forms an upside down U shape, and widowed starts off
-#|     low but increases steeply after age 60.
+#|     Biểu đồ đường với age trên trục x và proportion trên trục y.
+#|     Có một đường cho mỗi danh mục tình trạng hôn nhân: không trả lời,
+#|     chưa bao giờ kết hôn, ly thân, ly hôn, góa, và đã kết hôn. Biểu
+#|     đồ hơi khó đọc vì thứ tự chú giải không liên quan đến các đường
+#|     trên biểu đồ. Sắp xếp lại chú giải giúp biểu đồ dễ đọc hơn vì
+#|     màu chú giải giờ khớp với thứ tự các đường ở phía ngoài cùng bên
+#|     phải của biểu đồ. Bạn có thể thấy một số mô hình không bất ngờ:
+#|     tỷ lệ chưa bao giờ kết hôn giảm theo tuổi, đã kết hôn tạo hình
+#|     chữ U ngược, và góa bắt đầu thấp nhưng tăng mạnh sau
+#|     tuổi 60.
 by_age <- gss_cat |>
   filter(!is.na(age)) |>
   count(age, marital) |>
@@ -278,44 +278,44 @@ ggplot(by_age, aes(x = age, y = prop, color = fct_reorder2(marital, age, prop)))
   labs(color = "marital")
 ```
 
-Finally, for bar plots, you can use `fct_infreq()` to order levels in decreasing frequency: this is the simplest type of reordering because it doesn't need any extra variables.
-Combine it with `fct_rev()` if you want them in increasing frequency so that in the bar plot largest values are on the right, not the left.
+Cuối cùng, đối với biểu đồ cột, bạn có thể sử dụng `fct_infreq()` để sắp xếp các mức theo tần suất giảm dần: đây là kiểu sắp xếp lại đơn giản nhất vì không cần thêm biến nào.
+Kết hợp nó với `fct_rev()` nếu bạn muốn theo tần suất tăng dần để trong biểu đồ cột các giá trị lớn nhất ở bên phải, không phải bên trái.
 
 ```{r}
 #| fig-alt: |
-#|   A bar chart of marital status ordered from least to most common:
-#|   no answer (~0), separated (~1,000), widowed (~2,000), divorced
-#|   (~3,000), never married (~5,000), married (~10,000).
+#|   Biểu đồ cột về tình trạng hôn nhân sắp xếp từ ít phổ biến nhất đến
+#|   phổ biến nhất: không trả lời (~0), ly thân (~1.000), góa (~2.000),
+#|   ly hôn (~3.000), chưa kết hôn (~5.000), đã kết hôn (~10.000).
 gss_cat |>
   mutate(marital = marital |> fct_infreq() |> fct_rev()) |>
   ggplot(aes(x = marital)) +
   geom_bar()
 ```
 
-### Exercises
+### Bài tập
 
-1.  There are some suspiciously high numbers in `tvhours`.
-    Is the mean a good summary?
+1.  Có một số con số đáng ngờ cao trong `tvhours`.
+    Giá trị trung bình có phải là thống kê tóm tắt tốt không?
 
-2.  For each factor in `gss_cat` identify whether the order of the levels is arbitrary or principled.
+2.  Đối với mỗi nhân tố trong `gss_cat`, hãy xác định xem thứ tự các mức là tùy ý hay có nguyên tắc.
 
-3.  Why did moving "Not applicable" to the front of the levels move it to the bottom of the plot?
+3.  Tại sao việc di chuyển "Not applicable" lên đầu danh sách các mức lại khiến nó xuất hiện ở cuối biểu đồ?
 
-## Modifying factor levels
+## Thay đổi giá trị các mức nhân tố
 
-More powerful than changing the orders of the levels is changing their values.
-This allows you to clarify labels for publication, and collapse levels for high-level displays.
-The most general and powerful tool is `fct_recode()`.
-It allows you to recode, or change, the value of each level.
-For example, take the `partyid` variable from the `gss_cat` data frame:
+Mạnh hơn việc thay đổi thứ tự các mức là thay đổi giá trị của chúng.
+Điều này cho phép bạn làm rõ nhãn cho ấn phẩm, và gộp các mức lại cho các hiển thị tổng quát.
+Công cụ tổng quát và mạnh nhất là `fct_recode()`.
+Hàm này cho phép bạn mã hóa lại, hay thay đổi, giá trị của từng mức.
+Ví dụ, hãy xem biến `partyid` từ khung dữ liệu (data frame) `gss_cat`:
 
 ```{r}
 gss_cat |> count(partyid)
 ```
 
-The levels are terse and inconsistent.
-Let's tweak them to be longer and use a parallel construction.
-Like most rename and recoding functions in the tidyverse, the new values go on the left and the old values go on the right:
+Các mức ngắn gọn và không nhất quán.
+Hãy chỉnh sửa chúng cho dài hơn và sử dụng cấu trúc song song.
+Giống như hầu hết các hàm đổi tên và mã hóa lại trong tidyverse, giá trị mới nằm bên trái và giá trị cũ nằm bên phải:
 
 ```{r}
 gss_cat |>
@@ -332,9 +332,9 @@ gss_cat |>
   count(partyid)
 ```
 
-`fct_recode()` will leave the levels that aren't explicitly mentioned as is, and will warn you if you accidentally refer to a level that doesn't exist.
+`fct_recode()` sẽ giữ nguyên các mức không được đề cập rõ ràng, và sẽ cảnh báo bạn nếu bạn vô tình tham chiếu đến một mức không tồn tại.
 
-To combine groups, you can assign multiple old levels to the same new level:
+Để gộp các nhóm, bạn có thể gán nhiều mức cũ cho cùng một mức mới:
 
 ```{r}
 #| results: false
@@ -354,10 +354,10 @@ gss_cat |>
   )
 ```
 
-Use this technique with care: if you group together categories that are truly different you will end up with misleading results.
+Hãy sử dụng kỹ thuật này một cách cẩn thận: nếu bạn gộp các danh mục thực sự khác nhau, bạn sẽ nhận được kết quả sai lệch.
 
-If you want to collapse a lot of levels, `fct_collapse()` is a useful variant of `fct_recode()`.
-For each new variable, you can provide a vector of old levels:
+Nếu bạn muốn gộp nhiều mức, `fct_collapse()` là một biến thể hữu ích của `fct_recode()`.
+Với mỗi biến mới, bạn có thể cung cấp một vector các mức cũ:
 
 ```{r}
 gss_cat |>
@@ -372,9 +372,9 @@ gss_cat |>
   count(partyid)
 ```
 
-Sometimes you just want to lump together the small groups to make a plot or table simpler.
-That's the job of the `fct_lump_*()` family of functions.
-`fct_lump_lowfreq()` is a simple starting point that progressively lumps the smallest groups categories into "Other", always keeping "Other" as the smallest category.
+Đôi khi bạn chỉ muốn gộp các nhóm nhỏ lại để làm biểu đồ hoặc bảng đơn giản hơn.
+Đó là công việc của họ hàm `fct_lump_*()`.
+`fct_lump_lowfreq()` là điểm khởi đầu đơn giản, hàm này dần dần gộp các nhóm danh mục nhỏ nhất vào "Other", luôn giữ "Other" là danh mục nhỏ nhất.
 
 ```{r}
 gss_cat |>
@@ -382,8 +382,8 @@ gss_cat |>
   count(relig)
 ```
 
-In this case it's not very helpful: it is true that the majority of Americans in this survey are Protestant, but we'd probably like to see some more details!
-Instead, we can use the `fct_lump_n()` to specify that we want exactly 10 groups:
+Trong trường hợp này, kết quả không hữu ích lắm: đúng là đa số người Mỹ trong khảo sát này là Tin lành, nhưng có lẽ chúng ta muốn xem thêm chi tiết!
+Thay vào đó, chúng ta có thể sử dụng `fct_lump_n()` để chỉ định rằng chúng ta muốn chính xác 10 nhóm:
 
 ```{r}
 gss_cat |>
@@ -391,48 +391,48 @@ gss_cat |>
   count(relig, sort = TRUE)
 ```
 
-Read the documentation to learn about `fct_lump_min()` and `fct_lump_prop()` which are useful in other cases.
+Hãy đọc tài liệu để tìm hiểu về `fct_lump_min()` và `fct_lump_prop()`, những hàm hữu ích trong các trường hợp khác.
 
-### Exercises
+### Bài tập
 
-1.  How have the proportions of people identifying as Democrat, Republican, and Independent changed over time?
+1.  Tỷ lệ người tự nhận là Đảng Dân chủ, Đảng Cộng hòa, và Độc lập đã thay đổi như thế nào theo thời gian?
 
-2.  How could you collapse `rincome` into a small set of categories?
+2.  Bạn có thể gộp `rincome` thành một tập hợp nhỏ các danh mục bằng cách nào?
 
-3.  Notice there are 9 groups (excluding other) in the `fct_lump` example above.
-    Why not 10?
-    (Hint: type `?fct_lump`, and find the default for the argument `other_level` is "Other".)
+3.  Lưu ý rằng có 9 nhóm (không tính other) trong ví dụ `fct_lump` ở trên.
+    Tại sao không phải 10?
+    (Gợi ý: gõ `?fct_lump`, và tìm giá trị mặc định cho đối số `other_level` là "Other".)
 
-## Ordered factors {#sec-ordered-factors}
+## Nhân tố có thứ tự {#sec-ordered-factors}
 
-Before we continue, it's important to briefly mention a special type of factor: ordered factors.
-Created with the `ordered()` function, ordered factors imply a strict ordering between levels, but don't specify anything about the magnitude of the differences between the levels.
-You use ordered factors when you know there the levels are ranked, but there's no precise numerical ranking.
+Trước khi tiếp tục, điều quan trọng là phải đề cập ngắn gọn về một loại nhân tố đặc biệt: nhân tố có thứ tự (ordered factor).
+Được tạo bằng hàm `ordered()`, nhân tố có thứ tự ngụ ý một thứ tự nghiêm ngặt giữa các mức, nhưng không chỉ rõ bất kỳ điều gì về độ lớn của sự khác biệt giữa các mức.
+Bạn sử dụng nhân tố có thứ tự khi bạn biết các mức có thứ hạng, nhưng không có thứ hạng số chính xác.
 
-You can identify an ordered factor when it's printed because it uses `<` symbols between the factor levels:
+Bạn có thể nhận biết nhân tố có thứ tự khi nó được in ra vì nó sử dụng ký hiệu `<` giữa các mức:
 
 ```{r}
 ordered(c("a", "b", "c"))
 ```
 
-In both base R and the tidyverse, ordered factors behave very similarly to regular factors.
-There are only two places where you might notice different behavior:
+Trong cả R cơ bản và tidyverse, nhân tố có thứ tự hoạt động rất giống với nhân tố thông thường.
+Chỉ có hai nơi bạn có thể nhận thấy hành vi khác biệt:
 
--   If you map an ordered factor to color or fill in ggplot2, it will default to `scale_color_viridis()`/`scale_fill_viridis()`, a color scale that implies a ranking.
--   If you use an ordered predictor in a linear model, it will use "polynomial contrasts". These are mildly useful, but you are unlikely to have heard of them unless you have a PhD in Statistics, and even then you probably don't routinely interpret them. If you want to learn more, we recommend `vignette("contrasts", package = "faux")` by Lisa DeBruine.
+-   Nếu bạn ánh xạ một nhân tố có thứ tự vào color hoặc fill trong ggplot2, nó sẽ mặc định sử dụng `scale_color_viridis()`/`scale_fill_viridis()`, một thang màu ngụ ý thứ hạng.
+-   Nếu bạn sử dụng một biến dự đoán có thứ tự trong mô hình tuyến tính, nó sẽ sử dụng "tương phản đa thức" (polynomial contrasts). Những thứ này có phần hữu ích, nhưng bạn khó có thể đã nghe về chúng trừ khi bạn có bằng Tiến sĩ Thống kê, và ngay cả khi đó bạn có lẽ cũng không thường xuyên diễn giải chúng. Nếu bạn muốn tìm hiểu thêm, chúng tôi khuyên bạn nên xem `vignette("contrasts", package = "faux")` của Lisa DeBruine.
 
-For the purposes of this book, correctly distinguishing between regular and ordered factors is not particularly important.
-More broadly, however, certain fields (particularly the social sciences) do use ordered factors extensively.
-In these contexts, it's important to correctly identify them so that other analysis packages can offer the appropriate behavior.
+Với mục đích của cuốn sách này, việc phân biệt chính xác giữa nhân tố thông thường và nhân tố có thứ tự không đặc biệt quan trọng.
+Tuy nhiên, rộng hơn, một số lĩnh vực (đặc biệt là khoa học xã hội) sử dụng nhân tố có thứ tự rất nhiều.
+Trong những ngữ cảnh đó, việc xác định chính xác chúng là quan trọng để các gói phân tích khác có thể cung cấp hành vi phù hợp.
 
-## Summary
+## Tóm tắt
 
-This chapter introduced you to the handy forcats package for working with factors, introducing you to the most commonly used functions.
-forcats contains a wide range of other helpers that we didn't have space to discuss here, so whenever you're facing a factor analysis challenge that you haven't encountered before, I highly recommend skimming the [reference index](https://forcats.tidyverse.org/reference/index.html) to see if there's a canned function that can help solve your problem.
+Chương này giới thiệu cho bạn gói forcats tiện dụng để làm việc với nhân tố, giới thiệu các hàm được sử dụng phổ biến nhất.
+forcats chứa một loạt các hàm hỗ trợ khác mà chúng ta không có đủ chỗ để thảo luận ở đây, vì vậy mỗi khi bạn đối mặt với một thách thức phân tích nhân tố mà bạn chưa gặp trước đây, tôi rất khuyên bạn nên lướt qua [trang chỉ mục tham khảo](https://forcats.tidyverse.org/reference/index.html) để xem có hàm sẵn có nào có thể giúp giải quyết vấn đề của bạn không.
 
-If you want to learn more about factors after reading this chapter, we recommend reading Amelia McNamara and Nicholas Horton's paper, [*Wrangling categorical data in R*](https://peerj.com/preprints/3163/).
-This paper lays out some of the history discussed in [*stringsAsFactors: An unauthorized biography*](https://simplystatistics.org/posts/2015-07-24-stringsasfactors-an-unauthorized-biography/) and [*stringsAsFactors = \<sigh\>*](https://notstatschat.tumblr.com/post/124987394001/stringsasfactors-sigh), and compares the tidy approaches to categorical data outlined in this book with base R methods.
-An early version of the paper helped motivate and scope the forcats package; thanks Amelia & Nick!
+Nếu bạn muốn tìm hiểu thêm về nhân tố sau khi đọc chương này, chúng tôi khuyên bạn nên đọc bài báo của Amelia McNamara và Nicholas Horton, [*Wrangling categorical data in R*](https://peerj.com/preprints/3163/).
+Bài báo này trình bày một số lịch sử được thảo luận trong [*stringsAsFactors: An unauthorized biography*](https://simplystatistics.org/posts/2015-07-24-stringsasfactors-an-unauthorized-biography/) và [*stringsAsFactors = \<sigh\>*](https://notstatschat.tumblr.com/post/124987394001/stringsasfactors-sigh), và so sánh các phương pháp tidy để xử lý dữ liệu phân loại được trình bày trong cuốn sách này với các phương pháp R cơ bản.
+Phiên bản đầu tiên của bài báo đã giúp thúc đẩy và định hình phạm vi cho gói forcats; cảm ơn Amelia & Nick!
 
-In the next chapter we'll switch gears to start learning about dates and times in R.
-Dates and times seem deceptively simple, but as you'll soon see, the more you learn about them, the more complex they seem to get!
+Trong chương tiếp theo, chúng ta sẽ chuyển sang bắt đầu tìm hiểu về ngày tháng và thời gian trong R.
+Ngày tháng và thời gian có vẻ đơn giản một cách lừa dối, nhưng như bạn sẽ sớm thấy, bạn càng tìm hiểu về chúng, chúng càng có vẻ phức tạp hơn!
