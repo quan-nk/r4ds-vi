@@ -1,24 +1,24 @@
-# Hierarchical data {#sec-rectangling}
+# Dữ liệu phân cấp {#sec-rectangling}
 
 ```{r}
 #| echo: false
 source("_common.R")
 ```
 
-## Introduction
+## Giới thiệu
 
-In this chapter, you'll learn the art of data **rectangling**: taking data that is fundamentally hierarchical, or tree-like, and converting it into a rectangular data frame made up of rows and columns.
-This is important because hierarchical data is surprisingly common, especially when working with data that comes from the web.
+Trong chương này, bạn sẽ học nghệ thuật **chuyển đổi thành dạng bảng (rectangling)**: lấy dữ liệu vốn có cấu trúc phân cấp (hierarchical), hay dạng cây, và chuyển đổi nó thành khung dữ liệu (data frame) hình chữ nhật gồm các hàng và cột.
+Điều này quan trọng vì dữ liệu phân cấp phổ biến đến đáng ngạc nhiên, đặc biệt khi làm việc với dữ liệu đến từ web.
 
-To learn about rectangling, you'll need to first learn about lists, the data structure that makes hierarchical data possible.
-Then you'll learn about two crucial tidyr functions: `tidyr::unnest_longer()` and `tidyr::unnest_wider()`.
-We'll then show you a few case studies, applying these simple functions again and again to solve real problems.
-We'll finish off by talking about JSON, the most frequent source of hierarchical datasets and a common format for data exchange on the web.
+Để học về rectangling, trước tiên bạn cần tìm hiểu về danh sách (list), cấu trúc dữ liệu giúp dữ liệu phân cấp trở nên khả thi.
+Sau đó bạn sẽ tìm hiểu về hai hàm quan trọng của tidyr: `tidyr::unnest_longer()` và `tidyr::unnest_wider()`.
+Tiếp theo, chúng tôi sẽ cho bạn xem một vài nghiên cứu tình huống, áp dụng những hàm đơn giản này lặp đi lặp lại để giải quyết các bài toán thực tế.
+Cuối cùng, chúng tôi sẽ nói về JSON, nguồn phổ biến nhất của các tập dữ liệu phân cấp và định dạng thông dụng để trao đổi dữ liệu trên web.
 
-### Prerequisites
+### Điều kiện tiên quyết
 
-In this chapter, we'll use many functions from tidyr, a core member of the tidyverse.
-We'll also use repurrrsive to provide some interesting datasets for rectangling practice, and we'll finish by using jsonlite to read JSON files into R lists.
+Trong chương này, chúng ta sẽ sử dụng nhiều hàm từ tidyr, một thành viên cốt lõi của tidyverse.
+Chúng ta cũng sẽ dùng repurrrsive để cung cấp một số tập dữ liệu thú vị cho việc thực hành rectangling, và cuối cùng sẽ dùng jsonlite để đọc các tệp JSON vào danh sách R.
 
 ```{r}
 #| label: setup
@@ -28,46 +28,46 @@ library(repurrrsive)
 library(jsonlite)
 ```
 
-## Lists
+## Danh sách
 
-So far you've worked with data frames that contain simple vectors like integers, numbers, characters, date-times, and factors.
-These vectors are simple because they're homogeneous: every element is of the same data type.
-If you want to store elements of different types in the same vector, you'll need a **list**, which you create with `list()`:
+Cho đến nay bạn đã làm việc với các khung dữ liệu chứa các vector đơn giản như số nguyên (integer), số thực, ký tự, ngày giờ, và nhân tố (factor).
+Những vector này đơn giản vì chúng đồng nhất: mọi phần tử đều cùng kiểu dữ liệu.
+Nếu bạn muốn lưu trữ các phần tử có kiểu khác nhau trong cùng một vector, bạn sẽ cần một **danh sách (list)**, được tạo bằng `list()`:
 
 ```{r}
 x1 <- list(1:4, "a", TRUE)
 x1
 ```
 
-It's often convenient to name the components, or **children**, of a list, which you can do in the same way as naming the columns of a tibble:
+Việc đặt tên cho các thành phần, hay **phần tử con (children)**, của một danh sách thường rất tiện lợi, và bạn có thể làm tương tự cách đặt tên cho các cột của một tibble:
 
 ```{r}
 x2 <- list(a = 1:2, b = 1:3, c = 1:4)
 x2
 ```
 
-Even for these very simple lists, printing takes up quite a lot of space.
-A useful alternative is `str()`, which generates a compact display of the **str**ucture, de-emphasizing the contents:
+Ngay cả với những danh sách rất đơn giản, việc in ra cũng chiếm khá nhiều không gian.
+Một cách thay thế hữu ích là `str()`, hiển thị một bản tóm tắt ngắn gọn về cấu trúc (**str**ucture), giảm nhấn mạnh vào nội dung:
 
 ```{r}
 str(x1)
 str(x2)
 ```
 
-As you can see, `str()` displays each child of the list on its own line.
-It displays the name, if present, then an abbreviation of the type, then the first few values.
+Như bạn thấy, `str()` hiển thị mỗi phần tử con của danh sách trên dòng riêng.
+Nó hiển thị tên (nếu có), sau đó là viết tắt của kiểu dữ liệu, rồi đến vài giá trị đầu tiên.
 
-### Hierarchy
+### Phân cấp
 
-Lists can contain any type of object, including other lists.
-This makes them suitable for representing hierarchical (tree-like) structures:
+Danh sách có thể chứa bất kỳ loại đối tượng nào, bao gồm cả các danh sách khác.
+Điều này khiến chúng phù hợp để biểu diễn các cấu trúc phân cấp (dạng cây):
 
 ```{r}
 x3 <- list(list(1, 2), list(3, 4))
 str(x3)
 ```
 
-This is notably different to `c()`, which generates a flat vector:
+Điều này khác biệt rõ rệt so với `c()`, hàm tạo ra một vector phẳng:
 
 ```{r}
 c(c(1, 2), c(3, 4))
@@ -76,28 +76,28 @@ x4 <- c(list(1, 2), list(3, 4))
 str(x4)
 ```
 
-As lists get more complex, `str()` gets more useful, as it lets you see the hierarchy at a glance:
+Khi danh sách trở nên phức tạp hơn, `str()` càng trở nên hữu ích, vì nó cho bạn thấy cấu trúc phân cấp trong nháy mắt:
 
 ```{r}
 x5 <- list(1, list(2, list(3, list(4, list(5)))))
 str(x5)
 ```
 
-As lists get even larger and more complex, `str()` eventually starts to fail, and you'll need to switch to `View()`[^rectangling-1].
-@fig-view-collapsed shows the result of calling `View(x5)`. The viewer starts by showing just the top level of the list, but you can interactively expand any of the components to see more, as in @fig-view-expand-1. RStudio will also show you the code you need to access that element, as in @fig-view-expand-2. We'll come back to how this code works in @sec-subset-one.
+Khi danh sách trở nên lớn và phức tạp hơn nữa, `str()` cuối cùng sẽ không đủ dùng, và bạn sẽ cần chuyển sang `View()`[^rectangling-1].
+@fig-view-collapsed cho thấy kết quả của việc gọi `View(x5)`. Trình xem bắt đầu bằng cách chỉ hiển thị cấp cao nhất của danh sách, nhưng bạn có thể mở rộng tương tác bất kỳ thành phần nào để xem thêm, như trong @fig-view-expand-1. RStudio cũng sẽ hiển thị cho bạn mã cần thiết để truy cập phần tử đó, như trong @fig-view-expand-2. Chúng ta sẽ quay lại cách mã này hoạt động trong @sec-subset-one.
 
-[^rectangling-1]: This is an RStudio feature.
+[^rectangling-1]: Đây là tính năng của RStudio.
 
 ```{r}
 #| label: fig-view-collapsed
 #| fig.cap: >
-#|   The RStudio view lets you interactively explore a complex list.  
-#|   The viewer opens showing only the top level of the list.
+#|   Trình xem RStudio cho phép bạn khám phá tương tác một danh sách phức tạp.
+#|   Trình xem mở ra chỉ hiển thị cấp cao nhất của danh sách.
 #| fig.alt: >
-#|   A screenshot of RStudio showing the list-viewer. It shows the
-#|   two children of x5: the first child is a double vector and the
-#|   second child is a list. A rightward facing triangle indicates that the
-#|   second child itself has children but you can't see them.
+#|   Ảnh chụp màn hình RStudio hiển thị trình xem danh sách. Nó cho thấy
+#|   hai phần tử con của x5: phần tử con đầu tiên là một vector double và
+#|   phần tử con thứ hai là một danh sách. Một tam giác hướng sang phải cho biết
+#|   phần tử con thứ hai cũng có các phần tử con nhưng bạn không thể nhìn thấy chúng.
 #| echo: false
 #| out-width: NULL
 knitr::include_graphics("screenshots/View-1.png", dpi = 220)
@@ -106,12 +106,12 @@ knitr::include_graphics("screenshots/View-1.png", dpi = 220)
 ```{r}
 #| label: fig-view-expand-1
 #| fig.cap: >
-#|   Clicking on the rightward facing triangle expands that component
-#|   of the list so that you can also see its children.
+#|   Nhấp vào tam giác hướng sang phải sẽ mở rộng thành phần đó
+#|   của danh sách để bạn cũng có thể thấy các phần tử con của nó.
 #| fig.alt: >
-#|   Another screenshot of the list-viewer having expand the second
-#|   child of x5. It also has two children, a double vector and another
-#|   list.
+#|   Một ảnh chụp màn hình khác của trình xem danh sách sau khi mở rộng phần tử con
+#|   thứ hai của x5. Nó cũng có hai phần tử con, một vector double và
+#|   một danh sách khác.
 #| echo: false
 #| out-width: NULL
 knitr::include_graphics("screenshots/View-2.png", dpi = 220)
@@ -120,79 +120,79 @@ knitr::include_graphics("screenshots/View-2.png", dpi = 220)
 ```{r}
 #| label: fig-view-expand-2
 #| fig.cap: >
-#|   You can repeat this operation as many times as needed to get to the 
-#|   data you're interested in. Note the bottom-left corner: if you click
-#|   an element of the list, RStudio will give you the subsetting code
-#|   needed to access it, in this case `x5[[2]][[2]][[2]]`.
+#|   Bạn có thể lặp lại thao tác này bao nhiêu lần tùy ý để đến được
+#|   dữ liệu bạn quan tâm. Lưu ý góc dưới bên trái: nếu bạn nhấp vào
+#|   một phần tử của danh sách, RStudio sẽ cho bạn mã trích xuất con
+#|   cần thiết để truy cập nó, trong trường hợp này là `x5[[2]][[2]][[2]]`.
 #| fig.alt: >
-#|   Another screenshot, having expanded the grandchild of x5 to see its
-#|   two children, again a double vector and a list.
+#|   Một ảnh chụp màn hình khác, đã mở rộng phần tử cháu của x5 để thấy
+#|   hai phần tử con của nó, lại là một vector double và một danh sách.
 #| echo: false
 #| out-width: NULL
 knitr::include_graphics("screenshots/View-3.png", dpi = 220)
 ```
 
-### List-columns
+### Cột danh sách
 
-Lists can also live inside a tibble, where we call them list-columns.
-List-columns are useful because they allow you to place objects in a tibble that wouldn't usually belong in there.
-In particular, list-columns are used a lot in the [tidymodels](https://www.tidymodels.org) ecosystem, because they allow you to store things like model outputs or resamples in a data frame.
+Danh sách cũng có thể nằm bên trong một tibble, nơi chúng ta gọi chúng là cột danh sách (list-column).
+Cột danh sách hữu ích vì chúng cho phép bạn đặt các đối tượng vào tibble mà thông thường không thuộc về đó.
+Cụ thể, cột danh sách được sử dụng rất nhiều trong hệ sinh thái [tidymodels](https://www.tidymodels.org), vì chúng cho phép bạn lưu trữ những thứ như kết quả mô hình hoặc các mẫu lặp lại trong một khung dữ liệu.
 
-Here's a simple example of a list-column:
+Đây là một ví dụ đơn giản về cột danh sách:
 
 ```{r}
 df <- tibble(
-  x = 1:2, 
+  x = 1:2,
   y = c("a", "b"),
   z = list(list(1, 2), list(3, 4, 5))
 )
 df
 ```
 
-There's nothing special about lists in a tibble; they behave like any other column:
+Không có gì đặc biệt về danh sách trong tibble; chúng hoạt động như bất kỳ cột nào khác:
 
 ```{r}
-df |> 
+df |>
   filter(x == 1)
 ```
 
-Computing with list-columns is harder, but that's because computing with lists is harder in general; we'll come back to that in @sec-iteration.
-In this chapter, we'll focus on unnesting list-columns out into regular variables so you can use your existing tools on them.
+Tính toán với cột danh sách khó hơn, nhưng đó là vì tính toán với danh sách nói chung là khó hơn; chúng ta sẽ quay lại vấn đề này trong @sec-iteration.
+Trong chương này, chúng ta sẽ tập trung vào việc mở rộng cột danh sách thành các biến thông thường để bạn có thể sử dụng các công cụ hiện có trên chúng.
 
-The default print method just displays a rough summary of the contents.
-The list column could be arbitrarily complex, so there's no good way to print it.
-If you want to see it, you'll need to pull out just the one list-column and apply one of the techniques that you've learned above, like `df |> pull(z) |> str()` or `df |> pull(z) |> View()`.
+Phương thức in mặc định chỉ hiển thị một bản tóm tắt sơ bộ về nội dung.
+Cột danh sách có thể phức tạp tùy ý, nên không có cách tốt nào để in nó.
+Nếu bạn muốn xem nó, bạn sẽ cần lấy riêng cột danh sách đó ra và áp dụng một trong các kỹ thuật bạn đã học ở trên, như `df |> pull(z) |> str()` hoặc `df |> pull(z) |> View()`.
 
 ::: callout-note
-## Base R
+## R cơ bản
 
-It's possible to put a list in a column of a `data.frame`, but it's a lot fiddlier because `data.frame()` treats a list as a list of columns:
+Có thể đặt một danh sách vào cột của `data.frame`, nhưng phức tạp hơn nhiều vì `data.frame()` coi danh sách như một danh sách các cột:
 
 ```{r}
 data.frame(x = list(1:3, 3:5))
 ```
 
-You can force `data.frame()` to treat a list as a list of rows by wrapping it in list `I()`, but the result doesn't print particularly well:
+Bạn có thể buộc `data.frame()` coi danh sách như một danh sách các hàng bằng cách bọc nó trong `I()`, nhưng kết quả in ra không được đẹp lắm:
 
 ```{r}
 data.frame(
-  x = I(list(1:2, 3:5)), 
+  x = I(list(1:2, 3:5)),
   y = c("1, 2", "3, 4, 5")
 )
 ```
 
-It's easier to use list-columns with tibbles because `tibble()` treats lists like vectors and the print method has been designed with lists in mind.
+Sử dụng cột danh sách với tibble dễ hơn vì `tibble()` coi danh sách như vector và phương thức in được thiết kế có tính đến danh sách.
 :::
 
-## Unnesting
+## Mở rộng
 
-Now that you've learned the basics of lists and list-columns, let's explore how you can turn them back into regular rows and columns.
-Here we'll use very simple sample data so you can get the basic idea; in the next section we'll switch to real data.
+Bây giờ bạn đã học những kiến thức cơ bản về danh sách và cột danh sách, hãy khám phá cách chuyển chúng trở lại thành các hàng và cột thông thường.
+Ở đây chúng ta sẽ sử dụng dữ liệu mẫu rất đơn giản để bạn nắm được ý tưởng cơ bản; trong phần tiếp theo chúng ta sẽ chuyển sang dữ liệu thực.
 
-List-columns tend to come in two basic forms: named and unnamed.
-When the children are **named**, they tend to have the same names in every row.
-For example, in `df1`, every element of list-column `y` has two elements named `a` and `b`.
-Named list-columns naturally unnest into columns: each named element becomes a new named column.
+Cột danh sách thường có hai dạng cơ bản: có tên và không có tên.
+Khi các phần tử con **có tên (named)**, chúng thường có cùng tên ở mọi hàng.
+Ví dụ, trong `df1`, mỗi phần tử của cột danh sách `y` đều có hai phần tử được đặt tên là `a` và `b`.
+Cột danh sách có tên tự nhiên được mở rộng thành các cột: mỗi phần tử có tên trở thành một cột mới có tên.
 
 ```{r}
 df1 <- tribble(
@@ -203,9 +203,9 @@ df1 <- tribble(
 )
 ```
 
-When the children are **unnamed**, the number of elements tends to vary from row-to-row.
-For example, in `df2`, the elements of list-column `y` are unnamed and vary in length from one to three.
-Unnamed list-columns naturally unnest into rows: you'll get one row for each child.
+Khi các phần tử con **không có tên (unnamed)**, số lượng phần tử thường thay đổi từ hàng này sang hàng khác.
+Ví dụ, trong `df2`, các phần tử của cột danh sách `y` không có tên và có độ dài thay đổi từ một đến ba.
+Cột danh sách không có tên tự nhiên được mở rộng thành các hàng: bạn sẽ nhận được một hàng cho mỗi phần tử con.
 
 ```{r}
 df2 <- tribble(
@@ -216,37 +216,37 @@ df2 <- tribble(
 )
 ```
 
-tidyr provides two functions for these two cases: `unnest_wider()` and `unnest_longer()`.
-The following sections explain how they work.
+tidyr cung cấp hai hàm cho hai trường hợp này: `unnest_wider()` và `unnest_longer()`.
+Các phần sau giải thích cách chúng hoạt động.
 
 ### `unnest_wider()`
 
-When each row has the same number of elements with the same names, like `df1`, it's natural to put each component into its own column with `unnest_wider()`:
+Khi mỗi hàng có cùng số lượng phần tử với cùng tên, như `df1`, thì việc đặt mỗi thành phần vào cột riêng với `unnest_wider()` là tự nhiên:
 
 ```{r}
-df1 |> 
+df1 |>
   unnest_wider(y)
 ```
 
-By default, the names of the new columns come exclusively from the names of the list elements, but you can use the `names_sep` argument to request that they combine the column name and the element name.
-This is useful for disambiguating repeated names.
+Mặc định, tên của các cột mới chỉ lấy từ tên của các phần tử danh sách, nhưng bạn có thể dùng đối số `names_sep` để yêu cầu kết hợp tên cột và tên phần tử.
+Điều này hữu ích để phân biệt các tên bị trùng.
 
 ```{r}
-df1 |> 
+df1 |>
   unnest_wider(y, names_sep = "_")
 ```
 
 ### `unnest_longer()`
 
-When each row contains an unnamed list, it's most natural to put each element into its own row with `unnest_longer()`:
+Khi mỗi hàng chứa một danh sách không có tên, cách tự nhiên nhất là đặt mỗi phần tử vào hàng riêng với `unnest_longer()`:
 
 ```{r}
-df2 |> 
+df2 |>
   unnest_longer(y)
 ```
 
-Note how `x` is duplicated for each element inside of `y`: we get one row of output for each element inside the list-column.
-But what happens if one of the elements is empty, as in the following example?
+Lưu ý cách `x` được nhân bản cho mỗi phần tử bên trong `y`: chúng ta nhận được một hàng đầu ra cho mỗi phần tử bên trong cột danh sách.
+Nhưng điều gì xảy ra nếu một trong các phần tử rỗng, như trong ví dụ sau?
 
 ```{r}
 df6 <- tribble(
@@ -258,13 +258,13 @@ df6 <- tribble(
 df6 |> unnest_longer(y)
 ```
 
-We get zero rows in the output, so the row effectively disappears.
-If you want to preserve that row, adding `NA` in `y`, set `keep_empty = TRUE`.
+Chúng ta nhận được không hàng nào trong đầu ra, nên hàng đó thực tế biến mất.
+Nếu bạn muốn giữ lại hàng đó, thêm `NA` vào `y`, hãy đặt `keep_empty = TRUE`.
 
-### Inconsistent types
+### Kiểu dữ liệu không nhất quán
 
-What happens if you unnest a list-column that contains different types of vector?
-For example, take the following dataset where the list-column `y` contains two numbers, a character, and a logical, which can't normally be mixed in a single column.
+Điều gì xảy ra nếu bạn mở rộng một cột danh sách chứa các kiểu vector khác nhau?
+Ví dụ, lấy tập dữ liệu sau trong đó cột danh sách `y` chứa hai số, một ký tự, và một giá trị logic (logical), những thứ thông thường không thể trộn lẫn trong một cột đơn.
 
 ```{r}
 df4 <- tribble(
@@ -274,46 +274,46 @@ df4 <- tribble(
 )
 ```
 
-`unnest_longer()` always keeps the set of columns unchanged, while changing the number of rows.
-So what happens?
-How does `unnest_longer()` produce five rows while keeping everything in `y`?
+`unnest_longer()` luôn giữ nguyên tập hợp các cột, trong khi thay đổi số lượng hàng.
+Vậy điều gì xảy ra?
+Làm thế nào `unnest_longer()` tạo ra năm hàng trong khi giữ mọi thứ trong `y`?
 
 ```{r}
-df4 |> 
+df4 |>
   unnest_longer(y)
 ```
 
-As you can see, the output contains a list-column, but every element of the list-column contains a single element.
-Because `unnest_longer()` can't find a common type of vector, it keeps the original types in a list-column.
-You might wonder if this breaks the commandment that every element of a column must be the same type.
-It doesn't: every element is a list, even though the contents are of different types.
+Như bạn thấy, đầu ra chứa một cột danh sách, nhưng mỗi phần tử của cột danh sách chỉ chứa một phần tử duy nhất.
+Vì `unnest_longer()` không tìm được kiểu vector chung, nó giữ nguyên các kiểu gốc trong một cột danh sách.
+Bạn có thể thắc mắc liệu điều này có vi phạm quy tắc rằng mọi phần tử của một cột phải cùng kiểu không.
+Không hề: mọi phần tử đều là một danh sách, dù nội dung bên trong có kiểu khác nhau.
 
-Dealing with inconsistent types is challenging and the details depend on the precise nature of the problem and your goals, but you'll most likely need tools from @sec-iteration.
+Xử lý các kiểu không nhất quán là một thách thức và chi tiết phụ thuộc vào bản chất chính xác của vấn đề cùng mục tiêu của bạn, nhưng rất có thể bạn sẽ cần các công cụ từ @sec-iteration.
 
-### Other functions
+### Các hàm khác
 
-tidyr has a few other useful rectangling functions that we're not going to cover in this book:
+tidyr có một vài hàm rectangling hữu ích khác mà chúng ta sẽ không đề cập trong cuốn sách này:
 
--   `unnest_auto()` automatically picks between `unnest_longer()` and `unnest_wider()` based on the structure of the list-column. It's great for rapid exploration, but ultimately it's a bad idea because it doesn't force you to understand how your data is structured, and makes your code harder to understand.
--   `unnest()` expands both rows and columns. It's useful when you have a list-column that contains a 2d structure like a data frame, which you don't see in this book, but you might encounter if you use the [tidymodels](https://www.tmwr.org/base-r.html#combining-base-r-models-and-the-tidyverse) ecosystem.
+-   `unnest_auto()` tự động chọn giữa `unnest_longer()` và `unnest_wider()` dựa trên cấu trúc của cột danh sách. Nó rất tốt cho việc khám phá nhanh, nhưng cuối cùng đây là một ý tưởng không tốt vì nó không buộc bạn hiểu cấu trúc dữ liệu của mình, và làm mã của bạn khó hiểu hơn.
+-   `unnest()` mở rộng cả hàng và cột. Nó hữu ích khi bạn có cột danh sách chứa cấu trúc 2 chiều như khung dữ liệu, thứ bạn không gặp trong cuốn sách này, nhưng có thể gặp nếu bạn sử dụng hệ sinh thái [tidymodels](https://www.tmwr.org/base-r.html#combining-base-r-models-and-the-tidyverse).
 
-These functions are good to know about as you might encounter them when reading other people's code or tackling rarer rectangling challenges yourself.
+Những hàm này nên biết vì bạn có thể gặp chúng khi đọc mã của người khác hoặc tự giải quyết các thách thức rectangling ít phổ biến hơn.
 
-### Exercises
+### Bài tập
 
-1.  What happens when you use `unnest_wider()` with unnamed list-columns like `df2`?
-    What argument is now necessary?
-    What happens to missing values?
+1.  Điều gì xảy ra khi bạn sử dụng `unnest_wider()` với cột danh sách không có tên như `df2`?
+    Đối số nào bây giờ là cần thiết?
+    Điều gì xảy ra với các giá trị khuyết (missing value)?
 
-2.  What happens when you use `unnest_longer()` with named list-columns like `df1`?
-    What additional information do you get in the output?
-    How can you suppress that extra detail?
+2.  Điều gì xảy ra khi bạn sử dụng `unnest_longer()` với cột danh sách có tên như `df1`?
+    Bạn nhận được thông tin bổ sung gì trong đầu ra?
+    Làm thế nào bạn có thể ẩn chi tiết thêm đó?
 
-3.  From time-to-time you encounter data frames with multiple list-columns with aligned values.
-    For example, in the following data frame, the values of `y` and `z` are aligned (i.e. `y` and `z` will always have the same length within a row, and the first value of `y` corresponds to the first value of `z`).
-    What happens if you apply two `unnest_longer()` calls to this data frame?
-    How can you preserve the relationship between `x` and `y`?
-    (Hint: carefully read the docs).
+3.  Thỉnh thoảng bạn gặp các khung dữ liệu có nhiều cột danh sách với các giá trị được căn chỉnh.
+    Ví dụ, trong khung dữ liệu sau, các giá trị của `y` và `z` được căn chỉnh (tức là `y` và `z` sẽ luôn có cùng độ dài trong một hàng, và giá trị đầu tiên của `y` tương ứng với giá trị đầu tiên của `z`).
+    Điều gì xảy ra nếu bạn áp dụng hai lệnh gọi `unnest_longer()` cho khung dữ liệu này?
+    Làm thế nào bạn có thể bảo toàn mối quan hệ giữa `x` và `y`?
+    (Gợi ý: đọc kỹ tài liệu).
 
     ```{r}
     df4 <- tribble(
@@ -323,238 +323,238 @@ These functions are good to know about as you might encounter them when reading 
     )
     ```
 
-## Case studies
+## Nghiên cứu tình huống
 
-The main difference between the simple examples we used above and real data is that real data typically contains multiple levels of nesting that require multiple calls to `unnest_longer()` and/or `unnest_wider()`.
-To show that in action, this section works through three real rectangling challenges using datasets from the repurrrsive package.
+Sự khác biệt chính giữa các ví dụ đơn giản chúng ta đã dùng ở trên và dữ liệu thực là dữ liệu thực thường chứa nhiều cấp lồng nhau đòi hỏi nhiều lệnh gọi `unnest_longer()` và/hoặc `unnest_wider()`.
+Để minh họa điều đó, phần này sẽ đi qua ba thách thức rectangling thực tế sử dụng các tập dữ liệu từ gói repurrrsive.
 
-### Very wide data
+### Dữ liệu rất rộng
 
-We'll start with `gh_repos`.
-This is a list that contains data about a collection of GitHub repositories retrieved using the GitHub API. It's a very deeply nested list so it's difficult to show the structure in this book; we recommend exploring a little on your own with `View(gh_repos)` before we continue.
+Chúng ta sẽ bắt đầu với `gh_repos`.
+Đây là một danh sách chứa dữ liệu về một tập hợp các kho lưu trữ (repository) GitHub được lấy bằng GitHub API. Đây là một danh sách lồng rất sâu nên khó hiển thị cấu trúc trong cuốn sách này; chúng tôi khuyên bạn nên tự khám phá một chút với `View(gh_repos)` trước khi tiếp tục.
 
-`gh_repos` is a list, but our tools work with list-columns, so we'll begin by putting it into a tibble.
-We call this column `json` for reasons we'll get to later.
+`gh_repos` là một danh sách, nhưng các công cụ của chúng ta hoạt động với cột danh sách, nên chúng ta sẽ bắt đầu bằng cách đặt nó vào một tibble.
+Chúng ta đặt tên cột này là `json` vì lý do chúng ta sẽ nói sau.
 
 ```{r}
 repos <- tibble(json = gh_repos)
 repos
 ```
 
-This tibble contains 6 rows, one row for each child of `gh_repos`.
-Each row contains an unnamed list with either 26 or 30 rows.
-Since these are unnamed, we'll start with `unnest_longer()` to put each child in its own row:
+Tibble này chứa 6 hàng, mỗi hàng cho mỗi phần tử con của `gh_repos`.
+Mỗi hàng chứa một danh sách không có tên với 26 hoặc 30 hàng.
+Vì chúng không có tên, chúng ta sẽ bắt đầu với `unnest_longer()` để đặt mỗi phần tử con vào hàng riêng:
 
 ```{r}
-repos |> 
+repos |>
   unnest_longer(json)
 ```
 
-At first glance, it might seem like we haven't improved the situation: while we have more rows (176 instead of 6) each element of `json` is still a list.
-However, there's an important difference: now each element is a **named** list so we can use `unnest_wider()` to put each element into its own column:
+Thoạt nhìn, có vẻ như chúng ta chưa cải thiện tình hình: mặc dù có nhiều hàng hơn (176 thay vì 6) mỗi phần tử của `json` vẫn là một danh sách.
+Tuy nhiên, có một khác biệt quan trọng: bây giờ mỗi phần tử là một danh sách **có tên** nên chúng ta có thể dùng `unnest_wider()` để đặt mỗi phần tử vào cột riêng:
 
 ```{r}
-repos |> 
-  unnest_longer(json) |> 
-  unnest_wider(json) 
+repos |>
+  unnest_longer(json) |>
+  unnest_wider(json)
 ```
 
-This has worked but the result is a little overwhelming: there are so many columns that tibble doesn't even print all of them!
-We can see them all with `names()`; and here we look at the first 10:
+Cách này đã hoạt động nhưng kết quả hơi choáng ngợp: có quá nhiều cột đến nỗi tibble thậm chí không in hết tất cả!
+Chúng ta có thể xem tất cả bằng `names()`; và ở đây chúng ta xem 10 cột đầu tiên:
 
 ```{r}
-repos |> 
-  unnest_longer(json) |> 
-  unnest_wider(json) |> 
-  names() |> 
+repos |>
+  unnest_longer(json) |>
+  unnest_wider(json) |>
+  names() |>
   head(10)
 ```
 
-Let's pull out a few that look interesting:
+Hãy lấy ra một vài cột trông thú vị:
 
 ```{r}
-repos |> 
-  unnest_longer(json) |> 
-  unnest_wider(json) |> 
+repos |>
+  unnest_longer(json) |>
+  unnest_wider(json) |>
   select(id, full_name, owner, description)
 ```
 
-You can use this to work back to understand how `gh_repos` was structured: each child was a GitHub user containing a list of up to 30 GitHub repositories that they created.
+Bạn có thể dùng điều này để hiểu ngược lại cấu trúc của `gh_repos`: mỗi phần tử con là một người dùng GitHub chứa danh sách lên đến 30 kho lưu trữ GitHub mà họ đã tạo.
 
-`owner` is another list-column, and since it contains a named list, we can use `unnest_wider()` to get at the values:
+`owner` là một cột danh sách khác, và vì nó chứa một danh sách có tên, chúng ta có thể dùng `unnest_wider()` để lấy các giá trị:
 
 ```{r}
 #| error: true
-repos |> 
-  unnest_longer(json) |> 
-  unnest_wider(json) |> 
-  select(id, full_name, owner, description) |> 
+repos |>
+  unnest_longer(json) |>
+  unnest_wider(json) |>
+  select(id, full_name, owner, description) |>
   unnest_wider(owner)
 ```
 
-Uh oh, this list column also contains an `id` column and we can't have two `id` columns in the same data frame.
-As suggested, lets use `names_sep` to resolve the problem:
+Ối, cột danh sách này cũng chứa một cột `id` và chúng ta không thể có hai cột `id` trong cùng một khung dữ liệu.
+Như gợi ý, hãy dùng `names_sep` để giải quyết vấn đề:
 
 ```{r}
-repos |> 
-  unnest_longer(json) |> 
-  unnest_wider(json) |> 
-  select(id, full_name, owner, description) |> 
+repos |>
+  unnest_longer(json) |>
+  unnest_wider(json) |>
+  select(id, full_name, owner, description) |>
   unnest_wider(owner, names_sep = "_")
 ```
 
-This gives another wide dataset, but you can get the sense that `owner` appears to contain a lot of additional data about the person who "owns" the repository.
+Điều này cho ra một tập dữ liệu rộng khác, nhưng bạn có thể cảm nhận rằng `owner` dường như chứa rất nhiều dữ liệu bổ sung về người "sở hữu" kho lưu trữ.
 
-### Relational data
+### Dữ liệu quan hệ
 
-Nested data is sometimes used to represent data that we'd usually spread across multiple data frames.
-For example, take `got_chars` which contains data about characters that appear in the Game of Thrones books and TV series.
-Like `gh_repos` it's a list, so we start by turning it into a list-column of a tibble:
+Dữ liệu lồng nhau đôi khi được dùng để biểu diễn dữ liệu mà chúng ta thường trải ra trên nhiều khung dữ liệu.
+Ví dụ, lấy `got_chars` chứa dữ liệu về các nhân vật xuất hiện trong loạt sách và phim Game of Thrones.
+Giống như `gh_repos`, nó là một danh sách, nên chúng ta bắt đầu bằng cách biến nó thành cột danh sách của một tibble:
 
 ```{r}
 chars <- tibble(json = got_chars)
 chars
 ```
 
-The `json` column contains named elements, so we'll start by widening it:
+Cột `json` chứa các phần tử có tên, nên chúng ta sẽ bắt đầu bằng cách mở rộng nó:
 
 ```{r}
-chars |> 
+chars |>
   unnest_wider(json)
 ```
 
-And selecting a few columns to make it easier to read:
+Và chọn một vài cột để dễ đọc hơn:
 
 ```{r}
-characters <- chars |> 
-  unnest_wider(json) |> 
+characters <- chars |>
+  unnest_wider(json) |>
   select(id, name, gender, culture, born, died, alive)
 characters
 ```
 
-This dataset contains also many list-columns:
+Tập dữ liệu này cũng chứa nhiều cột danh sách:
 
 ```{r}
-chars |> 
-  unnest_wider(json) |> 
+chars |>
+  unnest_wider(json) |>
   select(id, where(is.list))
 ```
 
-Let's explore the `titles` column.
-It's an unnamed list-column, so we'll unnest it into rows:
+Hãy khám phá cột `titles`.
+Đây là cột danh sách không có tên, nên chúng ta sẽ mở rộng nó thành các hàng:
 
 ```{r}
-chars |> 
-  unnest_wider(json) |> 
-  select(id, titles) |> 
+chars |>
+  unnest_wider(json) |>
+  select(id, titles) |>
   unnest_longer(titles)
 ```
 
-You might expect to see this data in its own table because it would be easy to join to the characters data as needed.
-Let's do that, which requires little cleaning: removing the rows containing empty strings and renaming `titles` to `title` since each row now only contains a single title.
+Bạn có thể muốn thấy dữ liệu này trong bảng riêng vì sẽ dễ nối (join) với dữ liệu nhân vật khi cần.
+Hãy làm điều đó, việc này cần một chút dọn dẹp: loại bỏ các hàng chứa chuỗi rỗng và đổi tên `titles` thành `title` vì mỗi hàng giờ chỉ chứa một tiêu đề duy nhất.
 
 ```{r}
-titles <- chars |> 
-  unnest_wider(json) |> 
-  select(id, titles) |> 
-  unnest_longer(titles) |> 
-  filter(titles != "") |> 
+titles <- chars |>
+  unnest_wider(json) |>
+  select(id, titles) |>
+  unnest_longer(titles) |>
+  filter(titles != "") |>
   rename(title = titles)
 titles
 ```
 
-You could imagine creating a table like this for each of the list-columns, then using joins to combine them with the character data as you need it.
+Bạn có thể tưởng tượng việc tạo một bảng như thế này cho mỗi cột danh sách, sau đó sử dụng các phép nối để kết hợp chúng với dữ liệu nhân vật khi cần.
 
-### Deeply nested
+### Lồng sâu
 
-We'll finish off these case studies with a list-column that's very deeply nested and requires repeated rounds of `unnest_wider()` and `unnest_longer()` to unravel: `gmaps_cities`.
-This is a two column tibble containing five city names and the results of using Google's [geocoding API](https://developers.google.com/maps/documentation/geocoding) to determine their location:
+Chúng ta sẽ kết thúc các nghiên cứu tình huống này với một cột danh sách được lồng rất sâu và đòi hỏi nhiều vòng `unnest_wider()` và `unnest_longer()` để gỡ ra: `gmaps_cities`.
+Đây là một tibble hai cột chứa năm tên thành phố và kết quả của việc sử dụng [API mã hóa địa lý](https://developers.google.com/maps/documentation/geocoding) của Google để xác định vị trí của chúng:
 
 ```{r}
 gmaps_cities
 ```
 
-`json` is a list-column with internal names, so we start with an `unnest_wider()`:
+`json` là cột danh sách với tên bên trong, nên chúng ta bắt đầu với `unnest_wider()`:
 
 ```{r}
-gmaps_cities |> 
+gmaps_cities |>
   unnest_wider(json)
 ```
 
-This gives us the `status` and the `results`.
-We'll drop the status column since they're all `OK`; in a real analysis, you'd also want to capture all the rows where `status != "OK"` and figure out what went wrong.
-`results` is an unnamed list, with either one or two elements (we'll see why shortly) so we'll unnest it into rows:
+Điều này cho chúng ta `status` và `results`.
+Chúng ta sẽ bỏ cột status vì tất cả đều là `OK`; trong phân tích thực tế, bạn cũng sẽ muốn nắm bắt tất cả các hàng có `status != "OK"` và tìm hiểu xem có gì sai.
+`results` là một danh sách không có tên, với một hoặc hai phần tử (chúng ta sẽ sớm thấy tại sao) nên chúng ta sẽ mở rộng nó thành các hàng:
 
 ```{r}
-gmaps_cities |> 
-  unnest_wider(json) |> 
-  select(-status) |> 
+gmaps_cities |>
+  unnest_wider(json) |>
+  select(-status) |>
   unnest_longer(results)
 ```
 
-Now `results` is a named list, so we'll use `unnest_wider()`:
+Bây giờ `results` là một danh sách có tên, nên chúng ta sẽ dùng `unnest_wider()`:
 
 ```{r}
-locations <- gmaps_cities |> 
-  unnest_wider(json) |> 
-  select(-status) |> 
-  unnest_longer(results) |> 
+locations <- gmaps_cities |>
+  unnest_wider(json) |>
+  select(-status) |>
+  unnest_longer(results) |>
   unnest_wider(results)
 locations
 ```
 
-Now we can see why two cities got two results: Washington matched both Washington state and Washington, DC, and Arlington matched Arlington, Virginia and Arlington, Texas.
+Bây giờ chúng ta có thể thấy tại sao hai thành phố có hai kết quả: Washington khớp với cả bang Washington và Washington, DC, và Arlington khớp với Arlington, Virginia và Arlington, Texas.
 
-There are a few different places we could go from here.
-We might want to determine the exact location of the match, which is stored in the `geometry` list-column:
+Có một vài hướng khác nhau chúng ta có thể đi từ đây.
+Chúng ta có thể muốn xác định vị trí chính xác của kết quả khớp, được lưu trong cột danh sách `geometry`:
 
 ```{r}
-locations |> 
-  select(city, formatted_address, geometry) |> 
+locations |>
+  select(city, formatted_address, geometry) |>
   unnest_wider(geometry)
 ```
 
-That gives us new `bounds` (a rectangular region) and `location` (a point).
-We can unnest `location` to see the latitude (`lat`) and longitude (`lng`):
+Điều đó cho chúng ta `bounds` (một vùng hình chữ nhật) và `location` (một điểm) mới.
+Chúng ta có thể mở rộng `location` để xem vĩ độ (`lat`) và kinh độ (`lng`):
 
 ```{r}
-locations |> 
-  select(city, formatted_address, geometry) |> 
-  unnest_wider(geometry) |> 
+locations |>
+  select(city, formatted_address, geometry) |>
+  unnest_wider(geometry) |>
   unnest_wider(location)
 ```
 
-Extracting the bounds requires a few more steps:
+Trích xuất bounds đòi hỏi thêm vài bước nữa:
 
 ```{r}
-locations |> 
-  select(city, formatted_address, geometry) |> 
-  unnest_wider(geometry) |> 
-  # focus on the variables of interest
+locations |>
+  select(city, formatted_address, geometry) |>
+  unnest_wider(geometry) |>
+  # tập trung vào các biến quan tâm
   select(!location:viewport) |>
   unnest_wider(bounds)
 ```
 
-We then rename `southwest` and `northeast` (the corners of the rectangle) so we can use `names_sep` to create short but evocative names:
+Sau đó chúng ta đổi tên `southwest` và `northeast` (các góc của hình chữ nhật) để có thể dùng `names_sep` tạo ra các tên ngắn nhưng gợi nhớ:
 
 ```{r}
-locations |> 
-  select(city, formatted_address, geometry) |> 
-  unnest_wider(geometry) |> 
+locations |>
+  select(city, formatted_address, geometry) |>
+  unnest_wider(geometry) |>
   select(!location:viewport) |>
-  unnest_wider(bounds) |> 
-  rename(ne = northeast, sw = southwest) |> 
-  unnest_wider(c(ne, sw), names_sep = "_") 
+  unnest_wider(bounds) |>
+  rename(ne = northeast, sw = southwest) |>
+  unnest_wider(c(ne, sw), names_sep = "_")
 ```
 
-Note how we unnest two columns simultaneously by supplying a vector of variable names to `unnest_wider()`.
+Lưu ý cách chúng ta mở rộng hai cột cùng lúc bằng cách cung cấp một vector tên biến cho `unnest_wider()`.
 
-Once you've discovered the path to get to the components you're interested in, you can extract them directly using another tidyr function, `hoist()`:
+Khi bạn đã tìm được đường dẫn đến các thành phần mà bạn quan tâm, bạn có thể trích xuất chúng trực tiếp bằng một hàm tidyr khác, `hoist()`:
 
 ```{r}
 #| results: false
-locations |> 
-  select(city, formatted_address, geometry) |> 
+locations |>
+  select(city, formatted_address, geometry) |>
   hoist(
     geometry,
     ne_lat = c("bounds", "northeast", "lat"),
@@ -564,94 +564,94 @@ locations |>
   )
 ```
 
-If these case studies have whetted your appetite for more real-life rectangling, you can see a few more examples in `vignette("rectangling", package = "tidyr")`.
+Nếu các nghiên cứu tình huống này đã kích thích sự tò mò của bạn về rectangling với dữ liệu thực tế, bạn có thể xem thêm một vài ví dụ trong `vignette("rectangling", package = "tidyr")`.
 
-### Exercises
+### Bài tập
 
-1.  Roughly estimate when `gh_repos` was created.
-    Why can you only roughly estimate the date?
+1.  Ước lượng sơ bộ thời điểm `gh_repos` được tạo.
+    Tại sao bạn chỉ có thể ước lượng sơ bộ ngày?
 
-2.  The `owner` column of `gh_repos` contains a lot of duplicated information because each owner can have many repos.
-    Can you construct an `owners` data frame that contains one row for each owner?
-    (Hint: does `distinct()` work with `list-cols`?)
+2.  Cột `owner` của `gh_repos` chứa rất nhiều thông tin trùng lặp vì mỗi chủ sở hữu có thể có nhiều kho lưu trữ.
+    Bạn có thể xây dựng một khung dữ liệu `owners` chứa một hàng cho mỗi chủ sở hữu không?
+    (Gợi ý: `distinct()` có hoạt động với `list-cols` không?)
 
-3.  Follow the steps used for `titles` to create similar tables for the aliases, allegiances, books, and TV series for the Game of Thrones characters.
+3.  Làm theo các bước đã dùng cho `titles` để tạo các bảng tương tự cho biệt danh, phe phái, sách, và phim truyền hình cho các nhân vật Game of Thrones.
 
-4.  Explain the following code line-by-line.
-    Why is it interesting?
-    Why does it work for `got_chars` but might not work in general?
+4.  Giải thích đoạn mã sau từng dòng một.
+    Tại sao nó thú vị?
+    Tại sao nó hoạt động cho `got_chars` nhưng có thể không hoạt động nói chung?
 
     ```{r}
     #| results: false
-    tibble(json = got_chars) |> 
-      unnest_wider(json) |> 
-      select(id, where(is.list)) |> 
+    tibble(json = got_chars) |>
+      unnest_wider(json) |>
+      select(id, where(is.list)) |>
       pivot_longer(
-        where(is.list), 
-        names_to = "name", 
+        where(is.list),
+        names_to = "name",
         values_to = "value"
-      ) |>  
+      ) |>
       unnest_longer(value)
     ```
 
-5.  In `gmaps_cities`, what does `address_components` contain?
-    Why does the length vary between rows?
-    Unnest it appropriately to figure it out.
-    (Hint: `types` always appears to contain two elements. Does `unnest_wider()` make it easier to work with than `unnest_longer()`?)
+5.  Trong `gmaps_cities`, `address_components` chứa gì?
+    Tại sao độ dài thay đổi giữa các hàng?
+    Mở rộng nó một cách phù hợp để tìm hiểu.
+    (Gợi ý: `types` dường như luôn chứa hai phần tử. `unnest_wider()` có giúp làm việc dễ hơn so với `unnest_longer()` không?)
     .
 
 ## JSON
 
-All of the case studies in the previous section were sourced from wild-caught JSON.
-JSON is short for **j**ava**s**cript **o**bject **n**otation and is the way that most web APIs return data.
-It's important to understand it because while JSON and R's data types are pretty similar, there isn't a perfect 1-to-1 mapping, so it's good to understand a bit about JSON if things go wrong.
+Tất cả các nghiên cứu tình huống trong phần trước đều được lấy từ dữ liệu JSON thực tế.
+JSON là viết tắt của **J**ava**S**cript **O**bject **N**otation và là cách mà hầu hết các web API trả về dữ liệu.
+Việc hiểu nó rất quan trọng vì mặc dù các kiểu dữ liệu của JSON và R khá giống nhau, không có sự tương ứng 1-1 hoàn hảo, nên tốt nhất bạn nên hiểu một chút về JSON phòng khi có vấn đề.
 
-### Data types
+### Các kiểu dữ liệu
 
-JSON is a simple format designed to be easily read and written by machines, not humans.
-It has six key data types.
-Four of them are scalars:
+JSON là một định dạng đơn giản được thiết kế để máy tính dễ dàng đọc và viết, chứ không phải con người.
+Nó có sáu kiểu dữ liệu chính.
+Bốn trong số đó là vô hướng (scalar):
 
--   The simplest type is a null (`null`) which plays the same role as `NA` in R. It represents the absence of data.
--   A **string** is much like a string in R, but must always use double quotes.
--   A **number** is similar to R's numbers: they can use integer (e.g., 123), decimal (e.g., 123.45), or scientific (e.g., 1.23e3) notation. JSON doesn't support `Inf`, `-Inf`, or `NaN`.
--   A **boolean** is similar to R's `TRUE` and `FALSE`, but uses lowercase `true` and `false`.
+-   Kiểu đơn giản nhất là null (`null`) đóng vai trò giống như `NA` trong R. Nó biểu diễn sự vắng mặt của dữ liệu.
+-   **Chuỗi ký tự (string)** rất giống chuỗi ký tự trong R, nhưng phải luôn sử dụng dấu ngoặc kép.
+-   **Số (number)** tương tự như số trong R: chúng có thể dùng ký hiệu số nguyên (ví dụ: 123), thập phân (ví dụ: 123.45), hoặc khoa học (ví dụ: 1.23e3). JSON không hỗ trợ `Inf`, `-Inf`, hoặc `NaN`.
+-   **Giá trị boolean** tương tự như `TRUE` và `FALSE` trong R, nhưng sử dụng chữ thường `true` và `false`.
 
-JSON's strings, numbers, and booleans are pretty similar to R's character, numeric, and logical vectors.
-The main difference is that JSON's scalars can only represent a single value.
-To represent multiple values you need to use one of the two remaining types: arrays and objects.
+Chuỗi ký tự, số, và boolean của JSON khá giống với các vector ký tự, số, và logic của R.
+Sự khác biệt chính là các giá trị vô hướng của JSON chỉ có thể biểu diễn một giá trị duy nhất.
+Để biểu diễn nhiều giá trị, bạn cần sử dụng một trong hai kiểu còn lại: mảng (array) và đối tượng (object).
 
-Both arrays and objects are similar to lists in R; the difference is whether or not they're named.
-An **array** is like an unnamed list, and is written with `[]`.
-For example `[1, 2, 3]` is an array containing 3 numbers, and `[null, 1, "string", false]` is an array that contains a null, a number, a string, and a boolean.
-An **object** is like a named list, and is written with `{}`.
-The names (keys in JSON terminology) are strings, so must be surrounded by quotes.
-For example, `{"x": 1, "y": 2}` is an object that maps `x` to 1 and `y` to 2.
+Cả mảng và đối tượng đều giống với danh sách trong R; sự khác biệt là chúng có tên hay không.
+Một **mảng** giống như một danh sách không có tên, và được viết bằng `[]`.
+Ví dụ `[1, 2, 3]` là một mảng chứa 3 số, và `[null, 1, "string", false]` là một mảng chứa một null, một số, một chuỗi ký tự, và một boolean.
+Một **đối tượng** giống như một danh sách có tên, và được viết bằng `{}`.
+Các tên (gọi là key trong thuật ngữ JSON) là chuỗi ký tự, nên phải được bao quanh bởi dấu ngoặc kép.
+Ví dụ, `{"x": 1, "y": 2}` là một đối tượng ánh xạ `x` thành 1 và `y` thành 2.
 
-Note that JSON doesn't have any native way to represent dates or date-times, so they're often stored as strings, and you'll need to use `readr::parse_date()` or `readr::parse_datetime()` to turn them into the correct data structure.
-Similarly, JSON's rules for representing floating point numbers in JSON are a little imprecise, so you'll also sometimes find numbers stored in strings.
-Apply `readr::parse_double()` as needed to get the correct variable type.
+Lưu ý rằng JSON không có cách gốc nào để biểu diễn ngày hoặc ngày giờ, nên chúng thường được lưu dưới dạng chuỗi ký tự, và bạn sẽ cần dùng `readr::parse_date()` hoặc `readr::parse_datetime()` để chuyển chúng thành cấu trúc dữ liệu đúng.
+Tương tự, các quy tắc biểu diễn số dấu phẩy động trong JSON hơi thiếu chính xác, nên đôi khi bạn cũng sẽ gặp số được lưu dưới dạng chuỗi ký tự.
+Hãy áp dụng `readr::parse_double()` khi cần để có được kiểu biến đúng.
 
 ### jsonlite
 
-To convert JSON into R data structures, we recommend the jsonlite package, by Jeroen Ooms.
-We'll use only two jsonlite functions: `read_json()` and `parse_json()`.
-In real life, you'll use `read_json()` to read a JSON file from disk.
-For example, the repurrsive package also provides the source for `gh_user` as a JSON file and you can read it with `read_json()`:
+Để chuyển đổi JSON thành cấu trúc dữ liệu R, chúng tôi khuyên dùng gói jsonlite, do Jeroen Ooms phát triển.
+Chúng ta sẽ chỉ dùng hai hàm jsonlite: `read_json()` và `parse_json()`.
+Trong thực tế, bạn sẽ dùng `read_json()` để đọc tệp JSON từ ổ đĩa.
+Ví dụ, gói repurrsive cũng cung cấp nguồn của `gh_user` dưới dạng tệp JSON và bạn có thể đọc nó bằng `read_json()`:
 
 ```{r}
-# A path to a json file inside the package:
+# Đường dẫn đến tệp json bên trong gói:
 gh_users_json()
 
-# Read it with read_json()
+# Đọc bằng read_json()
 gh_users2 <- read_json(gh_users_json())
 
-# Check it's the same as the data we were using previously
+# Kiểm tra xem nó có giống với dữ liệu chúng ta đã dùng trước đó không
 identical(gh_users, gh_users2)
 ```
 
-In this book, we'll also use `parse_json()`, since it takes a string containing JSON, which makes it good for generating simple examples.
-To get started, here are three simple JSON datasets, starting with a number, then putting a few numbers in an array, then putting that array in an object:
+Trong cuốn sách này, chúng ta cũng sẽ dùng `parse_json()`, vì nó nhận một chuỗi ký tự chứa JSON, rất tốt cho việc tạo các ví dụ đơn giản.
+Để bắt đầu, đây là ba tập dữ liệu JSON đơn giản, bắt đầu với một số, sau đó đặt vài số vào một mảng, rồi đặt mảng đó vào một đối tượng:
 
 ```{r}
 str(parse_json('1'))
@@ -659,14 +659,14 @@ str(parse_json('[1, 2, 3]'))
 str(parse_json('{"x": [1, 2, 3]}'))
 ```
 
-jsonlite has another important function called `fromJSON()`.
-We don't use it here because it performs automatic simplification (`simplifyVector = TRUE`).
-This often works well, particularly in simple cases, but we think you're better off doing the rectangling yourself so you know exactly what's happening and can more easily handle the most complicated nested structures.
+jsonlite có một hàm quan trọng khác là `fromJSON()`.
+Chúng ta không dùng nó ở đây vì nó thực hiện đơn giản hóa tự động (`simplifyVector = TRUE`).
+Điều này thường hoạt động tốt, đặc biệt trong các trường hợp đơn giản, nhưng chúng tôi nghĩ bạn nên tự thực hiện rectangling để biết chính xác điều gì đang xảy ra và có thể xử lý dễ dàng hơn các cấu trúc lồng nhau phức tạp nhất.
 
-### Starting the rectangling process
+### Bắt đầu quá trình rectangling
 
-In most cases, JSON files contain a single top-level array, because they're designed to provide data about multiple "things", e.g., multiple pages, or multiple records, or multiple results.
-In this case, you'll start your rectangling with `tibble(json)` so that each element becomes a row:
+Trong hầu hết các trường hợp, tệp JSON chứa một mảng cấp cao nhất duy nhất, vì chúng được thiết kế để cung cấp dữ liệu về nhiều "thứ", ví dụ: nhiều trang, hoặc nhiều bản ghi, hoặc nhiều kết quả.
+Trong trường hợp này, bạn sẽ bắt đầu rectangling với `tibble(json)` để mỗi phần tử trở thành một hàng:
 
 ```{r}
 json <- '[
@@ -676,16 +676,16 @@ json <- '[
 df <- tibble(json = parse_json(json))
 df
 
-df |> 
+df |>
   unnest_wider(json)
 ```
 
-In rarer cases, the JSON file consists of a single top-level JSON object, representing one "thing".
-In this case, you'll need to kick off the rectangling process by wrapping it in a list, before you put it in a tibble.
+Trong các trường hợp ít phổ biến hơn, tệp JSON bao gồm một đối tượng JSON cấp cao nhất duy nhất, biểu diễn một "thứ".
+Trong trường hợp này, bạn sẽ cần khởi động quá trình rectangling bằng cách bọc nó trong một danh sách, trước khi đặt vào tibble.
 
 ```{r}
 json <- '{
-  "status": "OK", 
+  "status": "OK",
   "results": [
     {"name": "John", "age": 34},
     {"name": "Susan", "age": 27}
@@ -695,24 +695,24 @@ json <- '{
 df <- tibble(json = list(parse_json(json)))
 df
 
-df |> 
-  unnest_wider(json) |> 
-  unnest_longer(results) |> 
+df |>
+  unnest_wider(json) |>
+  unnest_longer(results) |>
   unnest_wider(results)
 ```
 
-Alternatively, you can reach inside the parsed JSON and start with the bit that you actually care about:
+Cách khác, bạn có thể truy cập vào bên trong JSON đã phân tích và bắt đầu với phần mà bạn thực sự quan tâm:
 
 ```{r}
 df <- tibble(results = parse_json(json)$results)
-df |> 
+df |>
   unnest_wider(results)
 ```
 
-### Exercises
+### Bài tập
 
-1.  Rectangle the `df_col` and `df_row` below.
-    They represent the two ways of encoding a data frame in JSON.
+1.  Chuyển đổi `df_col` và `df_row` bên dưới thành dạng bảng.
+    Chúng biểu diễn hai cách mã hóa một khung dữ liệu trong JSON.
 
     ```{r}
     json_col <- parse_json('
@@ -729,16 +729,16 @@ df |>
       ]
     ')
 
-    df_col <- tibble(json = list(json_col)) 
+    df_col <- tibble(json = list(json_col))
     df_row <- tibble(json = json_row)
     ```
 
-## Summary
+## Tóm tắt
 
-In this chapter, you learned what lists are, how you can generate them from JSON files, and how to turn them into rectangular data frames.
-Surprisingly we only need two new functions: `unnest_longer()` to put list elements into rows and `unnest_wider()` to put list elements into columns.
-It doesn't matter how deeply nested the list-column is; all you need to do is repeatedly call these two functions.
+Trong chương này, bạn đã học danh sách là gì, cách tạo chúng từ tệp JSON, và cách chuyển chúng thành khung dữ liệu hình chữ nhật.
+Đáng ngạc nhiên là chúng ta chỉ cần hai hàm mới: `unnest_longer()` để đặt các phần tử danh sách vào hàng và `unnest_wider()` để đặt các phần tử danh sách vào cột.
+Không quan trọng cột danh sách lồng sâu đến mức nào; tất cả những gì bạn cần làm là gọi lặp đi lặp lại hai hàm này.
 
-JSON is the most common data format returned by web APIs.
-What happens if the website doesn't have an API, but you can see data you want on the website?
-That's the topic of the next chapter: web scraping, extracting data from HTML webpages.
+JSON là định dạng dữ liệu phổ biến nhất được trả về bởi các web API.
+Điều gì xảy ra nếu trang web không có API, nhưng bạn có thể thấy dữ liệu mình muốn trên trang web?
+Đó là chủ đề của chương tiếp theo: thu thập dữ liệu web (web scraping), trích xuất dữ liệu từ các trang web HTML.
