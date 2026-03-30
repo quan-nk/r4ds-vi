@@ -14,7 +14,7 @@ Khi có thể, bạn nên sử dụng API[^webscraping-1], vì thông thường 
 Tuy nhiên, thật không may, lập trình với web API nằm ngoài phạm vi của cuốn sách này.
 Thay vào đó, chúng tôi sẽ dạy về thu thập dữ liệu web (scraping), một kỹ thuật hoạt động bất kể trang web có cung cấp API hay không.
 
-[^webscraping-1]: Và nhiều API phổ biến đã có các gói CRAN bao bọc sẵn, nên hãy bắt đầu bằng việc tìm hiểu một chút trước!
+[^webscraping-1]: Và nhiều API phổ biến đã có các gói mở rộng CRAN bao bọc sẵn, nên hãy bắt đầu bằng việc tìm hiểu một chút trước!
 
 Trong chương này, trước tiên chúng tôi sẽ thảo luận về đạo đức và tính hợp pháp của việc thu thập dữ liệu web trước khi đi sâu vào những kiến thức cơ bản về HTML.
 Sau đó bạn sẽ học những kiến thức cơ bản về bộ chọn CSS (CSS selectors) để định vị các phần tử cụ thể trên trang, và cách sử dụng các hàm rvest để lấy dữ liệu từ văn bản và thuộc tính ra khỏi HTML và đưa vào R.
@@ -48,7 +48,7 @@ Ba yếu tố này quan trọng vì chúng liên quan đến điều khoản và
 Nếu dữ liệu không công khai, không phi cá nhân, hoặc không mang tính thực tế, hoặc bạn đang thu thập dữ liệu cụ thể để kiếm tiền từ nó, bạn sẽ cần trao đổi với một luật sư.
 Trong mọi trường hợp, bạn nên tôn trọng tài nguyên của máy chủ lưu trữ các trang bạn đang thu thập.
 Quan trọng nhất, điều này có nghĩa là nếu bạn đang thu thập nhiều trang, bạn nên đảm bảo chờ một chút giữa mỗi yêu cầu.
-Một cách dễ dàng để làm điều này là sử dụng gói [**polite**](https://dmi3kno.github.io/polite/) của Dmytro Perepolkin.
+Một cách dễ dàng để làm điều này là sử dụng gói mở rộng [**polite**](https://dmi3kno.github.io/polite/) của Dmytro Perepolkin.
 Nó sẽ tự động tạm dừng giữa các yêu cầu và lưu bộ nhớ đệm kết quả để bạn không bao giờ yêu cầu cùng một trang hai lần.
 
 ### Điều khoản dịch vụ
