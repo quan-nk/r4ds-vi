@@ -1,31 +1,31 @@
-# Iteration {#sec-iteration}
+# Lặp {#sec-iteration}
 
 ```{r}
 #| echo: false
 source("_common.R")
 ```
 
-## Introduction
+## Giới thiệu
 
-In this chapter, you'll learn tools for iteration, repeatedly performing the same action on different objects.
-Iteration in R generally tends to look rather different from other programming languages because so much of it is implicit and we get it for free.
-For example, if you want to double a numeric vector `x` in R, you can just write `2 * x`.
-In most other languages, you'd need to explicitly double each element of `x` using some sort of for loop.
+Trong chương này, bạn sẽ học các công cụ để lặp (iteration), tức là thực hiện lặp đi lặp lại cùng một hành động trên các đối tượng khác nhau.
+Lặp trong R nhìn chung có xu hướng khá khác biệt so với các ngôn ngữ lập trình khác vì phần lớn nó được thực hiện ngầm và chúng ta có được nó miễn phí.
+Ví dụ, nếu bạn muốn nhân đôi một vector số `x` trong R, bạn chỉ cần viết `2 * x`.
+Trong hầu hết các ngôn ngữ khác, bạn cần phải nhân đôi từng phần tử của `x` một cách tường minh bằng một vòng lặp for nào đó.
 
-This book has already given you a small but powerful number of tools that perform the same action for multiple "things":
+Cuốn sách này đã cung cấp cho bạn một số ít nhưng mạnh mẽ các công cụ thực hiện cùng một hành động cho nhiều "thứ":
 
--   `facet_wrap()` and `facet_grid()` draws a plot for each subset.
--   `group_by()` plus `summarize()` computes summary statistics for each subset.
--   `unnest_wider()` and `unnest_longer()` create new rows and columns for each element of a list-column.
+-   `facet_wrap()` và `facet_grid()` vẽ một biểu đồ cho mỗi tập con.
+-   `group_by()` kết hợp với `summarize()` tính các thống kê tóm tắt cho mỗi tập con.
+-   `unnest_wider()` và `unnest_longer()` tạo các hàng và cột mới cho mỗi phần tử của một cột danh sách (list-column).
 
-Now it's time to learn some more general tools, often called **functional programming** tools because they are built around functions that take other functions as inputs.
-Learning functional programming can easily veer into the abstract, but in this chapter we'll keep things concrete by focusing on three common tasks: modifying multiple columns, reading multiple files, and saving multiple objects.
+Bây giờ là lúc học thêm một số công cụ tổng quát hơn, thường được gọi là các công cụ **lập trình hàm** (functional programming) vì chúng được xây dựng xung quanh các hàm nhận các hàm khác làm đầu vào.
+Học lập trình hàm có thể dễ dàng đi vào hướng trừu tượng, nhưng trong chương này chúng ta sẽ giữ mọi thứ cụ thể bằng cách tập trung vào ba tác vụ phổ biến: chỉnh sửa nhiều cột, đọc nhiều tệp và lưu nhiều đối tượng.
 
-### Prerequisites
+### Điều kiện tiên quyết
 
-In this chapter, we'll focus on tools provided by dplyr and purrr, both core members of the tidyverse.
-You've seen dplyr before, but [purrr](http://purrr.tidyverse.org/) is new.
-We're just going to use a couple of purrr functions in this chapter, but it's a great package to explore as you improve your programming skills.
+Trong chương này, chúng ta sẽ tập trung vào các công cụ được cung cấp bởi dplyr và purrr, cả hai đều là thành viên cốt lõi của tidyverse.
+Bạn đã thấy dplyr trước đó, nhưng [purrr](http://purrr.tidyverse.org/) thì mới.
+Chúng ta chỉ sử dụng một vài hàm của purrr trong chương này, nhưng đây là một gói tuyệt vời để khám phá khi bạn cải thiện kỹ năng lập trình của mình.
 
 ```{r}
 #| label: setup
@@ -33,9 +33,9 @@ We're just going to use a couple of purrr functions in this chapter, but it's a 
 library(tidyverse)
 ```
 
-## Modifying multiple columns {#sec-across}
+## Chỉnh sửa nhiều cột {#sec-across}
 
-Imagine you have this simple tibble and you want to count the number of observations and compute the median of every column.
+Hãy tưởng tượng bạn có tibble đơn giản này và muốn đếm số quan sát cũng như tính trung vị của mỗi cột.
 
 ```{r}
 set.seed(1014)
@@ -47,7 +47,7 @@ df <- tibble(
 )
 ```
 
-You could do it with copy-and-paste:
+Bạn có thể làm điều đó bằng cách sao chép và dán:
 
 ```{r}
 df |> summarize(
@@ -59,8 +59,8 @@ df |> summarize(
 )
 ```
 
-That breaks our rule of thumb to never copy and paste more than twice, and you can imagine that this will get very tedious if you have tens or even hundreds of columns.
-Instead, you can use `across()`:
+Điều đó vi phạm quy tắc ngón tay cái của chúng ta là không bao giờ sao chép và dán quá hai lần, và bạn có thể tưởng tượng rằng điều này sẽ trở nên rất nhàm chán nếu bạn có hàng chục hoặc thậm chí hàng trăm cột.
+Thay vào đó, bạn có thể sử dụng `across()`:
 
 ```{r}
 df |> summarize(
@@ -69,18 +69,18 @@ df |> summarize(
 )
 ```
 
-`across()` has three particularly important arguments, which we'll discuss in detail in the following sections.
-You'll use the first two every time you use `across()`: the first argument, `.cols`, specifies which columns you want to iterate over, and the second argument, `.fns`, specifies what to do with each column.
-You can use the `.names` argument when you need additional control over the names of output columns, which is particularly important when you use `across()` with `mutate()`.
-We'll also discuss two important variations, `if_any()` and `if_all()`, which work with `filter()`.
+`across()` có ba đối số đặc biệt quan trọng, mà chúng ta sẽ thảo luận chi tiết trong các phần sau.
+Bạn sẽ sử dụng hai đối số đầu tiên mỗi khi dùng `across()`: đối số đầu tiên, `.cols`, chỉ định những cột nào bạn muốn lặp qua, và đối số thứ hai, `.fns`, chỉ định việc cần làm với mỗi cột.
+Bạn có thể sử dụng đối số `.names` khi cần kiểm soát thêm tên của các cột đầu ra, điều này đặc biệt quan trọng khi bạn sử dụng `across()` với `mutate()`.
+Chúng ta cũng sẽ thảo luận về hai biến thể quan trọng, `if_any()` và `if_all()`, hoạt động với `filter()`.
 
-### Selecting columns with `.cols`
+### Chọn cột với `.cols`
 
-The first argument to `across()`, `.cols`, selects the columns to transform.
-This uses the same specifications as `select()`, @sec-select, so you can use functions like `starts_with()` and `ends_with()` to select columns based on their name.
+Đối số đầu tiên của `across()`, `.cols`, chọn các cột để biến đổi.
+Nó sử dụng cùng các đặc tả như `select()`, @sec-select, nên bạn có thể sử dụng các hàm như `starts_with()` và `ends_with()` để chọn cột dựa trên tên của chúng.
 
-There are two additional selection techniques that are particularly useful for `across()`: `everything()` and `where()`.
-`everything()` is straightforward: it selects every (non-grouping) column:
+Có hai kỹ thuật chọn bổ sung đặc biệt hữu ích cho `across()`: `everything()` và `where()`.
+`everything()` thì đơn giản: nó chọn mọi cột (không phải cột nhóm):
 
 ```{r}
 set.seed(1014)
@@ -92,54 +92,54 @@ df <- tibble(
   d = rnorm(10)
 )
 
-df |> 
-  group_by(grp) |> 
+df |>
+  group_by(grp) |>
   summarize(across(everything(), median))
 ```
 
-Note grouping columns (`grp` here) are not included in `across()`, because they're automatically preserved by `summarize()`.
+Lưu ý các cột nhóm (`grp` ở đây) không được bao gồm trong `across()`, vì chúng được tự động giữ lại bởi `summarize()`.
 
-`where()` allows you to select columns based on their type:
+`where()` cho phép bạn chọn cột dựa trên kiểu dữ liệu của chúng:
 
--   `where(is.numeric)` selects all numeric columns.
--   `where(is.character)` selects all string columns.
--   `where(is.Date)` selects all date columns.
--   `where(is.POSIXct)` selects all date-time columns.
--   `where(is.logical)` selects all logical columns.
+-   `where(is.numeric)` chọn tất cả các cột số.
+-   `where(is.character)` chọn tất cả các cột chuỗi ký tự.
+-   `where(is.Date)` chọn tất cả các cột ngày.
+-   `where(is.POSIXct)` chọn tất cả các cột ngày-giờ.
+-   `where(is.logical)` chọn tất cả các cột logic.
 
-Just like other selectors, you can combine these with Boolean algebra.
-For example, `!where(is.numeric)` selects all non-numeric columns, and `starts_with("a") & where(is.logical)` selects all logical columns whose name starts with "a".
+Giống như các bộ chọn khác, bạn có thể kết hợp chúng với đại số Boolean.
+Ví dụ, `!where(is.numeric)` chọn tất cả các cột không phải số, và `starts_with("a") & where(is.logical)` chọn tất cả các cột logic có tên bắt đầu bằng "a".
 
-### Calling a single function
+### Gọi một hàm đơn
 
-The second argument to `across()` defines how each column will be transformed.
-In simple cases, as above, this will be a single existing function.
-This is a pretty special feature of R: we're passing one function (`median`, `mean`, `str_flatten`, ...) to another function (`across`).
-This is one of the features that makes R a functional programming language.
+Đối số thứ hai của `across()` định nghĩa cách mỗi cột sẽ được biến đổi.
+Trong các trường hợp đơn giản, như ở trên, đây sẽ là một hàm có sẵn.
+Đây là một tính năng khá đặc biệt của R: chúng ta đang truyền một hàm (`median`, `mean`, `str_flatten`, ...) cho một hàm khác (`across`).
+Đây là một trong những tính năng khiến R trở thành một ngôn ngữ lập trình hàm.
 
-It's important to note that we're passing this function to `across()`, so `across()` can call it; we're not calling it ourselves.
-That means the function name should never be followed by `()`.
-If you forget, you'll get an error:
+Điều quan trọng cần lưu ý là chúng ta đang truyền hàm này cho `across()`, để `across()` có thể gọi nó; chúng ta không tự gọi nó.
+Điều đó có nghĩa là tên hàm không bao giờ được theo sau bởi `()`.
+Nếu bạn quên, bạn sẽ nhận được lỗi:
 
 ```{r}
 #| error: true
-df |> 
-  group_by(grp) |> 
+df |>
+  group_by(grp) |>
   summarize(across(everything(), median()))
 ```
 
-This error arises because you're calling the function with no input, e.g.:
+Lỗi này phát sinh vì bạn đang gọi hàm mà không có đầu vào, ví dụ:
 
 ```{r}
 #| error: true
 median()
 ```
 
-### Calling multiple functions
+### Gọi nhiều hàm
 
-In more complex cases, you might want to supply additional arguments or perform multiple transformations.
-Let's motivate this problem with a simple example: what happens if we have some missing values in our data?
-`median()` propagates those missing values, giving us a suboptimal output:
+Trong các trường hợp phức tạp hơn, bạn có thể muốn cung cấp thêm đối số hoặc thực hiện nhiều phép biến đổi.
+Hãy tạo động lực cho vấn đề này bằng một ví dụ đơn giản: điều gì xảy ra nếu chúng ta có một số giá trị khuyết (missing value) trong dữ liệu?
+`median()` lan truyền những giá trị khuyết đó, cho chúng ta một đầu ra không tối ưu:
 
 ```{r}
 set.seed(1014)
@@ -153,47 +153,47 @@ df_miss <- tibble(
   c = rnorm_na(5, 2),
   d = rnorm(5)
 )
-df_miss |> 
+df_miss |>
   summarize(
     across(a:d, median),
     n = n()
   )
 ```
 
-It would be nice if we could pass along `na.rm = TRUE` to `median()` to remove these missing values.
-To do so, instead of calling `median()` directly, we need to create a new function that calls `median()` with the desired arguments:
+Sẽ tốt nếu chúng ta có thể truyền `na.rm = TRUE` cho `median()` để loại bỏ các giá trị khuyết này.
+Để làm vậy, thay vì gọi `median()` trực tiếp, chúng ta cần tạo một hàm mới gọi `median()` với các đối số mong muốn:
 
 ```{r}
-df_miss |> 
+df_miss |>
   summarize(
     across(a:d, function(x) median(x, na.rm = TRUE)),
     n = n()
   )
 ```
 
-This is a little verbose, so R comes with a handy shortcut: for this sort of throw away, or **anonymous**[^iteration-1], function you can replace `function` with `\`[^iteration-2]:
+Điều này hơi dài dòng, nên R đi kèm một lối tắt tiện lợi: đối với loại hàm dùng một lần, hay còn gọi là hàm **vô danh** (anonymous)[^iteration-1], bạn có thể thay `function` bằng `\`[^iteration-2]:
 
-[^iteration-1]: Anonymous, because we never explicitly gave it a name with `<-`.
-    Another term programmers use for this is "lambda function".
+[^iteration-1]: Vô danh, vì chúng ta chưa bao giờ đặt tên cho nó một cách tường minh bằng `<-`.
+    Một thuật ngữ khác mà lập trình viên sử dụng cho điều này là "hàm lambda".
 
-[^iteration-2]: In older code you might see syntax that looks like `~ .x + 1`.
-    This is another way to write anonymous functions but it only works inside tidyverse functions and always uses the variable name `.x`.
-    We now recommend the base syntax, `\(x) x + 1`.
+[^iteration-2]: Trong code cũ hơn, bạn có thể thấy cú pháp trông giống `~ .x + 1`.
+    Đây là một cách khác để viết hàm vô danh nhưng nó chỉ hoạt động bên trong các hàm tidyverse và luôn sử dụng tên biến `.x`.
+    Chúng tôi hiện khuyến nghị sử dụng cú pháp cơ bản, `\(x) x + 1`.
 
 ```{r}
 #| results: false
-df_miss |> 
+df_miss |>
   summarize(
     across(a:d, \(x) median(x, na.rm = TRUE)),
     n = n()
   )
 ```
 
-In either case, `across()` effectively expands to the following code:
+Trong cả hai trường hợp, `across()` thực tế mở rộng thành đoạn code sau:
 
 ```{r}
 #| eval: false
-df_miss |> 
+df_miss |>
   summarize(
     a = median(a, na.rm = TRUE),
     b = median(b, na.rm = TRUE),
@@ -203,12 +203,12 @@ df_miss |>
   )
 ```
 
-When we remove the missing values from the `median()`, it would be nice to know just how many values were removed.
-We can find that out by supplying two functions to `across()`: one to compute the median and the other to count the missing values.
-You supply multiple functions by using a named list to `.fns`:
+Khi chúng ta loại bỏ các giá trị khuyết khỏi `median()`, sẽ tốt nếu biết chính xác bao nhiêu giá trị đã bị loại bỏ.
+Chúng ta có thể tìm ra điều đó bằng cách cung cấp hai hàm cho `across()`: một hàm tính trung vị và hàm kia đếm các giá trị khuyết.
+Bạn cung cấp nhiều hàm bằng cách sử dụng một danh sách có tên cho `.fns`:
 
 ```{r}
-df_miss |> 
+df_miss |>
   summarize(
     across(a:d, list(
       median = \(x) median(x, na.rm = TRUE),
@@ -218,19 +218,19 @@ df_miss |>
   )
 ```
 
-If you look carefully, you might intuit that the columns are named using a glue specification (@sec-glue) like `{.col}_{.fn}` where `.col` is the name of the original column and `.fn` is the name of the function.
-That's not a coincidence!
-As you'll learn in the next section, you can use the `.names` argument to supply your own glue spec.
+Nếu quan sát kỹ, bạn có thể suy ra rằng các cột được đặt tên bằng một đặc tả glue (@sec-glue) như `{.col}_{.fn}` trong đó `.col` là tên của cột gốc và `.fn` là tên của hàm.
+Đó không phải là sự trùng hợp!
+Như bạn sẽ học trong phần tiếp theo, bạn có thể sử dụng đối số `.names` để cung cấp đặc tả glue của riêng mình.
 
-### Column names
+### Tên cột
 
-The result of `across()` is named according to the specification provided in the `.names` argument.
-We could specify our own if we wanted the name of the function to come first[^iteration-3]:
+Kết quả của `across()` được đặt tên theo đặc tả được cung cấp trong đối số `.names`.
+Chúng ta có thể chỉ định tên riêng nếu muốn tên hàm xuất hiện trước[^iteration-3]:
 
-[^iteration-3]: You can't currently change the order of the columns, but you could reorder them after the fact using `relocate()` or similar.
+[^iteration-3]: Hiện tại bạn không thể thay đổi thứ tự các cột, nhưng bạn có thể sắp xếp lại chúng sau đó bằng `relocate()` hoặc tương tự.
 
 ```{r}
-df_miss |> 
+df_miss |>
   summarize(
     across(
       a:d,
@@ -244,32 +244,32 @@ df_miss |>
   )
 ```
 
-The `.names` argument is particularly important when you use `across()` with `mutate()`.
-By default, the output of `across()` is given the same names as the inputs.
-This means that `across()` inside of `mutate()` will replace existing columns.
-For example, here we use `coalesce()` to replace `NA`s with `0`:
+Đối số `.names` đặc biệt quan trọng khi bạn sử dụng `across()` với `mutate()`.
+Mặc định, đầu ra của `across()` được đặt cùng tên với đầu vào.
+Điều này có nghĩa là `across()` bên trong `mutate()` sẽ thay thế các cột hiện có.
+Ví dụ, ở đây chúng ta sử dụng `coalesce()` để thay thế các `NA` bằng `0`:
 
 ```{r}
-df_miss |> 
+df_miss |>
   mutate(
     across(a:d, \(x) coalesce(x, 0))
   )
 ```
 
-If you'd like to instead create new columns, you can use the `.names` argument to give the output new names:
+Nếu bạn muốn tạo các cột mới thay vào đó, bạn có thể sử dụng đối số `.names` để đặt tên mới cho đầu ra:
 
 ```{r}
-df_miss |> 
+df_miss |>
   mutate(
     across(a:d, \(x) coalesce(x, 0), .names = "{.col}_na_zero")
   )
 ```
 
-### Filtering
+### Lọc
 
-`across()` is a great match for `summarize()` and `mutate()` but it's more awkward to use with `filter()`, because you usually combine multiple conditions with either `|` or `&`.
-It's clear that `across()` can help to create multiple logical columns, but then what?
-So dplyr provides two variants of `across()` called `if_any()` and `if_all()`:
+`across()` là một sự kết hợp tuyệt vời cho `summarize()` và `mutate()` nhưng nó hơi khó sử dụng với `filter()`, vì bạn thường kết hợp nhiều điều kiện với `|` hoặc `&`.
+Rõ ràng là `across()` có thể giúp tạo nhiều cột logic, nhưng rồi sao?
+Vì vậy dplyr cung cấp hai biến thể của `across()` gọi là `if_any()` và `if_all()`:
 
 ```{r}
 # same as df_miss |> filter(is.na(a) | is.na(b) | is.na(c) | is.na(d))
@@ -279,14 +279,14 @@ df_miss |> filter(if_any(a:d, is.na))
 df_miss |> filter(if_all(a:d, is.na))
 ```
 
-### `across()` in functions
+### `across()` trong các hàm
 
-`across()` is particularly useful to program with because it allows you to operate on multiple columns.
-For example, [Jacob Scott](https://twitter.com/_wurli/status/1571836746899283969) uses this little helper which wraps a bunch of lubridate functions to expand all date columns into year, month, and day columns:
+`across()` đặc biệt hữu ích khi lập trình vì nó cho phép bạn thao tác trên nhiều cột.
+Ví dụ, [Jacob Scott](https://twitter.com/_wurli/status/1571836746899283969) sử dụng hàm trợ giúp nhỏ này để bọc một loạt các hàm lubridate nhằm mở rộng tất cả các cột ngày thành các cột năm, tháng và ngày:
 
 ```{r}
 expand_dates <- function(df) {
-  df |> 
+  df |>
     mutate(
       across(where(is.Date), list(year = year, month = month, day = mday))
     )
@@ -297,49 +297,49 @@ df_date <- tibble(
   date = ymd(c("2009-08-03", "2010-01-16"))
 )
 
-df_date |> 
+df_date |>
   expand_dates()
 ```
 
-`across()` also makes it easy to supply multiple columns in a single argument because the first argument uses tidy-select; you just need to remember to embrace that argument, as we discussed in @sec-embracing.
-For example, this function will compute the means of numeric columns by default.
-But by supplying the second argument you can choose to summarize just selected columns:
+`across()` cũng giúp dễ dàng cung cấp nhiều cột trong một đối số đơn vì đối số đầu tiên sử dụng tidy-select; bạn chỉ cần nhớ embrace đối số đó, như chúng ta đã thảo luận trong @sec-embracing.
+Ví dụ, hàm này sẽ tính trung bình của các cột số theo mặc định.
+Nhưng bằng cách cung cấp đối số thứ hai, bạn có thể chọn chỉ tóm tắt các cột được chọn:
 
 ```{r}
 summarize_means <- function(df, summary_vars = where(is.numeric)) {
-  df |> 
+  df |>
     summarize(
       across({{ summary_vars }}, \(x) mean(x, na.rm = TRUE)),
       n = n(),
       .groups = "drop"
     )
 }
-diamonds |> 
-  group_by(cut) |> 
+diamonds |>
+  group_by(cut) |>
   summarize_means()
 
-diamonds |> 
-  group_by(cut) |> 
+diamonds |>
+  group_by(cut) |>
   summarize_means(c(carat, x:z))
 ```
 
-### Compare with `pivot_longer()`
+### So sánh với `pivot_longer()`
 
-Before we go on, it's worth pointing out an interesting connection between `across()` and `pivot_longer()` (@sec-pivoting).
-In many cases, you perform the same calculations by first pivoting the data and then performing the operations by group rather than by column.
-For example, take this multi-function summary:
+Trước khi tiếp tục, cần chỉ ra một mối liên hệ thú vị giữa `across()` và `pivot_longer()` (@sec-pivoting).
+Trong nhiều trường hợp, bạn thực hiện cùng các phép tính bằng cách trước tiên xoay dữ liệu rồi thực hiện các thao tác theo nhóm thay vì theo cột.
+Ví dụ, hãy xem phép tóm tắt đa hàm này:
 
 ```{r}
-df |> 
+df |>
   summarize(across(a:d, list(median = median, mean = mean)))
 ```
 
-We could compute the same values by pivoting longer and then summarizing:
+Chúng ta có thể tính cùng các giá trị bằng cách xoay dài hơn rồi tóm tắt:
 
 ```{r}
-long <- df |> 
-  pivot_longer(a:d) |> 
-  group_by(name) |> 
+long <- df |>
+  pivot_longer(a:d) |>
+  group_by(name) |>
   summarize(
     median = median(value),
     mean = mean(value)
@@ -347,10 +347,10 @@ long <- df |>
 long
 ```
 
-And if you wanted the same structure as `across()` you could pivot again:
+Và nếu bạn muốn cùng cấu trúc như `across()`, bạn có thể xoay lại:
 
 ```{r}
-long |> 
+long |>
   pivot_wider(
     names_from = name,
     values_from = c(median, mean),
@@ -359,8 +359,8 @@ long |>
   )
 ```
 
-This is a useful technique to know about because sometimes you'll hit a problem that's not currently possible to solve with `across()`: when you have groups of columns that you want to compute with simultaneously.
-For example, imagine that our data frame contains both values and weights and we want to compute a weighted mean:
+Đây là một kỹ thuật hữu ích cần biết vì đôi khi bạn sẽ gặp vấn đề hiện không thể giải quyết được với `across()`: khi bạn có các nhóm cột mà bạn muốn tính toán đồng thời.
+Ví dụ, hãy tưởng tượng rằng khung dữ liệu của chúng ta chứa cả giá trị và trọng số và chúng ta muốn tính trung bình có trọng số:
 
 ```{r}
 set.seed(1014)
@@ -376,50 +376,50 @@ df_paired <- tibble(
 )
 ```
 
-There's currently no way to do this with `across()`[^iteration-4], but it's relatively straightforward with `pivot_longer()`:
+Hiện tại không có cách nào để làm điều này với `across()`[^iteration-4], nhưng nó tương đối đơn giản với `pivot_longer()`:
 
-[^iteration-4]: Maybe there will be one day, but currently we don't see how.
+[^iteration-4]: Có thể một ngày nào đó sẽ có, nhưng hiện tại chúng tôi chưa thấy cách nào.
 
 ```{r}
-df_long <- df_paired |> 
+df_long <- df_paired |>
   pivot_longer(
-    everything(), 
-    names_to = c("group", ".value"), 
+    everything(),
+    names_to = c("group", ".value"),
     names_sep = "_"
   )
 df_long
 
-df_long |> 
-  group_by(group) |> 
+df_long |>
+  group_by(group) |>
   summarize(mean = weighted.mean(val, wts))
 ```
 
-If needed, you could `pivot_wider()` this back to the original form.
+Nếu cần, bạn có thể `pivot_wider()` kết quả này trở lại dạng ban đầu.
 
-### Exercises
+### Bài tập
 
-1.  Practice your `across()` skills by:
+1.  Thực hành kỹ năng `across()` của bạn bằng cách:
 
-    1.  Computing the number of unique values in each column of `palmerpenguins::penguins`.
+    1.  Tính số giá trị duy nhất trong mỗi cột của `palmerpenguins::penguins`.
 
-    2.  Computing the mean of every column in `mtcars`.
+    2.  Tính trung bình của mỗi cột trong `mtcars`.
 
-    3.  Grouping `diamonds` by `cut`, `clarity`, and `color` then counting the number of observations and computing the mean of each numeric column.
+    3.  Nhóm `diamonds` theo `cut`, `clarity` và `color` rồi đếm số quan sát và tính trung bình của mỗi cột số.
 
-2.  What happens if you use a list of functions in `across()`, but don't name them?
-    How is the output named?
+2.  Điều gì xảy ra nếu bạn sử dụng một danh sách các hàm trong `across()`, nhưng không đặt tên cho chúng?
+    Đầu ra được đặt tên như thế nào?
 
-3.  Adjust `expand_dates()` to automatically remove the date columns after they've been expanded.
-    Do you need to embrace any arguments?
+3.  Điều chỉnh `expand_dates()` để tự động loại bỏ các cột ngày sau khi chúng đã được mở rộng.
+    Bạn có cần embrace bất kỳ đối số nào không?
 
-4.  Explain what each step of the pipeline in this function does.
-    What special feature of `where()` are we taking advantage of?
+4.  Giải thích mỗi bước trong pipeline của hàm này làm gì.
+    Chúng ta đang tận dụng tính năng đặc biệt nào của `where()`?
 
     ```{r}
     #| results: false
     show_missing <- function(df, group_vars, summary_vars = everything()) {
-      df |> 
-        group_by(pick({{ group_vars }})) |> 
+      df |>
+        group_by(pick({{ group_vars }})) |>
         summarize(
           across({{ summary_vars }}, \(x) sum(is.na(x))),
           .groups = "drop"
@@ -429,14 +429,14 @@ If needed, you could `pivot_wider()` this back to the original form.
     nycflights13::flights |> show_missing(c(year, month, day))
     ```
 
-## Reading multiple files
+## Đọc nhiều tệp
 
-In the previous section, you learned how to use `dplyr::across()` to repeat a transformation on multiple columns.
-In this section, you'll learn how to use `purrr::map()` to do something to every file in a directory.
-Let's start with a little motivation: imagine you have a directory full of excel spreadsheets[^iteration-5] you want to read.
-You could do it with copy and paste:
+Trong phần trước, bạn đã học cách sử dụng `dplyr::across()` để lặp lại một phép biến đổi trên nhiều cột.
+Trong phần này, bạn sẽ học cách sử dụng `purrr::map()` để làm gì đó với mỗi tệp trong một thư mục.
+Hãy bắt đầu với một chút động lực: hãy tưởng tượng bạn có một thư mục đầy các bảng tính excel[^iteration-5] mà bạn muốn đọc.
+Bạn có thể làm điều đó bằng cách sao chép và dán:
 
-[^iteration-5]: If you instead had a directory of csv files with the same format, you can use the technique from @sec-readr-directory.
+[^iteration-5]: Nếu thay vào đó bạn có một thư mục các tệp csv với cùng định dạng, bạn có thể sử dụng kỹ thuật từ @sec-readr-directory.
 
 ```{r}
 #| eval: false
@@ -446,44 +446,44 @@ data2021 <- readxl::read_excel("data/y2021.xlsx")
 data2022 <- readxl::read_excel("data/y2022.xlsx")
 ```
 
-And then use `dplyr::bind_rows()` to combine them all together:
+Và sau đó sử dụng `dplyr::bind_rows()` để kết hợp tất cả lại với nhau:
 
 ```{r}
 #| eval: false
 data <- bind_rows(data2019, data2020, data2021, data2022)
 ```
 
-You can imagine that this would get tedious quickly, especially if you had hundreds of files, not just four.
-The following sections show you how to automate this sort of task.
-There are three basic steps: use `list.files()` to list all the files in a directory, then use `purrr::map()` to read each of them into a list, then use `purrr::list_rbind()` to combine them into a single data frame.
-We'll then discuss how you can handle situations of increasing heterogeneity, where you can't do exactly the same thing to every file.
+Bạn có thể tưởng tượng rằng điều này sẽ nhanh chóng trở nên nhàm chán, đặc biệt nếu bạn có hàng trăm tệp, không chỉ bốn.
+Các phần sau đây cho bạn thấy cách tự động hóa loại tác vụ này.
+Có ba bước cơ bản: sử dụng `list.files()` để liệt kê tất cả các tệp trong một thư mục, sau đó sử dụng `purrr::map()` để đọc từng tệp vào một danh sách, rồi sử dụng `purrr::list_rbind()` để kết hợp chúng thành một khung dữ liệu duy nhất.
+Sau đó chúng ta sẽ thảo luận cách xử lý các tình huống ngày càng không đồng nhất, khi bạn không thể làm chính xác cùng một việc cho mỗi tệp.
 
-### Listing files in a directory
+### Liệt kê các tệp trong một thư mục
 
-As the name suggests, `list.files()` lists the files in a directory.
-You'll almost always use three arguments:
+Đúng như tên gọi, `list.files()` liệt kê các tệp trong một thư mục.
+Bạn hầu như luôn sử dụng ba đối số:
 
--   The first argument, `path`, is the directory to look in.
+-   Đối số đầu tiên, `path`, là thư mục cần tìm.
 
--   `pattern` is a regular expression used to filter the file names.
-    The most common pattern is something like `[.]xlsx$` or `[.]csv$` to find all files with a specified extension.
+-   `pattern` là một biểu thức chính quy (regular expression) dùng để lọc tên tệp.
+    Mẫu phổ biến nhất là thứ gì đó như `[.]xlsx$` hoặc `[.]csv$` để tìm tất cả các tệp có phần mở rộng được chỉ định.
 
--   `full.names` determines whether or not the directory name should be included in the output.
-    You almost always want this to be `TRUE`.
+-   `full.names` xác định liệu tên thư mục có nên được bao gồm trong đầu ra hay không.
+    Bạn hầu như luôn muốn giá trị này là `TRUE`.
 
-To make our motivating example concrete, this book contains a folder with 12 excel spreadsheets containing data from the gapminder package.
-This folder can be found at <https://github.com/hadley/r4ds/tree/main/data/gapminder>.
-Each file contains one year's worth of data for 142 countries.
-We can list them all with the appropriate call to `list.files()`:
+Để làm cho ví dụ động lực của chúng ta trở nên cụ thể, cuốn sách này chứa một thư mục với 12 bảng tính excel chứa dữ liệu từ gói gapminder.
+Thư mục này có thể được tìm thấy tại <https://github.com/hadley/r4ds/tree/main/data/gapminder>.
+Mỗi tệp chứa dữ liệu một năm cho 142 quốc gia.
+Chúng ta có thể liệt kê tất cả chúng với lệnh gọi thích hợp đến `list.files()`:
 
 ```{r}
 paths <- list.files("data/gapminder", pattern = "[.]xlsx$", full.names = TRUE)
 paths
 ```
 
-### Lists
+### Danh sách
 
-Now that we have these 12 paths, we could call `read_excel()` 12 times to get 12 data frames:
+Bây giờ chúng ta có 12 đường dẫn này, chúng ta có thể gọi `read_excel()` 12 lần để có 12 khung dữ liệu:
 
 ```{r}
 #| eval: false
@@ -494,9 +494,9 @@ gapminder_1962 <- readxl::read_excel("data/gapminder/1962.xlsx")
 gapminder_2007 <- readxl::read_excel("data/gapminder/2007.xlsx")
 ```
 
-But putting each sheet into its own variable is going to make it hard to work with them a few steps down the road.
-Instead, they'll be easier to work with if we put them into a single object.
-A list is the perfect tool for this job:
+Nhưng việc đặt mỗi bảng tính vào biến riêng sẽ khiến việc làm việc với chúng trở nên khó khăn ở một vài bước sau.
+Thay vào đó, sẽ dễ dàng hơn khi đặt chúng vào một đối tượng duy nhất.
+Một danh sách (list) là công cụ hoàn hảo cho công việc này:
 
 ```{r}
 #| eval: false
@@ -514,20 +514,20 @@ files <- list(
 files <- map(paths, readxl::read_excel)
 ```
 
-Now that you have these data frames in a list, how do you get one out?
-You can use `files[[i]]` to extract the i<sup>th</sup> element:
+Bây giờ khi bạn có các khung dữ liệu này trong một danh sách, làm thế nào để lấy một cái ra?
+Bạn có thể sử dụng `files[[i]]` để trích xuất phần tử thứ i:
 
 ```{r}
 files[[3]]
 ```
 
-We'll come back to `[[` in more detail in @sec-subset-one.
+Chúng ta sẽ quay lại `[[` chi tiết hơn trong @sec-subset-one.
 
-### `purrr::map()` and `list_rbind()`
+### `purrr::map()` và `list_rbind()`
 
-The code to collect those data frames in a list "by hand" is basically just as tedious to type as code that reads the files one-by-one.
-Happily, we can use `purrr::map()` to make even better use of our `paths` vector.
-`map()` is similar to`across()`, but instead of doing something to each column in a data frame, it does something to each element of a vector.`map(x, f)` is shorthand for:
+Đoạn code để thu thập các khung dữ liệu đó vào một danh sách "bằng tay" về cơ bản cũng nhàm chán để gõ như code đọc từng tệp một.
+May mắn thay, chúng ta có thể sử dụng `purrr::map()` để tận dụng tốt hơn vector `paths` của mình.
+`map()` tương tự như `across()`, nhưng thay vì làm gì đó với mỗi cột trong một khung dữ liệu, nó làm gì đó với mỗi phần tử của một vector. `map(x, f)` là viết tắt của:
 
 ```{r}
 #| eval: false
@@ -539,7 +539,7 @@ list(
 )
 ```
 
-So we can use `map()` to get a list of 12 data frames:
+Vì vậy chúng ta có thể sử dụng `map()` để lấy một danh sách gồm 12 khung dữ liệu:
 
 ```{r}
 files <- map(paths, readxl::read_excel)
@@ -548,59 +548,59 @@ length(files)
 files[[1]]
 ```
 
-(This is another data structure that doesn't display particularly compactly with `str()` so you might want to load it into RStudio and inspect it with `View()`).
+(Đây là một cấu trúc dữ liệu khác không hiển thị đặc biệt gọn gàng với `str()` nên bạn có thể muốn tải nó vào RStudio và kiểm tra bằng `View()`).
 
-Now we can use `purrr::list_rbind()` to combine that list of data frames into a single data frame:
+Bây giờ chúng ta có thể sử dụng `purrr::list_rbind()` để kết hợp danh sách các khung dữ liệu đó thành một khung dữ liệu duy nhất:
 
 ```{r}
 list_rbind(files)
 ```
 
-Or we could do both steps at once in a pipeline:
+Hoặc chúng ta có thể thực hiện cả hai bước cùng lúc trong một pipeline:
 
 ```{r}
 #| results: false
-paths |> 
-  map(readxl::read_excel) |> 
+paths |>
+  map(readxl::read_excel) |>
   list_rbind()
 ```
 
-What if we want to pass in extra arguments to `read_excel()`?
-We use the same technique that we used with `across()`.
-For example, it's often useful to peek at the first few rows of the data with `n_max = 1`:
+Điều gì nếu chúng ta muốn truyền thêm đối số cho `read_excel()`?
+Chúng ta sử dụng cùng kỹ thuật đã dùng với `across()`.
+Ví dụ, thường hữu ích khi xem qua vài hàng đầu tiên của dữ liệu với `n_max = 1`:
 
 ```{r}
-paths |> 
-  map(\(path) readxl::read_excel(path, n_max = 1)) |> 
+paths |>
+  map(\(path) readxl::read_excel(path, n_max = 1)) |>
   list_rbind()
 ```
 
-This makes it clear that something is missing: there's no `year` column because that value is recorded in the path, not in the individual files.
-We'll tackle that problem next.
+Điều này cho thấy rõ rằng có gì đó đang thiếu: không có cột `year` vì giá trị đó được ghi trong đường dẫn, không phải trong các tệp riêng lẻ.
+Chúng ta sẽ giải quyết vấn đề đó tiếp theo.
 
-### Data in the path {#sec-data-in-the-path}
+### Dữ liệu trong đường dẫn {#sec-data-in-the-path}
 
-Sometimes the name of the file is data itself.
-In this example, the file name contains the year, which is not otherwise recorded in the individual files.
-To get that column into the final data frame, we need to do two things:
+Đôi khi tên tệp chính là dữ liệu.
+Trong ví dụ này, tên tệp chứa năm, thông tin không được ghi ở nơi khác trong các tệp riêng lẻ.
+Để đưa cột đó vào khung dữ liệu cuối cùng, chúng ta cần làm hai việc:
 
-First, we name the vector of paths.
-The easiest way to do this is with the `set_names()` function, which can take a function.
-Here we use `basename()` to extract just the file name from the full path:
+Đầu tiên, chúng ta đặt tên cho vector các đường dẫn.
+Cách dễ nhất để làm điều này là với hàm `set_names()`, có thể nhận một hàm.
+Ở đây chúng ta sử dụng `basename()` để trích xuất chỉ tên tệp từ đường dẫn đầy đủ:
 
 ```{r}
-paths |> set_names(basename) 
+paths |> set_names(basename)
 ```
 
-Those names are automatically carried along by all the map functions, so the list of data frames will have those same names:
+Những tên đó được tự động mang theo bởi tất cả các hàm map, nên danh sách các khung dữ liệu sẽ có cùng những tên đó:
 
 ```{r}
-files <- paths |> 
-  set_names(basename) |> 
+files <- paths |>
+  set_names(basename) |>
   map(readxl::read_excel)
 ```
 
-That makes this call to `map()` shorthand for:
+Điều đó khiến lệnh gọi `map()` này là viết tắt của:
 
 ```{r}
 #| eval: false
@@ -613,134 +613,134 @@ files <- list(
 )
 ```
 
-You can also use `[[` to extract elements by name:
+Bạn cũng có thể sử dụng `[[` để trích xuất phần tử theo tên:
 
 ```{r}
 files[["1962.xlsx"]]
 ```
 
-Then we use the `names_to` argument to `list_rbind()` to tell it to save the names into a new column called `year` then use `readr::parse_number()` to extract the number from the string.
+Sau đó chúng ta sử dụng đối số `names_to` của `list_rbind()` để yêu cầu nó lưu các tên vào một cột mới gọi là `year` rồi sử dụng `readr::parse_number()` để trích xuất số từ chuỗi.
 
 ```{r}
-paths |> 
-  set_names(basename) |> 
-  map(readxl::read_excel) |> 
-  list_rbind(names_to = "year") |> 
+paths |>
+  set_names(basename) |>
+  map(readxl::read_excel) |>
+  list_rbind(names_to = "year") |>
   mutate(year = parse_number(year))
 ```
 
-In more complicated cases, there might be other variables stored in the directory name, or maybe the file name contains multiple bits of data.
-In that case, use `set_names()` (without any arguments) to record the full path, and then use `tidyr::separate_wider_delim()` and friends to turn them into useful columns.
+Trong các trường hợp phức tạp hơn, có thể có các biến khác được lưu trong tên thư mục, hoặc có thể tên tệp chứa nhiều mẩu dữ liệu.
+Trong trường hợp đó, hãy sử dụng `set_names()` (không có đối số nào) để ghi lại đường dẫn đầy đủ, và sau đó sử dụng `tidyr::separate_wider_delim()` và các hàm liên quan để biến chúng thành các cột hữu ích.
 
 ```{r}
-paths |> 
-  set_names() |> 
-  map(readxl::read_excel) |> 
-  list_rbind(names_to = "year") |> 
-  separate_wider_delim(year, delim = "/", names = c(NA, "dir", "file")) |> 
+paths |>
+  set_names() |>
+  map(readxl::read_excel) |>
+  list_rbind(names_to = "year") |>
+  separate_wider_delim(year, delim = "/", names = c(NA, "dir", "file")) |>
   separate_wider_delim(file, delim = ".", names = c("file", "ext"))
 ```
 
-### Save your work
+### Lưu công việc của bạn
 
-Now that you've done all this hard work to get to a nice tidy data frame, it's a great time to save your work:
+Bây giờ khi bạn đã làm tất cả công việc khó khăn này để có được một khung dữ liệu gọn gàng (tidy), đây là thời điểm tuyệt vời để lưu công việc của bạn:
 
 ```{r}
-gapminder <- paths |> 
-  set_names(basename) |> 
-  map(readxl::read_excel) |> 
-  list_rbind(names_to = "year") |> 
+gapminder <- paths |>
+  set_names(basename) |>
+  map(readxl::read_excel) |>
+  list_rbind(names_to = "year") |>
   mutate(year = parse_number(year))
 
 write_csv(gapminder, "gapminder.csv")
 ```
 
-Now when you come back to this problem in the future, you can read in a single csv file.
-For large and richer datasets, using parquet might be a better choice than `.csv`, as discussed in @sec-parquet.
+Bây giờ khi bạn quay lại vấn đề này trong tương lai, bạn có thể đọc vào một tệp csv duy nhất.
+Đối với các tập dữ liệu lớn và phong phú hơn, sử dụng parquet có thể là lựa chọn tốt hơn `.csv`, như đã thảo luận trong @sec-parquet.
 
 ```{r}
 #| include: false
 unlink("gapminder.csv")
 ```
 
-If you're working in a project, we suggest calling the file that does this sort of data prep work something like `0-cleanup.R`.
-The `0` in the file name suggests that this should be run before anything else.
+Nếu bạn đang làm việc trong một dự án, chúng tôi gợi ý đặt tên tệp thực hiện công việc chuẩn bị dữ liệu kiểu này là `0-cleanup.R`.
+Số `0` trong tên tệp gợi ý rằng nó nên được chạy trước bất kỳ thứ gì khác.
 
-If your input data files change over time, you might consider learning a tool like [targets](https://docs.ropensci.org/targets/) to set up your data cleaning code to automatically re-run whenever one of the input files is modified.
+Nếu các tệp dữ liệu đầu vào của bạn thay đổi theo thời gian, bạn có thể cân nhắc học một công cụ như [targets](https://docs.ropensci.org/targets/) để thiết lập code dọn dẹp dữ liệu tự động chạy lại mỗi khi một trong các tệp đầu vào bị thay đổi.
 
-### Many simple iterations
+### Nhiều vòng lặp đơn giản
 
-Here we've just loaded the data directly from disk, and were lucky enough to get a tidy dataset.
-In most cases, you'll need to do some additional tidying, and you have two basic options: you can do one round of iteration with a complex function, or do multiple rounds of iteration with simple functions.
-In our experience most folks reach first for one complex iteration, but you're often better by doing multiple simple iterations.
+Ở đây chúng ta chỉ tải dữ liệu trực tiếp từ đĩa, và may mắn có được một tập dữ liệu gọn gàng.
+Trong hầu hết các trường hợp, bạn sẽ cần thực hiện thêm một số thao tác dọn dẹp, và bạn có hai lựa chọn cơ bản: bạn có thể thực hiện một vòng lặp với một hàm phức tạp, hoặc thực hiện nhiều vòng lặp với các hàm đơn giản.
+Theo kinh nghiệm của chúng tôi, hầu hết mọi người thường chọn một vòng lặp phức tạp trước, nhưng bạn thường tốt hơn khi thực hiện nhiều vòng lặp đơn giản.
 
-For example, imagine that you want to read in a bunch of files, filter out missing values, pivot, and then combine.
-One way to approach the problem is to write a function that takes a file and does all those steps then call `map()` once:
+Ví dụ, hãy tưởng tượng rằng bạn muốn đọc một loạt tệp, lọc bỏ các giá trị khuyết, xoay dữ liệu, rồi kết hợp chúng.
+Một cách tiếp cận vấn đề là viết một hàm nhận một tệp và thực hiện tất cả các bước đó rồi gọi `map()` một lần:
 
 ```{r}
 #| eval: false
 process_file <- function(path) {
   df <- read_csv(path)
-  
-  df |> 
-    filter(!is.na(id)) |> 
-    mutate(id = tolower(id)) |> 
+
+  df |>
+    filter(!is.na(id)) |>
+    mutate(id = tolower(id)) |>
     pivot_longer(jan:dec, names_to = "month")
 }
 
-paths |> 
-  map(process_file) |> 
+paths |>
+  map(process_file) |>
   list_rbind()
 ```
 
-Alternatively, you could perform each step of `process_file()` to every file:
+Ngoài ra, bạn có thể thực hiện từng bước của `process_file()` cho mỗi tệp:
 
 ```{r}
 #| eval: false
-paths |> 
-  map(read_csv) |> 
-  map(\(df) df |> filter(!is.na(id))) |> 
-  map(\(df) df |> mutate(id = tolower(id))) |> 
-  map(\(df) df |> pivot_longer(jan:dec, names_to = "month")) |> 
+paths |>
+  map(read_csv) |>
+  map(\(df) df |> filter(!is.na(id))) |>
+  map(\(df) df |> mutate(id = tolower(id))) |>
+  map(\(df) df |> pivot_longer(jan:dec, names_to = "month")) |>
   list_rbind()
 ```
 
-We recommend this approach because it stops you getting fixated on getting the first file right before moving on to the rest.
-By considering all of the data when doing tidying and cleaning, you're more likely to think holistically and end up with a higher quality result.
+Chúng tôi khuyến nghị cách tiếp cận này vì nó ngăn bạn bị ám ảnh với việc làm đúng tệp đầu tiên trước khi chuyển sang các tệp còn lại.
+Bằng cách xem xét tất cả dữ liệu khi thực hiện dọn dẹp, bạn có nhiều khả năng suy nghĩ toàn diện hơn và đạt được kết quả chất lượng cao hơn.
 
-In this particular example, there's another optimization you could make, by binding all the data frames together earlier.
-Then you can rely on regular dplyr behavior:
+Trong ví dụ cụ thể này, có một cách tối ưu hóa khác bạn có thể thực hiện, bằng cách kết nối tất cả các khung dữ liệu lại sớm hơn.
+Sau đó bạn có thể dựa vào hành vi thông thường của dplyr:
 
 ```{r}
 #| eval: false
-paths |> 
-  map(read_csv) |> 
-  list_rbind() |> 
-  filter(!is.na(id)) |> 
-  mutate(id = tolower(id)) |> 
+paths |>
+  map(read_csv) |>
+  list_rbind() |>
+  filter(!is.na(id)) |>
+  mutate(id = tolower(id)) |>
   pivot_longer(jan:dec, names_to = "month")
 ```
 
-### Heterogeneous data
+### Dữ liệu không đồng nhất
 
-Unfortunately, sometimes it's not possible to go from `map()` straight to `list_rbind()` because the data frames are so heterogeneous that `list_rbind()` either fails or yields a data frame that's not very useful.
-In that case, it's still useful to start by loading all of the files:
+Thật không may, đôi khi không thể đi từ `map()` thẳng đến `list_rbind()` vì các khung dữ liệu quá không đồng nhất khiến `list_rbind()` hoặc thất bại hoặc cho ra một khung dữ liệu không hữu ích lắm.
+Trong trường hợp đó, vẫn hữu ích khi bắt đầu bằng việc tải tất cả các tệp:
 
 ```{r}
 #| eval: false
-files <- paths |> 
-  map(readxl::read_excel) 
+files <- paths |>
+  map(readxl::read_excel)
 ```
 
-Then a very useful strategy is to capture the structure of the data frames so that you can explore it using your data science skills.
-One way to do so is with this handy `df_types` function[^iteration-6] that returns a tibble with one row for each column:
+Sau đó một chiến lược rất hữu ích là nắm bắt cấu trúc của các khung dữ liệu để bạn có thể khám phá nó bằng các kỹ năng khoa học dữ liệu của mình.
+Một cách để làm điều đó là với hàm `df_types` tiện lợi này[^iteration-6] trả về một tibble với một hàng cho mỗi cột:
 
-[^iteration-6]: We're not going to explain how it works, but if you look at the docs for the functions used, you should be able to puzzle it out.
+[^iteration-6]: Chúng tôi sẽ không giải thích cách nó hoạt động, nhưng nếu bạn xem tài liệu của các hàm được sử dụng, bạn sẽ có thể tự suy ra.
 
 ```{r}
 df_types <- function(df) {
   tibble(
-    col_name = names(df), 
+    col_name = names(df),
     col_type = map_chr(df, vctrs::vec_ptype_full),
     n_miss = map_int(df, \(x) sum(is.na(x)))
   )
@@ -749,68 +749,68 @@ df_types <- function(df) {
 df_types(gapminder)
 ```
 
-You can then apply this function to all of the files, and maybe do some pivoting to make it easier to see where the differences are.
-For example, this makes it easy to verify that the gapminder spreadsheets that we've been working with are all quite homogeneous:
+Sau đó bạn có thể áp dụng hàm này cho tất cả các tệp, và có thể thực hiện một số thao tác xoay để dễ dàng thấy sự khác biệt ở đâu.
+Ví dụ, điều này giúp dễ dàng xác minh rằng các bảng tính gapminder mà chúng ta đã làm việc đều khá đồng nhất:
 
 ```{r}
-files |> 
-  map(df_types) |> 
-  list_rbind(names_to = "file_name") |> 
-  select(-n_miss) |> 
+files |>
+  map(df_types) |>
+  list_rbind(names_to = "file_name") |>
+  select(-n_miss) |>
   pivot_wider(names_from = col_name, values_from = col_type)
 ```
 
-If the files have heterogeneous formats, you might need to do more processing before you can successfully merge them.
-Unfortunately, we're now going to leave you to figure that out on your own, but you might want to read about `map_if()` and `map_at()`.
-`map_if()` allows you to selectively modify elements of a list based on their values; `map_at()` allows you to selectively modify elements based on their names.
+Nếu các tệp có định dạng không đồng nhất, bạn có thể cần xử lý thêm trước khi có thể hợp nhất chúng thành công.
+Thật không may, chúng tôi sẽ để bạn tự tìm hiểu điều đó, nhưng bạn có thể muốn đọc về `map_if()` và `map_at()`.
+`map_if()` cho phép bạn chọn lọc sửa đổi các phần tử của một danh sách dựa trên giá trị của chúng; `map_at()` cho phép bạn chọn lọc sửa đổi các phần tử dựa trên tên của chúng.
 
-### Handling failures
+### Xử lý lỗi
 
-Sometimes the structure of your data might be sufficiently wild that you can't even read all the files with a single command.
-And then you'll encounter one of the downsides of `map()`: it succeeds or fails as a whole.
-`map()` will either successfully read all of the files in a directory or fail with an error, reading zero files.
-This is annoying: why does one failure prevent you from accessing all the other successes?
+Đôi khi cấu trúc dữ liệu của bạn có thể đủ lộn xộn đến mức bạn thậm chí không thể đọc tất cả các tệp bằng một lệnh duy nhất.
+Và rồi bạn sẽ gặp một trong những nhược điểm của `map()`: nó thành công hoặc thất bại toàn bộ.
+`map()` sẽ hoặc đọc thành công tất cả các tệp trong một thư mục hoặc thất bại với một lỗi, đọc được không tệp nào.
+Điều này thật phiền: tại sao một lỗi lại ngăn bạn truy cập tất cả các thành công khác?
 
-Luckily, purrr comes with a helper to tackle this problem: `possibly()`.
-`possibly()` is what's known as a function operator: it takes a function and returns a function with modified behavior.
-In particular, `possibly()` changes a function from erroring to returning a value that you specify:
+May mắn thay, purrr đi kèm với một hàm trợ giúp để giải quyết vấn đề này: `possibly()`.
+`possibly()` là cái được gọi là toán tử hàm (function operator): nó nhận một hàm và trả về một hàm với hành vi đã được sửa đổi.
+Cụ thể, `possibly()` thay đổi một hàm từ việc báo lỗi thành trả về một giá trị mà bạn chỉ định:
 
 ```{r}
-files <- paths |> 
+files <- paths |>
   map(possibly(\(path) readxl::read_excel(path), NULL))
 
 data <- files |> list_rbind()
 ```
 
-This works particularly well here because `list_rbind()`, like many tidyverse functions, automatically ignores `NULL`s.
+Điều này hoạt động đặc biệt tốt ở đây vì `list_rbind()`, giống như nhiều hàm tidyverse, tự động bỏ qua các `NULL`.
 
-Now you have all the data that can be read easily, and it's time to tackle the hard part of figuring out why some files failed to load and what to do about it.
-Start by getting the paths that failed:
+Bây giờ bạn có tất cả dữ liệu có thể đọc được dễ dàng, và đây là lúc giải quyết phần khó là tìm ra tại sao một số tệp không tải được và phải làm gì với chúng.
+Bắt đầu bằng cách lấy các đường dẫn bị lỗi:
 
 ```{r}
 failed <- map_vec(files, is.null)
 paths[failed]
 ```
 
-Then call the import function again for each failure and figure out what went wrong.
+Sau đó gọi lại hàm nhập cho từng lỗi và tìm hiểu xem có vấn đề gì.
 
-## Saving multiple outputs
+## Lưu nhiều đầu ra
 
-In the last section, you learned about `map()`, which is useful for reading multiple files into a single object.
-In this section, we'll now explore sort of the opposite problem: how can you take one or more R objects and save it to one or more files?
-We'll explore this challenge using three examples:
+Trong phần trước, bạn đã học về `map()`, hữu ích cho việc đọc nhiều tệp vào một đối tượng duy nhất.
+Trong phần này, chúng ta sẽ khám phá vấn đề ngược lại: làm thế nào bạn có thể lấy một hoặc nhiều đối tượng R và lưu chúng vào một hoặc nhiều tệp?
+Chúng ta sẽ khám phá thách thức này bằng ba ví dụ:
 
--   Saving multiple data frames into one database.
--   Saving multiple data frames into multiple `.csv` files.
--   Saving multiple plots to multiple `.png` files.
+-   Lưu nhiều khung dữ liệu vào một cơ sở dữ liệu.
+-   Lưu nhiều khung dữ liệu vào nhiều tệp `.csv`.
+-   Lưu nhiều biểu đồ vào nhiều tệp `.png`.
 
-### Writing to a database {#sec-save-database}
+### Ghi vào cơ sở dữ liệu {#sec-save-database}
 
-Sometimes when working with many files at once, it's not possible to fit all your data into memory at once, and you can't do `map(files, read_csv)`.
-One approach to deal with this problem is to load your data into a database so you can access just the bits you need with dbplyr.
+Đôi khi khi làm việc với nhiều tệp cùng lúc, không thể đưa tất cả dữ liệu của bạn vào bộ nhớ cùng lúc, và bạn không thể dùng `map(files, read_csv)`.
+Một cách tiếp cận để giải quyết vấn đề này là tải dữ liệu vào một cơ sở dữ liệu để bạn có thể truy cập chỉ những phần bạn cần với dbplyr.
 
-If you're lucky, the database package you're using will provide a handy function that takes a vector of paths and loads them all into the database.
-This is the case with duckdb's `duckdb_read_csv()`:
+Nếu may mắn, gói cơ sở dữ liệu bạn đang sử dụng sẽ cung cấp một hàm tiện lợi nhận một vector các đường dẫn và tải tất cả chúng vào cơ sở dữ liệu.
+Đây là trường hợp với `duckdb_read_csv()` của duckdb:
 
 ```{r}
 #| eval: false
@@ -818,13 +818,13 @@ con <- DBI::dbConnect(duckdb::duckdb())
 duckdb::duckdb_read_csv(con, "gapminder", paths)
 ```
 
-This would work well here, but we don't have csv files, instead we have excel spreadsheets.
-So we're going to have to do it "by hand".
-Learning to do it by hand will also help you when you have a bunch of csvs and the database that you're working with doesn't have one function that will load them all in.
+Điều này sẽ hoạt động tốt ở đây, nhưng chúng ta không có các tệp csv, thay vào đó là các bảng tính excel.
+Vì vậy chúng ta sẽ phải làm "thủ công".
+Học cách làm thủ công cũng sẽ giúp bạn khi bạn có một loạt csv và cơ sở dữ liệu mà bạn đang làm việc không có một hàm nào tải tất cả chúng vào.
 
-We need to start by creating a table that we will fill in with data.
-The easiest way to do this is by creating a template, a dummy data frame that contains all the columns we want, but only a sampling of the data.
-For the gapminder data, we can make that template by reading a single file and adding the year to it:
+Chúng ta cần bắt đầu bằng cách tạo một bảng mà chúng ta sẽ điền dữ liệu vào.
+Cách dễ nhất để làm điều này là tạo một mẫu (template), một khung dữ liệu giả chứa tất cả các cột chúng ta muốn, nhưng chỉ một phần nhỏ dữ liệu.
+Đối với dữ liệu gapminder, chúng ta có thể tạo mẫu đó bằng cách đọc một tệp duy nhất và thêm năm vào:
 
 ```{r}
 template <- readxl::read_excel(paths[[1]])
@@ -832,52 +832,52 @@ template$year <- 1952
 template
 ```
 
-Now we can connect to the database, and use `DBI::dbCreateTable()` to turn our template into a database table:
+Bây giờ chúng ta có thể kết nối đến cơ sở dữ liệu, và sử dụng `DBI::dbCreateTable()` để biến mẫu thành một bảng cơ sở dữ liệu:
 
 ```{r}
 con <- DBI::dbConnect(duckdb::duckdb())
 DBI::dbCreateTable(con, "gapminder", template)
 ```
 
-`dbCreateTable()` doesn't use the data in `template`, just the variable names and types.
-So if we inspect the `gapminder` table now you'll see that it's empty but it has the variables we need with the types we expect:
+`dbCreateTable()` không sử dụng dữ liệu trong `template`, chỉ tên biến và kiểu dữ liệu.
+Vì vậy nếu chúng ta kiểm tra bảng `gapminder` bây giờ, bạn sẽ thấy nó trống nhưng có các biến cần thiết với các kiểu mong đợi:
 
 ```{r}
 con |> tbl("gapminder")
 ```
 
-Next, we need a function that takes a single file path, reads it into R, and adds the result to the `gapminder` table.
-We can do that by combining `read_excel()` with `DBI::dbAppendTable()`:
+Tiếp theo, chúng ta cần một hàm nhận một đường dẫn tệp đơn, đọc nó vào R, và thêm kết quả vào bảng `gapminder`.
+Chúng ta có thể làm điều đó bằng cách kết hợp `read_excel()` với `DBI::dbAppendTable()`:
 
 ```{r}
 append_file <- function(path) {
   df <- readxl::read_excel(path)
   df$year <- parse_number(basename(path))
-  
+
   DBI::dbAppendTable(con, "gapminder", df)
 }
 ```
 
-Now we need to call `append_file()` once for each element of `paths`.
-That's certainly possible with `map()`:
+Bây giờ chúng ta cần gọi `append_file()` một lần cho mỗi phần tử của `paths`.
+Điều đó chắc chắn có thể làm được với `map()`:
 
 ```{r}
 #| eval: false
 paths |> map(append_file)
 ```
 
-But we don't care about the output of `append_file()`, so instead of `map()` it's slightly nicer to use `walk()`.
-`walk()` does exactly the same thing as `map()` but throws the output away:
+Nhưng chúng ta không quan tâm đến đầu ra của `append_file()`, nên thay vì `map()`, sử dụng `walk()` sẽ gọn gàng hơn một chút.
+`walk()` làm chính xác như `map()` nhưng bỏ đi đầu ra:
 
 ```{r}
 paths |> walk(append_file)
 ```
 
-Now we can see if we have all the data in our table:
+Bây giờ chúng ta có thể xem liệu chúng ta có tất cả dữ liệu trong bảng không:
 
 ```{r}
-con |> 
-  tbl("gapminder") |> 
+con |>
+  tbl("gapminder") |>
   count(year)
 ```
 
@@ -886,37 +886,37 @@ con |>
 DBI::dbDisconnect(con, shutdown = TRUE)
 ```
 
-### Writing csv files
+### Ghi tệp csv
 
-The same basic principle applies if we want to write multiple csv files, one for each group.
-Let's imagine that we want to take the `ggplot2::diamonds` data and save one csv file for each `clarity`.
-First we need to make those individual datasets.
-There are many ways you could do that, but there's one way we particularly like: `group_nest()`.
+Cùng nguyên tắc cơ bản áp dụng nếu chúng ta muốn ghi nhiều tệp csv, mỗi tệp cho một nhóm.
+Hãy tưởng tượng rằng chúng ta muốn lấy dữ liệu `ggplot2::diamonds` và lưu một tệp csv cho mỗi `clarity`.
+Đầu tiên chúng ta cần tạo các tập dữ liệu riêng lẻ đó.
+Có nhiều cách để làm điều đó, nhưng có một cách chúng tôi đặc biệt thích: `group_nest()`.
 
 ```{r}
-by_clarity <- diamonds |> 
+by_clarity <- diamonds |>
   group_nest(clarity)
 
 by_clarity
 ```
 
-This gives us a new tibble with eight rows and two columns.
-`clarity` is our grouping variable and `data` is a list-column containing one tibble for each unique value of `clarity`:
+Điều này cho chúng ta một tibble mới với tám hàng và hai cột.
+`clarity` là biến nhóm của chúng ta và `data` là một cột danh sách chứa một tibble cho mỗi giá trị duy nhất của `clarity`:
 
 ```{r}
 by_clarity$data[[1]]
 ```
 
-While we're here, let's create a column that gives the name of output file, using `mutate()` and `str_glue()`:
+Trong khi đang ở đây, hãy tạo một cột chứa tên tệp đầu ra, sử dụng `mutate()` và `str_glue()`:
 
 ```{r}
-by_clarity <- by_clarity |> 
+by_clarity <- by_clarity |>
   mutate(path = str_glue("diamonds-{clarity}.csv"))
 
 by_clarity
 ```
 
-So if we were going to save these data frames by hand, we might write something like:
+Vì vậy nếu chúng ta lưu các khung dữ liệu này bằng tay, chúng ta có thể viết thứ gì đó như:
 
 ```{r}
 #| eval: false
@@ -927,10 +927,10 @@ write_csv(by_clarity$data[[3]], by_clarity$path[[3]])
 write_csv(by_clarity$data[[8]], by_clarity$path[[8]])
 ```
 
-This is a little different to our previous uses of `map()` because there are two arguments that are changing, not just one.
-That means we need a new function: `map2()`, which varies both the first and second arguments.
-And because we again don't care about the output, we want `walk2()` rather than `map2()`.
-That gives us:
+Điều này hơi khác so với các lần sử dụng `map()` trước đây vì có hai đối số đang thay đổi, không chỉ một.
+Điều đó có nghĩa là chúng ta cần một hàm mới: `map2()`, thay đổi cả đối số thứ nhất và thứ hai.
+Và vì chúng ta lại không quan tâm đến đầu ra, chúng ta muốn `walk2()` thay vì `map2()`.
+Điều đó cho chúng ta:
 
 ```{r}
 walk2(by_clarity$data, by_clarity$path, write_csv)
@@ -941,38 +941,38 @@ walk2(by_clarity$data, by_clarity$path, write_csv)
 unlink(by_clarity$path)
 ```
 
-### Saving plots
+### Lưu biểu đồ
 
-We can take the same basic approach to create many plots.
-Let's first make a function that draws the plot we want:
+Chúng ta có thể áp dụng cùng cách tiếp cận cơ bản để tạo nhiều biểu đồ.
+Hãy bắt đầu bằng cách tạo một hàm vẽ biểu đồ mà chúng ta muốn:
 
 ```{r}
 #| fig-alt: |
-#|   Histogram of carats of diamonds from the by_clarity dataset, ranging from 
-#|   0 to 5 carats. The distribution is unimodal and right skewed with a peak 
-#|   around 1 carat.
+#|   Biểu đồ tần suất của carat từ tập dữ liệu by_clarity, dao động từ
+#|   0 đến 5 carat. Phân phối đơn đỉnh và lệch phải với đỉnh
+#|   khoảng 1 carat.
 
 carat_histogram <- function(df) {
-  ggplot(df, aes(x = carat)) + geom_histogram(binwidth = 0.1)  
+  ggplot(df, aes(x = carat)) + geom_histogram(binwidth = 0.1)
 }
 
 carat_histogram(by_clarity$data[[1]])
 ```
 
-Now we can use `map()` to create a list of many plots[^iteration-7] and their eventual file paths:
+Bây giờ chúng ta có thể sử dụng `map()` để tạo một danh sách nhiều biểu đồ[^iteration-7] và các đường dẫn tệp cuối cùng của chúng:
 
-[^iteration-7]: You can print `by_clarity$plot` to get a crude animation --- you'll get one plot for each element of `plots`.
-    NOTE: this didn't happen for me.
+[^iteration-7]: Bạn có thể in `by_clarity$plot` để có một hoạt ảnh thô --- bạn sẽ nhận được một biểu đồ cho mỗi phần tử của `plots`.
+    LƯU Ý: điều này không xảy ra với tôi.
 
 ```{r}
-by_clarity <- by_clarity |> 
+by_clarity <- by_clarity |>
   mutate(
     plot = map(data, carat_histogram),
     path = str_glue("clarity-{clarity}.png")
   )
 ```
 
-Then use `walk2()` with `ggsave()` to save each plot:
+Sau đó sử dụng `walk2()` với `ggsave()` để lưu mỗi biểu đồ:
 
 ```{r}
 walk2(
@@ -982,7 +982,7 @@ walk2(
 )
 ```
 
-This is shorthand for:
+Đây là viết tắt của:
 
 ```{r}
 #| eval: false
@@ -999,20 +999,20 @@ unlink(by_clarity$path)
 ```
 
 ```{=html}
-<!-- 
+<!--
 ### Exercises
 
 1.  Imagine you have a table of student data containing (amongst other variables) `school_name` and `student_id`. Sketch out what code you'd write if you want to save all the information for each student in file called `{student_id}.csv` in the `{school}` directory.
 -->
 ```
 
-## Summary
+## Tóm tắt
 
-In this chapter, you've seen how to use explicit iteration to solve three problems that come up frequently when doing data science: manipulating multiple columns, reading multiple files, and saving multiple outputs.
-But in general, iteration is a super power: if you know the right iteration technique, you can easily go from fixing one problem to fixing all the problems.
-Once you've mastered the techniques in this chapter, we highly recommend learning more by reading the [Functionals chapter](https://adv-r.hadley.nz/functionals.html) of *Advanced R* and consulting the [purrr website](https://purrr.tidyverse.org).
+Trong chương này, bạn đã thấy cách sử dụng lặp tường minh để giải quyết ba vấn đề thường gặp khi làm khoa học dữ liệu: thao tác nhiều cột, đọc nhiều tệp và lưu nhiều đầu ra.
+Nhưng nói chung, lặp là một siêu năng lực: nếu bạn biết đúng kỹ thuật lặp, bạn có thể dễ dàng đi từ việc sửa một vấn đề sang sửa tất cả các vấn đề.
+Khi bạn đã thành thạo các kỹ thuật trong chương này, chúng tôi rất khuyến khích bạn tìm hiểu thêm bằng cách đọc chương [Functionals](https://adv-r.hadley.nz/functionals.html) của *Advanced R* và tham khảo [trang web purrr](https://purrr.tidyverse.org).
 
-If you know much about iteration in other languages, you might be surprised that we didn't discuss the `for` loop.
-That's because R's orientation towards data analysis changes how we iterate: in most cases you can rely on an existing idiom to do something to each column or each group.
-And when you can't, you can often use a functional programming tool like `map()` that does something to each element of a list.
-However, you will see `for` loops in wild-caught code, so you'll learn about them in the next chapter where we'll discuss some important base R tools.
+Nếu bạn biết nhiều về lặp trong các ngôn ngữ khác, bạn có thể ngạc nhiên rằng chúng tôi không thảo luận về vòng lặp `for`.
+Đó là vì hướng phân tích dữ liệu của R thay đổi cách chúng ta lặp: trong hầu hết các trường hợp bạn có thể dựa vào một thành ngữ có sẵn để làm gì đó cho mỗi cột hoặc mỗi nhóm.
+Và khi bạn không thể, bạn thường có thể sử dụng một công cụ lập trình hàm như `map()` để làm gì đó với mỗi phần tử của một danh sách.
+Tuy nhiên, bạn sẽ thấy vòng lặp `for` trong code ngoài tự nhiên, nên bạn sẽ học về chúng trong chương tiếp theo nơi chúng ta thảo luận một số công cụ R cơ bản quan trọng.
