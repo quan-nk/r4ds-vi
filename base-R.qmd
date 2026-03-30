@@ -12,7 +12,7 @@ Những công cụ này đặc biệt hữu ích khi bạn lập trình nhiều 
 
 Đây là lúc thích hợp để nhắc bạn rằng tidyverse không phải là cách duy nhất để giải quyết các bài toán khoa học dữ liệu (data science).
 Chúng tôi dạy tidyverse trong cuốn sách này vì các gói mở rộng tidyverse chia sẻ chung triết lý thiết kế, tăng tính nhất quán giữa các hàm, và khiến mỗi hàm hay gói mở rộng mới dễ học dễ dùng hơn một chút.
-Không thể dùng tidyverse mà không dùng base R, nên thực ra chúng tôi đã dạy bạn **rất nhiều** hàm base R: từ `library()` để tải gói mở rộng, đến `sum()` và `mean()` để tóm tắt số, đến kiểu dữ liệu nhân tố (factor), ngày tháng (date), và POSIXct, và tất nhiên là tất cả các toán tử cơ bản như `+`, `-`, `/`, `*`, `|`, `&`, và `!`.
+Không thể dùng tidyverse mà không dùng base R, nên thực ra chúng tôi đã dạy bạn **rất nhiều** hàm base R: từ `library()` để tải gói mở rộng, đến `sum()` và `mean()` để tóm tắt số, đến kiểu dữ liệu factor (factor), ngày tháng (date), và POSIXct, và tất nhiên là tất cả các toán tử cơ bản như `+`, `-`, `/`, `*`, `|`, `&`, và `!`.
 Điều mà chúng tôi chưa tập trung cho đến giờ là quy trình làm việc với base R, nên chúng tôi sẽ giới thiệu một số quy trình trong chương này.
 
 Sau khi đọc cuốn sách này, bạn sẽ học các cách tiếp cận khác cho cùng những bài toán đó bằng base R, data.table, và các gói mở rộng khác.

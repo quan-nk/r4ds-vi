@@ -102,7 +102,7 @@ Lưu ý các column nhóm (`grp` ở đây) không được bao gồm trong `acr
 `where()` cho phép bạn chọn column dựa trên kiểu dữ liệu của chúng:
 
 -   `where(is.numeric)` chọn tất cả các column số.
--   `where(is.character)` chọn tất cả các column chuỗi ký tự.
+-   `where(is.character)` chọn tất cả các column string.
 -   `where(is.Date)` chọn tất cả các column ngày.
 -   `where(is.POSIXct)` chọn tất cả các column ngày-giờ.
 -   `where(is.logical)` chọn tất cả các column logic.
@@ -619,7 +619,7 @@ Bạn cũng có thể sử dụng `[[` để trích xuất phần tử theo tên
 files[["1962.xlsx"]]
 ```
 
-Sau đó chúng ta sử dụng argument `names_to` của `list_rbind()` để yêu cầu nó lưu các tên vào một column mới gọi là `year` rồi sử dụng `readr::parse_number()` để trích xuất số từ chuỗi.
+Sau đó chúng ta sử dụng argument `names_to` của `list_rbind()` để yêu cầu nó lưu các tên vào một column mới gọi là `year` rồi sử dụng `readr::parse_number()` để trích xuất số từ string.
 
 ```{r}
 paths |>

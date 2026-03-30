@@ -134,7 +134,7 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
 Ở đây, màu sắc không truyền tải thông tin về một biến, mà chỉ thay đổi giao diện của biểu đồ.
 Bạn sẽ cần chọn một giá trị có ý nghĩa cho thuộc tính đồ họa đó:
 
--   Tên của một màu dưới dạng chuỗi ký tự, ví dụ `color = "blue"`
+-   Tên của một màu dưới dạng string, ví dụ `color = "blue"`
 -   Kích thước của một điểm tính bằng mm, ví dụ `size = 1`
 -   Hình dạng của một điểm dưới dạng số, ví dụ `shape = 1`, như được hiển thị trong @fig-shapes.
 

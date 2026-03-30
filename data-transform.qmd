@@ -15,7 +15,7 @@ Mục tiêu của chương này là cung cấp cho bạn cái nhìn tổng quan 
 Chúng ta sẽ bắt đầu với các hàm thao tác trên row (row) rồi đến column (column) của data frame, sau đó quay lại nói thêm về pipe (pipe), một công cụ quan trọng mà bạn sử dụng để kết hợp các động từ.
 Tiếp theo, chúng ta sẽ giới thiệu khả năng làm việc với nhóm (group).
 Chúng ta sẽ kết thúc chương với một nghiên cứu tình huống (case study) minh họa các hàm này trong thực tế.
-Trong các chương sau, chúng ta sẽ quay lại các hàm này chi tiết hơn khi bắt đầu đào sâu vào các loại dữ liệu cụ thể (ví dụ: số, chuỗi ký tự, ngày tháng).
+Trong các chương sau, chúng ta sẽ quay lại các hàm này chi tiết hơn khi bắt đầu đào sâu vào các loại dữ liệu cụ thể (ví dụ: số, string, ngày tháng).
 
 ### Điều kiện tiên quyết
 
@@ -54,7 +54,7 @@ Nếu không, bạn có thể sử dụng `print(flights, width = Inf)` để hi
 glimpse(flights)
 ```
 
-Trong cả hai chế độ xem, tên biến được theo sau bởi các chữ viết tắt cho biết kiểu của mỗi biến: `<int>` là viết tắt của số nguyên (integer), `<dbl>` là viết tắt của số thực (double), `<chr>` cho ký tự (character, hay chuỗi ký tự), và `<dttm>` cho ngày-giờ (date-time).
+Trong cả hai chế độ xem, tên biến được theo sau bởi các chữ viết tắt cho biết kiểu của mỗi biến: `<int>` là viết tắt của số nguyên (integer), `<dbl>` là viết tắt của số thực (double), `<chr>` cho ký tự (character, hay string), và `<dttm>` cho ngày-giờ (date-time).
 Những kiểu này rất quan trọng vì các thao tác bạn có thể thực hiện trên một column phụ thuộc rất nhiều vào "kiểu" của nó.
 
 ### Cơ bản về dplyr

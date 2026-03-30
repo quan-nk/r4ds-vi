@@ -30,7 +30,7 @@ library(jsonlite)
 
 ## Danh sách
 
-Cho đến nay bạn đã làm việc với các data frame chứa các vector đơn giản như số nguyên (integer), số thực, ký tự, ngày giờ, và nhân tố (factor).
+Cho đến nay bạn đã làm việc với các data frame chứa các vector đơn giản như số nguyên (integer), số thực, ký tự, ngày giờ, và factor (factor).
 Những vector này đơn giản vì chúng đồng nhất: mọi phần tử đều cùng kiểu dữ liệu.
 Nếu bạn muốn lưu trữ các phần tử có kiểu khác nhau trong cùng một vector, bạn sẽ cần một **list (list)**, được tạo bằng `list()`:
 
@@ -451,7 +451,7 @@ chars |>
 ```
 
 Bạn có thể muốn thấy dữ liệu này trong bảng riêng vì sẽ dễ nối (join) với dữ liệu nhân vật khi cần.
-Hãy làm điều đó, việc này cần một chút dọn dẹp: loại bỏ các row chứa chuỗi rỗng và đổi tên `titles` thành `title` vì mỗi row giờ chỉ chứa một tiêu đề duy nhất.
+Hãy làm điều đó, việc này cần một chút dọn dẹp: loại bỏ các row chứa string rỗng và đổi tên `titles` thành `title` vì mỗi row giờ chỉ chứa một tiêu đề duy nhất.
 
 ```{r}
 titles <- chars |>
@@ -613,7 +613,7 @@ Nó có sáu kiểu dữ liệu chính.
 Bốn trong số đó là vô hướng (scalar):
 
 -   Kiểu đơn giản nhất là null (`null`) đóng vai trò giống như `NA` trong R. Nó biểu diễn sự vắng mặt của dữ liệu.
--   **Chuỗi ký tự (string)** rất giống chuỗi ký tự trong R, nhưng phải luôn sử dụng dấu ngoặc kép.
+-   **Chuỗi ký tự (string)** rất giống string trong R, nhưng phải luôn sử dụng dấu ngoặc kép.
 -   **Số (number)** tương tự như số trong R: chúng có thể dùng ký hiệu số nguyên (ví dụ: 123), thập phân (ví dụ: 123.45), hoặc khoa học (ví dụ: 1.23e3). JSON không hỗ trợ `Inf`, `-Inf`, hoặc `NaN`.
 -   **Giá trị boolean** tương tự như `TRUE` và `FALSE` trong R, nhưng sử dụng chữ thường `true` và `false`.
 
@@ -623,13 +623,13 @@ Sự khác biệt chính là các giá trị vô hướng của JSON chỉ có t
 
 Cả mảng và đối tượng đều giống với list trong R; sự khác biệt là chúng có tên hay không.
 Một **mảng** giống như một list không có tên, và được viết bằng `[]`.
-Ví dụ `[1, 2, 3]` là một mảng chứa 3 số, và `[null, 1, "string", false]` là một mảng chứa một null, một số, một chuỗi ký tự, và một boolean.
+Ví dụ `[1, 2, 3]` là một mảng chứa 3 số, và `[null, 1, "string", false]` là một mảng chứa một null, một số, một string, và một boolean.
 Một **đối tượng** giống như một list có tên, và được viết bằng `{}`.
-Các tên (gọi là key trong thuật ngữ JSON) là chuỗi ký tự, nên phải được bao quanh bởi dấu ngoặc kép.
+Các tên (gọi là key trong thuật ngữ JSON) là string, nên phải được bao quanh bởi dấu ngoặc kép.
 Ví dụ, `{"x": 1, "y": 2}` là một đối tượng ánh xạ `x` thành 1 và `y` thành 2.
 
-Lưu ý rằng JSON không có cách gốc nào để biểu diễn ngày hoặc ngày giờ, nên chúng thường được lưu dưới dạng chuỗi ký tự, và bạn sẽ cần dùng `readr::parse_date()` hoặc `readr::parse_datetime()` để chuyển chúng thành cấu trúc dữ liệu đúng.
-Tương tự, các quy tắc biểu diễn số dấu phẩy động trong JSON hơi thiếu chính xác, nên đôi khi bạn cũng sẽ gặp số được lưu dưới dạng chuỗi ký tự.
+Lưu ý rằng JSON không có cách gốc nào để biểu diễn ngày hoặc ngày giờ, nên chúng thường được lưu dưới dạng string, và bạn sẽ cần dùng `readr::parse_date()` hoặc `readr::parse_datetime()` để chuyển chúng thành cấu trúc dữ liệu đúng.
+Tương tự, các quy tắc biểu diễn số dấu phẩy động trong JSON hơi thiếu chính xác, nên đôi khi bạn cũng sẽ gặp số được lưu dưới dạng string.
 Hãy áp dụng `readr::parse_double()` khi cần để có được kiểu biến đúng.
 
 ### jsonlite
@@ -650,7 +650,7 @@ gh_users2 <- read_json(gh_users_json())
 identical(gh_users, gh_users2)
 ```
 
-Trong cuốn sách này, chúng ta cũng sẽ dùng `parse_json()`, vì nó nhận một chuỗi ký tự chứa JSON, rất tốt cho việc tạo các ví dụ đơn giản.
+Trong cuốn sách này, chúng ta cũng sẽ dùng `parse_json()`, vì nó nhận một string chứa JSON, rất tốt cho việc tạo các ví dụ đơn giản.
 Để bắt đầu, đây là ba tập dữ liệu JSON đơn giản, bắt đầu với một số, sau đó đặt vài số vào một mảng, rồi đặt mảng đó vào một đối tượng:
 
 ```{r}

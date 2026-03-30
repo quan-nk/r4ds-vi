@@ -548,7 +548,7 @@ Nhìn chung, khá ít kiểu dữ liệu tương thích với nhau, vì việc t
 Dưới đây là các trường hợp quan trọng nhất tương thích với nhau:
 
 -   Vector số và vector logic tương thích, như chúng ta đã thảo luận trong @sec-numeric-summaries-of-logicals.
--   Chuỗi ký tự và nhân tố (@sec-factors) tương thích, vì bạn có thể coi nhân tố là chuỗi ký tự với tập giá trị bị giới hạn.
+-   Chuỗi ký tự và factor (@sec-factors) tương thích, vì bạn có thể coi factor là string với tập giá trị bị giới hạn.
 -   Ngày và ngày-giờ, mà chúng ta sẽ thảo luận trong @sec-dates-and-times, tương thích vì bạn có thể coi ngày là trường hợp đặc biệt của ngày-giờ.
 -   `NA`, về mặt kỹ thuật là vector logic, tương thích với mọi thứ vì mọi vector đều có cách biểu diễn missing value.
 

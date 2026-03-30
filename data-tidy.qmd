@@ -208,8 +208,8 @@ Bạn cũng có thể tự hỏi điều gì xảy ra nếu một bài hát nằ
 Chúng ta không thể biết từ dữ liệu này, nhưng bạn có thể đoán rằng các column bổ sung `wk77`, `wk78`, ...
 sẽ được thêm vào tập dữ liệu.
 
-Dữ liệu này giờ đã gọn gàng, nhưng chúng ta có thể làm cho việc tính toán trong tương lai dễ dàng hơn một chút bằng cách chuyển đổi các giá trị của `week` từ chuỗi ký tự sang số bằng `mutate()` và `readr::parse_number()`.
-`parse_number()` là một hàm tiện lợi sẽ trích xuất số đầu tiên từ một chuỗi, bỏ qua tất cả các văn bản khác.
+Dữ liệu này giờ đã gọn gàng, nhưng chúng ta có thể làm cho việc tính toán trong tương lai dễ dàng hơn một chút bằng cách chuyển đổi các giá trị của `week` từ string sang số bằng `mutate()` và `readr::parse_number()`.
+`parse_number()` là một hàm tiện lợi sẽ trích xuất số đầu tiên từ một string, bỏ qua tất cả các văn bản khác.
 
 ```{r}
 billboard_longer <- billboard |>

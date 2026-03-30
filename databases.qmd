@@ -195,7 +195,7 @@ diamonds_db <- tbl(con, sql("SELECT * FROM diamonds"))
 ```
 :::
 
-Đối tượng này là **lười** (lazy); khi bạn dùng các hàm dplyr trên nó, dplyr không thực hiện công việc nào: nó chỉ ghi lại chuỗi thao tác mà bạn muốn thực hiện và chỉ thực thi khi cần thiết.
+Đối tượng này là **lười** (lazy); khi bạn dùng các hàm dplyr trên nó, dplyr không thực hiện công việc nào: nó chỉ ghi lại string thao tác mà bạn muốn thực hiện và chỉ thực thi khi cần thiết.
 Ví dụ, hãy xem pipeline sau:
 
 ```{r}
@@ -403,7 +403,7 @@ Có một vài chi tiết quan trọng cần lưu ý ở đây:
 
 -   `|` trở thành `OR` và `&` trở thành `AND`.
 -   SQL dùng `=` để so sánh, không phải `==`. SQL không có phép gán, nên không có khả năng nhầm lẫn ở đây.
--   SQL chỉ dùng `''` cho chuỗi ký tự, không phải `""`. Trong SQL, `""` được dùng để xác định biến, giống như ``` `` ``` trong R.
+-   SQL chỉ dùng `''` cho string, không phải `""`. Trong SQL, `""` được dùng để xác định biến, giống như ``` `` ``` trong R.
 
 Một toán tử SQL hữu ích khác là `IN`, rất giống với `%in%` trong R:
 
@@ -646,7 +646,7 @@ flights |>
   )
 ```
 
-dbplyr cũng dịch các hàm thao tác chuỗi ký tự và ngày giờ phổ biến, mà bạn có thể tìm hiểu trong `vignette("translation-function", package = "dbplyr")`.
+dbplyr cũng dịch các hàm thao tác string và ngày giờ phổ biến, mà bạn có thể tìm hiểu trong `vignette("translation-function", package = "dbplyr")`.
 Các bản dịch của dbplyr chắc chắn không hoàn hảo, và có nhiều hàm R chưa được dịch, nhưng dbplyr làm tốt đáng ngạc nhiên trong việc bao phủ các hàm mà bạn sẽ dùng thường xuyên nhất.
 
 ## Tóm tắt

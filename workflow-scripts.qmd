@@ -32,7 +32,7 @@ knitr::include_graphics("diagrams/rstudio/script.png", dpi = 270)
 
 ### Chạy mã
 
-Trình soạn thảo tập lệnh là nơi tuyệt vời để xây dựng biểu đồ ggplot2 phức tạp hoặc chuỗi thao tác dplyr dài.
+Trình soạn thảo tập lệnh là nơi tuyệt vời để xây dựng biểu đồ ggplot2 phức tạp hoặc string thao tác dplyr dài.
 Chìa khóa để sử dụng trình soạn thảo hiệu quả là ghi nhớ một trong những phím tắt quan trọng nhất: Cmd/Ctrl + Enter.
 Phím tắt này thực thi biểu thức R hiện tại trong bảng điều khiển.
 Ví dụ, xem đoạn mã bên dưới.

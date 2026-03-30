@@ -70,7 +70,7 @@ Nếu bạn cần thêm văn bản, có hai nhãn hữu ích khác: `subtitle` t
 Bạn cũng có thể dùng `labs()` để thay tiêu đề trục và chú giải.
 Thường nên thay tên biến ngắn bằng mô tả chi tiết hơn, và bao gồm đơn vị.
 
-Có thể dùng phương trình toán thay vì chuỗi văn bản.
+Có thể dùng phương trình toán thay vì string văn bản.
 Chỉ cần thay `""` bằng `quote()` và đọc về các tùy chọn trong `?plotmath`:
 
 ```{r}
@@ -274,7 +274,7 @@ Giới hạn duy nhất là trí tưởng tượng (và sự kiên nhẫn địn
 
 5.  Bốn argument của `arrow()` là gì?
     Chúng hoạt động thế nào?
-    Tạo chuỗi biểu đồ minh họa các tùy chọn quan trọng nhất.
+    Tạo string biểu đồ minh họa các tùy chọn quan trọng nhất.
 
 ## Thang đo
 
@@ -410,7 +410,7 @@ Cũng lưu ý rằng đặc tả break và label cho thang đo ngày và ngày-g
 
 -   `date_labels` nhận đặc tả định dạng, cùng dạng với `parse_datetime()`.
 
--   `date_breaks` (không hiển thị ở đây), nhận chuỗi như "2 days" hoặc "1 month".
+-   `date_breaks` (không hiển thị ở đây), nhận string như "2 days" hoặc "1 month".
 
 ### Bố cục chú giải
 

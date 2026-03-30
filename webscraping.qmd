@@ -310,7 +310,7 @@ html |>
   html_attr("href")
 ```
 
-`html_attr()` luôn trả về một chuỗi ký tự, vì vậy nếu bạn đang trích xuất số hoặc ngày tháng, bạn sẽ cần thực hiện một số xử lý hậu kỳ.
+`html_attr()` luôn trả về một string, vì vậy nếu bạn đang trích xuất số hoặc ngày tháng, bạn sẽ cần thực hiện một số xử lý hậu kỳ.
 
 ### Bảng
 

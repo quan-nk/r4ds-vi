@@ -13,7 +13,7 @@ Giờ chúng ta sẽ quay lại chủ đề này một cách chi tiết hơn, đ
 
 Chúng ta sẽ bắt đầu bằng việc thảo luận một số công cụ chung để làm việc với missing value được ghi nhận dưới dạng `NA`.
 Tiếp theo, chúng ta sẽ khám phá khái niệm missing value ẩn (implicitly missing value) -- những giá trị đơn giản là vắng mặt trong dữ liệu của bạn, và giới thiệu một số công cụ để biến chúng thành missing value tường minh (explicitly missing value).
-Cuối cùng, chúng ta sẽ kết thúc với một thảo luận liên quan về nhóm rỗng (empty group), xảy ra khi các mức nhân tố (factor level) không xuất hiện trong dữ liệu.
+Cuối cùng, chúng ta sẽ kết thúc với một thảo luận liên quan về nhóm rỗng (empty group), xảy ra khi các mức factor (factor level) không xuất hiện trong dữ liệu.
 
 ### Điều kiện tiên quyết
 
@@ -196,7 +196,7 @@ flights |>
 
 ## Nhân tố và nhóm rỗng
 
-Loại missing value cuối cùng là nhóm rỗng, một nhóm không chứa bất kỳ quan sát nào, có thể phát sinh khi làm việc với nhân tố (factor).
+Loại missing value cuối cùng là nhóm rỗng, một nhóm không chứa bất kỳ quan sát nào, có thể phát sinh khi làm việc với factor (factor).
 Ví dụ, hãy tưởng tượng chúng ta có một tập dữ liệu chứa một số thông tin sức khỏe về mọi người:
 
 ```{r}
@@ -240,7 +240,7 @@ ggplot(health, aes(x = smoker)) +
 ```
 
 Vấn đề tương tự cũng xảy ra nói chung với `dplyr::group_by()`.
-Và một lần nữa bạn có thể sử dụng `.drop = FALSE` để giữ tất cả các mức nhân tố:
+Và một lần nữa bạn có thể sử dụng `.drop = FALSE` để giữ tất cả các mức factor:
 
 ```{r}
 #| warning: false

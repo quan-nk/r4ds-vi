@@ -326,7 +326,7 @@ ggplot(diamonds, aes(x = price)) +
   geom_freqpoly(aes(color = cut), binwidth = 500, linewidth = 0.75)
 ```
 
-Lưu ý ggplot2 sử dụng thang màu có thứ tự cho `cut` vì nó được định nghĩa là biến nhân tố có thứ tự.
+Lưu ý ggplot2 sử dụng thang màu có thứ tự cho `cut` vì nó được định nghĩa là biến factor có thứ tự.
 Bạn sẽ tìm hiểu thêm trong @sec-ordered-factors.
 
 Giao diện mặc định của `geom_freqpoly()` không hữu ích lắm ở đây vì chiều cao, phụ thuộc vào tổng số đếm, khác nhau nhiều giữa các `cut`, khiến khó thấy sự khác biệt hình dạng phân phối.
@@ -362,7 +362,7 @@ Chúng ta thấy ít thông tin về phân phối hơn, nhưng biểu đồ hộ
 Nó ủng hộ phát hiện trái trực giác rằng kim cương chất lượng tốt hơn thường rẻ hơn!
 Trong bài tập, bạn sẽ được thách thức tìm hiểu tại sao.
 
-`cut` là nhân tố có thứ tự: fair kém hơn good, kém hơn very good, v.v.
+`cut` là factor có thứ tự: fair kém hơn good, kém hơn very good, v.v.
 Nhiều biến phân loại không có thứ tự tự nhiên, vì vậy bạn có thể muốn sắp xếp lại chúng.
 Một cách là dùng `fct_reorder()`.
 Bạn sẽ tìm hiểu thêm trong @sec-modifying-factor-order, nhưng chúng tôi muốn cho bạn xem trước vì nó rất hữu ích.

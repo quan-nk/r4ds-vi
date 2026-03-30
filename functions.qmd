@@ -201,7 +201,7 @@ clamp(1:10, min = 3, max = 7)
 ```
 
 Tất nhiên hàm không chỉ cần làm việc với biến số.
-Bạn có thể muốn thực hiện một số thao tác xử lý chuỗi ký tự (string) lặp đi lặp lại.
+Bạn có thể muốn thực hiện một số thao tác xử lý string (string) lặp đi lặp lại.
 Có thể bạn cần viết hoa ký tự đầu tiên:
 
 ```{r}
@@ -213,7 +213,7 @@ first_upper <- function(x) {
 first_upper("hello")
 ```
 
-Hoặc có thể bạn muốn loại bỏ dấu phần trăm, dấu phẩy, và ký hiệu đô la khỏi một chuỗi trước khi chuyển đổi thành số:
+Hoặc có thể bạn muốn loại bỏ dấu phần trăm, dấu phẩy, và ký hiệu đô la khỏi một string trước khi chuyển đổi thành số:
 
 ```{r}
 # https://twitter.com/NVlabormarket/status/1571939851922198530
@@ -773,7 +773,7 @@ Sẽ thật tuyệt nếu chúng ta có thể gắn nhãn cho đầu ra với bi
 rlang là một gói mở rộng cấp thấp được sử dụng bởi hầu hết mọi gói mở rộng khác trong tidyverse vì nó triển khai đánh giá gọn gàng (cùng nhiều công cụ hữu ích khác).
 
 Để giải quyết vấn đề gắn nhãn, chúng ta có thể dùng `rlang::englue()`.
-Hàm này hoạt động tương tự `str_glue()`, nên bất kỳ giá trị nào được bọc trong `{ }` sẽ được chèn vào chuỗi.
+Hàm này hoạt động tương tự `str_glue()`, nên bất kỳ giá trị nào được bọc trong `{ }` sẽ được chèn vào string.
 Nhưng nó cũng hiểu `{{ }}`, tự động chèn tên biến phù hợp:
 
 ```{r}
@@ -792,7 +792,7 @@ histogram <- function(df, var, binwidth) {
 diamonds |> histogram(carat, 0.1)
 ```
 
-Bạn có thể sử dụng cùng cách tiếp cận ở bất kỳ nơi nào khác mà bạn muốn cung cấp một chuỗi trong biểu đồ ggplot2.
+Bạn có thể sử dụng cùng cách tiếp cận ở bất kỳ nơi nào khác mà bạn muốn cung cấp một string trong biểu đồ ggplot2.
 
 ### Bài tập
 

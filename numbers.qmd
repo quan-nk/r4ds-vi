@@ -10,7 +10,7 @@ source("_common.R")
 Vector số (numeric vector) là xương sống của khoa học dữ liệu, và bạn đã sử dụng chúng rất nhiều lần ở phần trước của cuốn sách.
 Bây giờ là lúc khảo sát một cách có hệ thống những gì bạn có thể làm với chúng trong R, đảm bảo rằng bạn có đủ khả năng xử lý bất kỳ vấn đề nào liên quan đến vector số trong tương lai.
 
-Chúng ta sẽ bắt đầu bằng một vài công cụ để tạo số từ chuỗi ký tự, sau đó đi sâu hơn một chút vào `count()`.
+Chúng ta sẽ bắt đầu bằng một vài công cụ để tạo số từ string, sau đó đi sâu hơn một chút vào `count()`.
 Tiếp theo, chúng ta sẽ khám phá các phép biến đổi (transformation) số khác nhau phù hợp với `mutate()`, bao gồm các phép biến đổi tổng quát hơn có thể áp dụng cho các loại vector khác nhưng thường được dùng với vector số.
 Cuối cùng, chúng ta sẽ đề cập đến các hàm tóm tắt (summary function) phù hợp với `summarize()` và chỉ cho bạn cách chúng cũng có thể được sử dụng với `mutate()`.
 
@@ -30,17 +30,17 @@ library(nycflights13)
 ## Tạo số
 
 Trong hầu hết các trường hợp, bạn sẽ nhận được số đã được lưu ở một trong các kiểu số của R: số nguyên (integer) hoặc số thực (double).
-Tuy nhiên, trong một số trường hợp, bạn sẽ gặp chúng dưới dạng chuỗi ký tự, có thể vì bạn đã tạo chúng bằng cách xoay (pivot) từ tiêu đề column hoặc vì có gì đó sai trong quá trình nhập dữ liệu.
+Tuy nhiên, trong một số trường hợp, bạn sẽ gặp chúng dưới dạng string, có thể vì bạn đã tạo chúng bằng cách xoay (pivot) từ tiêu đề column hoặc vì có gì đó sai trong quá trình nhập dữ liệu.
 
-readr cung cấp hai hàm hữu ích để phân tích cú pháp chuỗi ký tự thành số: `parse_double()` và `parse_number()`.
-Sử dụng `parse_double()` khi bạn có các số đã được viết dưới dạng chuỗi ký tự:
+readr cung cấp hai hàm hữu ích để phân tích cú pháp string thành số: `parse_double()` và `parse_number()`.
+Sử dụng `parse_double()` khi bạn có các số đã được viết dưới dạng string:
 
 ```{r}
 x <- c("1.2", "5.6", "1e3")
 parse_double(x)
 ```
 
-Sử dụng `parse_number()` khi chuỗi ký tự chứa văn bản không phải số mà bạn muốn bỏ qua.
+Sử dụng `parse_number()` khi string chứa văn bản không phải số mà bạn muốn bỏ qua.
 Điều này đặc biệt hữu ích cho dữ liệu tiền tệ và phần trăm:
 
 ```{r}
@@ -770,5 +770,5 @@ Bạn đã quen thuộc với nhiều công cụ để làm việc với số, v
 Bạn cũng đã học được một số phép biến đổi tổng quát hữu ích thường được, nhưng không chỉ, áp dụng cho vector số như xếp hạng và độ lệch.
 Cuối cùng, bạn đã đi qua một số thống kê tóm tắt số và thảo luận về một vài thách thức thống kê mà bạn nên cân nhắc.
 
-Trong hai chương tiếp theo, chúng ta sẽ đi sâu vào làm việc với chuỗi ký tự bằng gói mở rộng stringr.
-Chuỗi ký tự là một chủ đề lớn nên chúng được dành hai chương, một về nền tảng của chuỗi ký tự và một về regular expression.
+Trong hai chương tiếp theo, chúng ta sẽ đi sâu vào làm việc với string bằng gói mở rộng stringr.
+Chuỗi ký tự là một chủ đề lớn nên chúng được dành hai chương, một về nền tảng của string và một về regular expression.
