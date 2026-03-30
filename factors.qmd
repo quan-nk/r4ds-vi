@@ -148,7 +148,7 @@ Các thao tác đó được mô tả trong các phần bên dưới.
 
 3.  `denom` (giáo phái) áp dụng cho `relig` nào?
     Bạn có thể tìm ra bằng bảng như thế nào?
-    Bạn có thể tìm ra bằng trực quan hóa như thế nào?
+    Bạn có thể tìm ra bằng visualization như thế nào?
 
 ## Thay đổi thứ tự factor {#sec-modifying-factor-order}
 
@@ -418,7 +418,7 @@ ordered(c("a", "b", "c"))
 Trong cả base R và tidyverse, factor có thứ tự hoạt động rất giống với factor thông thường.
 Chỉ có hai nơi bạn có thể nhận thấy hành vi khác biệt:
 
--   Nếu bạn ánh xạ một factor có thứ tự vào color hoặc fill trong ggplot2, nó sẽ mặc định sử dụng `scale_color_viridis()`/`scale_fill_viridis()`, một thang màu ngụ ý thứ hạng.
+-   Nếu bạn mapping một factor có thứ tự vào color hoặc fill trong ggplot2, nó sẽ mặc định sử dụng `scale_color_viridis()`/`scale_fill_viridis()`, một thang màu ngụ ý thứ hạng.
 -   Nếu bạn sử dụng một biến dự đoán có thứ tự trong mô hình tuyến tính, nó sẽ sử dụng "tương phản đa thức" (polynomial contrasts). Những thứ này có phần hữu ích, nhưng bạn khó có thể đã nghe về chúng trừ khi bạn có bằng Tiến sĩ Thống kê, và ngay cả khi đó bạn có lẽ cũng không thường xuyên diễn giải chúng. Nếu bạn muốn tìm hiểu thêm, chúng tôi khuyên bạn nên xem `vignette("contrasts", package = "faux")` của Lisa DeBruine.
 
 Với mục đích của cuốn sách này, việc phân biệt chính xác giữa factor thông thường và factor có thứ tự không đặc biệt quan trọng.

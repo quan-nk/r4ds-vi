@@ -30,7 +30,7 @@ x <- 3 * 4
 ```
 
 Lưu ý rằng giá trị của `x` không được in ra, nó chỉ được lưu trữ.
-Nếu bạn muốn xem giá trị, gõ `x` vào bảng điều khiển.
+Nếu bạn muốn xem giá trị, gõ `x` vào console.
 
 Bạn có thể **k**ết hợp nhiều phần tử thành một vector với `c()`:
 
@@ -62,8 +62,8 @@ Mã có thể rất khó đọc vào một ngày đẹp trời, vì vậy hãych
 ## Chú thích
 
 R sẽ bỏ qua mọi văn bản sau `#` trên dòng đó.
-Điều này cho phép bạn viết **chú thích** (comment), văn bản được R bỏ qua nhưng được người khác đọc.
-Đôi khi chúng tôi sẽ bao gồm chú thích trong ví dụ để giải thích điều gì đang xảy ra với mã.
+Điều này cho phép bạn viết **comment** (comment), văn bản được R bỏ qua nhưng được người khác đọc.
+Đôi khi chúng tôi sẽ bao gồm comment trong ví dụ để giải thích điều gì đang xảy ra với mã.
 
 Chú thích có thể hữu ích để mô tả ngắn gọn đoạn mã tiếp theo làm gì.
 
@@ -75,18 +75,18 @@ primes <- c(2, 3, 5, 7, 11, 13)
 primes * 2
 ```
 
-Với các đoạn mã ngắn như thế này, việc để chú thích cho mọi dòng mã có thể không cần thiết.
-Nhưng khi mã bạn viết trở nên phức tạp hơn, chú thích có thể giúp bạn (và cộng sự) tiết kiệm rất nhiều thời gian tìm hiểu điều gì đã được thực hiện trong mã.
+Với các đoạn mã ngắn như thế này, việc để comment cho mọi dòng mã có thể không cần thiết.
+Nhưng khi mã bạn viết trở nên phức tạp hơn, comment có thể giúp bạn (và cộng sự) tiết kiệm rất nhiều thời gian tìm hiểu điều gì đã được thực hiện trong mã.
 
-Sử dụng chú thích để giải thích *tại sao* của mã, không phải *như thế nào* hay *cái gì*.
+Sử dụng comment để giải thích *tại sao* của mã, không phải *như thế nào* hay *cái gì*.
 *Cái gì* và *như thế nào* của mã luôn có thể tìm ra, dù có thể tẻ nhạt, bằng cách đọc kỹ nó.
-Nếu bạn mô tả mọi bước trong chú thích, rồi thay đổi mã, bạn sẽ phải nhớ cập nhật chú thích nữa, nếu không sẽ gây nhầm lẫn khi bạn quay lại mã trong tương lai.
+Nếu bạn mô tả mọi bước trong comment, rồi thay đổi mã, bạn sẽ phải nhớ cập nhật comment nữa, nếu không sẽ gây nhầm lẫn khi bạn quay lại mã trong tương lai.
 
 Tìm hiểu *tại sao* điều gì đó được thực hiện khó hơn nhiều, nếu không muốn nói là không thể.
 Ví dụ, `geom_smooth()` có argument gọi là `span`, kiểm soát độ mượt của đường cong, với giá trị lớn hơn tạo đường cong mượt hơn.
-Giả sử bạn quyết định thay đổi giá trị `span` từ mặc định 0.75 thành 0.9: người đọc tương lai dễ dàng hiểu *cái gì* đang xảy ra, nhưng trừ khi bạn ghi lại suy nghĩ trong chú thích, không ai sẽ hiểu *tại sao* bạn thay đổi giá trị mặc định.
+Giả sử bạn quyết định thay đổi giá trị `span` từ mặc định 0.75 thành 0.9: người đọc tương lai dễ dàng hiểu *cái gì* đang xảy ra, nhưng trừ khi bạn ghi lại suy nghĩ trong comment, không ai sẽ hiểu *tại sao* bạn thay đổi giá trị mặc định.
 
-Với mã phân tích dữ liệu, sử dụng chú thích để giải thích kế hoạch tổng thể và ghi lại các phát hiện quan trọng khi bạn gặp chúng.
+Với mã phân tích dữ liệu, sử dụng comment để giải thích kế hoạch tổng thể và ghi lại các phát hiện quan trọng khi bạn gặp chúng.
 Không có cách nào lấy lại kiến thức này chỉ từ mã nguồn.
 
 ## Có gì trong một cái tên? {#sec-whats-in-a-name}
@@ -103,7 +103,7 @@ some.people.use.periods
 And_aFew.People_RENOUNCEconvention
 ```
 
-Chúng ta sẽ quay lại chủ đề đặt tên khi thảo luận về phong cách mã trong @sec-workflow-style.
+Chúng ta sẽ quay lại theme đặt tên khi thảo luận về phong cách mã trong @sec-workflow-style.
 
 Bạn có thể kiểm tra một đối tượng bằng cách gõ tên của nó:
 
@@ -197,7 +197,7 @@ Nếu điều này xảy ra, R sẽ hiển thị ký tự tiếp tục "+":
 Dấu `+` cho bạn biết R đang chờ thêm đầu vào; nó nghĩ bạn chưa xong.
 Thông thường, điều này có nghĩa là bạn đã quên một `"` hoặc `)`. Hãy thêm cặp còn thiếu, hoặc nhấn ESCAPE để hủy biểu thức và thử lại.
 
-Lưu ý rằng tab môi trường ở bảng phải phía trên hiển thị tất cả các đối tượng bạn đã tạo:
+Lưu ý rằng tab environment ở bảng phải phía trên hiển thị tất cả các đối tượng bạn đã tạo:
 
 ```{r}
 #| echo: false

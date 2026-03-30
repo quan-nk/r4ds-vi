@@ -146,7 +146,7 @@ Các function này không cần giải thích nhiều vì chúng thực hiện n
 Nhưng chúng ta cần nói ngắn gọn về **quy tắc tái chế (recycling rule)** xác định điều gì xảy ra khi vế trái và vế phải có độ dài khác nhau.
 Điều này quan trọng cho các phép toán như `flights |> mutate(air_time = air_time / 60)` vì có 336.776 số ở bên trái của `/` nhưng chỉ có một số ở bên phải.
 
-R xử lý độ dài không khớp bằng cách **tái chế,** hay lặp lại, vector ngắn hơn.
+R xử lý độ dài không khớp bằng cách **tái chế,** hay iterate lại, vector ngắn hơn.
 Chúng ta có thể thấy điều này hoạt động dễ dàng hơn nếu tạo một số vector bên ngoài data frame:
 
 ```{r}
@@ -503,7 +503,7 @@ events |> mutate(
 ```
 
 Một cách tiếp cận khác để tạo biến nhóm là `consecutive_id()`, bắt đầu một nhóm mới mỗi khi một trong các argument của nó thay đổi.
-Ví dụ, lấy cảm hứng từ [câu hỏi stackoverflow này](https://stackoverflow.com/questions/27482712), hãy tưởng tượng bạn có một data frame với nhiều giá trị lặp lại:
+Ví dụ, lấy cảm hứng từ [câu hỏi stackoverflow này](https://stackoverflow.com/questions/27482712), hãy tưởng tượng bạn có một data frame với nhiều giá trị iterate lại:
 
 ```{r}
 df <- tibble(
@@ -512,7 +512,7 @@ df <- tibble(
 )
 ```
 
-Nếu bạn muốn giữ row đầu tiên từ mỗi nhóm `x` lặp lại, bạn có thể sử dụng `group_by()`, `consecutive_id()`, và `slice_head()`:
+Nếu bạn muốn giữ row đầu tiên từ mỗi nhóm `x` iterate lại, bạn có thể sử dụng `group_by()`, `consecutive_id()`, và `slice_head()`:
 
 ```{r}
 df |>
@@ -650,7 +650,7 @@ flights |>
 
 Đáng nhớ rằng tất cả các thống kê tóm tắt mô tả ở trên là cách rút gọn phân phối xuống một con số duy nhất.
 Điều này có nghĩa là chúng về cơ bản mang tính rút gọn, và nếu bạn chọn sai thống kê tóm tắt, bạn có thể dễ dàng bỏ lỡ những khác biệt quan trọng giữa các nhóm.
-Đó là lý do tại sao luôn nên trực quan hóa phân phối trước khi quyết định chọn thống kê tóm tắt.
+Đó là lý do tại sao luôn nên visualization phân phối trước khi quyết định chọn thống kê tóm tắt.
 
 @fig-flights-dist cho thấy phân phối tổng thể của độ trễ khởi hành.
 Phân phối lệch đến mức chúng ta phải phóng to để thấy phần lớn dữ liệu.
@@ -771,4 +771,4 @@ Bạn cũng đã học được một số phép biến đổi tổng quát hữ
 Cuối cùng, bạn đã đi qua một số thống kê tóm tắt số và thảo luận về một vài thách thức thống kê mà bạn nên cân nhắc.
 
 Trong hai chương tiếp theo, chúng ta sẽ đi sâu vào làm việc với string bằng gói mở rộng stringr.
-Chuỗi ký tự là một chủ đề lớn nên chúng được dành hai chương, một về nền tảng của string và một về regular expression.
+Chuỗi ký tự là một theme lớn nên chúng được dành hai chương, một về nền tảng của string và một về regular expression.

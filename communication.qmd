@@ -19,9 +19,9 @@ Trong chương này, bạn sẽ học một số công cụ ggplot2 cung cấp c
 
 Chương này tập trung vào công cụ bạn cần để tạo đồ họa tốt.
 Chúng tôi giả sử bạn biết mình muốn gì, và chỉ cần biết cách thực hiện.
-Vì vậy, chúng tôi rất khuyến nghị kết hợp chương này với sách trực quan hóa tổng quát.
+Vì vậy, chúng tôi rất khuyến nghị kết hợp chương này với sách visualization tổng quát.
 Chúng tôi đặc biệt thích [The Truthful Art](https://www.amazon.com/gp/product/0321934075/) của Albert Cairo.
-Cuốn sách đó không dạy cơ chế tạo trực quan hóa, mà tập trung vào những gì cần suy nghĩ để tạo đồ họa hiệu quả.
+Cuốn sách đó không dạy cơ chế tạo visualization, mà tập trung vào những gì cần suy nghĩ để tạo đồ họa hiệu quả.
 
 ### Điều kiện tiên quyết
 
@@ -49,7 +49,7 @@ Bạn thêm nhãn bằng function `labs()`.
 #|   Biểu đồ phân tán hiệu suất nhiên liệu cao tốc theo dung tích động cơ,
 #|   điểm tô màu theo loại xe. Đường cong trơn được phủ lên. Trục x gắn nhãn
 #|   "Engine displacement (L)", trục y gắn nhãn "Highway fuel economy (mpg)".
-#|   Chú giải gắn nhãn "Car type". Tiêu đề, phụ đề và chú thích nguồn dữ liệu.
+#|   Chú giải gắn nhãn "Car type". Tiêu đề, phụ đề và comment nguồn dữ liệu.
 ggplot(mpg, aes(x = displ, y = hwy)) +
   geom_point(aes(color = class)) +
   geom_smooth(se = FALSE) +
@@ -166,7 +166,7 @@ ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
 
 Lưu ý cách dùng `hjust` (căn ngang) và `vjust` (căn dọc) để kiểm soát vị trí nhãn.
 
-Tuy nhiên, biểu đồ chú thích ở trên khó đọc vì nhãn chồng chéo nhau và với điểm.
+Tuy nhiên, biểu đồ comment ở trên khó đọc vì nhãn chồng chéo nhau và với điểm.
 Chúng ta có thể dùng function `geom_label_repel()` từ gói mở rộng ggrepel để giải quyết cả hai vấn đề.
 Gói mở rộng này tự động điều chỉnh nhãn để không chồng chéo:
 
@@ -207,7 +207,7 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
   )
 ```
 
-Ngoài `geom_text()` và `geom_label()`, bạn có nhiều geom khác trong ggplot2 để chú thích biểu đồ.
+Ngoài `geom_text()` và `geom_label()`, bạn có nhiều geom khác trong ggplot2 để comment biểu đồ.
 Một vài ý tưởng:
 
 -   Dùng `geom_hline()` và `geom_vline()` để thêm đường tham chiếu.
@@ -221,8 +221,8 @@ Một vài ý tưởng:
 -   Dùng `geom_segment()` với argument `arrow` để vẽ mũi tên chỉ đến điểm.
     Dùng aesthetic `x` và `y` cho vị trí bắt đầu, `xend` và `yend` cho vị trí kết thúc.
 
-Function tiện dụng khác để thêm chú thích là `annotate()`.
-Theo nguyên tắc chung, geom hữu ích cho đánh dấu tập con dữ liệu trong khi `annotate()` hữu ích cho thêm một hoặc vài phần tử chú thích.
+Function tiện dụng khác để thêm comment là `annotate()`.
+Theo nguyên tắc chung, geom hữu ích cho đánh dấu tập con dữ liệu trong khi `annotate()` hữu ích cho thêm một hoặc vài phần tử comment.
 
 Để minh họa `annotate()`, hãy tạo văn bản để thêm vào biểu đồ.
 Văn bản hơi dài nên dùng `stringr::str_wrap()` để tự động xuống dòng:
@@ -233,14 +233,14 @@ trend_text <- "Larger engine sizes tend to have lower fuel economy." |>
 trend_text
 ```
 
-Rồi thêm hai lớp chú thích: một với label geom và một với segment geom.
-Aesthetic `x` và `y` trong cả hai định nghĩa nơi chú thích bắt đầu, và `xend` và `yend` trong segment định nghĩa vị trí kết thúc.
+Rồi thêm hai lớp comment: một với label geom và một với segment geom.
+Aesthetic `x` và `y` trong cả hai định nghĩa nơi comment bắt đầu, và `xend` và `yend` trong segment định nghĩa vị trí kết thúc.
 Lưu ý segment được tạo kiểu mũi tên.
 
 ```{r}
 #| fig-alt: |
 #|   Biểu đồ phân tán hiệu suất nhiên liệu cao tốc theo dung tích động cơ.
-#|   Mũi tên đỏ hướng xuống theo xu hướng điểm, với chú thích đỏ bên cạnh.
+#|   Mũi tên đỏ hướng xuống theo xu hướng điểm, với comment đỏ bên cạnh.
 ggplot(mpg, aes(x = displ, y = hwy)) +
   geom_point() +
   annotate(
@@ -256,7 +256,7 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
 ```
 
 Chú thích là công cụ mạnh mẽ để truyền đạt phát hiện chính và đặc điểm thú vị.
-Giới hạn duy nhất là trí tưởng tượng (và sự kiên nhẫn định vị chú thích cho đẹp)!
+Giới hạn duy nhất là trí tưởng tượng (và sự kiên nhẫn định vị comment cho đẹp)!
 
 ### Bài tập
 
@@ -278,12 +278,12 @@ Giới hạn duy nhất là trí tưởng tượng (và sự kiên nhẫn địn
 
 ## Thang đo
 
-Cách thứ ba để cải thiện biểu đồ cho truyền đạt là điều chỉnh thang đo (scale).
-Thang đo kiểm soát cách ánh xạ aesthetic hiển thị trực quan.
+Cách thứ ba để cải thiện biểu đồ cho truyền đạt là điều chỉnh scale (scale).
+Thang đo kiểm soát cách mapping aesthetic hiển thị trực quan.
 
 ### Thang đo mặc định
 
-Thông thường, ggplot2 tự động thêm thang đo.
+Thông thường, ggplot2 tự động thêm scale.
 Ví dụ, khi bạn gõ:
 
 ```{r}
@@ -293,7 +293,7 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
   geom_point(aes(color = class))
 ```
 
-ggplot2 tự động thêm thang đo mặc định phía sau:
+ggplot2 tự động thêm scale mặc định phía sau:
 
 ```{r}
 #| fig-show: hide
@@ -304,17 +304,17 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
   scale_color_discrete()
 ```
 
-Lưu ý quy ước đặt tên thang đo: `scale_` theo sau bởi tên aesthetic, rồi `_`, rồi tên thang đo.
+Lưu ý quy ước đặt tên scale: `scale_` theo sau bởi tên aesthetic, rồi `_`, rồi tên scale.
 Thang đo mặc định được đặt tên theo loại biến: continuous, discrete, datetime, hoặc date.
 `scale_x_continuous()` đặt giá trị số `displ` trên trục x liên tục, `scale_color_discrete()` chọn màu cho mỗi `class`, v.v.
-Có nhiều thang đo không mặc định bạn sẽ học dưới đây.
+Có nhiều scale không mặc định bạn sẽ học dưới đây.
 
 Thang đo mặc định được chọn kỹ để hoạt động tốt với nhiều đầu vào.
 Tuy nhiên, bạn có thể muốn ghi đè mặc định vì hai lý do:
 
--   Bạn muốn chỉnh một số parameter của thang đo mặc định, như thay đổi break trên trục hoặc nhãn chú giải.
+-   Bạn muốn chỉnh một số parameter của scale mặc định, như thay đổi break trên trục hoặc nhãn chú giải.
 
--   Bạn muốn thay thế hoàn toàn thang đo, dùng thuật toán khác.
+-   Bạn muốn thay thế hoàn toàn scale, dùng thuật toán khác.
     Thường bạn làm tốt hơn mặc định vì hiểu dữ liệu hơn.
 
 ### Vạch trục và khóa chú giải
@@ -339,7 +339,7 @@ ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
 Bạn có thể dùng `labels` tương tự (vector ký tự cùng độ dài với `breaks`), nhưng cũng có thể đặt thành `NULL` để ẩn nhãn.
 Điều này hữu ích cho bản đồ, hoặc khi không thể chia sẻ số tuyệt đối.
 Bạn cũng có thể dùng `breaks` và `labels` cho chú giải.
-Với thang đo rời rạc cho biến phân loại, `labels` có thể là list đặt tên.
+Với scale rời rạc cho biến phân loại, `labels` có thể là list đặt tên.
 
 ```{r}
 #| fig-alt: |
@@ -356,7 +356,7 @@ ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
 Đối số `labels` kết hợp với function gắn nhãn từ gói mở rộng scales cũng hữu ích để định dạng số thành tiền tệ, phần trăm, v.v.
 Biểu đồ bên trái hiển thị gắn nhãn mặc định với `label_dollar()`, thêm ký hiệu đô la và dấu phẩy phân cách row nghìn.
 Biểu đồ bên phải tùy chỉnh thêm bằng cách chia giá trị cho 1.000 và thêm hậu tố "K" cùng break tùy chỉnh.
-Lưu ý `breaks` dùng thang đo gốc của dữ liệu.
+Lưu ý `breaks` dùng scale gốc của dữ liệu.
 
 ```{r}
 #| layout-ncol: 2
@@ -405,8 +405,8 @@ presidential |>
   scale_x_date(name = NULL, breaks = presidential$start, date_labels = "'%y")
 ```
 
-Lưu ý rằng chúng ta trích xuất biến `start` làm vector với `presidential$start` vì không thể dùng ánh xạ aesthetic cho argument này.
-Cũng lưu ý rằng đặc tả break và label cho thang đo ngày và ngày-giờ hơi khác:
+Lưu ý rằng chúng ta trích xuất biến `start` làm vector với `presidential$start` vì không thể dùng mapping aesthetic cho argument này.
+Cũng lưu ý rằng đặc tả break và label cho scale ngày và ngày-giờ hơi khác:
 
 -   `date_labels` nhận đặc tả định dạng, cùng dạng với `parse_datetime()`.
 
@@ -418,7 +418,7 @@ Bạn sẽ thường dùng `breaks` và `labels` để chỉnh trục.
 Dù chúng cũng hoạt động cho chú giải, có vài kỹ thuật khác hay dùng hơn.
 
 Để kiểm soát vị trí tổng thể của chú giải, dùng thiết lập `theme()`.
-Chúng ta sẽ quay lại chủ đề (theme) cuối chương, nhưng tóm tắt, chúng kiểm soát phần không phải dữ liệu.
+Chúng ta sẽ quay lại theme (theme) cuối chương, nhưng tóm tắt, chúng kiểm soát phần không phải dữ liệu.
 Thiết lập `legend.position` kiểm soát nơi chú giải được vẽ:
 
 ```{r}
@@ -462,10 +462,10 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
 
 Lưu ý tên argument trong `guides()` khớp với tên aesthetic, giống như trong `labs()`.
 
-### Thay thế thang đo
+### Thay thế scale
 
-Thay vì chỉ chỉnh chi tiết, bạn có thể thay thế hoàn toàn thang đo.
-Hai loại thang đo hay muốn đổi nhất: thang đo vị trí liên tục và thang đo màu.
+Thay vì chỉ chỉnh chi tiết, bạn có thể thay thế hoàn toàn scale.
+Hai loại scale hay muốn đổi nhất: scale vị trí liên tục và scale màu.
 Nguyên tắc tương tự áp dụng cho tất cả aesthetic khác.
 
 Rất hữu ích khi vẽ phép biến đổi biến.
@@ -488,12 +488,12 @@ ggplot(diamonds, aes(x = log10(carat), y = log10(price))) +
 ```
 
 Tuy nhiên, nhược điểm là trục gắn nhãn giá trị đã biến đổi, khó đọc.
-Thay vì biến đổi trong ánh xạ aesthetic, chúng ta có thể biến đổi bằng thang đo.
-Trực quan giống hệt, trừ việc trục gắn nhãn thang đo gốc.
+Thay vì biến đổi trong mapping aesthetic, chúng ta có thể biến đổi bằng scale.
+Trực quan giống hệt, trừ việc trục gắn nhãn scale gốc.
 
 ```{r}
 #| fig-alt: |
-#|   Biểu đồ giá theo carat kim cương. Nhãn trục trên thang đo gốc.
+#|   Biểu đồ giá theo carat kim cương. Nhãn trục trên scale gốc.
 ggplot(diamonds, aes(x = carat, y = price)) +
   geom_bin2d() +
   scale_x_log10() +
@@ -502,7 +502,7 @@ ggplot(diamonds, aes(x = carat, y = price)) +
 
 Thang đo khác thường tùy chỉnh là màu.
 Thang đo phân loại mặc định chọn màu cách đều trên vòng màu.
-Thay thế hữu ích là thang đo ColorBrewer, được chỉnh tay để tốt hơn cho người mù màu.
+Thay thế hữu ích là scale ColorBrewer, được chỉnh tay để tốt hơn cho người mù màu.
 Hai biểu đồ dưới trông tương tự, nhưng đủ khác biệt để phân biệt được ngay cả với người mù màu đỏ-xanh.[^communication-1]
 
 [^communication-1]: Bạn có thể dùng công cụ như [SimDaltonism](https://michelf.ca/projects/sim-daltonism/) để mô phỏng mù màu.
@@ -524,7 +524,7 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
 ```
 
 Đừng quên kỹ thuật đơn giản hơn để cải thiện tính tiếp cận.
-Nếu chỉ có vài màu, thêm ánh xạ hình dạng dư thừa.
+Nếu chỉ có vài màu, thêm mapping hình dạng dư thừa.
 Điều này cũng giúp biểu đồ đọc được khi in đen trắng.
 
 ```{r}
@@ -543,17 +543,17 @@ Bảng màu tuần tự (trên) và phân kỳ (dưới) đặc biệt hữu íc
 ```{r}
 #| label: fig-brewer
 #| echo: false
-#| fig-cap: Tất cả thang đo ColorBrewer.
+#| fig-cap: Tất cả scale ColorBrewer.
 #| fig-asp: 2.5
 #| fig-alt: |
-#|   Tất cả thang đo ColorBrewer. Một nhóm đi từ sáng đến tối. Nhóm khác
-#|   là màu không có thứ tự. Nhóm cuối có thang đo phân kỳ.
+#|   Tất cả scale ColorBrewer. Một nhóm đi từ sáng đến tối. Nhóm khác
+#|   là màu không có thứ tự. Nhóm cuối có scale phân kỳ.
 par(mar = c(0, 3, 0, 0))
 RColorBrewer::display.brewer.all()
 ```
 
-Khi có ánh xạ giá trị-màu được định nghĩa sẵn, dùng `scale_color_manual()`.
-Ví dụ, nếu ánh xạ đảng phái tổng thống đến màu, chúng ta muốn đỏ cho Cộng hòa và xanh cho Dân chủ:
+Khi có mapping giá trị-màu được định nghĩa sẵn, dùng `scale_color_manual()`.
+Ví dụ, nếu mapping đảng phái tổng thống đến màu, chúng ta muốn đỏ cho Cộng hòa và xanh cho Dân chủ:
 
 ```{r}
 #| fig-alt: |
@@ -568,9 +568,9 @@ presidential |>
 ```
 
 Với màu liên tục, dùng `scale_color_gradient()` hoặc `scale_fill_gradient()` tích hợp sẵn.
-Nếu có thang đo phân kỳ, dùng `scale_color_gradient2()` cho phép gán màu khác nhau cho giá trị dương và âm.
+Nếu có scale phân kỳ, dùng `scale_color_gradient2()` cho phép gán màu khác nhau cho giá trị dương và âm.
 
-Tùy chọn khác là thang đo màu viridis.
+Tùy chọn khác là scale màu viridis.
 Các nhà thiết kế Nathaniel Smith và Stéfan van der Walt đã tạo ra sơ đồ màu liên tục dễ nhận biết cho người mù màu và đồng nhất tri giác trong cả màu và đen trắng.
 Chúng có sẵn dạng liên tục (`c`), rời rạc (`d`), và phân bin (`b`) trong ggplot2.
 
@@ -581,7 +581,7 @@ Chúng có sẵn dạng liên tục (`c`), rời rạc (`d`), và phân bin (`b`
 #| fig-asp: 0.75
 #| fig-alt: |
 #|   Ba biểu đồ hex trong đó màu hex cho thấy số quan sát. Biểu đồ đầu
-#|   dùng thang đo mặc định liên tục, thứ hai dùng viridis liên tục,
+#|   dùng scale mặc định liên tục, thứ hai dùng viridis liên tục,
 #|   thứ ba dùng viridis phân bin.
 df <- tibble(
   x = rnorm(10000),
@@ -606,20 +606,20 @@ ggplot(df, aes(x, y)) +
   labs(title = "Viridis, binned", x = NULL, y = NULL)
 ```
 
-Lưu ý tất cả thang đo màu có hai biến thể: `scale_color_*()` và `scale_fill_*()` cho aesthetic `color` và `fill` tương ứng.
+Lưu ý tất cả scale màu có hai biến thể: `scale_color_*()` và `scale_fill_*()` cho aesthetic `color` và `fill` tương ứng.
 
 ### Phóng to
 
 Có ba cách kiểm soát giới hạn biểu đồ:
 
 1.  Điều chỉnh dữ liệu được vẽ.
-2.  Đặt giới hạn trong mỗi thang đo.
+2.  Đặt giới hạn trong mỗi scale.
 3.  Đặt `xlim` và `ylim` trong `coord_cartesian()`.
 
 Chúng ta sẽ minh họa các tùy chọn này.
 Biểu đồ trái hiển thị mối quan hệ giữa dung tích động cơ và hiệu suất nhiên liệu, tô màu theo hệ dẫn động.
 Biểu đồ phải hiển thị cùng biến, nhưng lọc dữ liệu.
-Lọc dữ liệu đã ảnh hưởng đến thang đo x và y cũng như đường cong trơn.
+Lọc dữ liệu đã ảnh hưởng đến scale x và y cũng như đường cong trơn.
 
 ```{r}
 #| layout-ncol: 2
@@ -643,7 +643,7 @@ mpg |>
   geom_smooth()
 ```
 
-So sánh với hai biểu đồ dưới: trái đặt `limits` trên thang đo, phải đặt trong `coord_cartesian()`.
+So sánh với hai biểu đồ dưới: trái đặt `limits` trên scale, phải đặt trong `coord_cartesian()`.
 Thu hẹp limits tương đương lọc dữ liệu.
 Vì vậy, để phóng to vùng biểu đồ, tốt nhất dùng `coord_cartesian()`.
 
@@ -653,7 +653,7 @@ Vì vậy, để phóng to vùng biểu đồ, tốt nhất dùng `coord_cartesi
 #| message: false
 #| warning: false
 #| fig-alt: |
-#|   Bên trái, biểu đồ phân tán với limits trên thang đo, đường cong hơi
+#|   Bên trái, biểu đồ phân tán với limits trên scale, đường cong hơi
 #|   tăng rồi giảm. Bên phải, cùng limits nhưng qua coord_cartesian,
 #|   đường cong gần phẳng hơi tăng cuối.
 # Trái
@@ -670,8 +670,8 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
   coord_cartesian(xlim = c(5, 6), ylim = c(10, 25))
 ```
 
-Mặt khác, đặt `limits` trên thang đo riêng lẻ hữu ích hơn khi muốn *mở rộng* giới hạn, ví dụ để đồng bộ thang đo giữa biểu đồ.
-Nếu trích xuất hai loại xe và vẽ riêng, khó so sánh vì cả ba thang đo khác nhau.
+Mặt khác, đặt `limits` trên scale riêng lẻ hữu ích hơn khi muốn *mở rộng* giới hạn, ví dụ để đồng bộ scale giữa biểu đồ.
+Nếu trích xuất hai loại xe và vẽ riêng, khó so sánh vì cả ba scale khác nhau.
 
 ```{r}
 #| layout-ncol: 2
@@ -691,13 +691,13 @@ ggplot(compact, aes(x = displ, y = hwy, color = drv)) +
   geom_point()
 ```
 
-Cách khắc phục là chia sẻ thang đo, huấn luyện với `limits` của toàn bộ dữ liệu.
+Cách khắc phục là chia sẻ scale, huấn luyện với `limits` của toàn bộ dữ liệu.
 
 ```{r}
 #| layout-ncol: 2
 #| fig-width: 4
 #| fig-alt: |
-#|   Hai biểu đồ phân tán cùng thang đo cho x, y, và màu, giúp so sánh
+#|   Hai biểu đồ phân tán cùng scale cho x, y, và màu, giúp so sánh
 #|   trực tiếp.
 x_scale <- scale_x_continuous(limits = range(mpg$displ))
 y_scale <- scale_y_continuous(limits = range(mpg$hwy))
@@ -722,7 +722,7 @@ Trong trường hợp này, bạn có thể dùng facet, nhưng kỹ thuật nà
 
 ### Bài tập
 
-1.  Tại sao mã sau không ghi đè thang đo mặc định?
+1.  Tại sao mã sau không ghi đè scale mặc định?
 
     ```{r}
     #| fig-show: hide
@@ -737,7 +737,7 @@ Trong trường hợp này, bạn có thể dùng facet, nhưng kỹ thuật nà
       coord_fixed()
     ```
 
-2.  Đối số đầu tiên của mọi thang đo là gì?
+2.  Đối số đầu tiên của mọi scale là gì?
     So sánh với `labs()`?
 
 3.  Thay đổi hiển thị nhiệm kỳ tổng thống bằng cách:
@@ -759,7 +759,7 @@ Trong trường hợp này, bạn có thể dùng facet, nhưng kỹ thuật nà
 
 ## Chủ đề {#sec-themes}
 
-Cuối cùng, bạn có thể tùy chỉnh phần không phải dữ liệu với chủ đề (theme):
+Cuối cùng, bạn có thể tùy chỉnh phần không phải dữ liệu với theme (theme):
 
 ```{r}
 #| message: false
@@ -772,11 +772,11 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
   theme_bw()
 ```
 
-ggplot2 bao gồm tám chủ đề trong @fig-themes, với `theme_gray()` là mặc định.[^communication-2]
-Nhiều chủ đề khác có trong gói mở rộng bổ trợ như **ggthemes** (<https://jrnold.github.io/ggthemes>).
-Bạn cũng có thể tạo chủ đề riêng để phù hợp với phong cách công ty hoặc tạp chí.
+ggplot2 bao gồm tám theme trong @fig-themes, với `theme_gray()` là mặc định.[^communication-2]
+Nhiều theme khác có trong gói mở rộng bổ trợ như **ggthemes** (<https://jrnold.github.io/ggthemes>).
+Bạn cũng có thể tạo theme riêng để phù hợp với phong cách công ty hoặc tạp chí.
 
-[^communication-2]: Nhiều người thắc mắc tại sao chủ đề mặc định có nền xám.
+[^communication-2]: Nhiều người thắc mắc tại sao theme mặc định có nền xám.
     Đây là lựa chọn có chủ đích vì nó đẩy dữ liệu lên phía trước trong khi vẫn hiển thị đường lưới.
     Đường lưới trắng dễ thấy (quan trọng vì chúng hỗ trợ đánh giá vị trí), nhưng ít ảnh hưởng thị giác.
     Nền xám tạo màu tương tự văn bản, đảm bảo đồ họa hòa hợp với tài liệu.
@@ -785,23 +785,23 @@ Bạn cũng có thể tạo chủ đề riêng để phù hợp với phong các
 ```{r}
 #| label: fig-themes
 #| echo: false
-#| fig-cap: Tám chủ đề tích hợp trong ggplot2.
+#| fig-cap: Tám theme tích hợp trong ggplot2.
 #| fig-alt: |
-#|   Tám biểu đồ column, mỗi cái với một trong tám chủ đề tích hợp.
+#|   Tám biểu đồ column, mỗi cái với một trong tám theme tích hợp.
 knitr::include_graphics("images/visualization-themes.png")
 ```
 
-Cũng có thể kiểm soát từng thành phần của chủ đề, như kích thước và màu phông chữ trục y.
+Cũng có thể kiểm soát từng thành phần của theme, như kích thước và màu phông chữ trục y.
 Chúng ta đã thấy `legend.position` kiểm soát vị trí chú giải.
 Nhiều khía cạnh khác có thể tùy chỉnh bằng `theme()`.
 Ví dụ, trong biểu đồ dưới chúng ta thay đổi hướng chú giải và thêm viền đen.
 Tùy chỉnh hộp chú giải và phần tử tiêu đề được thực hiện với function `element_*()`.
-Các phần tử theme kiểm soát vị trí tiêu đề và chú thích là `plot.title.position` và `plot.caption.position`, được đặt thành `"plot"` để căn chỉnh với toàn bộ vùng biểu đồ.
+Các phần tử theme kiểm soát vị trí tiêu đề và comment là `plot.title.position` và `plot.caption.position`, được đặt thành `"plot"` để căn chỉnh với toàn bộ vùng biểu đồ.
 
 ```{r}
 #| fig-alt: |
 #|   Biểu đồ phân tán hiệu suất nhiên liệu theo dung tích, tô màu theo
-#|   hệ dẫn động. Tiêu đề và chú thích căn trái, chú giải nằm trong biểu
+#|   hệ dẫn động. Tiêu đề và comment căn trái, chú giải nằm trong biểu
 #|   đồ với viền đen.
 ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
   geom_point() +
@@ -821,11 +821,11 @@ ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
 ```
 
 Để xem tổng quan tất cả thành phần `theme()`, xem trợ giúp `?theme`.
-Cuốn sách [ggplot2](https://ggplot2-book.org/) cũng là nơi tuyệt vời cho chi tiết đầy đủ về chủ đề.
+Cuốn sách [ggplot2](https://ggplot2-book.org/) cũng là nơi tuyệt vời cho chi tiết đầy đủ về theme.
 
 ### Bài tập
 
-1.  Chọn một chủ đề từ gói mở rộng ggthemes và áp dụng cho biểu đồ cuối bạn đã tạo.
+1.  Chọn một theme từ gói mở rộng ggthemes và áp dụng cho biểu đồ cuối bạn đã tạo.
 2.  Làm nhãn trục của biểu đồ thành màu xanh và in đậm.
 
 ## Bố cục
@@ -871,7 +871,7 @@ p3 <- ggplot(mpg, aes(x = cty, y = hwy)) +
 (p1 | p3) / p2
 ```
 
-Ngoài ra, patchwork cho phép gom chú giải từ nhiều biểu đồ, tùy chỉnh vị trí chú giải cùng kích thước biểu đồ, và thêm tiêu đề, phụ đề, chú thích chung.
+Ngoài ra, patchwork cho phép gom chú giải từ nhiều biểu đồ, tùy chỉnh vị trí chú giải cùng kích thước biểu đồ, và thêm tiêu đề, phụ đề, comment chung.
 Dưới đây chúng ta tạo 5 biểu đồ.
 Chúng ta tắt chú giải trên biểu đồ hộp và phân tán, gom chú giải cho biểu đồ mật độ lên trên bằng `& theme(legend.position = "top")`.
 Lưu ý dùng `&` thay vì `+` vì chúng ta sửa theme cho biểu đồ patchwork, không phải từng ggplot.
@@ -959,7 +959,7 @@ Nếu bạn muốn tìm hiểu thêm về kết hợp và bố trí biểu đồ
 
 ## Tóm tắt
 
-Trong chương này bạn đã học về thêm nhãn biểu đồ như tiêu đề, phụ đề, chú thích cũng như sửa nhãn trục mặc định, dùng chú thích để thêm văn bản hoặc đánh dấu điểm dữ liệu cụ thể, tùy chỉnh thang đo trục, và thay đổi chủ đề biểu đồ.
+Trong chương này bạn đã học về thêm nhãn biểu đồ như tiêu đề, phụ đề, comment cũng như sửa nhãn trục mặc định, dùng comment để thêm văn bản hoặc đánh dấu điểm dữ liệu cụ thể, tùy chỉnh scale trục, và thay đổi theme biểu đồ.
 Bạn cũng đã học về kết hợp nhiều biểu đồ trong một đồ họa dùng cả bố cục đơn giản và phức tạp.
 
 Dù bạn đã học cách tạo nhiều loại biểu đồ và tùy chỉnh bằng nhiều kỹ thuật, chúng ta mới chỉ chạm bề mặt những gì bạn có thể tạo với ggplot2.

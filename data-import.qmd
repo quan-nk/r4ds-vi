@@ -512,7 +512,7 @@ tribble(
 
 Trong chương này, bạn đã học cách tải các file CSV với `read_csv()` và tự nhập dữ liệu với `tibble()` và `tribble()`.
 Bạn đã tìm hiểu cách các file csv hoạt động, một số vấn đề bạn có thể gặp phải, và cách khắc phục chúng.
-Chúng ta sẽ quay lại chủ đề nhập dữ liệu vài lần trong cuốn sách này: @sec-import-spreadsheets từ Excel và Google Sheets, @sec-import-databases sẽ chỉ cho bạn cách tải dữ liệu từ database, @sec-arrow từ các file parquet, @sec-rectangling từ JSON, và @sec-scraping từ các trang web.
+Chúng ta sẽ quay lại theme nhập dữ liệu vài lần trong cuốn sách này: @sec-import-spreadsheets từ Excel và Google Sheets, @sec-import-databases sẽ chỉ cho bạn cách tải dữ liệu từ database, @sec-arrow từ các file parquet, @sec-rectangling từ JSON, và @sec-scraping từ các trang web.
 
-Chúng ta gần như đã đến cuối phần này của cuốn sách, nhưng có một chủ đề quan trọng cuối cùng cần đề cập: cách tìm kiếm sự giúp đỡ.
+Chúng ta gần như đã đến cuối phần này của cuốn sách, nhưng có một theme quan trọng cuối cùng cần đề cập: cách tìm kiếm sự giúp đỡ.
 Vì vậy trong chương tiếp theo, bạn sẽ tìm hiểu một số nơi tốt để tìm kiếm sự giúp đỡ, cách tạo một reprex để tối đa hóa cơ hội nhận được sự giúp đỡ tốt, và một số lời khuyên chung về việc theo kịp thế giới R.

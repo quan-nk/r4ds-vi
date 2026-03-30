@@ -103,7 +103,7 @@ Có ba thứ bạn cần bao gồm để làm ví dụ có thể tái lập: cá
 
     -   Đảm bảo bạn đã sử dụng dấu cách và tên biến ngắn gọn nhưng mang tính mô tả.
 
-    -   Sử dụng chú thích để chỉ ra vấn đề của bạn nằm ở đâu.
+    -   Sử dụng comment để chỉ ra vấn đề của bạn nằm ở đâu.
 
     -   Cố gắng hết sức để loại bỏ mọi thứ không liên quan đến vấn đề.
 
@@ -124,7 +124,7 @@ Một cách là theo dõi những gì nhóm tidyverse đang làm trên [blog tid
 ## Tóm tắt
 
 Chương này kết thúc phần Toàn cảnh của cuốn sách.
-Bạn đã thấy các phần quan trọng nhất của quy trình khoa học dữ liệu: trực quan hóa, biến đổi, sắp xếp và nhập dữ liệu.
-Bây giờ bạn đã có cái nhìn tổng thể về toàn bộ quy trình, và chúng ta bắt đầu đi vào chi tiết của từng phần nhỏ.
+Bạn đã thấy các phần quan trọng nhất của workflow khoa học dữ liệu: visualization, biến đổi, sắp xếp và nhập dữ liệu.
+Bây giờ bạn đã có cái nhìn tổng thể về toàn bộ workflow, và chúng ta bắt đầu đi vào chi tiết của từng phần nhỏ.
 
-Phần tiếp theo của cuốn sách, Trực quan hóa, đi sâu hơn vào ngữ pháp đồ họa và tạo trực quan hóa dữ liệu với ggplot2, trình bày cách sử dụng các công cụ bạn đã học để tiến hành phân tích dữ liệu khám phá, và giới thiệu các phương pháp tốt để tạo biểu đồ cho truyền đạt.
+Phần tiếp theo của cuốn sách, Trực quan hóa, đi sâu hơn vào ngữ pháp đồ họa và tạo visualization dữ liệu với ggplot2, trình bày cách sử dụng các công cụ bạn đã học để tiến hành phân tích dữ liệu khám phá, và giới thiệu các phương pháp tốt để tạo biểu đồ cho truyền đạt.

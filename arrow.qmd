@@ -280,7 +280,7 @@ seattle_pq |>
   collect()
 ```
 
-Điều tuyệt vời về `to_duckdb()` là việc chuyển đổi không liên quan đến bất kỳ sao chép bộ nhớ nào, và thể hiện mục tiêu của hệ sinh thái arrow: cho phép chuyển đổi liền mạch từ môi trường tính toán này sang môi trường tính toán khác.
+Điều tuyệt vời về `to_duckdb()` là việc chuyển đổi không liên quan đến bất kỳ sao chép bộ nhớ nào, và thể hiện mục tiêu của hệ sinh thái arrow: cho phép chuyển đổi liền mạch từ environment tính toán này sang environment tính toán khác.
 
 ### Bài tập
 

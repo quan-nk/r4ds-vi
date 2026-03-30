@@ -7,10 +7,10 @@ source("_common.R")
 
 ## Giới thiệu
 
-Trong chương này, bạn sẽ học các công cụ để lặp (iteration), tức là thực hiện lặp đi lặp lại cùng một hành động trên các đối tượng khác nhau.
+Trong chương này, bạn sẽ học các công cụ để iterate (iteration), tức là thực hiện iterate đi iterate lại cùng một hành động trên các đối tượng khác nhau.
 Lặp trong R nhìn chung có xu hướng khá khác biệt so với các ngôn ngữ lập trình khác vì phần lớn nó được thực hiện ngầm và chúng ta có được nó miễn phí.
 Ví dụ, nếu bạn muốn nhân đôi một vector số `x` trong R, bạn chỉ cần viết `2 * x`.
-Trong hầu hết các ngôn ngữ khác, bạn cần phải nhân đôi từng phần tử của `x` một cách tường minh bằng một vòng lặp for nào đó.
+Trong hầu hết các ngôn ngữ khác, bạn cần phải nhân đôi từng phần tử của `x` một cách tường minh bằng một loop for nào đó.
 
 Cuốn sách này đã cung cấp cho bạn một số ít nhưng mạnh mẽ các công cụ thực hiện cùng một hành động cho nhiều "thứ":
 
@@ -70,7 +70,7 @@ df |> summarize(
 ```
 
 `across()` có ba argument đặc biệt quan trọng, mà chúng ta sẽ thảo luận chi tiết trong các phần sau.
-Bạn sẽ sử dụng hai argument đầu tiên mỗi khi dùng `across()`: argument đầu tiên, `.cols`, chỉ định những column nào bạn muốn lặp qua, và argument thứ hai, `.fns`, chỉ định việc cần làm với mỗi column.
+Bạn sẽ sử dụng hai argument đầu tiên mỗi khi dùng `across()`: argument đầu tiên, `.cols`, chỉ định những column nào bạn muốn iterate qua, và argument thứ hai, `.fns`, chỉ định việc cần làm với mỗi column.
 Bạn có thể sử dụng argument `.names` khi cần kiểm soát thêm tên của các column đầu ra, điều này đặc biệt quan trọng khi bạn sử dụng `across()` với `mutate()`.
 Chúng ta cũng sẽ thảo luận về hai biến thể quan trọng, `if_any()` và `if_all()`, hoạt động với `filter()`.
 
@@ -431,7 +431,7 @@ Nếu cần, bạn có thể `pivot_wider()` kết quả này trở lại dạng
 
 ## Đọc nhiều tệp
 
-Trong phần trước, bạn đã học cách sử dụng `dplyr::across()` để lặp lại một phép biến đổi trên nhiều column.
+Trong phần trước, bạn đã học cách sử dụng `dplyr::across()` để iterate lại một phép biến đổi trên nhiều column.
 Trong phần này, bạn sẽ học cách sử dụng `purrr::map()` để làm gì đó với mỗi tệp trong một thư mục.
 Hãy bắt đầu với một chút động lực: hãy tưởng tượng bạn có một thư mục đầy các spreadsheet excel[^iteration-5] mà bạn muốn đọc.
 Bạn có thể làm điều đó bằng cách sao chép và dán:
@@ -668,11 +668,11 @@ Số `0` trong tên tệp gợi ý rằng nó nên được chạy trước bấ
 
 Nếu các tệp dữ liệu đầu vào của bạn thay đổi theo thời gian, bạn có thể cân nhắc học một công cụ như [targets](https://docs.ropensci.org/targets/) để thiết lập code dọn dẹp dữ liệu tự động chạy lại mỗi khi một trong các tệp đầu vào bị thay đổi.
 
-### Nhiều vòng lặp đơn giản
+### Nhiều loop đơn giản
 
-Ở đây chúng ta chỉ tải dữ liệu trực tiếp từ đĩa, và may mắn có được một tập dữ liệu gọn gàng.
-Trong hầu hết các trường hợp, bạn sẽ cần thực hiện thêm một số thao tác dọn dẹp, và bạn có hai lựa chọn cơ bản: bạn có thể thực hiện một vòng lặp với một function phức tạp, hoặc thực hiện nhiều vòng lặp với các function đơn giản.
-Theo kinh nghiệm của chúng tôi, hầu hết mọi người thường chọn một vòng lặp phức tạp trước, nhưng bạn thường tốt hơn khi thực hiện nhiều vòng lặp đơn giản.
+Ở đây chúng ta chỉ tải dữ liệu trực tiếp từ đĩa, và may mắn có được một tập tidy data.
+Trong hầu hết các trường hợp, bạn sẽ cần thực hiện thêm một số thao tác dọn dẹp, và bạn có hai lựa chọn cơ bản: bạn có thể thực hiện một loop với một function phức tạp, hoặc thực hiện nhiều loop với các function đơn giản.
+Theo kinh nghiệm của chúng tôi, hầu hết mọi người thường chọn một loop phức tạp trước, nhưng bạn thường tốt hơn khi thực hiện nhiều loop đơn giản.
 
 Ví dụ, hãy tưởng tượng rằng bạn muốn đọc một loạt tệp, lọc bỏ các missing value, xoay dữ liệu, rồi kết hợp chúng.
 Một cách tiếp cận vấn đề là viết một function nhận một tệp và thực hiện tất cả các bước đó rồi gọi `map()` một lần:
@@ -1008,11 +1008,11 @@ unlink(by_clarity$path)
 
 ## Tóm tắt
 
-Trong chương này, bạn đã thấy cách sử dụng lặp tường minh để giải quyết ba vấn đề thường gặp khi làm khoa học dữ liệu: thao tác nhiều column, đọc nhiều tệp và lưu nhiều đầu ra.
-Nhưng nói chung, lặp là một siêu năng lực: nếu bạn biết đúng kỹ thuật lặp, bạn có thể dễ dàng đi từ việc sửa một vấn đề sang sửa tất cả các vấn đề.
+Trong chương này, bạn đã thấy cách sử dụng iterate tường minh để giải quyết ba vấn đề thường gặp khi làm khoa học dữ liệu: thao tác nhiều column, đọc nhiều tệp và lưu nhiều đầu ra.
+Nhưng nói chung, iterate là một siêu năng lực: nếu bạn biết đúng kỹ thuật iterate, bạn có thể dễ dàng đi từ việc sửa một vấn đề sang sửa tất cả các vấn đề.
 Khi bạn đã thành thạo các kỹ thuật trong chương này, chúng tôi rất khuyến khích bạn tìm hiểu thêm bằng cách đọc chương [Functionals](https://adv-r.hadley.nz/functionals.html) của *Advanced R* và tham khảo [trang web purrr](https://purrr.tidyverse.org).
 
-Nếu bạn biết nhiều về lặp trong các ngôn ngữ khác, bạn có thể ngạc nhiên rằng chúng tôi không thảo luận về vòng lặp `for`.
+Nếu bạn biết nhiều về iterate trong các ngôn ngữ khác, bạn có thể ngạc nhiên rằng chúng tôi không thảo luận về loop `for`.
 Đó là vì hướng phân tích dữ liệu của R thay đổi cách chúng ta lặp: trong hầu hết các trường hợp bạn có thể dựa vào một thành ngữ có sẵn để làm gì đó cho mỗi column hoặc mỗi nhóm.
 Và khi bạn không thể, bạn thường có thể sử dụng một công cụ lập trình function như `map()` để làm gì đó với mỗi phần tử của một list.
-Tuy nhiên, bạn sẽ thấy vòng lặp `for` trong code ngoài tự nhiên, nên bạn sẽ học về chúng trong chương tiếp theo nơi chúng ta thảo luận một số công cụ base R quan trọng.
+Tuy nhiên, bạn sẽ thấy loop `for` trong code ngoài tự nhiên, nên bạn sẽ học về chúng trong chương tiếp theo nơi chúng ta thảo luận một số công cụ base R quan trọng.

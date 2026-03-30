@@ -74,8 +74,8 @@ Ngăn ngừa loại lỗi này là một lý do rất tốt để học cách vi
 
 ### Viết một function
 
-Để viết một function, trước tiên bạn cần phân tích mã lặp lại để tìm ra phần nào là hằng và phần nào thay đổi.
-Nếu chúng ta lấy đoạn mã ở trên và đưa ra ngoài `mutate()`, sẽ dễ thấy mẫu hơn vì mỗi lần lặp giờ chỉ là một dòng:
+Để viết một function, trước tiên bạn cần phân tích mã iterate lại để tìm ra phần nào là hằng và phần nào thay đổi.
+Nếu chúng ta lấy đoạn mã ở trên và đưa ra ngoài `mutate()`, sẽ dễ thấy mẫu hơn vì mỗi lần iterate giờ chỉ là một dòng:
 
 ```{r}
 #| eval: false
@@ -102,7 +102,7 @@ Nếu chúng ta lấy đoạn mã ở trên và đưa ra ngoài `mutate()`, sẽ
     Chúng ta sẽ gọi nó là `x` vì đây là tên quy ước cho vector số.
 
 3.  **Thân hàm** (body).
-    Thân function là đoạn mã được lặp lại qua tất cả các lần gọi.
+    Thân function là đoạn mã được iterate lại qua tất cả các lần gọi.
 
 Sau đó bạn tạo function bằng cách theo mẫu:
 
@@ -138,7 +138,7 @@ df |> mutate(
 )
 ```
 
-(Trong @sec-iteration, bạn sẽ học cách dùng `across()` để giảm sự trùng lặp hơn nữa, chỉ cần `df |> mutate(across(a:d, rescale01))`).
+(Trong @sec-iteration, bạn sẽ học cách dùng `across()` để giảm sự trùng iterate hơn nữa, chỉ cần `df |> mutate(across(a:d, rescale01))`).
 
 ### Cải thiện function của chúng ta
 
@@ -169,7 +169,7 @@ rescale01 <- function(x) {
 rescale01(x)
 ```
 
-Những thay đổi này minh họa một lợi ích quan trọng của function: vì chúng ta đã chuyển mã lặp lại vào một function, chúng ta chỉ cần thay đổi ở một nơi duy nhất.
+Những thay đổi này minh họa một lợi ích quan trọng của function: vì chúng ta đã chuyển mã iterate lại vào một function, chúng ta chỉ cần thay đổi ở một nơi duy nhất.
 
 ### Function mutate
 
@@ -201,7 +201,7 @@ clamp(1:10, min = 3, max = 7)
 ```
 
 Tất nhiên function không chỉ cần làm việc với biến số.
-Bạn có thể muốn thực hiện một số thao tác xử lý string (string) lặp đi lặp lại.
+Bạn có thể muốn thực hiện một số thao tác xử lý string (string) iterate đi iterate lại.
 Có thể bạn cần viết hoa ký tự đầu tiên:
 
 ```{r}
@@ -320,7 +320,7 @@ Khi bạn bắt đầu viết function, có hai phím tắt RStudio cực kỳ h
     ```
 
 2.  Trong biến thể thứ hai của `rescale01()`, các giá trị vô hạn bị giữ nguyên.
-    Bạn có thể viết lại `rescale01()` sao cho `-Inf` được ánh xạ thành 0, và `Inf` được ánh xạ thành 1 không?
+    Bạn có thể viết lại `rescale01()` sao cho `-Inf` được mapping thành 0, và `Inf` được mapping thành 1 không?
 
 3.  Cho một vector ngày sinh, hãy viết một function để tính tuổi theo năm.
 
@@ -343,8 +343,8 @@ Khi bạn bắt đầu viết function, có hai phím tắt RStudio cực kỳ h
 
 ## Function data frame
 
-Function vector hữu ích để tách ra mã lặp lại bên trong một động từ dplyr.
-Nhưng bạn thường cũng lặp lại chính các động từ, đặc biệt trong một pipeline lớn.
+Function vector hữu ích để tách ra mã iterate lại bên trong một động từ dplyr.
+Nhưng bạn thường cũng iterate lại chính các động từ, đặc biệt trong một pipeline lớn.
 Khi bạn nhận thấy mình sao chép-dán nhiều động từ nhiều lần, bạn có thể nghĩ đến việc viết một function data frame.
 Function data frame hoạt động giống các động từ dplyr: chúng nhận một data frame làm argument đầu tiên, một số argument bổ sung cho biết phải làm gì với nó, và trả về một data frame hoặc một vector.
 
@@ -391,7 +391,7 @@ Bất kể chúng ta gọi `grouped_mean()` thế nào, nó luôn thực hiện 
 Đây là vấn đề tham chiếu gián tiếp, và nó phát sinh vì dplyr sử dụng **đánh giá gọn gàng (tidy evaluation)** để cho phép bạn tham chiếu đến tên biến bên trong data frame mà không cần xử lý đặc biệt.
 
 Đánh giá gọn gàng tuyệt vời trong 95% trường hợp vì nó giúp phân tích dữ liệu của bạn rất gọn gàng --- bạn không bao giờ phải nói biến đến từ data frame nào; điều đó hiển nhiên từ ngữ cảnh.
-Nhược điểm của đánh giá gọn gàng xuất hiện khi chúng ta muốn gói gọn mã tidyverse lặp lại vào một function.
+Nhược điểm của đánh giá gọn gàng xuất hiện khi chúng ta muốn gói gọn mã tidyverse iterate lại vào một function.
 Ở đây chúng ta cần một cách nào đó để nói với `group_by()` và `summarize()` đừng coi `group_var` và `mean_var` là tên biến, mà thay vào đó hãy nhìn vào bên trong chúng để tìm biến mà chúng ta thực sự muốn dùng.
 
 Đánh giá gọn gàng bao gồm giải pháp cho vấn đề này gọi là **ôm** (embracing) 🤗.
@@ -876,14 +876,14 @@ Như bạn thấy, chúng tôi khuyên nên đặt thêm dấu cách bên trong 
 
 ## Tóm tắt
 
-Trong chương này, bạn đã học cách viết function cho ba kịch bản hữu ích: tạo vector, tạo data frame, hoặc tạo biểu đồ.
+Trong chương này, bạn đã học cách viết function cho ba script hữu ích: tạo vector, tạo data frame, hoặc tạo biểu đồ.
 Trong quá trình đó, bạn đã thấy nhiều ví dụ, hy vọng đã kích thích sự sáng tạo của bạn và cho bạn một số ý tưởng về nơi function có thể giúp ích cho mã phân tích của bạn.
 
 Chúng tôi chỉ mới chỉ cho bạn những điều tối thiểu để bắt đầu với function và còn rất nhiều điều để học.
 Một số nơi để tìm hiểu thêm:
 
 -   Để tìm hiểu thêm về lập trình với đánh giá gọn gàng, hãy xem các công thức hữu ích trong [lập trình với dplyr](https://dplyr.tidyverse.org/articles/programming.html) và [lập trình với tidyr](https://tidyr.tidyverse.org/articles/programming.html) và tìm hiểu thêm lý thuyết trong [Che dữ liệu là gì và tại sao tôi cần {{?](https://rlang.r-lib.org/reference/topic-data-mask.html).
--   Để tìm hiểu thêm về giảm sự trùng lặp trong mã ggplot2, hãy đọc chương [Lập trình với ggplot2](https://ggplot2-book.org/programming.html){.uri} của sách ggplot2.
+-   Để tìm hiểu thêm về giảm sự trùng iterate trong mã ggplot2, hãy đọc chương [Lập trình với ggplot2](https://ggplot2-book.org/programming.html){.uri} của sách ggplot2.
 -   Để biết thêm lời khuyên về phong cách function, hãy xem [hướng dẫn phong cách tidyverse](https://style.tidyverse.org/functions.html){.uri}.
 
-Trong chương tiếp theo, chúng ta sẽ đi sâu vào lặp (iteration) --- công cụ giúp bạn giảm sự trùng lặp mã hơn nữa.
+Trong chương tiếp theo, chúng ta sẽ đi sâu vào iterate (iteration) --- công cụ giúp bạn giảm sự trùng iterate mã hơn nữa.

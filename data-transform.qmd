@@ -193,7 +193,7 @@ Lưu ý rằng số row không thay đổi -- chúng ta chỉ sắp xếp dữ l
 Tuy nhiên, phần lớn thời gian bạn sẽ muốn tìm tổ hợp duy nhất của một số biến, vì vậy bạn cũng có thể tùy chọn cung cấp tên column:
 
 ```{r}
-# Xóa các row trùng lặp, nếu có
+# Xóa các row trùng iterate, nếu có
 flights |>
   distinct()
 
@@ -361,7 +361,7 @@ Có một số function trợ giúp bạn có thể sử dụng bên trong `sele
 -   `num_range("x", 1:3)`: khớp `x1`, `x2` và `x3`.
 
 Xem `?select` để biết thêm chi tiết.
-Khi bạn biết regular expression (regular expression) (chủ đề của @sec-regular-expressions), bạn cũng sẽ có thể sử dụng `matches()` để chọn các biến khớp với một mẫu.
+Khi bạn biết regular expression (regular expression) (theme của @sec-regular-expressions), bạn cũng sẽ có thể sử dụng `matches()` để chọn các biến khớp với một mẫu.
 
 Bạn có thể đổi tên biến khi `select()` bằng cách sử dụng `=`.
 Tên mới xuất hiện ở bên trái của `=`, và biến cũ xuất hiện ở bên phải:
@@ -864,4 +864,4 @@ Các công cụ được chia thành ba nhóm đại khái: những công cụ t
 Trong chương này, chúng ta đã tập trung vào các công cụ "toàn bộ data frame" này, nhưng bạn chưa học nhiều về những gì bạn có thể làm với từng biến riêng lẻ.
 Chúng ta sẽ quay lại điều đó trong phần Biến đổi của cuốn sách, nơi mỗi chương cung cấp các công cụ cho một loại biến cụ thể.
 
-Trong chương tiếp theo, chúng ta sẽ quay lại quy trình làm việc để thảo luận về tầm quan trọng của phong cách mã và giữ cho mã của bạn được tổ chức tốt để bạn và người khác dễ đọc và hiểu.
+Trong chương tiếp theo, chúng ta sẽ quay lại workflow để thảo luận về tầm quan trọng của phong cách mã và giữ cho mã của bạn được tổ chức tốt để bạn và người khác dễ đọc và hiểu.

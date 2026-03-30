@@ -6,7 +6,7 @@
 source("_common.R")
 ```
 
-Phần thứ hai của cuốn sách là phần đi sâu vào trực quan hóa dữ liệu.
+Phần thứ hai của cuốn sách là phần đi sâu vào visualization dữ liệu.
 Trong phần này của cuốn sách, bạn sẽ tìm hiểu về các loại biến quan trọng nhất mà bạn sẽ gặp bên trong một data frame và học các công cụ bạn có thể sử dụng để làm việc với chúng.
 
 ```{r}
@@ -14,7 +14,7 @@ Trong phần này của cuốn sách, bạn sẽ tìm hiểu về các loại bi
 #| echo: false
 #| fig-cap: |
 #|   Các tùy chọn biến đổi dữ liệu phụ thuộc rất nhiều vào loại
-#|   dữ liệu liên quan, chủ đề của phần này trong cuốn sách.
+#|   dữ liệu liên quan, theme của phần này trong cuốn sách.
 #| fig-alt: |
 #|   Mô hình khoa học dữ liệu của chúng tôi, với phần biến đổi được
 #|   đánh dấu bằng màu xanh.

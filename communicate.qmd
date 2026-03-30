@@ -5,14 +5,14 @@
 source("_common.R")
 ```
 
-Đến giờ, bạn đã học các công cụ để đưa dữ liệu vào R, sắp xếp nó thành dạng thuận tiện cho phân tích, và sau đó hiểu dữ liệu thông qua biến đổi và trực quan hóa.
+Đến giờ, bạn đã học các công cụ để đưa dữ liệu vào R, sắp xếp nó thành dạng thuận tiện cho phân tích, và sau đó hiểu dữ liệu thông qua biến đổi và visualization.
 Tuy nhiên, dù phân tích của bạn tuyệt vời đến đâu cũng không quan trọng nếu bạn không thể giải thích nó cho người khác: bạn cần **truyền đạt** kết quả của mình.
 
 ```{r}
 #| label: fig-ds-communicate
 #| echo: false
 #| fig-cap: |
-#|   Truyền đạt là phần cuối cùng của quy trình khoa học dữ liệu; nếu bạn
+#|   Truyền đạt là phần cuối cùng của workflow khoa học dữ liệu; nếu bạn
 #|   không thể truyền đạt kết quả đến người khác, dù phân tích của bạn
 #|   tuyệt vời đến đâu cũng không quan trọng.
 #| fig-alt: |
@@ -22,13 +22,13 @@ Tuy nhiên, dù phân tích của bạn tuyệt vời đến đâu cũng không 
 knitr::include_graphics("diagrams/data-science/communicate.png", dpi = 270)
 ```
 
-Truyền đạt là chủ đề của hai chương tiếp theo:
+Truyền đạt là theme của hai chương tiếp theo:
 
 -   Trong @sec-quarto, bạn sẽ tìm hiểu về Quarto, một công cụ để tích hợp văn bản, mã, và kết quả.
     Bạn có thể sử dụng Quarto cho giao tiếp giữa nhà phân tích với nhà phân tích cũng như giữa nhà phân tích với người ra quyết định.
     Nhờ sức mạnh của các định dạng Quarto, bạn thậm chí có thể sử dụng cùng một tài liệu cho cả hai mục đích.
 
--   Trong @sec-quarto-formats, bạn sẽ tìm hiểu một chút về nhiều loại đầu ra khác mà bạn có thể tạo bằng Quarto, bao gồm bảng điều khiển (dashboard), trang web, và sách.
+-   Trong @sec-quarto-formats, bạn sẽ tìm hiểu một chút về nhiều loại đầu ra khác mà bạn có thể tạo bằng Quarto, bao gồm console (dashboard), trang web, và sách.
 
 Các chương này chủ yếu tập trung vào các khía cạnh kỹ thuật của truyền đạt, không phải những vấn đề thực sự khó khăn của việc truyền đạt suy nghĩ đến người khác.
 Tuy nhiên, có rất nhiều cuốn sách tuyệt vời khác về truyền đạt, mà chúng tôi sẽ giới thiệu cho bạn ở cuối mỗi chương.

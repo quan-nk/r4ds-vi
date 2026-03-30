@@ -7,7 +7,7 @@ Có nhiều cách bạn có thể giúp cuốn sách trở nên tốt hơn nữa
     Phản hồi của bạn về những gì gây khó hiểu hoặc khó nắm bắt rất có giá trị.
 
 -   Nếu bạn phát hiện lỗi đánh máy, hãy thoải mái chỉnh sửa trang tương ứng và gửi pull request.
-    Nếu bạn chưa làm điều này bao giờ, quy trình rất đơn giản:
+    Nếu bạn chưa làm điều này bao giờ, workflow rất đơn giản:
 
     -   Nhấp vào nút chỉnh sửa trang này (edit this page) trên thanh bên.
 

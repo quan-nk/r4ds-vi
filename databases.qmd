@@ -527,7 +527,7 @@ FULL JOIN planes ON (flights.tailnum = planes.tailnum)
 Bạn có thể sẽ cần nhiều phép nối khi làm việc với dữ liệu từ database.
 Đó là vì các bảng database thường được lưu ở dạng chuẩn hóa (normalized) cao, trong đó mỗi "sự kiện" được lưu ở một nơi duy nhất và để có tập dữ liệu đầy đủ cho phân tích, bạn cần điều hướng qua một mạng lưới phức tạp các bảng được kết nối bằng khóa chính (primary key) và khóa ngoại (foreign key).
 Nếu bạn gặp tình huống này, [gói mở rộng dm](https://cynkra.github.io/dm/), bởi Tobias Schieferdecker, Kirill Muller, và Darko Bergant, là cứu cánh.
-Nó có thể tự động xác định các kết nối giữa các bảng bằng các ràng buộc mà DBA thường cung cấp, trực quan hóa các kết nối để bạn thấy được bức tranh toàn cảnh, và tạo ra các phép nối bạn cần để kết nối bảng này với bảng khác.
+Nó có thể tự động xác định các kết nối giữa các bảng bằng các ràng buộc mà DBA thường cung cấp, visualization các kết nối để bạn thấy được bức tranh toàn cảnh, và tạo ra các phép nối bạn cần để kết nối bảng này với bảng khác.
 
 ### Các function khác
 
@@ -611,7 +611,7 @@ flights |>
 
 Ở đây điều quan trọng là phải `arrange()` dữ liệu, vì các bảng SQL không có thứ tự cố định.
 Thực tế, nếu bạn không dùng `arrange()`, bạn có thể nhận được các row theo thứ tự khác nhau mỗi lần!
-Lưu ý rằng đối với function cửa sổ, thông tin sắp xếp được lặp lại: mệnh đề `ORDER BY` của truy vấn chính không tự động áp dụng cho function cửa sổ.
+Lưu ý rằng đối với function cửa sổ, thông tin sắp xếp được iterate lại: mệnh đề `ORDER BY` của truy vấn chính không tự động áp dụng cho function cửa sổ.
 
 Một function SQL quan trọng khác là `CASE WHEN`. Nó được dùng làm bản dịch của `if_else()` và `case_when()`, function dplyr mà nó trực tiếp truyền cảm hứng.
 Đây là một vài ví dụ đơn giản:

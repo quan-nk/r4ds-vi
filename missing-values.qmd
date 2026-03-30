@@ -9,7 +9,7 @@ source("_common.R")
 
 Bạn đã học những kiến thức cơ bản về missing value ở các phần trước của cuốn sách.
 Bạn lần đầu gặp chúng trong @sec-data-visualization khi chúng gây ra cảnh báo khi vẽ biểu đồ, cũng như trong @sec-summarize khi chúng ảnh hưởng đến việc tính toán các thống kê tóm tắt, và bạn đã tìm hiểu về tính "lây lan" của chúng cũng như cách kiểm tra sự hiện diện của chúng trong @sec-na-comparison.
-Giờ chúng ta sẽ quay lại chủ đề này một cách chi tiết hơn, để bạn có thể hiểu sâu hơn.
+Giờ chúng ta sẽ quay lại theme này một cách chi tiết hơn, để bạn có thể hiểu sâu hơn.
 
 Chúng ta sẽ bắt đầu bằng việc thảo luận một số công cụ chung để làm việc với missing value được ghi nhận dưới dạng `NA`.
 Tiếp theo, chúng ta sẽ khám phá khái niệm missing value ẩn (implicitly missing value) -- những giá trị đơn giản là vắng mặt trong dữ liệu của bạn, và giới thiệu một số công cụ để biến chúng thành missing value tường minh (explicitly missing value).
@@ -32,7 +32,7 @@ library(tidyverse)
 ### Lấp đầy bằng quan sát cuối cùng
 
 Một trường hợp sử dụng phổ biến của missing value là để thuận tiện cho việc nhập dữ liệu.
-Khi dữ liệu được nhập bằng tay, missing value đôi khi chỉ ra rằng giá trị ở row trước đó đã được lặp lại (hay mang xuống):
+Khi dữ liệu được nhập bằng tay, missing value đôi khi chỉ ra rằng giá trị ở row trước đó đã được iterate lại (hay mang xuống):
 
 ```{r}
 treatment <- tribble(

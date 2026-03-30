@@ -9,7 +9,7 @@ Chương này sẽ giới thiệu cho bạn hai công cụ thiết yếu để t
 
 ## Tập lệnh
 
-Cho đến nay, bạn đã sử dụng bảng điều khiển để chạy mã.
+Cho đến nay, bạn đã sử dụng console để chạy mã.
 Đó là nơi tuyệt vời để bắt đầu, nhưng bạn sẽ thấy nó trở nên chật chội khá nhanh khi bạn tạo đồ họa ggplot2 phức tạp hơn và pipeline dplyr dài hơn.
 Để có thêm không gian làm việc, hãy sử dụng trình soạn thảo tập lệnh.
 Mở nó bằng cách nhấp vào menu File, chọn New File, rồi R script, hoặc sử dụng phím tắt Cmd/Ctrl + Shift + N.
@@ -34,7 +34,7 @@ knitr::include_graphics("diagrams/rstudio/script.png", dpi = 270)
 
 Trình soạn thảo tập lệnh là nơi tuyệt vời để xây dựng biểu đồ ggplot2 phức tạp hoặc string thao tác dplyr dài.
 Chìa khóa để sử dụng trình soạn thảo hiệu quả là ghi nhớ một trong những phím tắt quan trọng nhất: Cmd/Ctrl + Enter.
-Phím tắt này thực thi biểu thức R hiện tại trong bảng điều khiển.
+Phím tắt này thực thi biểu thức R hiện tại trong console.
 Ví dụ, xem đoạn mã bên dưới.
 
 ```{r}
@@ -63,7 +63,7 @@ Tuy nhiên, lưu ý rằng bạn không bao giờ nên đặt `install.packages(
 Thật thiếu tế nhị khi giao một tập lệnh sẽ thay đổi thứ gì đó trên máy tính của họ nếu họ không cẩn thận!
 
 Khi làm việc qua các chương trong tương lai, chúng tôi rất khuyến nghị bạn bắt đầu trong trình soạn thảo tập lệnh và thực hành phím tắt.
-Theo thời gian, việc gửi mã đến bảng điều khiển theo cách này sẽ trở nên tự nhiên đến mức bạn không cần suy nghĩ.
+Theo thời gian, việc gửi mã đến console theo cách này sẽ trở nên tự nhiên đến mức bạn không cần suy nghĩ.
 
 ### Chẩn đoán của RStudio
 
@@ -169,13 +169,13 @@ Một ngày nào đó, bạn sẽ cần đưa dữ liệu từ thế giới bên
 
 Với người mới bắt đầu, có thể dựa vào Environment hiện tại để chứa tất cả đối tượng bạn đã tạo trong suốt quá trình phân tích.
 Tuy nhiên, để dễ dàng hơn khi làm việc trên dự án lớn hơn hoặc cộng tác với người khác, nguồn sự thật nên là các tập lệnh R.
-Với tập lệnh R (và file dữ liệu), bạn có thể tái tạo môi trường.
-Chỉ với môi trường, việc tái tạo tập lệnh R khó hơn nhiều: bạn sẽ phải gõ lại rất nhiều mã từ bộ nhớ (chắc chắn mắc lỗi) hoặc phải cẩn thận khai thác lịch sử R.
+Với tập lệnh R (và file dữ liệu), bạn có thể tái tạo environment.
+Chỉ với environment, việc tái tạo tập lệnh R khó hơn nhiều: bạn sẽ phải gõ lại rất nhiều mã từ bộ nhớ (chắc chắn mắc lỗi) hoặc phải cẩn thận khai thác lịch sử R.
 
 Để giúp giữ tập lệnh R là nguồn sự thật cho phân tích của bạn, chúng tôi rất khuyến nghị bạn hướng dẫn RStudio không bảo tồn không gian làm việc giữa các phiên.
 Bạn có thể làm điều này bằng cách chạy `usethis::use_blank_slate()`[^workflow-scripts-2] hoặc bằng cách mô phỏng các tùy chọn trong @fig-blank-slate. Điều này sẽ gây cho bạn chút khó chịu ngắn hạn, vì bây giờ khi khởi động lại RStudio, nó sẽ không còn nhớ mã bạn đã chạy lần trước cũng như các đối tượng bạn đã tạo hoặc tập dữ liệu bạn đã đọc sẽ không có sẵn.
 Nhưng nỗi khó chịu ngắn hạn này cứu bạn khỏi đau khổ dài hạn vì nó buộc bạn nắm bắt tất cả thủ tục quan trọng trong mã.
-Không có gì tệ hơn việc phát hiện ba tháng sau rằng bạn chỉ lưu kết quả của một phép tính quan trọng trong môi trường, không phải bản thân phép tính trong mã.
+Không có gì tệ hơn việc phát hiện ba tháng sau rằng bạn chỉ lưu kết quả của một phép tính quan trọng trong environment, không phải bản thân phép tính trong mã.
 
 [^workflow-scripts-2]: Nếu bạn chưa cài đặt usethis, bạn có thể cài đặt bằng `install.packages("usethis")`.
 
@@ -215,7 +215,7 @@ Lần tiếp theo bạn quay lại, bạn sẽ ở đúng nơi bạn đã rời 
 
 R có khái niệm mạnh mẽ về **thư mục làm việc** (working directory).
 Đây là nơi R tìm kiếm file bạn yêu cầu tải, và nơi nó sẽ đặt bất kỳ file nào bạn yêu cầu lưu.
-RStudio hiển thị thư mục làm việc hiện tại ở đầu bảng điều khiển:
+RStudio hiển thị thư mục làm việc hiện tại ở đầu console:
 
 ```{r}
 #| echo: false
@@ -309,7 +309,7 @@ Thoát RStudio.
 Kiểm tra thư mục liên quan đến dự án --- chú ý file `.Rproj`.
 Nhấp đúp vào file đó để mở lại dự án.
 Chú ý bạn quay lại nơi bạn đã rời đi: cùng thư mục làm việc và lịch sử lệnh, và tất cả file bạn đang làm việc vẫn mở.
-Vì bạn đã làm theo hướng dẫn ở trên, bạn sẽ có một môi trường hoàn toàn mới, đảm bảo bạn bắt đầu với bảng sạch.
+Vì bạn đã làm theo hướng dẫn ở trên, bạn sẽ có một environment hoàn toàn mới, đảm bảo bạn bắt đầu với bảng sạch.
 
 Bằng cách ưa thích của hệ điều hành, tìm kiếm `diamonds.png` trên máy tính và bạn sẽ tìm thấy file PNG (không bất ngờ) nhưng *cũng tìm thấy tập lệnh đã tạo ra nó* (`diamonds.R`).
 Đây là chiến thắng lớn!
@@ -349,7 +349,7 @@ Trong chương này, bạn đã học cách tổ chức mã R trong tập lệnh
 Giống như phong cách mã, ban đầu điều này có thể cảm thấy như việc vặt.
 Nhưng khi bạn tích lũy nhiều mã hơn qua nhiều dự án, bạn sẽ học cách trân trọng việc tổ chức ban đầu có thể tiết kiệm rất nhiều thời gian sau này.
 
-Tóm lại, tập lệnh và dự án mang lại cho bạn quy trình làm việc vững chắc phục vụ tốt trong tương lai:
+Tóm lại, tập lệnh và dự án mang lại cho bạn workflow vững chắc phục vụ tốt trong tương lai:
 
 -   Tạo một dự án RStudio cho mỗi dự án phân tích dữ liệu.
 -   Lưu tập lệnh (với tên mang tính mô tả) trong dự án, chỉnh sửa, chạy từng phần hoặc toàn bộ. Khởi động lại R thường xuyên để đảm bảo bạn đã nắm bắt mọi thứ trong tập lệnh.

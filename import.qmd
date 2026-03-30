@@ -7,13 +7,13 @@ source("_common.R")
 
 Trong phần này của cuốn sách, bạn sẽ học cách nhập nhiều loại dữ liệu hơn vào R, cũng như cách đưa chúng vào dạng hữu ích cho phân tích.
 Đôi khi đây chỉ là việc gọi một function từ gói mở rộng nhập dữ liệu phù hợp.
-Nhưng trong các trường hợp phức tạp hơn, có thể cần cả sắp xếp và biến đổi để có được bảng dữ liệu gọn gàng mà bạn muốn làm việc.
+Nhưng trong các trường hợp phức tạp hơn, có thể cần cả sắp xếp và biến đổi để có được bảng tidy data mà bạn muốn làm việc.
 
 ```{r}
 #| label: fig-ds-import
 #| echo: false
 #| fig-cap: |
-#|   Nhập dữ liệu là bước đầu tiên của quy trình khoa học dữ liệu; không có
+#|   Nhập dữ liệu là bước đầu tiên của workflow khoa học dữ liệu; không có
 #|   dữ liệu thì bạn không thể thực hiện khoa học dữ liệu!
 #| fig-alt: |
 #|   Mô hình khoa học dữ liệu của chúng tôi với phần nhập dữ liệu được

@@ -43,7 +43,7 @@ Tuy nhiên, như một nguyên tắc chung, nếu dữ liệu là công khai, ph
 Ba yếu tố này quan trọng vì chúng liên quan đến điều khoản và điều kiện của trang web, thông tin nhận dạng cá nhân, và bản quyền, như chúng tôi sẽ thảo luận bên dưới.
 
 [^webscraping-2]: Rõ ràng là chúng tôi không phải luật sư, và đây không phải lời khuyên pháp lý.
-    Nhưng đây là tóm tắt tốt nhất mà chúng tôi có thể đưa ra sau khi đọc rất nhiều về chủ đề này.
+    Nhưng đây là tóm tắt tốt nhất mà chúng tôi có thể đưa ra sau khi đọc rất nhiều về theme này.
 
 Nếu dữ liệu không công khai, không phi cá nhân, hoặc không mang tính thực tế, hoặc bạn đang thu thập dữ liệu cụ thể để kiếm tiền từ nó, bạn sẽ cần trao đổi với một luật sư.
 Trong mọi trường hợp, bạn nên tôn trọng tài nguyên của máy chủ lưu trữ các trang bạn đang thu thập.
@@ -533,7 +533,7 @@ Tuy nhiên, thỉnh thoảng bạn sẽ gặp một trang web nơi `html_element
 Trong nhiều trường hợp, đó là vì bạn đang cố thu thập dữ liệu từ một trang web tạo nội dung trang một cách động bằng javascript.
 Điều này hiện không hoạt động với rvest, vì rvest tải HTML thô và không chạy bất kỳ javascript nào.
 
-Vẫn có thể thu thập dữ liệu từ các loại trang web này, nhưng rvest cần sử dụng một quy trình tốn kém hơn: mô phỏng đầy đủ trình duyệt web bao gồm chạy tất cả javascript.
+Vẫn có thể thu thập dữ liệu từ các loại trang web này, nhưng rvest cần sử dụng một workflow tốn kém hơn: mô phỏng đầy đủ trình duyệt web bao gồm chạy tất cả javascript.
 Chức năng này chưa có sẵn tại thời điểm viết, nhưng đây là điều chúng tôi đang tích cực phát triển và có thể sẵn sàng khi bạn đọc đến đây.
 Nó sử dụng [gói mở rộng chromote](https://rstudio.github.io/chromote/index.html) thực sự chạy trình duyệt Chrome ở chế độ nền, và cung cấp cho bạn các công cụ bổ sung để tương tác với trang web, giống như một người gõ văn bản và nhấp vào các nút.
 Hãy kiểm tra [trang web rvest](http://rvest.tidyverse.org/) để biết thêm chi tiết.
@@ -542,10 +542,10 @@ Hãy kiểm tra [trang web rvest](http://rvest.tidyverse.org/) để biết thê
 
 Trong chương này, bạn đã tìm hiểu về lý do nên, lý do không nên, và cách thu thập dữ liệu từ các trang web.
 Đầu tiên, bạn đã tìm hiểu về những kiến thức cơ bản của HTML và sử dụng bộ chọn CSS để tham chiếu đến các phần tử cụ thể, sau đó bạn đã tìm hiểu về việc sử dụng gói mở rộng rvest để lấy dữ liệu ra khỏi HTML và đưa vào R.
-Sau đó chúng tôi đã minh họa thu thập dữ liệu web với hai nghiên cứu tình huống: một kịch bản đơn giản hơn về thu thập dữ liệu phim StarWars từ trang web của gói mở rộng rvest và một kịch bản phức tạp hơn về thu thập 250 phim row đầu từ IMDB.
+Sau đó chúng tôi đã minh họa thu thập dữ liệu web với hai nghiên cứu tình huống: một script đơn giản hơn về thu thập dữ liệu phim StarWars từ trang web của gói mở rộng rvest và một script phức tạp hơn về thu thập 250 phim row đầu từ IMDB.
 
 Các chi tiết kỹ thuật của việc thu thập dữ liệu từ web có thể phức tạp, đặc biệt khi xử lý các trang web, tuy nhiên các cân nhắc pháp lý và đạo đức có thể còn phức tạp hơn.
 Điều quan trọng là bạn phải tự tìm hiểu về cả hai điều này trước khi bắt đầu thu thập dữ liệu.
 
 Điều này đưa chúng ta đến cuối phần nhập dữ liệu của cuốn sách, nơi bạn đã học các kỹ thuật để lấy dữ liệu từ nơi nó tồn tại (spreadsheet, database, tệp JSON, và trang web) vào dạng gọn gàng trong R.
-Bây giờ đã đến lúc hướng tầm nhìn sang một chủ đề mới: tận dụng tối đa R như một ngôn ngữ lập trình.
+Bây giờ đã đến lúc hướng tầm nhìn sang một theme mới: tận dụng tối đa R như một ngôn ngữ lập trình.

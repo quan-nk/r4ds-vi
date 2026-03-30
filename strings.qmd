@@ -580,7 +580,7 @@ Nếu may mắn, nó sẽ được ghi trong tài liệu dữ liệu.
 Nó không hoàn hảo và hoạt động tốt hơn khi bạn có nhiều văn bản (không như ở đây), nhưng đó là điểm khởi đầu hợp lý.
 Hãy chuẩn bị thử vài mã hóa khác nhau trước khi tìm được đúng.
 
-Mã hóa là chủ đề phong phú và phức tạp; chúng ta mới chỉ chạm vào bề mặt ở đây.
+Mã hóa là theme phong phú và phức tạp; chúng ta mới chỉ chạm vào bề mặt ở đây.
 Nếu bạn muốn tìm hiểu thêm, chúng tôi khuyến nghị đọc giải thích chi tiết tại <http://kunststube.net/encoding/>.
 
 ### Biến thể chữ cái
@@ -646,4 +646,4 @@ str_sort(c("a", "c", "ch", "h", "z"), locale = "cs")
 
 Trong chương này, bạn đã tìm hiểu về một số sức mạnh của gói mở rộng stringr: cách tạo, kết hợp, và trích xuất string, cũng như một số thách thức bạn có thể gặp với string không phải tiếng Anh.
 Bây giờ là lúc tìm hiểu một trong những công cụ quan trọng và mạnh mẽ nhất để làm việc với string: regular expression.
-Biểu thức chính quy là ngôn ngữ rất ngắn gọn nhưng rất biểu cảm để mô tả các mẫu trong string và là chủ đề của chương tiếp theo.
+Biểu thức chính quy là ngôn ngữ rất ngắn gọn nhưng rất biểu cảm để mô tả các mẫu trong string và là theme của chương tiếp theo.

@@ -13,13 +13,13 @@ Những công cụ này đặc biệt hữu ích khi bạn lập trình nhiều 
 Đây là lúc thích hợp để nhắc bạn rằng tidyverse không phải là cách duy nhất để giải quyết các bài toán khoa học dữ liệu (data science).
 Chúng tôi dạy tidyverse trong cuốn sách này vì các gói mở rộng tidyverse chia sẻ chung triết lý thiết kế, tăng tính nhất quán giữa các function, và khiến mỗi function hay gói mở rộng mới dễ học dễ dùng hơn một chút.
 Không thể dùng tidyverse mà không dùng base R, nên thực ra chúng tôi đã dạy bạn **rất nhiều** function base R: từ `library()` để tải gói mở rộng, đến `sum()` và `mean()` để tóm tắt số, đến kiểu dữ liệu factor (factor), ngày tháng (date), và POSIXct, và tất nhiên là tất cả các toán tử cơ bản như `+`, `-`, `/`, `*`, `|`, `&`, và `!`.
-Điều mà chúng tôi chưa tập trung cho đến giờ là quy trình làm việc với base R, nên chúng tôi sẽ giới thiệu một số quy trình trong chương này.
+Điều mà chúng tôi chưa tập trung cho đến giờ là workflow với base R, nên chúng tôi sẽ giới thiệu một số workflow trong chương này.
 
 Sau khi đọc cuốn sách này, bạn sẽ học các cách tiếp cận khác cho cùng những bài toán đó bằng base R, data.table, và các gói mở rộng khác.
 Chắc chắn bạn sẽ gặp các cách tiếp cận khác này khi bạn bắt đầu đọc mã R do người khác viết, đặc biệt nếu bạn đang dùng Stack Overflow.
 Việc viết mã kết hợp nhiều cách tiếp cận là hoàn toàn bình thường, và đừng để ai nói khác với bạn!
 
-Trong chương này, chúng tôi sẽ tập trung vào bốn chủ đề lớn: lấy tập con (subsetting) bằng `[`, lấy tập con bằng `[[` và `$`, họ function apply, và vòng lặp `for`.
+Trong chương này, chúng tôi sẽ tập trung vào bốn theme lớn: lấy tập con (subsetting) bằng `[`, lấy tập con bằng `[[` và `$`, họ function apply, và loop `for`.
 Để kết thúc, chúng tôi sẽ giới thiệu ngắn gọn hai function vẽ biểu đồ thiết yếu.
 
 ### Điều kiện tiên quyết
@@ -50,7 +50,7 @@ Có năm loại chính mà bạn có thể dùng để lấy tập con vector, t
     x[c(3, 2, 5)]
     ```
 
-    Bằng cách lặp lại một vị trí, bạn thực ra có thể tạo đầu ra dài hơn đầu vào, khiến thuật ngữ "lấy tập con" hơi không chính xác.
+    Bằng cách iterate lại một vị trí, bạn thực ra có thể tạo đầu ra dài hơn đầu vào, khiến thuật ngữ "lấy tập con" hơi không chính xác.
 
     ```{r}
     x[c(1, 1, 5, 5, 5, 2)]
@@ -87,7 +87,7 @@ Có năm loại chính mà bạn có thể dùng để lấy tập con vector, t
     x[c("xyz", "def")]
     ```
 
-    Tương tự như lấy tập con bằng số nguyên dương, bạn có thể dùng vector ký tự để lặp lại các phần tử riêng lẻ.
+    Tương tự như lấy tập con bằng số nguyên dương, bạn có thể dùng vector ký tự để iterate lại các phần tử riêng lẻ.
 
 5.  **Không có gì**.
     Loại lấy tập con cuối cùng là không có gì, `x[]`, trả về toàn bộ `x`.
@@ -362,7 +362,7 @@ Nguyên tắc tương tự cũng áp dụng khi bạn dùng `[` 1d với data fr
 
 ## Họ function apply {#sec-apply-family}
 
-Trong @sec-iteration, bạn đã học các kỹ thuật tidyverse cho việc lặp (iteration) như `dplyr::across()` và họ function map.
+Trong @sec-iteration, bạn đã học các kỹ thuật tidyverse cho việc iterate (iteration) như `dplyr::across()` và họ function map.
 Trong phần này, bạn sẽ học về các function tương đương trong base R, **họ function apply**.
 Trong ngữ cảnh này apply và map là đồng nghĩa vì cách nói khác của "map một function lên mỗi phần tử của vector" là "apply một function lên mỗi phần tử của vector".
 Ở đây chúng tôi sẽ giới thiệu tổng quan nhanh về họ function này để bạn có thể nhận ra chúng ngoài thực tế.
@@ -419,11 +419,11 @@ Thành viên cuối cùng của họ apply là chính function `apply()`, hoạt
 Đặc biệt, hãy cẩn thận với `apply(df, 2, something)`, đây là cách chậm và có thể nguy hiểm để làm `lapply(df, something)`.
 Điều này hiếm khi xảy ra trong khoa học dữ liệu vì chúng ta thường làm việc với data frame chứ không phải ma trận.
 
-## Vòng lặp `for`
+## Vòng iterate `for`
 
-Vòng lặp `for` là khối xây dựng cơ bản của phép lặp mà cả họ apply và map đều sử dụng ở bên dưới.
-Vòng lặp `for` là công cụ mạnh mẽ và đa năng, quan trọng để học khi bạn trở thành lập trình viên R có kinh nghiệm hơn.
-Cấu trúc cơ bản của vòng lặp `for` trông như thế này:
+Vòng iterate `for` là khối xây dựng cơ bản của phép iterate mà cả họ apply và map đều sử dụng ở bên dưới.
+Vòng iterate `for` là công cụ mạnh mẽ và đa năng, quan trọng để học khi bạn trở thành lập trình viên R có kinh nghiệm hơn.
+Cấu trúc cơ bản của loop `for` trông như thế này:
 
 ```{r}
 #| eval: false
@@ -432,7 +432,7 @@ for (element in vector) {
 }
 ```
 
-Cách sử dụng trực tiếp nhất của vòng lặp `for` là đạt được hiệu quả tương tự như `walk()`: gọi một function có tác dụng phụ (side-effect) trên mỗi phần tử của list.
+Cách sử dụng trực tiếp nhất của loop `for` là đạt được hiệu quả tương tự như `walk()`: gọi một function có tác dụng phụ (side-effect) trên mỗi phần tử của list.
 Ví dụ, trong @sec-save-database thay vì dùng `walk()`:
 
 ```{r}
@@ -440,7 +440,7 @@ Ví dụ, trong @sec-save-database thay vì dùng `walk()`:
 paths |> walk(append_file)
 ```
 
-Chúng ta có thể dùng vòng lặp `for`:
+Chúng ta có thể dùng loop `for`:
 
 ```{r}
 #| eval: false
@@ -449,7 +449,7 @@ for (path in paths) {
 }
 ```
 
-Mọi thứ trở nên phức tạp hơn một chút nếu bạn muốn lưu đầu ra của vòng lặp `for`, ví dụ đọc tất cả các file excel trong một thư mục như chúng ta đã làm trong @sec-iteration:
+Mọi thứ trở nên phức tạp hơn một chút nếu bạn muốn lưu đầu ra của loop `for`, ví dụ đọc tất cả các file excel trong một thư mục như chúng ta đã làm trong @sec-iteration:
 
 ```{r}
 paths <- dir("data/gapminder", pattern = "\\.xlsx$", full.names = TRUE)
@@ -463,7 +463,7 @@ Trong trường hợp này, chúng ta sẽ muốn một list có cùng độ dà
 files <- vector("list", length(paths))
 ```
 
-Rồi thay vì lặp qua các phần tử của `paths`, chúng ta sẽ lặp qua các chỉ số của chúng, dùng `seq_along()` để tạo một chỉ số cho mỗi phần tử của paths:
+Rồi thay vì iterate qua các phần tử của `paths`, chúng ta sẽ iterate qua các chỉ số của chúng, dùng `seq_along()` để tạo một chỉ số cho mỗi phần tử của paths:
 
 ```{r}
 seq_along(paths)
@@ -493,7 +493,7 @@ for (path in paths) {
 ```
 
 Chúng tôi khuyến khích tránh mẫu này vì nó có thể trở nên rất chậm khi vector rất dài.
-Đây là nguồn gốc của quan niệm sai dai dẳng rằng vòng lặp `for` chậm: chúng không chậm, nhưng việc tăng dần vector thì có.
+Đây là nguồn gốc của quan niệm sai dai dẳng rằng loop `for` chậm: chúng không chậm, nhưng việc tăng dần vector thì có.
 
 ## Biểu đồ
 
@@ -526,7 +526,7 @@ Lưu ý rằng các function vẽ biểu đồ base R làm việc với vector, 
 
 ## Tóm tắt
 
-Trong chương này, chúng tôi đã cho bạn thấy một số function base R hữu ích cho việc lấy tập con và lặp.
+Trong chương này, chúng tôi đã cho bạn thấy một số function base R hữu ích cho việc lấy tập con và iterate.
 So với các cách tiếp cận được thảo luận ở những nơi khác trong sách, các function này có xu hướng mang "hương vị vector" nhiều hơn "hương vị data frame" vì các function base R thường nhận các vector riêng lẻ, thay vì data frame và đặc tả column nào đó.
 Điều này thường giúp cuộc sống dễ dàng hơn khi lập trình và do đó trở nên quan trọng hơn khi bạn viết nhiều function hơn và bắt đầu viết gói mở rộng của riêng mình.
 
