@@ -7,8 +7,12 @@ _book
 *.md
 !CODE_OF_CONDUCT.md
 !glossary.md
+!TECHNICAL_TERMS_REVIEW.md
 /*.html
 !plausible.html
+# Proofread logs and revision docs (internal use only)
+r4ds-vi-log.html
+REVISION_DICTIONARY.md
 search_index.json
 libs
 *.rds
