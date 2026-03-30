@@ -129,7 +129,7 @@ Chúng bao gồm các hàm có thể tái sử dụng, tài liệu mô tả các
 Để tải R, hãy truy cập CRAN, mạng lưu trữ R toàn diện (**c**omprehensive **R** **a**rchive **n**etwork), <https://cloud.r-project.org>.
 Một phiên bản chính mới của R được phát hành mỗi năm một lần, và có 2-3 bản cập nhật phụ mỗi năm.
 Nên cập nhật thường xuyên.
-Việc nâng cấp có thể hơi phiền phức, đặc biệt với các phiên bản chính yêu cầu bạn cài đặt lại tất cả các gói, nhưng trì hoãn chỉ làm mọi thứ tệ hơn.
+Việc nâng cấp có thể hơi phiền phức, đặc biệt với các phiên bản chính yêu cầu bạn cài đặt lại tất cả các gói mở rộng, nhưng trì hoãn chỉ làm mọi thứ tệ hơn.
 Chúng tôi khuyến nghị R 4.2.0 trở lên cho cuốn sách này.
 
 ### RStudio
