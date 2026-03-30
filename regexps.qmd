@@ -1,26 +1,26 @@
-# Regular expressions {#sec-regular-expressions}
+# Biểu thức chính quy {#sec-regular-expressions}
 
 ```{r}
 #| echo: false
 source("_common.R")
 ```
 
-## Introduction
+## Giới thiệu
 
-In @sec-strings, you learned a whole bunch of useful functions for working with strings.
-This chapter will focus on functions that use **regular expressions**, a concise and powerful language for describing patterns within strings.
-The term "regular expression" is a bit of a mouthful, so most people abbreviate it to "regex"[^regexps-1] or "regexp".
+Trong @sec-strings, bạn đã học được rất nhiều hàm hữu ích để làm việc với chuỗi ký tự.
+Chương này sẽ tập trung vào các hàm sử dụng **biểu thức chính quy (regular expression)**, một ngôn ngữ ngắn gọn và mạnh mẽ để mô tả các mẫu trong chuỗi ký tự.
+Thuật ngữ "regular expression" khá dài dòng, nên hầu hết mọi người viết tắt thành "regex"[^regexps-1] hoặc "regexp".
 
-[^regexps-1]: You can pronounce it with either a hard-g (reg-x) or a soft-g (rej-x).
+[^regexps-1]: Bạn có thể phát âm với g cứng (reg-x) hoặc g mềm (rej-x).
 
-The chapter starts with the basics of regular expressions and the most useful stringr functions for data analysis.
-We'll then expand your knowledge of patterns and cover seven important new topics (escaping, anchoring, character classes, shorthand classes, quantifiers, precedence, and grouping).
-Next, we'll talk about some of the other types of patterns that stringr functions can work with and the various "flags" that allow you to tweak the operation of regular expressions.
-We'll finish with a survey of other places in the tidyverse and base R where you might use regexes.
+Chương này bắt đầu với những kiến thức cơ bản về biểu thức chính quy và các hàm stringr hữu ích nhất cho phân tích dữ liệu.
+Sau đó chúng ta sẽ mở rộng kiến thức của bạn về các mẫu và đề cập đến bảy chủ đề quan trọng mới (thoát ký tự, neo, lớp ký tự, lớp viết tắt, bộ định lượng, thứ tự ưu tiên, và nhóm).
+Tiếp theo, chúng ta sẽ nói về một số loại mẫu khác mà các hàm stringr có thể làm việc và các "cờ" (flag) khác nhau cho phép bạn điều chỉnh hoạt động của biểu thức chính quy.
+Chúng ta sẽ kết thúc với một khảo sát về các nơi khác trong tidyverse và R cơ bản mà bạn có thể sử dụng regex.
 
-### Prerequisites
+### Điều kiện tiên quyết
 
-In this chapter, we'll use regular expression functions from stringr and tidyr, both core members of the tidyverse, as well as data from the babynames package.
+Trong chương này, chúng ta sẽ sử dụng các hàm biểu thức chính quy từ stringr và tidyr, cả hai đều là thành viên cốt lõi của tidyverse, cũng như dữ liệu từ gói babynames.
 
 ```{r}
 #| label: setup
@@ -29,171 +29,171 @@ library(tidyverse)
 library(babynames)
 ```
 
-Through this chapter, we'll use a mix of very simple inline examples so you can get the basic idea, the baby names data, and three character vectors from stringr:
+Xuyên suốt chương này, chúng ta sẽ sử dụng kết hợp các ví dụ inline rất đơn giản để bạn nắm được ý tưởng cơ bản, dữ liệu tên em bé, và ba vector ký tự từ stringr:
 
--   `fruit` contains the names of 80 fruits.
--   `words` contains 980 common English words.
--   `sentences` contains 720 short sentences.
+-   `fruit` chứa tên của 80 loại trái cây.
+-   `words` chứa 980 từ tiếng Anh thông dụng.
+-   `sentences` chứa 720 câu ngắn.
 
-## Pattern basics {#sec-reg-basics}
+## Cơ bản về mẫu {#sec-reg-basics}
 
-We'll use `str_view()` to learn how regex patterns work.
-We used `str_view()` in the last chapter to better understand a string vs. its printed representation, and now we'll use it with its second argument, a regular expression.
-When this is supplied, `str_view()` will show only the elements of the string vector that match, surrounding each match with `<>`, and, where possible, highlighting the match in blue.
+Chúng ta sẽ sử dụng `str_view()` để tìm hiểu cách các mẫu regex hoạt động.
+Chúng ta đã sử dụng `str_view()` trong chương trước để hiểu rõ hơn sự khác biệt giữa một chuỗi ký tự và biểu diễn in ra của nó, và bây giờ chúng ta sẽ sử dụng nó với đối số thứ hai, một biểu thức chính quy.
+Khi đối số này được cung cấp, `str_view()` sẽ chỉ hiển thị các phần tử của vector chuỗi ký tự khớp với mẫu, bao quanh mỗi kết quả khớp bằng `<>`, và khi có thể, tô sáng kết quả khớp bằng màu xanh.
 
-The simplest patterns consist of letters and numbers which match those characters exactly:
+Các mẫu đơn giản nhất bao gồm các chữ cái và số khớp chính xác với các ký tự đó:
 
 ```{r}
 str_view(fruit, "berry")
 ```
 
-Letters and numbers match exactly and are called **literal characters**.
-Most punctuation characters, like `.`, `+`, `*`, `[`, `]`, and `?`, have special meanings[^regexps-2] and are called **metacharacters**. For example, `.`
-will match any character[^regexps-3], so `"a."` will match any string that contains an "a" followed by another character
+Các chữ cái và số khớp chính xác và được gọi là **ký tự chữ (literal character)**.
+Hầu hết các ký tự dấu câu, như `.`, `+`, `*`, `[`, `]`, và `?`, có ý nghĩa đặc biệt[^regexps-2] và được gọi là **siêu ký tự (metacharacter)**. Ví dụ, `.`
+sẽ khớp với bất kỳ ký tự nào[^regexps-3], nên `"a."` sẽ khớp với bất kỳ chuỗi nào chứa "a" theo sau bởi một ký tự khác
 :
 
-[^regexps-2]: You'll learn how to escape these special meanings in @sec-regexp-escaping.
+[^regexps-2]: Bạn sẽ học cách thoát các ý nghĩa đặc biệt này trong @sec-regexp-escaping.
 
-[^regexps-3]: Well, any character apart from `\n`.
+[^regexps-3]: Chính xác hơn, bất kỳ ký tự nào ngoại trừ `\n`.
 
 ```{r}
 str_view(c("a", "ab", "ae", "bd", "ea", "eab"), "a.")
 ```
 
-Or we could find all the fruits that contain an "a", followed by three letters, followed by an "e":
+Hoặc chúng ta có thể tìm tất cả các loại trái cây chứa "a", theo sau bởi ba chữ cái, theo sau bởi "e":
 
 ```{r}
 str_view(fruit, "a...e")
 ```
 
-**Quantifiers** control how many times a pattern can match:
+**Bộ định lượng (quantifier)** kiểm soát số lần một mẫu có thể khớp:
 
--   `?` makes a pattern optional (i.e. it matches 0 or 1 times)
--   `+` lets a pattern repeat (i.e. it matches at least once)
--   `*` lets a pattern be optional or repeat (i.e. it matches any number of times, including 0).
+-   `?` làm cho mẫu trở thành tùy chọn (tức là nó khớp 0 hoặc 1 lần)
+-   `+` cho phép mẫu lặp lại (tức là nó khớp ít nhất một lần)
+-   `*` cho phép mẫu là tùy chọn hoặc lặp lại (tức là nó khớp bất kỳ số lần nào, kể cả 0).
 
 ```{r}
-# ab? matches an "a", optionally followed by a "b".
+# ab? khớp với "a", tùy chọn theo sau bởi "b".
 str_view(c("a", "ab", "abb"), "ab?")
 
-# ab+ matches an "a", followed by at least one "b".
+# ab+ khớp với "a", theo sau bởi ít nhất một "b".
 str_view(c("a", "ab", "abb"), "ab+")
 
-# ab* matches an "a", followed by any number of "b"s.
+# ab* khớp với "a", theo sau bởi bất kỳ số lượng "b" nào.
 str_view(c("a", "ab", "abb"), "ab*")
 ```
 
-**Character classes** are defined by `[]` and let you match a set of characters, e.g., `[abcd]` matches "a", "b", "c", or "d".
-You can also invert the match by starting with `^`: `[^abcd]` matches anything **except** "a", "b", "c", or "d".
-We can use this idea to find the words containing an "x" surrounded by vowels, or a "y" surrounded by consonants:
+**Lớp ký tự (character class)** được định nghĩa bằng `[]` và cho phép bạn khớp bất kỳ ký tự nào trong một tập hợp, ví dụ `[abcd]` khớp với "a", "b", "c", hoặc "d".
+Bạn cũng có thể đảo ngược kết quả khớp bằng cách bắt đầu với `^`: `[^abcd]` khớp với bất kỳ ký tự nào **ngoại trừ** "a", "b", "c", hoặc "d".
+Chúng ta có thể sử dụng ý tưởng này để tìm các từ chứa "x" được bao quanh bởi nguyên âm, hoặc "y" được bao quanh bởi phụ âm:
 
 ```{r}
 str_view(words, "[aeiou]x[aeiou]")
 str_view(words, "[^aeiou]y[^aeiou]")
 ```
 
-You can use **alternation**, `|`, to pick between one or more alternative patterns.
-For example, the following patterns look for fruits containing "apple", "melon", or "nut", or a repeated vowel.
+Bạn có thể sử dụng **phép thay thế (alternation)**, `|`, để chọn giữa một hoặc nhiều mẫu thay thế.
+Ví dụ, các mẫu sau tìm kiếm trái cây chứa "apple", "melon", hoặc "nut", hoặc một nguyên âm lặp lại.
 
 ```{r}
 str_view(fruit, "apple|melon|nut")
 str_view(fruit, "aa|ee|ii|oo|uu")
 ```
 
-Regular expressions are very compact and use a lot of punctuation characters, so they can seem overwhelming and hard to read at first.
-Don't worry; you'll get better with practice, and simple patterns will soon become second nature.
-Let's kick off that process by practicing with some useful stringr functions.
+Biểu thức chính quy rất cô đọng và sử dụng nhiều ký tự dấu câu, nên ban đầu chúng có thể trông choáng ngợp và khó đọc.
+Đừng lo lắng; bạn sẽ giỏi hơn với sự luyện tập, và các mẫu đơn giản sẽ sớm trở nên quen thuộc.
+Hãy bắt đầu quá trình đó bằng cách thực hành với một số hàm stringr hữu ích.
 
-## Key functions {#sec-stringr-regex-funs}
+## Các hàm chính {#sec-stringr-regex-funs}
 
-Now that you've got the basics of regular expressions under your belt, let's use them with some stringr and tidyr functions.
-In the following section, you'll learn how to detect the presence or absence of a match, how to count the number of matches, how to replace a match with fixed text, and how to extract text using a pattern.
+Bây giờ bạn đã nắm được kiến thức cơ bản về biểu thức chính quy, hãy sử dụng chúng với một số hàm stringr và tidyr.
+Trong phần tiếp theo, bạn sẽ học cách phát hiện sự có mặt hoặc vắng mặt của một kết quả khớp, cách đếm số lượng kết quả khớp, cách thay thế kết quả khớp bằng văn bản cố định, và cách trích xuất văn bản bằng mẫu.
 
-### Detect matches
+### Phát hiện kết quả khớp
 
-`str_detect()` returns a logical vector that is `TRUE` if the pattern matches an element of the character vector and `FALSE` otherwise:
+`str_detect()` trả về một vector logic có giá trị `TRUE` nếu mẫu khớp với một phần tử của vector ký tự và `FALSE` nếu không:
 
 ```{r}
 str_detect(c("a", "b", "c"), "[aeiou]")
 ```
 
-Since `str_detect()` returns a logical vector of the same length as the initial vector, it pairs well with `filter()`.
-For example, this code finds all the most popular names containing a lower-case "x":
+Vì `str_detect()` trả về một vector logic có cùng độ dài với vector ban đầu, nó kết hợp tốt với `filter()`.
+Ví dụ, đoạn mã này tìm tất cả các tên phổ biến nhất chứa chữ "x" viết thường:
 
 ```{r}
-babynames |> 
-  filter(str_detect(name, "x")) |> 
+babynames |>
+  filter(str_detect(name, "x")) |>
   count(name, wt = n, sort = TRUE)
 ```
 
-We can also use `str_detect()` with `summarize()` by pairing it with `sum()` or `mean()`: `sum(str_detect(x, pattern))` tells you the number of observations that match and `mean(str_detect(x, pattern))` tells you the proportion that match.
-For example, the following snippet computes and visualizes the proportion of baby names[^regexps-4] that contain "x", broken down by year.
-It looks like they've radically increased in popularity lately!
+Chúng ta cũng có thể sử dụng `str_detect()` với `summarize()` bằng cách kết hợp nó với `sum()` hoặc `mean()`: `sum(str_detect(x, pattern))` cho bạn biết số quan sát khớp và `mean(str_detect(x, pattern))` cho bạn biết tỷ lệ khớp.
+Ví dụ, đoạn mã sau tính toán và trực quan hóa tỷ lệ tên em bé[^regexps-4] chứa "x", phân chia theo năm.
+Có vẻ như chúng đã tăng mạnh về độ phổ biến gần đây!
 
-[^regexps-4]: This gives us the proportion of **names** that contain an "x"; if you wanted the proportion of babies with a name containing an x, you'd need to perform a weighted mean.
+[^regexps-4]: Điều này cho chúng ta tỷ lệ **tên** chứa "x"; nếu bạn muốn tỷ lệ em bé có tên chứa x, bạn sẽ cần thực hiện trung bình có trọng số.
 
 ```{r}
 #| fig-alt: |
-#|   A time series showing the proportion of baby names that contain the letter x. 
-#|   The proportion declines gradually from 8 per 1000 in 1880 to 4 per 1000 in 
-#|   1980, then increases rapidly to 16 per 1000 in 2019.
-babynames |> 
-  group_by(year) |> 
-  summarize(prop_x = mean(str_detect(name, "x"))) |> 
-  ggplot(aes(x = year, y = prop_x)) + 
+#|   Một chuỗi thời gian thể hiện tỷ lệ tên em bé chứa chữ x.
+#|   Tỷ lệ giảm dần từ 8 trên 1000 năm 1880 xuống 4 trên 1000 năm
+#|   1980, sau đó tăng nhanh lên 16 trên 1000 năm 2019.
+babynames |>
+  group_by(year) |>
+  summarize(prop_x = mean(str_detect(name, "x"))) |>
+  ggplot(aes(x = year, y = prop_x)) +
   geom_line()
 ```
 
-There are two functions that are closely related to `str_detect()`: `str_subset()` and `str_which()`.
-`str_subset()` returns a character vector containing only the strings that match.
-`str_which()` returns an integer vector giving the positions of the strings that match.
+Có hai hàm liên quan chặt chẽ với `str_detect()`: `str_subset()` và `str_which()`.
+`str_subset()` trả về một vector ký tự chỉ chứa các chuỗi khớp.
+`str_which()` trả về một vector số nguyên cho biết vị trí của các chuỗi khớp.
 
-### Count matches
+### Đếm kết quả khớp
 
-The next step up in complexity from `str_detect()` is `str_count()`: rather than a true or false, it tells you how many matches there are in each string.
+Bước tiếp theo phức tạp hơn `str_detect()` là `str_count()`: thay vì đúng hoặc sai, nó cho bạn biết có bao nhiêu kết quả khớp trong mỗi chuỗi.
 
 ```{r}
 x <- c("apple", "banana", "pear")
 str_count(x, "p")
 ```
 
-Note that each match starts at the end of the previous match, i.e. regex matches never overlap.
-For example, in `"abababa"`, how many times will the pattern `"aba"` match?
-Regular expressions say two, not three:
+Lưu ý rằng mỗi kết quả khớp bắt đầu tại cuối kết quả khớp trước đó, tức là các kết quả khớp regex không bao giờ chồng chéo nhau.
+Ví dụ, trong `"abababa"`, mẫu `"aba"` sẽ khớp bao nhiêu lần?
+Biểu thức chính quy cho kết quả là hai, không phải ba:
 
 ```{r}
 str_count("abababa", "aba")
 str_view("abababa", "aba")
 ```
 
-It's natural to use `str_count()` with `mutate()`.
-The following example uses `str_count()` with character classes to count the number of vowels and consonants in each name.
+Việc sử dụng `str_count()` với `mutate()` là rất tự nhiên.
+Ví dụ sau sử dụng `str_count()` với các lớp ký tự để đếm số nguyên âm và phụ âm trong mỗi tên.
 
 ```{r}
-babynames |> 
-  count(name) |> 
+babynames |>
+  count(name) |>
   mutate(
     vowels = str_count(name, "[aeiou]"),
     consonants = str_count(name, "[^aeiou]")
   )
 ```
 
-If you look closely, you'll notice that there's something off with our calculations: "Aaban" contains three "a"s, but our summary reports only two vowels.
-That's because regular expressions are case sensitive.
-There are three ways we could fix this:
+Nếu bạn nhìn kỹ, bạn sẽ nhận ra có điều gì đó không đúng với phép tính của chúng ta: "Aaban" chứa ba chữ "a", nhưng bảng tóm tắt chỉ báo cáo hai nguyên âm.
+Đó là vì biểu thức chính quy phân biệt chữ hoa chữ thường.
+Có ba cách chúng ta có thể sửa điều này:
 
--   Add the upper case vowels to the character class: `str_count(name, "[aeiouAEIOU]")`.
--   Tell the regular expression to ignore case: `str_count(name, regex("[aeiou]", ignore_case = TRUE))`. We'll talk about more in @sec-flags.
--   Use `str_to_lower()` to convert the names to lower case: `str_count(str_to_lower(name), "[aeiou]")`.
+-   Thêm các nguyên âm viết hoa vào lớp ký tự: `str_count(name, "[aeiouAEIOU]")`.
+-   Yêu cầu biểu thức chính quy bỏ qua chữ hoa chữ thường: `str_count(name, regex("[aeiou]", ignore_case = TRUE))`. Chúng ta sẽ nói thêm về điều này trong @sec-flags.
+-   Sử dụng `str_to_lower()` để chuyển tên thành chữ thường: `str_count(str_to_lower(name), "[aeiou]")`.
 
-This variety of approaches is pretty typical when working with strings --- there are often multiple ways to reach your goal, either by making your pattern more complicated or by doing some preprocessing on your string.
-If you get stuck trying one approach, it can often be useful to switch gears and tackle the problem from a different perspective.
+Sự đa dạng về cách tiếp cận này khá điển hình khi làm việc với chuỗi ký tự --- thường có nhiều cách để đạt được mục tiêu, bằng cách làm mẫu phức tạp hơn hoặc bằng cách tiền xử lý chuỗi ký tự.
+Nếu bạn bị mắc kẹt khi thử một cách tiếp cận, thường sẽ hữu ích khi chuyển hướng và giải quyết vấn đề từ một góc nhìn khác.
 
-In this case, since we're applying two functions to the name, I think it's easier to transform it first:
+Trong trường hợp này, vì chúng ta đang áp dụng hai hàm cho tên, tôi nghĩ việc biến đổi nó trước sẽ dễ hơn:
 
 ```{r}
-babynames |> 
-  count(name) |> 
+babynames |>
+  count(name) |>
   mutate(
     name = str_to_lower(name),
     vowels = str_count(name, "[aeiou]"),
@@ -201,60 +201,60 @@ babynames |>
   )
 ```
 
-### Replace values
+### Thay thế giá trị
 
-As well as detecting and counting matches, we can also modify them with `str_replace()` and `str_replace_all()`.
-`str_replace()` replaces the first match, and as the name suggests, `str_replace_all()` replaces all matches.
+Ngoài việc phát hiện và đếm kết quả khớp, chúng ta cũng có thể sửa đổi chúng với `str_replace()` và `str_replace_all()`.
+`str_replace()` thay thế kết quả khớp đầu tiên, và đúng như tên gọi, `str_replace_all()` thay thế tất cả kết quả khớp.
 
 ```{r}
 x <- c("apple", "pear", "banana")
 str_replace_all(x, "[aeiou]", "-")
 ```
 
-`str_remove()` and `str_remove_all()` are handy shortcuts for `str_replace(x, pattern, "")`:
+`str_remove()` và `str_remove_all()` là các phím tắt tiện lợi cho `str_replace(x, pattern, "")`:
 
 ```{r}
 x <- c("apple", "pear", "banana")
 str_remove_all(x, "[aeiou]")
 ```
 
-These functions are naturally paired with `mutate()` when doing data cleaning, and you'll often apply them repeatedly to peel off layers of inconsistent formatting.
+Các hàm này tự nhiên kết hợp với `mutate()` khi làm sạch dữ liệu, và bạn sẽ thường áp dụng chúng nhiều lần để gỡ bỏ các lớp định dạng không nhất quán.
 
-### Extract variables {#sec-extract-variables}
+### Trích xuất biến {#sec-extract-variables}
 
-The last function we'll discuss uses regular expressions to extract data out of one column into one or more new columns: `separate_wider_regex()`.
-It's a peer of the `separate_wider_position()` and `separate_wider_delim()` functions that you learned about in @sec-string-columns.
-These functions live in tidyr because they operate on (columns of) data frames, rather than individual vectors.
+Hàm cuối cùng chúng ta sẽ thảo luận sử dụng biểu thức chính quy để trích xuất dữ liệu từ một cột thành một hoặc nhiều cột mới: `separate_wider_regex()`.
+Nó là đồng cấp của các hàm `separate_wider_position()` và `separate_wider_delim()` mà bạn đã học trong @sec-string-columns.
+Các hàm này nằm trong tidyr vì chúng hoạt động trên (các cột của) khung dữ liệu, thay vì các vector riêng lẻ.
 
-Let's create a simple dataset to show how it works.
-Here we have some data derived from `babynames` where we have the name, gender, and age of a bunch of people in a rather weird format[^regexps-5]:
+Hãy tạo một tập dữ liệu đơn giản để minh họa cách nó hoạt động.
+Ở đây chúng ta có một số dữ liệu được lấy từ `babynames` trong đó chúng ta có tên, giới tính, và tuổi của một số người ở một định dạng khá kỳ lạ[^regexps-5]:
 
-[^regexps-5]: We wish we could reassure you that you'd never see something this weird in real life, but unfortunately over the course of your career you're likely to see much weirder!
+[^regexps-5]: Chúng tôi ước gì có thể trấn an bạn rằng bạn sẽ không bao giờ gặp thứ gì kỳ lạ như thế này trong thực tế, nhưng đáng tiếc là trong suốt sự nghiệp bạn có thể sẽ gặp những thứ kỳ lạ hơn nhiều!
 
 ```{r}
 df <- tribble(
   ~str,
   "<Sheryl>-F_34",
-  "<Kisha>-F_45", 
+  "<Kisha>-F_45",
   "<Brandon>-N_33",
-  "<Sharon>-F_38", 
+  "<Sharon>-F_38",
   "<Penny>-F_58",
-  "<Justin>-M_41", 
-  "<Patricia>-F_84", 
+  "<Justin>-M_41",
+  "<Patricia>-F_84",
 )
 ```
 
-To extract this data using `separate_wider_regex()` we just need to construct a sequence of regular expressions that match each piece.
-If we want the contents of that piece to appear in the output, we give it a name:
+Để trích xuất dữ liệu này bằng `separate_wider_regex()` chúng ta chỉ cần xây dựng một chuỗi các biểu thức chính quy khớp với từng phần.
+Nếu chúng ta muốn nội dung của phần đó xuất hiện trong kết quả đầu ra, chúng ta đặt tên cho nó:
 
 ```{r}
-df |> 
+df |>
   separate_wider_regex(
     str,
     patterns = c(
-      "<", 
-      name = "[A-Za-z]+", 
-      ">-", 
+      "<",
+      name = "[A-Za-z]+",
+      ">-",
       gender = ".",
       "_",
       age = "[0-9]+"
@@ -262,63 +262,63 @@ df |>
   )
 ```
 
-If the match fails, you can use `too_few = "debug"` to figure out what went wrong, just like `separate_wider_delim()` and `separate_wider_position()`.
+Nếu việc khớp thất bại, bạn có thể sử dụng `too_few = "debug"` để tìm hiểu điều gì đã sai, giống như `separate_wider_delim()` và `separate_wider_position()`.
 
-### Exercises
+### Bài tập
 
-1.  What baby name has the most vowels?
-    What name has the highest proportion of vowels?
-    (Hint: what is the denominator?)
+1.  Tên em bé nào có nhiều nguyên âm nhất?
+    Tên nào có tỷ lệ nguyên âm cao nhất?
+    (Gợi ý: mẫu số là gì?)
 
-2.  Replace all forward slashes in `"a/b/c/d/e"` with backslashes.
-    What happens if you attempt to undo the transformation by replacing all backslashes with forward slashes?
-    (We'll discuss the problem very soon.)
+2.  Thay thế tất cả dấu gạch chéo xuôi trong `"a/b/c/d/e"` bằng dấu gạch chéo ngược.
+    Điều gì xảy ra nếu bạn cố gắng hoàn tác phép biến đổi bằng cách thay thế tất cả dấu gạch chéo ngược bằng dấu gạch chéo xuôi?
+    (Chúng ta sẽ thảo luận vấn đề này rất sớm.)
 
-3.  Implement a simple version of `str_to_lower()` using `str_replace_all()`.
+3.  Triển khai một phiên bản đơn giản của `str_to_lower()` bằng `str_replace_all()`.
 
-4.  Create a regular expression that will match telephone numbers as commonly written in your country.
+4.  Tạo một biểu thức chính quy khớp với số điện thoại như cách viết thông dụng ở nước bạn.
 
-## Pattern details
+## Chi tiết về mẫu
 
-Now that you understand the basics of the pattern language and how to use it with some stringr and tidyr functions, it's time to dig into more of the details.
-First, we'll start with **escaping**, which allows you to match metacharacters that would otherwise be treated specially.
-Next, you'll learn about **anchors** which allow you to match the start or end of the string.
-Then, you'll learn more about **character classes** and their shortcuts which allow you to match any character from a set.
-Next, you'll learn the final details of **quantifiers** which control how many times a pattern can match.
-Then, we have to cover the important (but complex) topic of **operator precedence** and parentheses.
-And we'll finish off with some details of **grouping** components of the pattern.
+Bây giờ bạn đã hiểu những kiến thức cơ bản về ngôn ngữ mẫu và cách sử dụng nó với một số hàm stringr và tidyr, đã đến lúc đi sâu vào chi tiết hơn.
+Đầu tiên, chúng ta sẽ bắt đầu với **thoát ký tự (escaping)**, cho phép bạn khớp các siêu ký tự mà nếu không sẽ được xử lý đặc biệt.
+Tiếp theo, bạn sẽ học về **neo (anchor)** cho phép bạn khớp ở đầu hoặc cuối chuỗi.
+Sau đó, bạn sẽ tìm hiểu thêm về **lớp ký tự** và các phím tắt của chúng cho phép bạn khớp bất kỳ ký tự nào từ một tập hợp.
+Tiếp theo, bạn sẽ tìm hiểu chi tiết cuối cùng về **bộ định lượng** kiểm soát số lần một mẫu có thể khớp.
+Sau đó, chúng ta phải đề cập đến chủ đề quan trọng (nhưng phức tạp) về **thứ tự ưu tiên toán tử (operator precedence)** và dấu ngoặc đơn.
+Và chúng ta sẽ kết thúc với một số chi tiết về **nhóm (grouping)** các thành phần của mẫu.
 
-The terms we use here are the technical names for each component.
-They're not always the most evocative of their purpose, but it's very helpful to know the correct terms if you later want to Google for more details.
+Các thuật ngữ chúng ta sử dụng ở đây là tên kỹ thuật cho mỗi thành phần.
+Chúng không phải lúc nào cũng gợi nhớ nhất về mục đích của mình, nhưng việc biết đúng thuật ngữ rất hữu ích nếu sau này bạn muốn tìm kiếm thêm chi tiết trên Google.
 
-### Escaping {#sec-regexp-escaping}
+### Thoát ký tự {#sec-regexp-escaping}
 
-In order to match a literal `.`, you need an **escape** which tells the regular expression to match metacharacters[^regexps-6] literally.
-Like strings, regexps use the backslash for escaping.
-So, to match a `.`, you need the regexp `\.`. Unfortunately this creates a problem.
-We use strings to represent regular expressions, and `\` is also used as an escape symbol in strings.
-So to create the regular expression `\.` we need the string `"\\."`, as the following example shows.
+Để khớp với dấu `.` theo nghĩa đen, bạn cần một **ký tự thoát (escape)** để yêu cầu biểu thức chính quy khớp các siêu ký tự[^regexps-6] theo nghĩa đen.
+Giống như chuỗi ký tự, regexp sử dụng dấu gạch chéo ngược để thoát ký tự.
+Vì vậy, để khớp với dấu `.`, bạn cần regexp `\.`. Thật không may điều này tạo ra một vấn đề.
+Chúng ta sử dụng chuỗi ký tự để biểu diễn biểu thức chính quy, và `\` cũng được sử dụng làm ký hiệu thoát trong chuỗi ký tự.
+Vì vậy để tạo biểu thức chính quy `\.` chúng ta cần chuỗi `"\\."`, như ví dụ sau minh họa.
 
-[^regexps-6]: The complete set of metacharacters is `.^$\|*+?{}[]()`
+[^regexps-6]: Tập hợp đầy đủ các siêu ký tự là `.^$\|*+?{}[]()`
 
 ```{r}
-# To create the regular expression \., we need to use \\.
+# Để tạo biểu thức chính quy \., chúng ta cần dùng \\.
 dot <- "\\."
 
-# But the expression itself only contains one \
+# Nhưng biểu thức chính quy chỉ chứa một \
 str_view(dot)
 
-# And this tells R to look for an explicit .
+# Và điều này yêu cầu R tìm kiếm dấu . theo nghĩa đen
 str_view(c("abc", "a.c", "bef"), "a\\.c")
 ```
 
-In this book, we'll usually write regular expressions without quotes, like `\.`.
-If we need to emphasize what you'll actually type, we'll surround it with quotes and add extra escapes, like `"\\."`.
+Trong cuốn sách này, chúng ta thường viết biểu thức chính quy không có dấu ngoặc kép, như `\.`.
+Nếu chúng ta cần nhấn mạnh những gì bạn thực sự gõ, chúng ta sẽ bao quanh nó bằng dấu ngoặc kép và thêm các ký tự thoát bổ sung, như `"\\."`.
 
-If `\` is used as an escape character in regular expressions, how do you match a literal `\`?
-Well, you need to escape it, creating the regular expression `\\`.
-To create that regular expression, you need to use a string, which also needs to escape `\`.
-That means to match a literal `\` you need to write `"\\\\"` --- you need four backslashes to match one!
+Nếu `\` được sử dụng làm ký tự thoát trong biểu thức chính quy, làm thế nào bạn khớp với dấu `\` theo nghĩa đen?
+Bạn cần thoát nó, tạo ra biểu thức chính quy `\\`.
+Để tạo biểu thức chính quy đó, bạn cần sử dụng một chuỗi, mà cũng cần thoát `\`.
+Điều đó có nghĩa là để khớp với dấu `\` theo nghĩa đen, bạn cần viết `"\\\\"` --- bạn cần bốn dấu gạch chéo ngược để khớp với một!
 
 ```{r}
 x <- "a\\b"
@@ -326,43 +326,43 @@ str_view(x)
 str_view(x, "\\\\")
 ```
 
-Alternatively, you might find it easier to use the raw strings you learned about in @sec-raw-strings.
-That lets you avoid one layer of escaping:
+Ngoài ra, bạn có thể thấy dễ hơn khi sử dụng chuỗi thô (raw string) mà bạn đã học trong @sec-raw-strings.
+Điều đó cho phép bạn tránh một lớp thoát ký tự:
 
 ```{r}
 str_view(x, r"{\\}")
 ```
 
-If you're trying to match a literal `.`, `$`, `|`, `*`, `+`, `?`, `{`, `}`, `(`, `)`, there's an alternative to using a backslash escape: you can use a character class: `[.]`, `[$]`, `[|]`, ...
-all match the literal values.
+Nếu bạn đang cố khớp dấu `.`, `$`, `|`, `*`, `+`, `?`, `{`, `}`, `(`, `)` theo nghĩa đen, có một cách thay thế cho việc sử dụng ký tự thoát bằng dấu gạch chéo ngược: bạn có thể sử dụng lớp ký tự: `[.]`, `[$]`, `[|]`, ...
+tất cả đều khớp với các giá trị theo nghĩa đen.
 
 ```{r}
 str_view(c("abc", "a.c", "a*c", "a c"), "a[.]c")
 str_view(c("abc", "a.c", "a*c", "a c"), ".[*]c")
 ```
 
-### Anchors
+### Neo
 
-By default, regular expressions will match any part of a string.
-If you want to match at the start or end you need to **anchor** the regular expression using `^` to match the start or `$` to match the end:
+Theo mặc định, biểu thức chính quy sẽ khớp với bất kỳ phần nào của chuỗi.
+Nếu bạn muốn khớp ở đầu hoặc cuối, bạn cần **neo (anchor)** biểu thức chính quy bằng `^` để khớp ở đầu hoặc `$` để khớp ở cuối:
 
 ```{r}
 str_view(fruit, "^a")
 str_view(fruit, "a$")
 ```
 
-It's tempting to think that `$` should match the start of a string, because that's how we write dollar amounts, but that's not what regular expressions want.
+Bạn có thể muốn nghĩ rằng `$` nên khớp ở đầu chuỗi, vì đó là cách chúng ta viết số tiền đô la, nhưng đó không phải là điều biểu thức chính quy muốn.
 
-To force a regular expression to match only the full string, anchor it with both `^` and `$`:
+Để buộc biểu thức chính quy chỉ khớp với toàn bộ chuỗi, hãy neo nó bằng cả `^` và `$`:
 
 ```{r}
 str_view(fruit, "apple")
 str_view(fruit, "^apple$")
 ```
 
-You can also match the boundary between words (i.e. the start or end of a word) with `\b`.
-This can be particularly useful when using RStudio's find and replace tool.
-For example, if to find all uses of `sum()`, you can search for `\bsum\b` to avoid matching `summarize`, `summary`, `rowsum` and so on:
+Bạn cũng có thể khớp ranh giới giữa các từ (tức là đầu hoặc cuối của một từ) bằng `\b`.
+Điều này có thể đặc biệt hữu ích khi sử dụng công cụ tìm và thay thế của RStudio.
+Ví dụ, để tìm tất cả các nơi sử dụng `sum()`, bạn có thể tìm kiếm `\bsum\b` để tránh khớp với `summarize`, `summary`, `rowsum` và những hàm khác:
 
 ```{r}
 x <- c("summary(x)", "summarize(df)", "rowsum(x)", "sum(x)")
@@ -370,28 +370,28 @@ str_view(x, "sum")
 str_view(x, "\\bsum\\b")
 ```
 
-When used alone, anchors will produce a zero-width match:
+Khi được sử dụng một mình, neo sẽ tạo ra một kết quả khớp có độ rộng bằng không:
 
 ```{r}
 str_view("abc", c("$", "^", "\\b"))
 ```
 
-This helps you understand what happens when you replace a standalone anchor:
+Điều này giúp bạn hiểu điều gì xảy ra khi bạn thay thế một neo độc lập:
 
 ```{r}
 str_replace_all("abc", c("$", "^", "\\b"), "--")
 ```
 
-### Character classes
+### Lớp ký tự
 
-A **character class**, or character **set**, allows you to match any character in a set.
-As we discussed above, you can construct your own sets with `[]`, where `[abc]` matches "a", "b", or "c" and `[^abc]` matches any character except "a", "b", or "c".
-Apart from `^` there are two other characters that have special meaning inside of `[]:`
+Một **lớp ký tự**, hay **tập ký tự (character set)**, cho phép bạn khớp bất kỳ ký tự nào trong một tập hợp.
+Như chúng ta đã thảo luận ở trên, bạn có thể tự xây dựng các tập hợp với `[]`, trong đó `[abc]` khớp với "a", "b", hoặc "c" và `[^abc]` khớp với bất kỳ ký tự nào ngoại trừ "a", "b", hoặc "c".
+Ngoài `^`, có hai ký tự khác có ý nghĩa đặc biệt bên trong `[]:`
 
--   `-` defines a range, e.g., `[a-z]` matches any lower case letter and `[0-9]` matches any number.
--   `\` escapes special characters, so `[\^\-\]]` matches `^`, `-`, or `]`.
+-   `-` định nghĩa một phạm vi, ví dụ `[a-z]` khớp với bất kỳ chữ cái thường nào và `[0-9]` khớp với bất kỳ số nào.
+-   `\` thoát các ký tự đặc biệt, nên `[\^\-\]]` khớp với `^`, `-`, hoặc `]`.
 
-Here are few examples:
+Đây là một vài ví dụ:
 
 ```{r}
 x <- "abcd ABCD 12345 -!@#%."
@@ -399,26 +399,26 @@ str_view(x, "[abc]+")
 str_view(x, "[a-z]+")
 str_view(x, "[^a-z0-9]+")
 
-# You need an escape to match characters that are otherwise
-# special inside of []
+# Bạn cần ký tự thoát để khớp với các ký tự đặc biệt
+# bên trong []
 str_view("a-b-c", "[a-c]")
 str_view("a-b-c", "[a\\-c]")
 ```
 
-Some character classes are used so commonly that they get their own shortcut.
-You've already seen `.`, which matches any character apart from a newline.
-There are three other particularly useful pairs[^regexps-7]:
+Một số lớp ký tự được sử dụng phổ biến đến mức chúng có phím tắt riêng.
+Bạn đã thấy `.`, khớp với bất kỳ ký tự nào ngoại trừ ký tự xuống dòng.
+Có ba cặp đặc biệt hữu ích khác[^regexps-7]:
 
-[^regexps-7]: Remember, to create a regular expression containing `\d` or `\s`, you'll need to escape the `\` for the string, so you'll type `"\\d"` or `"\\s"`.
+[^regexps-7]: Hãy nhớ rằng, để tạo biểu thức chính quy chứa `\d` hoặc `\s`, bạn sẽ cần thoát `\` cho chuỗi, nên bạn sẽ gõ `"\\d"` hoặc `"\\s"`.
 
--   `\d` matches any digit;\
-    `\D` matches anything that isn't a digit.
--   `\s` matches any whitespace (e.g., space, tab, newline);\
-    `\S` matches anything that isn't whitespace.
--   `\w` matches any "word" character, i.e. letters and numbers;\
-    `\W` matches any "non-word" character.
+-   `\d` khớp với bất kỳ chữ số nào;\
+    `\D` khớp với bất kỳ thứ gì không phải chữ số.
+-   `\s` khớp với bất kỳ khoảng trắng nào (ví dụ dấu cách, tab, xuống dòng);\
+    `\S` khớp với bất kỳ thứ gì không phải khoảng trắng.
+-   `\w` khớp với bất kỳ ký tự "từ" nào, tức là chữ cái và số;\
+    `\W` khớp với bất kỳ ký tự "không phải từ" nào.
 
-The following code demonstrates the six shortcuts with a selection of letters, numbers, and punctuation characters.
+Đoạn mã sau minh họa sáu phím tắt với một lựa chọn các chữ cái, số, và ký tự dấu câu.
 
 ```{r}
 x <- "abcd ABCD 12345 -!@#%."
@@ -430,82 +430,82 @@ str_view(x, "\\w+")
 str_view(x, "\\W+")
 ```
 
-### Quantifiers {#sec-quantifiers}
+### Bộ định lượng {#sec-quantifiers}
 
-**Quantifiers** control how many times a pattern matches.
-In @sec-reg-basics you learned about `?` (0 or 1 matches), `+` (1 or more matches), and `*` (0 or more matches).
-For example, `colou?r` will match American or British spelling, `\d+` will match one or more digits, and `\s?` will optionally match a single item of whitespace.
-You can also specify the number of matches precisely with `{}`:
+**Bộ định lượng** kiểm soát số lần một mẫu khớp.
+Trong @sec-reg-basics bạn đã học về `?` (0 hoặc 1 lần khớp), `+` (1 hoặc nhiều lần khớp), và `*` (0 hoặc nhiều lần khớp).
+Ví dụ, `colou?r` sẽ khớp với cách viết tiếng Anh Mỹ hoặc Anh, `\d+` sẽ khớp với một hoặc nhiều chữ số, và `\s?` sẽ tùy chọn khớp với một khoảng trắng.
+Bạn cũng có thể chỉ định chính xác số lần khớp bằng `{}`:
 
--   `{n}` matches exactly n times.
--   `{n,}` matches at least n times.
--   `{n,m}` matches between n and m times.
+-   `{n}` khớp chính xác n lần.
+-   `{n,}` khớp ít nhất n lần.
+-   `{n,m}` khớp từ n đến m lần.
 
-### Operator precedence and parentheses
+### Thứ tự ưu tiên toán tử và dấu ngoặc đơn
 
-What does `ab+` match?
-Does it match "a" followed by one or more "b"s, or does it match "ab" repeated any number of times?
-What does `^a|b$` match?
-Does it match the complete string a or the complete string b, or does it match a string starting with a or a string ending with b?
+`ab+` khớp với cái gì?
+Nó khớp với "a" theo sau bởi một hoặc nhiều "b", hay nó khớp với "ab" lặp lại bất kỳ số lần nào?
+`^a|b$` khớp với cái gì?
+Nó khớp với toàn bộ chuỗi a hoặc toàn bộ chuỗi b, hay nó khớp với chuỗi bắt đầu bằng a hoặc chuỗi kết thúc bằng b?
 
-The answer to these questions is determined by operator precedence, similar to the PEMDAS or BEDMAS rules you might have learned in school.
-You know that `a + b * c` is equivalent to `a + (b * c)` not `(a + b) * c` because `*` has higher precedence and `+` has lower precedence: you compute `*` before `+`.
+Câu trả lời cho những câu hỏi này được xác định bởi thứ tự ưu tiên toán tử, tương tự như quy tắc PEMDAS hoặc BEDMAS mà bạn có thể đã học ở trường.
+Bạn biết rằng `a + b * c` tương đương với `a + (b * c)` chứ không phải `(a + b) * c` vì `*` có thứ tự ưu tiên cao hơn và `+` có thứ tự ưu tiên thấp hơn: bạn tính `*` trước `+`.
 
-Similarly, regular expressions have their own precedence rules: quantifiers have high precedence and alternation has low precedence which means that `ab+` is equivalent to `a(b+)`, and `^a|b$` is equivalent to `(^a)|(b$)`.
-Just like with algebra, you can use parentheses to override the usual order.
-But unlike algebra you're unlikely to remember the precedence rules for regexes, so feel free to use parentheses liberally.
+Tương tự, biểu thức chính quy có quy tắc ưu tiên riêng: bộ định lượng có thứ tự ưu tiên cao và phép thay thế có thứ tự ưu tiên thấp, nghĩa là `ab+` tương đương với `a(b+)`, và `^a|b$` tương đương với `(^a)|(b$)`.
+Giống như trong đại số, bạn có thể sử dụng dấu ngoặc đơn để ghi đè thứ tự thông thường.
+Nhưng không giống đại số, bạn khó có thể nhớ các quy tắc ưu tiên cho regex, vì vậy hãy thoải mái sử dụng dấu ngoặc đơn một cách tự do.
 
-### Grouping and capturing
+### Nhóm và bắt giữ
 
-As well as overriding operator precedence, parentheses have another important effect: they create **capturing groups** that allow you to use sub-components of the match.
+Ngoài việc ghi đè thứ tự ưu tiên toán tử, dấu ngoặc đơn còn có một tác dụng quan trọng khác: chúng tạo ra các **nhóm bắt giữ (capturing group)** cho phép bạn sử dụng các thành phần con của kết quả khớp.
 
-The first way to use a capturing group is to refer back to it within a match with **back reference**: `\1` refers to the match contained in the first parenthesis, `\2` in the second parenthesis, and so on.
-For example, the following pattern finds all fruits that have a repeated pair of letters:
+Cách đầu tiên để sử dụng nhóm bắt giữ là tham chiếu ngược lại trong một kết quả khớp bằng **tham chiếu ngược (back reference)**: `\1` tham chiếu đến kết quả khớp chứa trong dấu ngoặc đơn thứ nhất, `\2` trong dấu ngoặc đơn thứ hai, và cứ tiếp tục như vậy.
+Ví dụ, mẫu sau tìm tất cả trái cây có một cặp chữ cái lặp lại:
 
 ```{r}
 str_view(fruit, "(..)\\1")
 ```
 
-And this one finds all words that start and end with the same pair of letters:
+Và mẫu này tìm tất cả các từ bắt đầu và kết thúc bằng cùng một cặp chữ cái:
 
 ```{r}
 str_view(words, "^(..).*\\1$")
 ```
 
-You can also use back references in `str_replace()`.
-For example, this code switches the order of the second and third words in `sentences`:
+Bạn cũng có thể sử dụng tham chiếu ngược trong `str_replace()`.
+Ví dụ, đoạn mã này hoán đổi thứ tự của từ thứ hai và thứ ba trong `sentences`:
 
 ```{r}
-sentences |> 
-  str_replace("(\\w+) (\\w+) (\\w+)", "\\1 \\3 \\2") |> 
+sentences |>
+  str_replace("(\\w+) (\\w+) (\\w+)", "\\1 \\3 \\2") |>
   str_view()
 ```
 
-If you want to extract the matches for each group you can use `str_match()`.
-But `str_match()` returns a matrix, so it's not particularly easy to work with[^regexps-8]:
+Nếu bạn muốn trích xuất các kết quả khớp cho mỗi nhóm, bạn có thể sử dụng `str_match()`.
+Nhưng `str_match()` trả về một ma trận (matrix), nên nó không đặc biệt dễ làm việc[^regexps-8]:
 
-[^regexps-8]: Mostly because we never discuss matrices in this book!
+[^regexps-8]: Chủ yếu vì chúng ta chưa bao giờ thảo luận về ma trận trong cuốn sách này!
 
 ```{r}
-sentences |> 
-  str_match("the (\\w+) (\\w+)") |> 
+sentences |>
+  str_match("the (\\w+) (\\w+)") |>
   head()
 ```
 
-You could convert to a tibble and name the columns:
+Bạn có thể chuyển đổi thành tibble và đặt tên các cột:
 
 ```{r}
-sentences |> 
-  str_match("the (\\w+) (\\w+)") |> 
-  as_tibble(.name_repair = "minimal") |> 
+sentences |>
+  str_match("the (\\w+) (\\w+)") |>
+  as_tibble(.name_repair = "minimal") |>
   set_names("match", "word1", "word2")
 ```
 
-But then you've basically recreated your own version of `separate_wider_regex()`.
-Indeed, behind the scenes, `separate_wider_regex()` converts your vector of patterns to a single regex that uses grouping to capture the named components.
+Nhưng khi đó bạn về cơ bản đã tự tạo lại phiên bản riêng của `separate_wider_regex()`.
+Thực tế, đằng sau hậu trường, `separate_wider_regex()` chuyển đổi vector mẫu của bạn thành một regex duy nhất sử dụng nhóm để bắt giữ các thành phần được đặt tên.
 
-Occasionally, you'll want to use parentheses without creating matching groups.
-You can create a non-capturing group with `(?:)`.
+Đôi khi, bạn sẽ muốn sử dụng dấu ngoặc đơn mà không tạo nhóm khớp.
+Bạn có thể tạo một nhóm không bắt giữ (non-capturing group) bằng `(?:)`.
 
 ```{r}
 x <- c("a gray cat", "a grey dog")
@@ -513,30 +513,30 @@ str_match(x, "gr(e|a)y")
 str_match(x, "gr(?:e|a)y")
 ```
 
-### Exercises
+### Bài tập
 
-1.  How would you match the literal string `"'\`? How about `"$^$"`?
+1.  Làm thế nào bạn khớp với chuỗi ký tự theo nghĩa đen `"'\`? Còn `"$^$"` thì sao?
 
-2.  Explain why each of these patterns don't match a `\`: `"\"`, `"\\"`, `"\\\"`.
+2.  Giải thích tại sao mỗi mẫu sau không khớp với `\`: `"\"`, `"\\"`, `"\\\"`.
 
-3.  Given the corpus of common words in `stringr::words`, create regular expressions that find all words that:
+3.  Cho tập từ thông dụng trong `stringr::words`, tạo các biểu thức chính quy tìm tất cả các từ mà:
 
-    a.  Start with "y".
-    b.  Don't start with "y".
-    c.  End with "x".
-    d.  Are exactly three letters long. (Don't cheat by using `str_length()`!)
-    e.  Have seven letters or more.
-    f.  Contain a vowel-consonant pair.
-    g.  Contain at least two vowel-consonant pairs in a row.
-    h.  Only consist of repeated vowel-consonant pairs.
+    a.  Bắt đầu bằng "y".
+    b.  Không bắt đầu bằng "y".
+    c.  Kết thúc bằng "x".
+    d.  Dài chính xác ba chữ cái. (Đừng gian lận bằng cách sử dụng `str_length()`!)
+    e.  Có bảy chữ cái trở lên.
+    f.  Chứa một cặp nguyên âm-phụ âm.
+    g.  Chứa ít nhất hai cặp nguyên âm-phụ âm liên tiếp.
+    h.  Chỉ bao gồm các cặp nguyên âm-phụ âm lặp lại.
 
-4.  Create 11 regular expressions that match the British or American spellings for each of the following words: airplane/aeroplane, aluminum/aluminium, analog/analogue, ass/arse, center/centre, defense/defence, donut/doughnut, gray/grey, modeling/modelling, skeptic/sceptic, summarize/summarise.
-    Try and make the shortest possible regex!
+4.  Tạo 11 biểu thức chính quy khớp với cách viết tiếng Anh Mỹ hoặc Anh cho mỗi từ sau: airplane/aeroplane, aluminum/aluminium, analog/analogue, ass/arse, center/centre, defense/defence, donut/doughnut, gray/grey, modeling/modelling, skeptic/sceptic, summarize/summarise.
+    Hãy cố gắng tạo regex ngắn nhất có thể!
 
-5.  Switch the first and last letters in `words`.
-    Which of those strings are still `words`?
+5.  Hoán đổi chữ cái đầu tiên và cuối cùng trong `words`.
+    Chuỗi nào trong số đó vẫn là `words`?
 
-6.  Describe in words what these regular expressions match: (read carefully to see if each entry is a regular expression or a string that defines a regular expression.)
+6.  Mô tả bằng lời các biểu thức chính quy sau khớp với cái gì: (đọc kỹ để xem mỗi mục là biểu thức chính quy hay chuỗi định nghĩa biểu thức chính quy.)
 
     a.  `^.*$`
     b.  `"\\{.+\\}"`
@@ -546,19 +546,19 @@ str_match(x, "gr(?:e|a)y")
     f.  `(.)\1\1`
     g.  `"(..)\\1"`
 
-7.  Solve the beginner regexp crosswords at <https://regexcrossword.com/challenges/beginner>.
+7.  Giải các câu đố ô chữ regexp mức cơ bản tại <https://regexcrossword.com/challenges/beginner>.
 
-## Pattern control
+## Kiểm soát mẫu
 
-It's possible to exercise extra control over the details of the match by using a pattern object instead of just a string.
-This allows you to control the so called regex flags and match various types of fixed strings, as described below.
+Bạn có thể kiểm soát thêm các chi tiết của kết quả khớp bằng cách sử dụng đối tượng mẫu thay vì chỉ một chuỗi.
+Điều này cho phép bạn kiểm soát cái gọi là cờ regex và khớp các loại chuỗi cố định khác nhau, như mô tả bên dưới.
 
-### Regex flags {#sec-flags}
+### Cờ regex {#sec-flags}
 
-There are a number of settings that can be used to control the details of the regexp.
-These settings are often called **flags** in other programming languages.
-In stringr, you can use these by wrapping the pattern in a call to `regex()`.
-The most useful flag is probably `ignore_case = TRUE` because it allows characters to match either their uppercase or lowercase forms:
+Có một số cài đặt có thể được sử dụng để kiểm soát chi tiết của regexp.
+Các cài đặt này thường được gọi là **cờ (flag)** trong các ngôn ngữ lập trình khác.
+Trong stringr, bạn có thể sử dụng chúng bằng cách bọc mẫu trong một lời gọi đến `regex()`.
+Cờ hữu ích nhất có lẽ là `ignore_case = TRUE` vì nó cho phép các ký tự khớp với dạng chữ hoa hoặc chữ thường:
 
 ```{r}
 bananas <- c("banana", "Banana", "BANANA")
@@ -566,9 +566,9 @@ str_view(bananas, "banana")
 str_view(bananas, regex("banana", ignore_case = TRUE))
 ```
 
-If you're doing a lot of work with multiline strings (i.e. strings that contain `\n`), `dotall` and `multiline` may also be useful:
+Nếu bạn đang làm việc nhiều với chuỗi đa dòng (tức là chuỗi chứa `\n`), `dotall` và `multiline` cũng có thể hữu ích:
 
--   `dotall = TRUE` lets `.` match everything, including `\n`:
+-   `dotall = TRUE` cho phép `.` khớp với mọi thứ, kể cả `\n`:
 
     ```{r}
     x <- "Line 1\nLine 2\nLine 3"
@@ -576,7 +576,7 @@ If you're doing a lot of work with multiline strings (i.e. strings that contain 
     str_view(x, regex(".Line", dotall = TRUE))
     ```
 
--   `multiline = TRUE` makes `^` and `$` match the start and end of each line rather than the start and end of the complete string:
+-   `multiline = TRUE` làm cho `^` và `$` khớp ở đầu và cuối mỗi dòng thay vì đầu và cuối toàn bộ chuỗi:
 
     ```{r}
     x <- "Line 1\nLine 2\nLine 3"
@@ -584,94 +584,94 @@ If you're doing a lot of work with multiline strings (i.e. strings that contain 
     str_view(x, regex("^Line", multiline = TRUE))
     ```
 
-Finally, if you're writing a complicated regular expression and you're worried you might not understand it in the future, you might try `comments = TRUE`.
-It tweaks the pattern language to ignore spaces and new lines, as well as everything after `#`.
-This allows you to use comments and whitespace to make complex regular expressions more understandable[^regexps-9], as in the following example:
+Cuối cùng, nếu bạn đang viết một biểu thức chính quy phức tạp và lo lắng rằng trong tương lai bạn có thể không hiểu nó, bạn có thể thử `comments = TRUE`.
+Nó điều chỉnh ngôn ngữ mẫu để bỏ qua khoảng trắng và xuống dòng, cũng như mọi thứ sau `#`.
+Điều này cho phép bạn sử dụng chú thích và khoảng trắng để làm cho biểu thức chính quy phức tạp dễ hiểu hơn[^regexps-9], như trong ví dụ sau:
 
-[^regexps-9]: `comments = TRUE` is particularly effective in combination with a raw string, as we use here.
+[^regexps-9]: `comments = TRUE` đặc biệt hiệu quả khi kết hợp với chuỗi thô, như chúng ta sử dụng ở đây.
 
 ```{r}
 phone <- regex(
   r"(
-    \(?     # optional opening parens
-    (\d{3}) # area code
-    [)\-]?  # optional closing parens or dash
-    \ ?     # optional space
-    (\d{3}) # another three numbers
-    [\ -]?  # optional space or dash
-    (\d{4}) # four more numbers
-  )", 
+    \(?     # dấu ngoặc mở tùy chọn
+    (\d{3}) # mã vùng
+    [)\-]?  # dấu ngoặc đóng hoặc gạch ngang tùy chọn
+    \ ?     # khoảng trắng tùy chọn
+    (\d{3}) # ba số tiếp theo
+    [\ -]?  # khoảng trắng hoặc gạch ngang tùy chọn
+    (\d{4}) # bốn số cuối
+  )",
   comments = TRUE
 )
 
 str_extract(c("514-791-8141", "(123) 456 7890", "123456"), phone)
 ```
 
-If you're using comments and want to match a space, newline, or `#`, you'll need to escape it with `\`.
+Nếu bạn đang sử dụng chú thích và muốn khớp dấu cách, xuống dòng, hoặc `#`, bạn sẽ cần thoát nó bằng `\`.
 
-### Fixed matches
+### Khớp cố định
 
-You can opt-out of the regular expression rules by using `fixed()`:
+Bạn có thể bỏ qua các quy tắc biểu thức chính quy bằng cách sử dụng `fixed()`:
 
 ```{r}
 str_view(c("", "a", "."), fixed("."))
 ```
 
-`fixed()` also gives you the ability to ignore case:
+`fixed()` cũng cho bạn khả năng bỏ qua chữ hoa chữ thường:
 
 ```{r}
 str_view("x X", "X")
 str_view("x X", fixed("X", ignore_case = TRUE))
 ```
 
-If you're working with non-English text, you will probably want `coll()` instead of `fixed()`, as it implements the full rules for capitalization as used by the `locale` you specify.
-See @sec-other-languages for more details on locales.
+Nếu bạn đang làm việc với văn bản không phải tiếng Anh, bạn có thể sẽ muốn dùng `coll()` thay vì `fixed()`, vì nó triển khai đầy đủ các quy tắc viết hoa theo `locale` mà bạn chỉ định.
+Xem @sec-other-languages để biết thêm chi tiết về locale.
 
 ```{r}
 str_view("i İ ı I", fixed("İ", ignore_case = TRUE))
 str_view("i İ ı I", coll("İ", ignore_case = TRUE, locale = "tr"))
 ```
 
-## Practice
+## Thực hành
 
-To put these ideas into practice we'll solve a few semi-authentic problems next.
-We'll discuss three general techniques:
+Để áp dụng những ý tưởng này vào thực tế, tiếp theo chúng ta sẽ giải một vài bài toán gần giống thực tế.
+Chúng ta sẽ thảo luận ba kỹ thuật chung:
 
-1.  checking your work by creating simple positive and negative controls
-2.  combining regular expressions with Boolean algebra
-3.  creating complex patterns using string manipulation
+1.  kiểm tra kết quả của bạn bằng cách tạo các trường hợp kiểm thử dương và âm đơn giản
+2.  kết hợp biểu thức chính quy với đại số Boolean
+3.  tạo các mẫu phức tạp bằng thao tác chuỗi ký tự
 
-### Check your work
+### Kiểm tra kết quả của bạn
 
-First, let's find all sentences that start with "The".
-Using the `^` anchor alone is not enough:
+Đầu tiên, hãy tìm tất cả các câu bắt đầu bằng "The".
+Chỉ sử dụng neo `^` thôi chưa đủ:
 
 ```{r}
 str_view(sentences, "^The")
 ```
 
-Because that pattern also matches sentences starting with words like `They` or `These`.
-We need to make sure that the "e" is the last letter in the word, which we can do by adding a word boundary:
+Bởi vì mẫu đó cũng khớp với các câu bắt đầu bằng các từ như `They` hoặc `These`.
+Chúng ta cần đảm bảo rằng "e" là chữ cái cuối cùng trong từ, điều mà chúng ta có thể thực hiện bằng cách thêm ranh giới từ:
 
 ```{r}
 str_view(sentences, "^The\\b")
 ```
 
-What about finding all sentences that begin with a pronoun?
+Còn việc tìm tất cả các câu bắt đầu bằng đại từ thì sao?
 
 ```{r}
 str_view(sentences, "^She|He|It|They\\b")
 ```
 
-A quick inspection of the results shows that we're getting some spurious matches.
-That's because we've forgotten to use parentheses:
+Kiểm tra nhanh kết quả cho thấy chúng ta đang có một số kết quả khớp sai.
+Đó là vì chúng ta quên sử dụng dấu ngoặc đơn:
 
 ```{r}
 str_view(sentences, "^(She|He|It|They)\\b")
 ```
 
-You might wonder how you might spot such a mistake if it didn't occur in the first few matches.
-A good technique is to create a few positive and negative matches and use them to test that your pattern works as expected:
+Bạn có thể thắc mắc làm thế nào bạn có thể phát hiện lỗi như vậy nếu nó không xuất hiện trong vài kết quả khớp đầu tiên.
+Một kỹ thuật tốt là tạo một vài kết quả khớp dương và âm và sử dụng chúng để kiểm tra rằng mẫu của bạn hoạt động đúng như mong đợi:
 
 ```{r}
 pos <- c("He is a boy", "She had a good time")
@@ -682,42 +682,42 @@ str_detect(pos, pattern)
 str_detect(neg, pattern)
 ```
 
-It's typically much easier to come up with good positive examples than negative examples, because it takes a while before you're good enough with regular expressions to predict where your weaknesses are.
-Nevertheless, they're still useful: as you work on the problem you can slowly accumulate a collection of your mistakes, ensuring that you never make the same mistake twice.
+Thường dễ dàng hơn nhiều để đưa ra các ví dụ dương tốt so với ví dụ âm, vì phải mất một thời gian trước khi bạn đủ giỏi với biểu thức chính quy để dự đoán điểm yếu của mình.
+Tuy nhiên, chúng vẫn hữu ích: khi bạn làm việc với bài toán, bạn có thể dần tích lũy một bộ sưu tập các lỗi của mình, đảm bảo rằng bạn không bao giờ mắc cùng một lỗi hai lần.
 
-### Boolean operations {#sec-boolean-operations}
+### Phép toán Boolean {#sec-boolean-operations}
 
-Imagine we want to find words that only contain consonants.
-One technique is to create a character class that contains all letters except for the vowels (`[^aeiou]`), then allow that to match any number of letters (`[^aeiou]+`), then force it to match the whole string by anchoring to the beginning and the end (`^[^aeiou]+$`):
+Hãy tưởng tượng chúng ta muốn tìm các từ chỉ chứa phụ âm.
+Một kỹ thuật là tạo một lớp ký tự chứa tất cả chữ cái ngoại trừ nguyên âm (`[^aeiou]`), sau đó cho phép nó khớp với bất kỳ số lượng chữ cái nào (`[^aeiou]+`), rồi buộc nó khớp toàn bộ chuỗi bằng cách neo ở đầu và cuối (`^[^aeiou]+$`):
 
 ```{r}
 str_view(words, "^[^aeiou]+$")
 ```
 
-But you can make this problem a bit easier by flipping the problem around.
-Instead of looking for words that contain only consonants, we could look for words that don't contain any vowels:
+Nhưng bạn có thể làm bài toán này dễ hơn một chút bằng cách đảo ngược vấn đề.
+Thay vì tìm các từ chỉ chứa phụ âm, chúng ta có thể tìm các từ không chứa nguyên âm nào:
 
 ```{r}
 str_view(words[!str_detect(words, "[aeiou]")])
 ```
 
-This is a useful technique whenever you're dealing with logical combinations, particularly those involving "and" or "not".
-For example, imagine if you want to find all words that contain "a" and "b".
-There's no "and" operator built in to regular expressions so we have to tackle it by looking for all words that contain an "a" followed by a "b", or a "b" followed by an "a":
+Đây là kỹ thuật hữu ích mỗi khi bạn xử lý các tổ hợp logic, đặc biệt là những tổ hợp liên quan đến "và" hoặc "không".
+Ví dụ, hãy tưởng tượng bạn muốn tìm tất cả các từ chứa cả "a" và "b".
+Không có toán tử "và" tích hợp sẵn trong biểu thức chính quy nên chúng ta phải giải quyết bằng cách tìm tất cả các từ chứa "a" theo sau bởi "b", hoặc "b" theo sau bởi "a":
 
 ```{r}
 str_view(words, "a.*b|b.*a")
 ```
 
-It's simpler to combine the results of two calls to `str_detect()`:
+Đơn giản hơn là kết hợp kết quả của hai lời gọi `str_detect()`:
 
 ```{r}
 words[str_detect(words, "a") & str_detect(words, "b")]
 ```
 
-What if we wanted to see if there was a word that contains all vowels?
-If we did it with patterns we'd need to generate 5!
-(120) different patterns:
+Nếu chúng ta muốn xem liệu có từ nào chứa tất cả nguyên âm không thì sao?
+Nếu chúng ta làm bằng mẫu, chúng ta cần tạo 5!
+(120) mẫu khác nhau:
 
 ```{r}
 #| results: false
@@ -726,7 +726,7 @@ words[str_detect(words, "a.*e.*i.*o.*u")]
 words[str_detect(words, "u.*o.*i.*e.*a")]
 ```
 
-It's much simpler to combine five calls to `str_detect()`:
+Đơn giản hơn nhiều là kết hợp năm lời gọi `str_detect()`:
 
 ```{r}
 words[
@@ -738,39 +738,39 @@ words[
 ]
 ```
 
-In general, if you get stuck trying to create a single regexp that solves your problem, take a step back and think if you could break the problem down into smaller pieces, solving each challenge before moving onto the next one.
+Nói chung, nếu bạn bị mắc kẹt khi cố tạo một regexp duy nhất để giải quyết bài toán, hãy lùi lại một bước và nghĩ xem liệu bạn có thể chia bài toán thành các phần nhỏ hơn, giải quyết từng thách thức trước khi chuyển sang phần tiếp theo.
 
-### Creating a pattern with code
+### Tạo mẫu bằng mã
 
-What if we wanted to find all `sentences` that mention a color?
-The basic idea is simple: we just combine alternation with word boundaries.
+Nếu chúng ta muốn tìm tất cả `sentences` đề cập đến một màu sắc thì sao?
+Ý tưởng cơ bản rất đơn giản: chúng ta chỉ cần kết hợp phép thay thế với ranh giới từ.
 
 ```{r}
 str_view(sentences, "\\b(red|green|blue)\\b")
 ```
 
-But as the number of colors grows, it would quickly get tedious to construct this pattern by hand.
-Wouldn't it be nice if we could store the colors in a vector?
+Nhưng khi số lượng màu tăng lên, việc xây dựng mẫu này bằng tay sẽ nhanh chóng trở nên nhàm chán.
+Sẽ tiện biết bao nếu chúng ta có thể lưu các màu trong một vector?
 
 ```{r}
 rgb <- c("red", "green", "blue")
 ```
 
-Well, we can!
-We'd just need to create the pattern from the vector using `str_c()` and `str_flatten()`:
+Chúng ta hoàn toàn có thể!
+Chúng ta chỉ cần tạo mẫu từ vector bằng `str_c()` và `str_flatten()`:
 
 ```{r}
 str_c("\\b(", str_flatten(rgb, "|"), ")\\b")
 ```
 
-We could make this pattern more comprehensive if we had a good list of colors.
-One place we could start from is the list of built-in colors that R can use for plots:
+Chúng ta có thể làm mẫu này toàn diện hơn nếu chúng ta có một danh sách tốt các màu.
+Một nơi chúng ta có thể bắt đầu là danh sách các màu tích hợp sẵn mà R có thể sử dụng cho biểu đồ:
 
 ```{r}
 str_view(colors())
 ```
 
-But lets first eliminate the numbered variants:
+Nhưng trước tiên hãy loại bỏ các biến thể có đánh số:
 
 ```{r}
 cols <- colors()
@@ -778,89 +778,89 @@ cols <- cols[!str_detect(cols, "\\d")]
 str_view(cols)
 ```
 
-Then we can turn this into one giant pattern.
-We won't show the pattern here because it's huge, but you can see it working:
+Sau đó chúng ta có thể biến danh sách này thành một mẫu khổng lồ.
+Chúng ta sẽ không hiển thị mẫu ở đây vì nó quá lớn, nhưng bạn có thể thấy nó hoạt động:
 
 ```{r}
 pattern <- str_c("\\b(", str_flatten(cols, "|"), ")\\b")
 str_view(sentences, pattern)
 ```
 
-In this example, `cols` only contains numbers and letters so you don't need to worry about metacharacters.
-But in general, whenever you create patterns from existing strings it's wise to run them through `str_escape()` to ensure they match literally.
+Trong ví dụ này, `cols` chỉ chứa số và chữ cái nên bạn không cần lo lắng về siêu ký tự.
+Nhưng nói chung, bất cứ khi nào bạn tạo mẫu từ các chuỗi có sẵn, tốt nhất nên chạy chúng qua `str_escape()` để đảm bảo chúng khớp theo nghĩa đen.
 
-### Exercises
+### Bài tập
 
-1.  For each of the following challenges, try solving it by using both a single regular expression, and a combination of multiple `str_detect()` calls.
+1.  Đối với mỗi thách thức sau, hãy thử giải bằng cả một biểu thức chính quy duy nhất và kết hợp nhiều lời gọi `str_detect()`.
 
-    a.  Find all `words` that start or end with `x`.
-    b.  Find all `words` that start with a vowel and end with a consonant.
-    c.  Are there any `words` that contain at least one of each different vowel?
+    a.  Tìm tất cả `words` bắt đầu hoặc kết thúc bằng `x`.
+    b.  Tìm tất cả `words` bắt đầu bằng nguyên âm và kết thúc bằng phụ âm.
+    c.  Có `words` nào chứa ít nhất một trong mỗi nguyên âm khác nhau không?
 
-2.  Construct patterns to find evidence for and against the rule "i before e except after c"?
+2.  Xây dựng các mẫu để tìm bằng chứng ủng hộ và phản bác quy tắc "i trước e ngoại trừ sau c"?
 
-3.  `colors()` contains a number of modifiers like "lightgray" and "darkblue".
-    How could you automatically identify these modifiers?
-    (Think about how you might detect and then remove the colors that are modified).
+3.  `colors()` chứa một số từ bổ nghĩa như "lightgray" và "darkblue".
+    Làm thế nào bạn có thể tự động nhận diện các từ bổ nghĩa này?
+    (Hãy nghĩ về cách bạn có thể phát hiện rồi loại bỏ các màu đã được bổ nghĩa).
 
-4.  Create a regular expression that finds any base R dataset.
-    You can get a list of these datasets via a special use of the `data()` function: `data(package = "datasets")$results[, "Item"]`.
-    Note that a number of old datasets are individual vectors; these contain the name of the grouping "data frame" in parentheses, so you'll need to strip those off.
+4.  Tạo một biểu thức chính quy tìm bất kỳ tập dữ liệu nào trong R cơ bản.
+    Bạn có thể lấy danh sách các tập dữ liệu này qua một cách sử dụng đặc biệt của hàm `data()`: `data(package = "datasets")$results[, "Item"]`.
+    Lưu ý rằng một số tập dữ liệu cũ là các vector riêng lẻ; chúng chứa tên "khung dữ liệu" nhóm trong dấu ngoặc đơn, nên bạn sẽ cần loại bỏ phần đó.
 
-## Regular expressions in other places
+## Biểu thức chính quy ở những nơi khác
 
-Just like in the stringr and tidyr functions, there are many other places in R where you can use regular expressions.
-The following sections describe some other useful functions in the wider tidyverse and base R.
+Giống như trong các hàm stringr và tidyr, có rất nhiều nơi khác trong R mà bạn có thể sử dụng biểu thức chính quy.
+Các phần sau mô tả một số hàm hữu ích khác trong tidyverse mở rộng và R cơ bản.
 
 ### tidyverse
 
-There are three other particularly useful places where you might want to use a regular expressions
+Có ba nơi đặc biệt hữu ích khác mà bạn có thể muốn sử dụng biểu thức chính quy
 
--   `matches(pattern)` will select all variables whose name matches the supplied pattern.
-    It's a "tidyselect" function that you can use anywhere in any tidyverse function that selects variables (e.g., `select()`, `rename_with()` and `across()`).
+-   `matches(pattern)` sẽ chọn tất cả các biến có tên khớp với mẫu được cung cấp.
+    Đây là hàm "tidyselect" mà bạn có thể sử dụng ở bất kỳ đâu trong bất kỳ hàm tidyverse nào chọn biến (ví dụ `select()`, `rename_with()` và `across()`).
 
--   `pivot_longer()'s` `names_pattern` argument takes a vector of regular expressions, just like `separate_wider_regex()`.
-    It's useful when extracting data out of variable names with a complex structure
+-   Đối số `names_pattern` của `pivot_longer()` nhận một vector biểu thức chính quy, giống như `separate_wider_regex()`.
+    Nó hữu ích khi trích xuất dữ liệu từ tên biến có cấu trúc phức tạp
 
--   The `delim` argument in `separate_longer_delim()` and `separate_wider_delim()` usually matches a fixed string, but you can use `regex()` to make it match a pattern.
-    This is useful, for example, if you want to match a comma that is optionally followed by a space, i.e. `regex(", ?")`.
+-   Đối số `delim` trong `separate_longer_delim()` và `separate_wider_delim()` thường khớp với chuỗi cố định, nhưng bạn có thể sử dụng `regex()` để làm cho nó khớp với một mẫu.
+    Điều này hữu ích, ví dụ, nếu bạn muốn khớp dấu phẩy tùy chọn theo sau bởi khoảng trắng, tức là `regex(", ?")`.
 
-### Base R
+### R cơ bản
 
-`apropos(pattern)` searches all objects available from the global environment that match the given pattern.
-This is useful if you can't quite remember the name of a function:
+`apropos(pattern)` tìm kiếm tất cả các đối tượng có sẵn từ môi trường toàn cục khớp với mẫu đã cho.
+Điều này hữu ích nếu bạn không nhớ chính xác tên hàm:
 
 ```{r}
 apropos("replace")
 ```
 
-`list.files(path, pattern)` lists all files in `path` that match a regular expression `pattern`.
-For example, you can find all the R Markdown files in the current directory with:
+`list.files(path, pattern)` liệt kê tất cả file trong `path` khớp với biểu thức chính quy `pattern`.
+Ví dụ, bạn có thể tìm tất cả file R Markdown trong thư mục hiện tại với:
 
 ```{r}
 head(list.files(pattern = "\\.Rmd$"))
 ```
 
-It's worth noting that the pattern language used by base R is very slightly different to that used by stringr.
-That's because stringr is built on top of the [stringi package](https://stringi.gagolewski.com), which is in turn built on top of the [ICU engine](https://unicode-org.github.io/icu/userguide/strings/regexp.html), whereas base R functions use either the [TRE engine](https://github.com/laurikari/tre) or the [PCRE engine](https://www.pcre.org), depending on whether or not you've set `perl = TRUE`.
-Fortunately, the basics of regular expressions are so well established that you'll encounter few variations when working with the patterns you'll learn in this book.
-You only need to be aware of the difference when you start to rely on advanced features like complex Unicode character ranges or special features that use the `(?…)` syntax.
+Đáng lưu ý rằng ngôn ngữ mẫu được sử dụng bởi R cơ bản hơi khác một chút so với stringr.
+Đó là vì stringr được xây dựng trên gói [stringi](https://stringi.gagolewski.com), và gói này được xây dựng trên [ICU engine](https://unicode-org.github.io/icu/userguide/strings/regexp.html), trong khi các hàm R cơ bản sử dụng [TRE engine](https://github.com/laurikari/tre) hoặc [PCRE engine](https://www.pcre.org), tùy thuộc vào việc bạn có đặt `perl = TRUE` hay không.
+May mắn là những kiến thức cơ bản về biểu thức chính quy đã được thiết lập vững chắc đến mức bạn sẽ gặp ít biến thể khi làm việc với các mẫu bạn học trong cuốn sách này.
+Bạn chỉ cần lưu ý sự khác biệt khi bạn bắt đầu dựa vào các tính năng nâng cao như phạm vi ký tự Unicode phức tạp hoặc các tính năng đặc biệt sử dụng cú pháp `(?…)`.
 
-## Summary
+## Tóm tắt
 
-With every punctuation character potentially overloaded with meaning, regular expressions are one of the most compact languages out there.
-They're definitely confusing at first but as you train your eyes to read them and your brain to understand them, you unlock a powerful skill that you can use in R and in many other places.
+Với mỗi ký tự dấu câu đều có thể mang nhiều ý nghĩa, biểu thức chính quy là một trong những ngôn ngữ cô đọng nhất.
+Ban đầu chúng chắc chắn gây bối rối nhưng khi bạn rèn luyện mắt để đọc chúng và não bộ để hiểu chúng, bạn sẽ mở khóa một kỹ năng mạnh mẽ có thể sử dụng trong R và nhiều nơi khác.
 
-In this chapter, you've started your journey to become a regular expression master by learning the most useful stringr functions and the most important components of the regular expression language.
-And there are plenty of resources to learn more.
+Trong chương này, bạn đã bắt đầu hành trình để trở thành bậc thầy biểu thức chính quy bằng cách học các hàm stringr hữu ích nhất và các thành phần quan trọng nhất của ngôn ngữ biểu thức chính quy.
+Và vẫn còn rất nhiều tài nguyên để học thêm.
 
-A good place to start is `vignette("regular-expressions", package = "stringr")`: it documents the full set of syntax supported by stringr.
-Another useful reference is [https://www.regular-expressions.info/](https://www.regular-expressions.info/tutorial.html).
-It's not R specific, but you can use it to learn about the most advanced features of regexes and how they work under the hood.
+Một nơi tốt để bắt đầu là `vignette("regular-expressions", package = "stringr")`: nó ghi chép đầy đủ các cú pháp được hỗ trợ bởi stringr.
+Một tài liệu tham khảo hữu ích khác là [https://www.regular-expressions.info/](https://www.regular-expressions.info/tutorial.html).
+Nó không dành riêng cho R, nhưng bạn có thể sử dụng nó để tìm hiểu về các tính năng nâng cao nhất của regex và cách chúng hoạt động đằng sau hậu trường.
 
-It's also good to know that stringr is implemented on top of the stringi package by Marek Gagolewski.
-If you're struggling to find a function that does what you need in stringr, don't be afraid to look in stringi.
-You'll find stringi very easy to pick up because it follows many of the the same conventions as stringr.
+Cũng tốt khi biết rằng stringr được xây dựng trên gói stringi của Marek Gagolewski.
+Nếu bạn gặp khó khăn khi tìm một hàm thực hiện những gì bạn cần trong stringr, đừng ngại tìm kiếm trong stringi.
+Bạn sẽ thấy stringi rất dễ tiếp cận vì nó tuân theo nhiều quy ước giống như stringr.
 
-In the next chapter, we'll talk about a data structure closely related to strings: factors.
-Factors are used to represent categorical data in R, i.e. data with a fixed and known set of possible values identified by a vector of strings.
+Trong chương tiếp theo, chúng ta sẽ nói về một cấu trúc dữ liệu liên quan chặt chẽ đến chuỗi ký tự: nhân tố (factor).
+Nhân tố được sử dụng để biểu diễn dữ liệu phân loại trong R, tức là dữ liệu với một tập hợp cố định và đã biết các giá trị có thể được xác định bởi một vector chuỗi ký tự.
