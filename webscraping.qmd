@@ -1,30 +1,30 @@
-# Web scraping {#sec-scraping}
+# Thu thập dữ liệu web {#sec-scraping}
 
 ```{r}
 #| echo: false
 source("_common.R")
 ```
 
-## Introduction
+## Giới thiệu
 
-This chapter introduces you to the basics of web scraping with [rvest](https://rvest.tidyverse.org).
-Web scraping is a very useful tool for extracting data from web pages.
-Some websites will offer an API, a set of structured HTTP requests that return data as JSON, which you handle using the techniques from @sec-rectangling.
-Where possible, you should use the API[^webscraping-1], because typically it will give you more reliable data.
-Unfortunately, however, programming with web APIs is out of scope for this book.
-Instead, we are teaching scraping, a technique that works whether or not a site provides an API.
+Chương này giới thiệu cho bạn những kiến thức cơ bản về thu thập dữ liệu web (web scraping) với [rvest](https://rvest.tidyverse.org).
+Thu thập dữ liệu web là một công cụ rất hữu ích để trích xuất dữ liệu từ các trang web.
+Một số trang web sẽ cung cấp API, một tập hợp các yêu cầu HTTP có cấu trúc trả về dữ liệu dưới dạng JSON, mà bạn xử lý bằng các kỹ thuật từ @sec-rectangling.
+Khi có thể, bạn nên sử dụng API[^webscraping-1], vì thông thường nó sẽ cung cấp cho bạn dữ liệu đáng tin cậy hơn.
+Tuy nhiên, thật không may, lập trình với web API nằm ngoài phạm vi của cuốn sách này.
+Thay vào đó, chúng tôi sẽ dạy về thu thập dữ liệu web (scraping), một kỹ thuật hoạt động bất kể trang web có cung cấp API hay không.
 
-[^webscraping-1]: And many popular APIs already have CRAN packages that wrap them, so start with a little research first!
+[^webscraping-1]: Và nhiều API phổ biến đã có các gói CRAN bao bọc sẵn, nên hãy bắt đầu bằng việc tìm hiểu một chút trước!
 
-In this chapter, we'll first discuss the ethics and legalities of scraping before we dive into the basics of HTML.
-You'll then learn the basics of CSS selectors to locate specific elements on the page, and how to use rvest functions to get data from text and attributes out of HTML and into R.
-We'll then discuss some techniques to figure out what CSS selector you need for the page you're scraping, before finishing up with a couple of case studies, and a brief discussion of dynamic websites.
+Trong chương này, trước tiên chúng tôi sẽ thảo luận về đạo đức và tính hợp pháp của việc thu thập dữ liệu web trước khi đi sâu vào những kiến thức cơ bản về HTML.
+Sau đó bạn sẽ học những kiến thức cơ bản về bộ chọn CSS (CSS selectors) để định vị các phần tử cụ thể trên trang, và cách sử dụng các hàm rvest để lấy dữ liệu từ văn bản và thuộc tính ra khỏi HTML và đưa vào R.
+Tiếp theo, chúng tôi sẽ thảo luận một số kỹ thuật để tìm ra bộ chọn CSS nào bạn cần cho trang bạn đang thu thập, trước khi kết thúc với một vài nghiên cứu tình huống, và một cuộc thảo luận ngắn về các trang web động (dynamic websites).
 
-### Prerequisites
+### Điều kiện tiên quyết
 
-In this chapter, we'll focus on tools provided by rvest.
-rvest is a member of the tidyverse, but is not a core member so you'll need to load it explicitly.
-We'll also load the full tidyverse since we'll find it generally useful working with the data we've scraped.
+Trong chương này, chúng tôi sẽ tập trung vào các công cụ được cung cấp bởi rvest.
+rvest là một thành viên của tidyverse, nhưng không phải thành viên cốt lõi nên bạn sẽ cần nạp nó một cách rõ ràng.
+Chúng tôi cũng sẽ nạp toàn bộ tidyverse vì chúng tôi thấy nó nói chung hữu ích khi làm việc với dữ liệu mà chúng ta đã thu thập.
 
 ```{r}
 #| label: setup
@@ -33,66 +33,66 @@ library(tidyverse)
 library(rvest)
 ```
 
-## Scraping ethics and legalities
+## Đạo đức và tính hợp pháp của thu thập dữ liệu web
 
-Before we get started discussing the code you'll need to perform web scraping, we need to talk about whether it's legal and ethical for you to do so.
-Overall, the situation is complicated with regards to both of these.
+Trước khi bắt đầu thảo luận về mã lệnh bạn cần để thực hiện thu thập dữ liệu web, chúng ta cần nói về việc liệu nó có hợp pháp và đạo đức hay không.
+Nhìn chung, tình hình khá phức tạp đối với cả hai khía cạnh này.
 
-Legalities depend a lot on where you live.
-However, as a general principle, if the data is public, non-personal, and factual, you're likely to be ok[^webscraping-2].
-These three factors are important because they're connected to the site's terms and conditions, personally identifiable information, and copyright, as we'll discuss below.
+Tính hợp pháp phụ thuộc nhiều vào nơi bạn sống.
+Tuy nhiên, như một nguyên tắc chung, nếu dữ liệu là công khai, phi cá nhân, và mang tính thực tế, thì bạn có khả năng ổn[^webscraping-2].
+Ba yếu tố này quan trọng vì chúng liên quan đến điều khoản và điều kiện của trang web, thông tin nhận dạng cá nhân, và bản quyền, như chúng tôi sẽ thảo luận bên dưới.
 
-[^webscraping-2]: Obviously we're not lawyers, and this is not legal advice.
-    But this is the best summary we can give having read a bunch about this topic.
+[^webscraping-2]: Rõ ràng là chúng tôi không phải luật sư, và đây không phải lời khuyên pháp lý.
+    Nhưng đây là tóm tắt tốt nhất mà chúng tôi có thể đưa ra sau khi đọc rất nhiều về chủ đề này.
 
-If the data isn't public, non-personal, or factual or you're scraping the data specifically to make money with it, you'll need to talk to a lawyer.
-In any case, you should be respectful of the resources of the server hosting the pages you are scraping.
-Most importantly, this means that if you're scraping many pages, you should make sure to wait a little between each request.
-One easy way to do so is to use the [**polite**](https://dmi3kno.github.io/polite/) package by Dmytro Perepolkin.
-It will automatically pause between requests and cache the results so you never ask for the same page twice.
+Nếu dữ liệu không công khai, không phi cá nhân, hoặc không mang tính thực tế, hoặc bạn đang thu thập dữ liệu cụ thể để kiếm tiền từ nó, bạn sẽ cần trao đổi với một luật sư.
+Trong mọi trường hợp, bạn nên tôn trọng tài nguyên của máy chủ lưu trữ các trang bạn đang thu thập.
+Quan trọng nhất, điều này có nghĩa là nếu bạn đang thu thập nhiều trang, bạn nên đảm bảo chờ một chút giữa mỗi yêu cầu.
+Một cách dễ dàng để làm điều này là sử dụng gói [**polite**](https://dmi3kno.github.io/polite/) của Dmytro Perepolkin.
+Nó sẽ tự động tạm dừng giữa các yêu cầu và lưu bộ nhớ đệm kết quả để bạn không bao giờ yêu cầu cùng một trang hai lần.
 
-### Terms of service
+### Điều khoản dịch vụ
 
-If you look closely, you'll find many websites include a "terms and conditions" or "terms of service" link somewhere on the page, and if you read that page closely you'll often discover that the site specifically prohibits web scraping.
-These pages tend to be a legal land grab where companies make very broad claims.
-It's polite to respect these terms of service where possible, but take any claims with a grain of salt.
+Nếu bạn nhìn kỹ, bạn sẽ thấy nhiều trang web bao gồm một liên kết "điều khoản và điều kiện" hoặc "điều khoản dịch vụ" ở đâu đó trên trang, và nếu bạn đọc kỹ trang đó, bạn sẽ thường phát hiện rằng trang web đó cấm cụ thể việc thu thập dữ liệu web.
+Các trang này có xu hướng là một sự chiếm đoạt pháp lý nơi các công ty đưa ra những tuyên bố rất rộng.
+Thật lịch sự khi tôn trọng các điều khoản dịch vụ này khi có thể, nhưng hãy tiếp nhận mọi tuyên bố một cách thận trọng.
 
-US courts have generally found that simply putting the terms of service in the footer of the website isn't sufficient for you to be bound by them, e.g., [HiQ Labs v. LinkedIn](https://en.wikipedia.org/wiki/HiQ_Labs_v._LinkedIn).
-Generally, to be bound to the terms of service, you must have taken some explicit action like creating an account or checking a box.
-This is why whether or not the data is **public** is important; if you don't need an account to access them, it is unlikely that you are bound to the terms of service.
-Note, however, the situation is rather different in Europe where courts have found that terms of service are enforceable even if you don't explicitly agree to them.
+Các tòa án Hoa Kỳ nhìn chung đã phán quyết rằng chỉ đơn giản đặt điều khoản dịch vụ ở cuối trang web là không đủ để bạn bị ràng buộc bởi chúng, ví dụ, [HiQ Labs v. LinkedIn](https://en.wikipedia.org/wiki/HiQ_Labs_v._LinkedIn).
+Nói chung, để bị ràng buộc bởi điều khoản dịch vụ, bạn phải thực hiện một hành động rõ ràng nào đó như tạo tài khoản hoặc đánh dấu vào ô.
+Đây là lý do tại sao việc dữ liệu có **công khai** hay không lại quan trọng; nếu bạn không cần tài khoản để truy cập chúng, thì khó có khả năng bạn bị ràng buộc bởi điều khoản dịch vụ.
+Tuy nhiên, lưu ý rằng tình hình khá khác ở châu Âu, nơi các tòa án đã phán quyết rằng điều khoản dịch vụ có hiệu lực thi hành ngay cả khi bạn không đồng ý một cách rõ ràng.
 
-### Personally identifiable information
+### Thông tin nhận dạng cá nhân
 
-Even if the data is public, you should be extremely careful about scraping personally identifiable information like names, email addresses, phone numbers, dates of birth, etc.
-Europe has particularly strict laws about the collection or storage of such data ([GDPR](https://gdpr-info.eu/)), and regardless of where you live you're likely to be entering an ethical quagmire.
-For example, in 2016, a group of researchers scraped public profile information (e.g., usernames, age, gender, location, etc.) about 70,000 people on the dating site OkCupid and they publicly released these data without any attempts for anonymization.
-While the researchers felt that there was nothing wrong with this since the data were already public, this work was widely condemned due to ethics concerns around identifiability of users whose information was released in the dataset.
-If your work involves scraping personally identifiable information, we strongly recommend reading about the OkCupid study[^webscraping-3] as well as similar studies with questionable research ethics involving the acquisition and release of personally identifiable information.
+Ngay cả khi dữ liệu là công khai, bạn nên cực kỳ cẩn thận khi thu thập thông tin nhận dạng cá nhân (personally identifiable information) như tên, địa chỉ email, số điện thoại, ngày sinh, v.v.
+Châu Âu có những luật đặc biệt nghiêm ngặt về việc thu thập hoặc lưu trữ dữ liệu như vậy ([GDPR](https://gdpr-info.eu/)), và bất kể bạn sống ở đâu, bạn đều có khả năng bước vào một vùng xám về đạo đức.
+Ví dụ, vào năm 2016, một nhóm nhà nghiên cứu đã thu thập thông tin hồ sơ công khai (ví dụ: tên người dùng, tuổi, giới tính, vị trí, v.v.) của 70.000 người trên trang hẹn hò OkCupid và họ đã công bố dữ liệu này mà không có bất kỳ nỗ lực ẩn danh hóa nào.
+Mặc dù các nhà nghiên cứu cảm thấy không có gì sai với điều này vì dữ liệu đã là công khai, công trình này đã bị lên án rộng rãi do lo ngại về đạo đức xung quanh khả năng nhận dạng người dùng có thông tin được công bố trong tập dữ liệu.
+Nếu công việc của bạn liên quan đến việc thu thập thông tin nhận dạng cá nhân, chúng tôi đặc biệt khuyến nghị đọc về nghiên cứu OkCupid[^webscraping-3] cũng như các nghiên cứu tương tự có đạo đức nghiên cứu đáng ngờ liên quan đến việc thu thập và phát hành thông tin nhận dạng cá nhân.
 
-[^webscraping-3]: One example of an article on the OkCupid study was published by Wired, <https://www.wired.com/2016/05/okcupid-study-reveals-perils-big-data-science>.
+[^webscraping-3]: Một ví dụ về bài viết về nghiên cứu OkCupid được đăng trên Wired, <https://www.wired.com/2016/05/okcupid-study-reveals-perils-big-data-science>.
 
-### Copyright
+### Bản quyền
 
-Finally, you also need to worry about copyright law.
-Copyright law is complicated, but it's worth taking a look at the [US law](https://www.law.cornell.edu/uscode/text/17/102) which describes exactly what's protected: "\[...\] original works of authorship fixed in any tangible medium of expression, \[...\]".
-It then goes on to describe specific categories that it applies like literary works, musical works, motion pictures and more.
-Notably absent from copyright protection are data.
-This means that as long as you limit your scraping to facts, copyright protection does not apply.
-(But note that Europe has a separate "[sui generis](https://en.wikipedia.org/wiki/Database_right)" right that protects databases.)
+Cuối cùng, bạn cũng cần lo lắng về luật bản quyền.
+Luật bản quyền rất phức tạp, nhưng đáng để xem qua [luật Hoa Kỳ](https://www.law.cornell.edu/uscode/text/17/102) mô tả chính xác những gì được bảo hộ: "\[...\] các tác phẩm gốc của tác giả được cố định trong bất kỳ phương tiện biểu đạt hữu hình nào, \[...\]".
+Sau đó nó tiếp tục mô tả các danh mục cụ thể mà nó áp dụng như tác phẩm văn học, tác phẩm âm nhạc, phim điện ảnh và nhiều hơn nữa.
+Đáng chú ý là dữ liệu không nằm trong phạm vi bảo hộ bản quyền.
+Điều này có nghĩa là miễn là bạn giới hạn việc thu thập ở các sự kiện thực tế, bảo hộ bản quyền không áp dụng.
+(Nhưng lưu ý rằng châu Âu có một quyền "[sui generis](https://en.wikipedia.org/wiki/Database_right)" riêng biệt bảo hộ cơ sở dữ liệu.)
 
-As a brief example, in the US, lists of ingredients and instructions are not copyrightable, so copyright can not be used to protect a recipe.
-But if that list of recipes is accompanied by substantial novel literary content, that is copyrightable.
-This is why when you're looking for a recipe on the internet there's always so much content beforehand.
+Như một ví dụ ngắn, ở Hoa Kỳ, danh sách nguyên liệu và hướng dẫn không được bảo hộ bản quyền, vì vậy bản quyền không thể được sử dụng để bảo hộ một công thức nấu ăn.
+Nhưng nếu danh sách công thức đó đi kèm với nội dung văn học mới đáng kể, thì nội dung đó được bảo hộ bản quyền.
+Đây là lý do tại sao khi bạn tìm kiếm một công thức nấu ăn trên internet luôn có rất nhiều nội dung trước đó.
 
-If you do need to scrape original content (like text or images), you may still be protected under the [doctrine of fair use](https://en.wikipedia.org/wiki/Fair_use).
-Fair use is not a hard and fast rule, but weighs up a number of factors.
-It's more likely to apply if you are collecting the data for research or non-commercial purposes and if you limit what you scrape to just what you need.
+Nếu bạn cần thu thập nội dung gốc (như văn bản hoặc hình ảnh), bạn vẫn có thể được bảo hộ theo [học thuyết sử dụng hợp lý (fair use)](https://en.wikipedia.org/wiki/Fair_use).
+Sử dụng hợp lý không phải là một quy tắc cứng nhắc, mà cân nhắc một số yếu tố.
+Nó có nhiều khả năng áp dụng hơn nếu bạn thu thập dữ liệu cho mục đích nghiên cứu hoặc phi thương mại và nếu bạn giới hạn những gì bạn thu thập chỉ ở mức cần thiết.
 
-## HTML basics
+## Kiến thức cơ bản về HTML
 
-To scrape webpages, you need to first understand a little bit about **HTML**, the language that describes web pages.
-HTML stands for **H**yper**T**ext **M**arkup **L**anguage and looks something like this:
+Để thu thập dữ liệu từ trang web, trước tiên bạn cần hiểu một chút về **HTML**, ngôn ngữ mô tả các trang web.
+HTML là viết tắt của **H**yper**T**ext **M**arkup **L**anguage và trông giống như thế này:
 
 ``` html
 <html>
@@ -106,34 +106,34 @@ HTML stands for **H**yper**T**ext **M**arkup **L**anguage and looks something li
 </body>
 ```
 
-HTML has a hierarchical structure formed by **elements** which consist of a start tag (e.g., `<tag>`), optional **attributes** (`id='first'`), an end tag[^webscraping-4] (like `</tag>`), and **contents** (everything in between the start and end tag).
+HTML có một cấu trúc phân cấp được tạo bởi các **phần tử** (elements) bao gồm một thẻ mở (ví dụ: `<tag>`), các **thuộc tính** (attributes) tùy chọn (`id='first'`), một thẻ đóng[^webscraping-4] (như `</tag>`), và **nội dung** (contents) (mọi thứ nằm giữa thẻ mở và thẻ đóng).
 
-[^webscraping-4]: A number of tags (including `<p>` and `<li>`) don't require end tags, but we think it's best to include them because it makes seeing the structure of the HTML a little easier.
+[^webscraping-4]: Một số thẻ (bao gồm `<p>` và `<li>`) không yêu cầu thẻ đóng, nhưng chúng tôi nghĩ tốt nhất nên bao gồm chúng vì nó giúp nhìn cấu trúc của HTML dễ dàng hơn một chút.
 
-Since `<` and `>` are used for start and end tags, you can't write them directly.
-Instead you have to use the HTML **escapes** `&gt;` (greater than) and `&lt;` (less than).
-And since those escapes use `&`, if you want a literal ampersand you have to escape it as `&amp;`.
-There are a wide range of possible HTML escapes but you don't need to worry about them too much because rvest automatically handles them for you.
+Vì `<` và `>` được sử dụng cho thẻ mở và thẻ đóng, bạn không thể viết chúng trực tiếp.
+Thay vào đó bạn phải sử dụng các **ký tự thoát** (escapes) HTML `&gt;` (lớn hơn) và `&lt;` (nhỏ hơn).
+Và vì các ký tự thoát đó sử dụng `&`, nếu bạn muốn một dấu và (&) theo nghĩa đen, bạn phải thoát nó thành `&amp;`.
+Có rất nhiều ký tự thoát HTML khác nhau nhưng bạn không cần phải lo lắng quá nhiều về chúng vì rvest tự động xử lý chúng cho bạn.
 
-Web scraping is possible because most pages that contain data that you want to scrape generally have a consistent structure.
+Thu thập dữ liệu web khả thi vì hầu hết các trang chứa dữ liệu mà bạn muốn thu thập thường có cấu trúc nhất quán.
 
-### Elements
+### Phần tử
 
-There are over 100 HTML elements.
-Some of the most important are:
+Có hơn 100 phần tử HTML.
+Một số phần tử quan trọng nhất là:
 
--   Every HTML page must be in an `<html>` element, and it must have two children: `<head>`, which contains document metadata like the page title, and `<body>`, which contains the content you see in the browser.
+-   Mỗi trang HTML phải nằm trong một phần tử `<html>`, và nó phải có hai phần tử con: `<head>`, chứa siêu dữ liệu tài liệu như tiêu đề trang, và `<body>`, chứa nội dung bạn nhìn thấy trong trình duyệt.
 
--   Block tags like `<h1>` (heading 1), `<section>` (section), `<p>` (paragraph), and `<ol>` (ordered list) form the overall structure of the page.
+-   Các thẻ khối (block tags) như `<h1>` (tiêu đề 1), `<section>` (phần), `<p>` (đoạn văn), và `<ol>` (danh sách có thứ tự) tạo thành cấu trúc tổng thể của trang.
 
--   Inline tags like `<b>` (bold), `<i>` (italics), and `<a>` (link) format text inside block tags.
+-   Các thẻ nội tuyến (inline tags) như `<b>` (in đậm), `<i>` (in nghiêng), và `<a>` (liên kết) định dạng văn bản bên trong các thẻ khối.
 
-If you encounter a tag that you've never seen before, you can find out what it does with a little googling.
-Another good place to start are the [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/HTML) which describe just about every aspect of web programming.
+Nếu bạn gặp một thẻ mà bạn chưa từng thấy trước đây, bạn có thể tìm hiểu nó làm gì bằng cách tìm kiếm trên Google.
+Một nơi tốt khác để bắt đầu là [MDN Web Docs](https://developer.mozilla.org/en-US/docs/Web/HTML) mô tả gần như mọi khía cạnh của lập trình web.
 
-Most elements can have content in between their start and end tags.
-This content can either be text or more elements.
-For example, the following HTML contains a paragraph of text, with one word in bold.
+Hầu hết các phần tử có thể có nội dung nằm giữa thẻ mở và thẻ đóng của chúng.
+Nội dung này có thể là văn bản hoặc nhiều phần tử hơn.
+Ví dụ, HTML sau chứa một đoạn văn bản, với một từ được in đậm.
 
 ```         
 <p>
@@ -141,32 +141,32 @@ For example, the following HTML contains a paragraph of text, with one word in b
 </p>
 ```
 
-The **children** are the elements it contains, so the `<p>` element above has one child, the `<b>` element.
-The `<b>` element has no children, but it does have contents (the text "name").
+**Phần tử con** (children) là các phần tử mà nó chứa, vì vậy phần tử `<p>` ở trên có một phần tử con, phần tử `<b>`.
+Phần tử `<b>` không có phần tử con, nhưng nó có nội dung (văn bản "name").
 
-### Attributes
+### Thuộc tính
 
-Tags can have named **attributes** which look like `name1='value1' name2='value2'`.
-Two of the most important attributes are `id` and `class`, which are used in conjunction with CSS (Cascading Style Sheets) to control the visual appearance of the page.
-These are often useful when scraping data off a page.
-Attributes are also used to record the destination of links (the `href` attribute of `<a>` elements) and the source of images (the `src` attribute of the `<img>` element).
+Các thẻ có thể có **thuộc tính** (attributes) được đặt tên trông giống như `name1='value1' name2='value2'`.
+Hai trong số các thuộc tính quan trọng nhất là `id` và `class`, được sử dụng kết hợp với CSS (Cascading Style Sheets) để kiểm soát giao diện trực quan của trang.
+Chúng thường hữu ích khi thu thập dữ liệu từ một trang.
+Thuộc tính cũng được sử dụng để ghi lại đích đến của liên kết (thuộc tính `href` của phần tử `<a>`) và nguồn của hình ảnh (thuộc tính `src` của phần tử `<img>`).
 
-## Extracting data
+## Trích xuất dữ liệu
 
-To get started scraping, you'll need the URL of the page you want to scrape, which you can usually copy from your web browser.
-You'll then need to read the HTML for that page into R with `read_html()`.
-This returns an `xml_document`[^webscraping-5] object which you'll then manipulate using rvest functions:
+Để bắt đầu thu thập dữ liệu, bạn sẽ cần URL của trang bạn muốn thu thập, mà bạn thường có thể sao chép từ trình duyệt web của mình.
+Sau đó bạn sẽ cần đọc HTML cho trang đó vào R bằng `read_html()`.
+Hàm này trả về một đối tượng `xml_document`[^webscraping-5] mà sau đó bạn sẽ thao tác bằng các hàm rvest:
 
-[^webscraping-5]: This class comes from the [xml2](https://xml2.r-lib.org) package.
-    xml2 is a low-level package that rvest builds on top of.
+[^webscraping-5]: Lớp này đến từ gói [xml2](https://xml2.r-lib.org).
+    xml2 là một gói cấp thấp mà rvest xây dựng dựa trên.
 
 ```{r}
 html <- read_html("http://rvest.tidyverse.org/")
 html
 ```
 
-rvest also includes a function that lets you write HTML inline.
-We'll use this a bunch in this chapter as we teach how the various rvest functions work with simple examples.
+rvest cũng bao gồm một hàm cho phép bạn viết HTML trực tiếp trong mã.
+Chúng tôi sẽ sử dụng điều này nhiều trong chương này khi chúng tôi dạy cách các hàm rvest khác nhau hoạt động với các ví dụ đơn giản.
 
 ```{r}
 html <- minimal_html("
@@ -178,26 +178,26 @@ html <- minimal_html("
 html
 ```
 
-Now that you have the HTML in R, it's time to extract the data of interest.
-You'll first learn about the CSS selectors that allow you to identify the elements of interest and the rvest functions that you can use to extract data from them.
-Then we'll briefly cover HTML tables, which have some special tools.
+Bây giờ bạn đã có HTML trong R, đã đến lúc trích xuất dữ liệu bạn quan tâm.
+Đầu tiên bạn sẽ tìm hiểu về các bộ chọn CSS cho phép bạn xác định các phần tử bạn quan tâm và các hàm rvest mà bạn có thể sử dụng để trích xuất dữ liệu từ chúng.
+Sau đó chúng tôi sẽ giới thiệu ngắn gọn về bảng HTML, vốn có một số công cụ đặc biệt.
 
-### Find elements
+### Tìm phần tử
 
-CSS is short for cascading style sheets, and is a tool for defining the visual styling of HTML documents.
-CSS includes a miniature language for selecting elements on a page called **CSS selectors**.
-CSS selectors define patterns for locating HTML elements, and are useful for scraping because they provide a concise way of describing which elements you want to extract.
+CSS là viết tắt của cascading style sheets, và là một công cụ để định nghĩa kiểu dáng trực quan của các tài liệu HTML.
+CSS bao gồm một ngôn ngữ thu nhỏ để chọn các phần tử trên trang gọi là **bộ chọn CSS** (CSS selectors).
+Bộ chọn CSS định nghĩa các mẫu để định vị các phần tử HTML, và hữu ích cho việc thu thập dữ liệu web vì chúng cung cấp một cách ngắn gọn để mô tả những phần tử nào bạn muốn trích xuất.
 
-We'll come back to CSS selectors in more detail in @sec-css-selectors, but luckily you can get a long way with just three:
+Chúng tôi sẽ quay lại bộ chọn CSS chi tiết hơn trong @sec-css-selectors, nhưng may mắn là bạn có thể đi xa chỉ với ba loại:
 
--   `p` selects all `<p>` elements.
+-   `p` chọn tất cả phần tử `<p>`.
 
--   `.title` selects all elements with `class` "title".
+-   `.title` chọn tất cả phần tử có `class` là "title".
 
--   `#title` selects the element with the `id` attribute that equals "title".
-    Id attributes must be unique within a document, so this will only ever select a single element.
+-   `#title` chọn phần tử có thuộc tính `id` bằng "title".
+    Thuộc tính id phải là duy nhất trong một tài liệu, nên điều này sẽ chỉ chọn một phần tử duy nhất.
 
-Let's try out these selectors with a simple example:
+Hãy thử các bộ chọn này với một ví dụ đơn giản:
 
 ```{r}
 html <- minimal_html("
@@ -207,7 +207,7 @@ html <- minimal_html("
 ")
 ```
 
-Use `html_elements()` to find all elements that match the selector:
+Sử dụng `html_elements()` để tìm tất cả phần tử khớp với bộ chọn:
 
 ```{r}
 html |> html_elements("p")
@@ -215,27 +215,27 @@ html |> html_elements(".important")
 html |> html_elements("#first")
 ```
 
-Another important function is `html_element()` which always returns the same number of outputs as inputs.
-If you apply it to a whole document it'll give you the first match:
+Một hàm quan trọng khác là `html_element()` luôn trả về cùng số lượng đầu ra như đầu vào.
+Nếu bạn áp dụng nó cho toàn bộ tài liệu, nó sẽ cho bạn kết quả khớp đầu tiên:
 
 ```{r}
 html |> html_element("p")
 ```
 
-There's an important difference between `html_element()` and `html_elements()` when you use a selector that doesn't match any elements.
-`html_elements()` returns a vector of length 0, where `html_element()` returns a missing value.
-This will be important shortly.
+Có một sự khác biệt quan trọng giữa `html_element()` và `html_elements()` khi bạn sử dụng một bộ chọn không khớp với bất kỳ phần tử nào.
+`html_elements()` trả về một vector có độ dài 0, trong khi `html_element()` trả về một giá trị khuyết (missing value).
+Điều này sẽ quan trọng ngay sau đây.
 
 ```{r}
 html |> html_elements("b")
 html |> html_element("b")
 ```
 
-### Nesting selections
+### Lựa chọn lồng nhau
 
-In most cases, you'll use `html_elements()` and `html_element()` together, typically using `html_elements()` to identify elements that will become observations then using `html_element()` to find elements that will become variables.
-Let's see this in action using a simple example.
-Here we have an unordered list (`<ul>`) where each list item (`<li>`) contains some information about four characters from StarWars:
+Trong hầu hết các trường hợp, bạn sẽ sử dụng `html_elements()` và `html_element()` cùng nhau, thường sử dụng `html_elements()` để xác định các phần tử sẽ trở thành các quan sát (observations) rồi sử dụng `html_element()` để tìm các phần tử sẽ trở thành các biến (variables).
+Hãy xem điều này trong thực tế bằng một ví dụ đơn giản.
+Ở đây chúng ta có một danh sách không có thứ tự (`<ul>`) trong đó mỗi mục danh sách (`<li>`) chứa một số thông tin về bốn nhân vật từ StarWars:
 
 ```{r}
 html <- minimal_html("
@@ -248,41 +248,41 @@ html <- minimal_html("
   ")
 ```
 
-We can use `html_elements()` to make a vector where each element corresponds to a different character:
+Chúng ta có thể sử dụng `html_elements()` để tạo một vector trong đó mỗi phần tử tương ứng với một nhân vật khác nhau:
 
 ```{r}
 characters <- html |> html_elements("li")
 characters
 ```
 
-To extract the name of each character, we use `html_element()`, because when applied to the output of `html_elements()` it's guaranteed to return one response per element:
+Để trích xuất tên của mỗi nhân vật, chúng ta sử dụng `html_element()`, vì khi áp dụng cho đầu ra của `html_elements()`, nó đảm bảo trả về một phản hồi cho mỗi phần tử:
 
 ```{r}
 characters |> html_element("b")
 ```
 
-The distinction between `html_element()` and `html_elements()` isn't important for name, but it is important for weight.
-We want to get one weight for each character, even if there's no weight `<span>`.
-That's what `html_element()` does:
+Sự khác biệt giữa `html_element()` và `html_elements()` không quan trọng đối với tên, nhưng nó quan trọng đối với cân nặng.
+Chúng ta muốn lấy một giá trị cân nặng cho mỗi nhân vật, ngay cả khi không có `<span>` cân nặng.
+Đó là điều mà `html_element()` làm:
 
 ```{r}
 characters |> html_element(".weight")
 ```
 
-`html_elements()` finds all weight `<span>`s that are children of `characters`.
-There's only three of these, so we lose the connection between names and weights:
+`html_elements()` tìm tất cả `<span>` cân nặng là phần tử con của `characters`.
+Chỉ có ba cái, nên chúng ta mất kết nối giữa tên và cân nặng:
 
 ```{r}
 characters |> html_elements(".weight")
 ```
 
-Now that you've selected the elements of interest, you'll need to extract the data, either from the text contents or some attributes.
+Bây giờ bạn đã chọn được các phần tử quan tâm, bạn sẽ cần trích xuất dữ liệu, từ nội dung văn bản hoặc một số thuộc tính.
 
-### Text and attributes
+### Văn bản và thuộc tính
 
-`html_text2()`[^webscraping-6] extracts the plain text contents of an HTML element:
+`html_text2()`[^webscraping-6] trích xuất nội dung văn bản thuần túy của một phần tử HTML:
 
-[^webscraping-6]: rvest also provides `html_text()` but you should almost always use `html_text2()` since it does a better job of converting nested HTML to text.
+[^webscraping-6]: rvest cũng cung cấp `html_text()` nhưng bạn hầu như luôn nên sử dụng `html_text2()` vì nó chuyển đổi HTML lồng nhau thành văn bản tốt hơn.
 
 ```{r}
 characters |> 
@@ -294,9 +294,9 @@ characters |>
   html_text2()
 ```
 
-Note that any escapes will be automatically handled; you'll only ever see HTML escapes in the source HTML, not in the data returned by rvest.
+Lưu ý rằng mọi ký tự thoát sẽ được xử lý tự động; bạn sẽ chỉ thấy các ký tự thoát HTML trong mã nguồn HTML, không phải trong dữ liệu được rvest trả về.
 
-`html_attr()` extracts data from attributes:
+`html_attr()` trích xuất dữ liệu từ các thuộc tính:
 
 ```{r}
 html <- minimal_html("
@@ -310,15 +310,15 @@ html |>
   html_attr("href")
 ```
 
-`html_attr()` always returns a string, so if you're extracting numbers or dates, you'll need to do some post-processing.
+`html_attr()` luôn trả về một chuỗi ký tự, vì vậy nếu bạn đang trích xuất số hoặc ngày tháng, bạn sẽ cần thực hiện một số xử lý hậu kỳ.
 
-### Tables
+### Bảng
 
-If you're lucky, your data will be already stored in an HTML table, and it'll be a matter of just reading it from that table.
-It's usually straightforward to recognize a table in your browser: it'll have a rectangular structure of rows and columns, and you can copy and paste it into a tool like Excel.
+Nếu bạn may mắn, dữ liệu của bạn sẽ đã được lưu trữ sẵn trong một bảng HTML, và chỉ là vấn đề đọc nó từ bảng đó.
+Thường rất dễ nhận ra một bảng trong trình duyệt của bạn: nó sẽ có cấu trúc hình chữ nhật gồm các hàng và cột, và bạn có thể sao chép và dán nó vào một công cụ như Excel.
 
-HTML tables are built up from four main elements: `<table>`, `<tr>` (table row), `<th>` (table heading), and `<td>` (table data).
-Here's a simple HTML table with two columns and three rows:
+Bảng HTML được xây dựng từ bốn phần tử chính: `<table>`, `<tr>` (hàng bảng), `<th>` (tiêu đề bảng), và `<td>` (dữ liệu bảng).
+Đây là một bảng HTML đơn giản với hai cột và ba hàng:
 
 ```{r}
 html <- minimal_html("
@@ -331,9 +331,9 @@ html <- minimal_html("
   ")
 ```
 
-rvest provides a function that knows how to read this sort of data: `html_table()`.
-It returns a list containing one tibble for each table found on the page.
-Use `html_element()` to identify the table you want to extract:
+rvest cung cấp một hàm biết cách đọc loại dữ liệu này: `html_table()`.
+Nó trả về một danh sách chứa một tibble cho mỗi bảng tìm thấy trên trang.
+Sử dụng `html_element()` để xác định bảng bạn muốn trích xuất:
 
 ```{r}
 html |> 
@@ -341,45 +341,45 @@ html |>
   html_table()
 ```
 
-Note that `x` and `y` have automatically been converted to numbers.
-This automatic conversion doesn't always work, so in more complex scenarios you may want to turn it off with `convert = FALSE` and then do your own conversion.
+Lưu ý rằng `x` và `y` đã được tự động chuyển đổi thành số.
+Việc chuyển đổi tự động này không phải lúc nào cũng hoạt động, vì vậy trong các tình huống phức tạp hơn, bạn có thể muốn tắt nó bằng `convert = FALSE` và sau đó tự thực hiện chuyển đổi.
 
-## Finding the right selectors {#sec-css-selectors}
+## Tìm bộ chọn phù hợp {#sec-css-selectors}
 
-Figuring out the selector you need for your data is typically the hardest part of the problem.
-You'll often need to do some experimenting to find a selector that is both specific (i.e. it doesn't select things you don't care about) and sensitive (i.e. it does select everything you care about).
-Lots of trial and error is a normal part of the process!
-There are two main tools that are available to help you with this process: SelectorGadget and your browser's developer tools.
+Tìm ra bộ chọn bạn cần cho dữ liệu của mình thường là phần khó nhất của vấn đề.
+Bạn sẽ thường cần thử nghiệm để tìm một bộ chọn vừa cụ thể (tức là nó không chọn những thứ bạn không quan tâm) vừa nhạy (tức là nó chọn mọi thứ bạn quan tâm).
+Nhiều lần thử và sai là một phần bình thường của quá trình!
+Có hai công cụ chính có sẵn để giúp bạn trong quá trình này: SelectorGadget và công cụ nhà phát triển của trình duyệt.
 
-[SelectorGadget](https://rvest.tidyverse.org/articles/selectorgadget.html) is a javascript bookmarklet that automatically generates CSS selectors based on the positive and negative examples that you provide.
-It doesn't always work, but when it does, it's magic!
-You can learn how to install and use SelectorGadget either by reading <https://rvest.tidyverse.org/articles/selectorgadget.html> or watching Mine's video at <https://www.youtube.com/watch?v=PetWV5g1Xsc>.
+[SelectorGadget](https://rvest.tidyverse.org/articles/selectorgadget.html) là một bookmarklet javascript tự động tạo bộ chọn CSS dựa trên các ví dụ tích cực và tiêu cực mà bạn cung cấp.
+Nó không phải lúc nào cũng hoạt động, nhưng khi nó hoạt động, nó thật kỳ diệu!
+Bạn có thể tìm hiểu cách cài đặt và sử dụng SelectorGadget bằng cách đọc <https://rvest.tidyverse.org/articles/selectorgadget.html> hoặc xem video của Mine tại <https://www.youtube.com/watch?v=PetWV5g1Xsc>.
 
-Every modern browser comes with some toolkit for developers, but we recommend Chrome, even if it isn't your regular browser: its web developer tools are some of the best and they're immediately available.
-Right click on an element on the page and click `Inspect`.
-This will open an expandable view of the complete HTML page, centered on the element that you just clicked.
-You can use this to explore the page and get a sense of what selectors might work.
-Pay particular attention to the class and id attributes, since these are often used to form the visual structure of the page, and hence make for good tools to extract the data that you're looking for.
+Mọi trình duyệt hiện đại đều đi kèm với một bộ công cụ dành cho nhà phát triển, nhưng chúng tôi khuyên dùng Chrome, ngay cả khi nó không phải trình duyệt thường dùng của bạn: công cụ nhà phát triển web của nó thuộc loại tốt nhất và có sẵn ngay lập tức.
+Nhấp chuột phải vào một phần tử trên trang và nhấp `Inspect`.
+Thao tác này sẽ mở một chế độ xem có thể mở rộng của toàn bộ trang HTML, tập trung vào phần tử mà bạn vừa nhấp.
+Bạn có thể sử dụng điều này để khám phá trang và có ý tưởng về những bộ chọn nào có thể hoạt động.
+Hãy đặc biệt chú ý đến các thuộc tính class và id, vì chúng thường được sử dụng để tạo cấu trúc trực quan của trang, và do đó là công cụ tốt để trích xuất dữ liệu bạn đang tìm kiếm.
 
-Inside the Elements view, you can also right click on an element and choose `Copy as Selector` to generate a selector that will uniquely identify the element of interest.
+Bên trong chế độ xem Elements, bạn cũng có thể nhấp chuột phải vào một phần tử và chọn `Copy as Selector` để tạo một bộ chọn sẽ xác định duy nhất phần tử bạn quan tâm.
 
-If either SelectorGadget or Chrome DevTools have generated a CSS selector that you don't understand, try [Selectors Explained](https://kittygiraudel.github.io/selectors-explained/){.uri} which translates CSS selectors into plain English.
-If you find yourself doing this a lot, you might want to learn more about CSS selectors generally.
-We recommend starting with the fun [CSS dinner](https://flukeout.github.io/) tutorial and then referring to the [MDN web docs](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors).
+Nếu SelectorGadget hoặc Chrome DevTools đã tạo một bộ chọn CSS mà bạn không hiểu, hãy thử [Selectors Explained](https://kittygiraudel.github.io/selectors-explained/){.uri} để dịch bộ chọn CSS sang tiếng Anh thuần.
+Nếu bạn thấy mình làm điều này thường xuyên, bạn có thể muốn tìm hiểu thêm về bộ chọn CSS nói chung.
+Chúng tôi khuyên bắt đầu với hướng dẫn thú vị [CSS dinner](https://flukeout.github.io/) và sau đó tham khảo [MDN web docs](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_Selectors).
 
-## Putting it all together
+## Kết hợp tất cả lại
 
-Let's put this all together to scrape some websites.
-There's some risk that these examples may no longer work when you run them --- that's the fundamental challenge of web scraping; if the structure of the site changes, then you'll have to change your scraping code.
+Hãy kết hợp tất cả lại để thu thập dữ liệu từ một số trang web.
+Có một rủi ro là các ví dụ này có thể không còn hoạt động khi bạn chạy chúng --- đó là thách thức cơ bản của thu thập dữ liệu web; nếu cấu trúc của trang thay đổi, thì bạn sẽ phải thay đổi mã thu thập dữ liệu của mình.
 
 ### StarWars
 
-rvest includes a very simple example in `vignette("starwars")`.
-This is a simple page with minimal HTML so it's a good place to start.
-I'd encourage you to navigate to that page now and use "Inspect Element" to inspect one of the headings that's the title of a Star Wars movie.
-Use the keyboard or mouse to explore the hierarchy of the HTML and see if you can get a sense of the shared structure used by each movie.
+rvest bao gồm một ví dụ rất đơn giản trong `vignette("starwars")`.
+Đây là một trang đơn giản với HTML tối thiểu nên đây là nơi tốt để bắt đầu.
+Tôi khuyến khích bạn điều hướng đến trang đó ngay bây giờ và sử dụng "Inspect Element" để kiểm tra một trong các tiêu đề là tên của một bộ phim Star Wars.
+Sử dụng bàn phím hoặc chuột để khám phá hệ thống phân cấp của HTML và xem liệu bạn có thể nắm được cấu trúc chung được sử dụng bởi mỗi bộ phim hay không.
 
-You should be able to see that each movie has a shared structure that looks like this:
+Bạn sẽ có thể thấy rằng mỗi bộ phim có một cấu trúc chung trông như thế này:
 
 ``` html
 <section>
@@ -395,8 +395,8 @@ You should be able to see that each movie has a shared structure that looks like
 </section>
 ```
 
-Our goal is to turn this data into a 7 row data frame with variables `title`, `year`, `director`, and `intro`.
-We'll start by reading the HTML and extracting all the `<section>` elements:
+Mục tiêu của chúng ta là biến dữ liệu này thành một khung dữ liệu 7 hàng với các biến `title`, `year`, `director`, và `intro`.
+Chúng ta sẽ bắt đầu bằng cách đọc HTML và trích xuất tất cả các phần tử `<section>`:
 
 ```{r}
 url <- "https://rvest.tidyverse.org/articles/starwars.html"
@@ -406,9 +406,9 @@ section <- html |> html_elements("section")
 section
 ```
 
-This retrieves seven elements matching the seven movies found on that page, suggesting that using `section` as a selector is good.
-Extracting the individual elements is straightforward since the data is always found in the text.
-It's just a matter of finding the right selector:
+Điều này truy xuất bảy phần tử tương ứng với bảy bộ phim tìm thấy trên trang đó, cho thấy rằng sử dụng `section` làm bộ chọn là tốt.
+Trích xuất các phần tử riêng lẻ khá đơn giản vì dữ liệu luôn nằm trong văn bản.
+Chỉ là vấn đề tìm đúng bộ chọn:
 
 ```{r}
 section |> html_element("h2") |> html_text2()
@@ -416,7 +416,7 @@ section |> html_element("h2") |> html_text2()
 section |> html_element(".director") |> html_text2()
 ```
 
-Once we've done that for each component, we can wrap all the results up into a tibble:
+Khi chúng ta đã làm điều đó cho mỗi thành phần, chúng ta có thể gói tất cả kết quả vào một tibble:
 
 ```{r}
 tibble(
@@ -437,27 +437,27 @@ tibble(
 )
 ```
 
-We did a little more processing of `released` to get a variable that will be easy to use later in our analysis.
+Chúng tôi đã xử lý thêm một chút cho `released` để có được một biến dễ sử dụng hơn trong phân tích sau này.
 
-### IMDB top films
+### Các phim hàng đầu IMDB
 
-For our next task we'll tackle something a little trickier, extracting the top 250 movies from the internet movie database (IMDb).
-At the time we wrote this chapter, the page looked like @fig-scraping-imdb.
+Cho nhiệm vụ tiếp theo, chúng ta sẽ xử lý một thứ khó hơn một chút, trích xuất 250 phim hàng đầu từ cơ sở dữ liệu phim internet (IMDb).
+Vào thời điểm chúng tôi viết chương này, trang trông giống như @fig-scraping-imdb.
 
 ```{r}
 #| label: fig-scraping-imdb
 #| echo: false
 #| fig-cap: | 
-#|   Screenshot of the IMDb top movies web page taken on 2022-12-05.
+#|   Ảnh chụp màn hình trang web phim hàng đầu IMDb được chụp vào ngày 05-12-2022.
 #| fig-alt: |
-#|   The screenshot shows a table with columns "Rank and Title",
-#|   "IMDb Rating", and "Your Rating". 9 movies out of the top 250
-#|   are shown. The top 5 are the Shawshank Redemption, The Godfather,
-#|   The Dark Knight, The Godfather: Part II, and 12 Angry Men.
+#|   Ảnh chụp màn hình hiển thị một bảng với các cột "Rank and Title",
+#|   "IMDb Rating", và "Your Rating". 9 phim trong top 250
+#|   được hiển thị. Top 5 là the Shawshank Redemption, The Godfather,
+#|   The Dark Knight, The Godfather: Part II, và 12 Angry Men.
 knitr::include_graphics("screenshots/scraping-imdb.png", dpi = 300)
 ```
 
-This data has a clear tabular structure so it's worth starting with `html_table()`:
+Dữ liệu này có cấu trúc dạng bảng rõ ràng nên đáng để bắt đầu với `html_table()`:
 
 ```{r}
 url <- "https://web.archive.org/web/20220201012049/https://www.imdb.com/chart/top/"
@@ -469,11 +469,11 @@ table <- html |>
 table
 ```
 
-This includes a few empty columns, but overall does a good job of capturing the information from the table.
-However, we need to do some more processing to make it easier to use.
-First, we'll rename the columns to be easier to work with, and remove the extraneous whitespace in rank and title.
-We will do this with `select()` (instead of `rename()`) to do the renaming and selecting of just these two columns in one step.
-Then we'll remove the new lines and extra spaces, and then apply `separate_wider_regex()` (from @sec-extract-variables) to pull out the title, year, and rank into their own variables.
+Kết quả này bao gồm một vài cột trống, nhưng nhìn chung làm tốt việc nắm bắt thông tin từ bảng.
+Tuy nhiên, chúng ta cần thực hiện thêm một số xử lý để làm cho nó dễ sử dụng hơn.
+Đầu tiên, chúng ta sẽ đổi tên các cột để dễ làm việc hơn, và loại bỏ khoảng trắng thừa trong thứ hạng và tiêu đề.
+Chúng ta sẽ làm điều này với `select()` (thay vì `rename()`) để thực hiện việc đổi tên và chọn chỉ hai cột này trong một bước.
+Sau đó chúng ta sẽ loại bỏ các dòng mới và khoảng trắng thừa, và sau đó áp dụng `separate_wider_regex()` (từ @sec-extract-variables) để tách tiêu đề, năm, và thứ hạng vào các biến riêng.
 
 ```{r}
 ratings <- table |>
@@ -495,9 +495,9 @@ ratings <- table |>
 ratings
 ```
 
-Even in this case where most of the data comes from table cells, it's still worth looking at the raw HTML.
-If you do so, you'll discover that we can add a little extra data by using one of the attributes.
-This is one of the reasons it's worth spending a little time spelunking the source of the page; you might find extra data, or might find a parsing route that's slightly easier.
+Ngay cả trong trường hợp này khi hầu hết dữ liệu đến từ các ô bảng, vẫn đáng để xem HTML thô.
+Nếu bạn làm vậy, bạn sẽ phát hiện rằng chúng ta có thể thêm một chút dữ liệu bổ sung bằng cách sử dụng một trong các thuộc tính.
+Đây là một trong những lý do đáng để dành một chút thời gian khám phá mã nguồn của trang; bạn có thể tìm thấy dữ liệu bổ sung, hoặc có thể tìm thấy một cách phân tích dễ hơn một chút.
 
 ```{r}
 html |> 
@@ -506,7 +506,7 @@ html |>
   html_attr("title")
 ```
 
-We can combine this with the tabular data and again apply `separate_wider_regex()` to extract out the bit of data we care about:
+Chúng ta có thể kết hợp điều này với dữ liệu dạng bảng và một lần nữa áp dụng `separate_wider_regex()` để trích xuất phần dữ liệu chúng ta quan tâm:
 
 ```{r}
 ratings |>
@@ -526,26 +526,26 @@ ratings |>
   )
 ```
 
-## Dynamic sites
+## Trang web động
 
-So far we have focused on websites where `html_elements()` returns what you see in the browser and discussed how to parse what it returns and how to organize that information in tidy data frames.
-From time-to-time, however, you'll hit a site where `html_elements()` and friends don't return anything like what you see in the browser.
-In many cases, that's because you're trying to scrape a website that dynamically generates the content of the page with javascript.
-This doesn't currently work with rvest, because rvest downloads the raw HTML and doesn't run any javascript.
+Cho đến nay chúng tôi đã tập trung vào các trang web nơi `html_elements()` trả về những gì bạn thấy trong trình duyệt và đã thảo luận cách phân tích những gì nó trả về và cách tổ chức thông tin đó thành các khung dữ liệu gọn gàng.
+Tuy nhiên, thỉnh thoảng bạn sẽ gặp một trang web nơi `html_elements()` và các hàm liên quan không trả về bất kỳ thứ gì giống với những gì bạn thấy trong trình duyệt.
+Trong nhiều trường hợp, đó là vì bạn đang cố thu thập dữ liệu từ một trang web tạo nội dung trang một cách động bằng javascript.
+Điều này hiện không hoạt động với rvest, vì rvest tải HTML thô và không chạy bất kỳ javascript nào.
 
-It's still possible to scrape these types of sites, but rvest needs to use a more expensive process: fully simulating the web browser including running all javascript.
-This functionality is not available at the time of writing, but it's something we're actively working on and might be available by the time you read this.
-It uses the [chromote package](https://rstudio.github.io/chromote/index.html) which actually runs the Chrome browser in the background, and gives you additional tools to interact with the site, like a human typing text and clicking buttons.
-Check out the [rvest website](http://rvest.tidyverse.org/) for more details.
+Vẫn có thể thu thập dữ liệu từ các loại trang web này, nhưng rvest cần sử dụng một quy trình tốn kém hơn: mô phỏng đầy đủ trình duyệt web bao gồm chạy tất cả javascript.
+Chức năng này chưa có sẵn tại thời điểm viết, nhưng đây là điều chúng tôi đang tích cực phát triển và có thể sẵn sàng khi bạn đọc đến đây.
+Nó sử dụng [gói chromote](https://rstudio.github.io/chromote/index.html) thực sự chạy trình duyệt Chrome ở chế độ nền, và cung cấp cho bạn các công cụ bổ sung để tương tác với trang web, giống như một người gõ văn bản và nhấp vào các nút.
+Hãy kiểm tra [trang web rvest](http://rvest.tidyverse.org/) để biết thêm chi tiết.
 
-## Summary
+## Tóm tắt
 
-In this chapter, you've learned about the why, the why not, and the how of scraping data from web pages.
-First, you've learned about the basics of HTML and using CSS selectors to refer to specific elements, then you've learned about using the rvest package to get data out of HTML into R.
-We then demonstrated web scraping with two case studies: a simpler scenario on scraping data on StarWars films from the rvest package website and a more complex scenario on scraping the top 250 films from IMDB.
+Trong chương này, bạn đã tìm hiểu về lý do nên, lý do không nên, và cách thu thập dữ liệu từ các trang web.
+Đầu tiên, bạn đã tìm hiểu về những kiến thức cơ bản của HTML và sử dụng bộ chọn CSS để tham chiếu đến các phần tử cụ thể, sau đó bạn đã tìm hiểu về việc sử dụng gói rvest để lấy dữ liệu ra khỏi HTML và đưa vào R.
+Sau đó chúng tôi đã minh họa thu thập dữ liệu web với hai nghiên cứu tình huống: một kịch bản đơn giản hơn về thu thập dữ liệu phim StarWars từ trang web của gói rvest và một kịch bản phức tạp hơn về thu thập 250 phim hàng đầu từ IMDB.
 
-Technical details of scraping data off the web can be complex, particularly when dealing with sites, however legal and ethical considerations can be even more complex.
-It's important for you to educate yourself about both of these before setting out to scrape data.
+Các chi tiết kỹ thuật của việc thu thập dữ liệu từ web có thể phức tạp, đặc biệt khi xử lý các trang web, tuy nhiên các cân nhắc pháp lý và đạo đức có thể còn phức tạp hơn.
+Điều quan trọng là bạn phải tự tìm hiểu về cả hai điều này trước khi bắt đầu thu thập dữ liệu.
 
-This brings us to the end of the import part of the book where you've learned techniques to get data from where it lives (spreadsheets, databases, JSON files, and web sites) into a tidy form in R.
-Now it's time to turn our sights to a new topic: making the most of R as a programming language.
+Điều này đưa chúng ta đến cuối phần nhập dữ liệu của cuốn sách, nơi bạn đã học các kỹ thuật để lấy dữ liệu từ nơi nó tồn tại (bảng tính, cơ sở dữ liệu, tệp JSON, và trang web) vào dạng gọn gàng trong R.
+Bây giờ đã đến lúc hướng tầm nhìn sang một chủ đề mới: tận dụng tối đa R như một ngôn ngữ lập trình.
