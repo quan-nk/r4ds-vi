@@ -1,26 +1,26 @@
-# Strings {#sec-strings}
+# Chuỗi ký tự {#sec-strings}
 
 ```{r}
 #| echo: false
 source("_common.R")
 ```
 
-## Introduction
+## Giới thiệu
 
-So far, you've used a bunch of strings without learning much about the details.
-Now it's time to dive into them, learn what makes strings tick, and master some of the powerful string manipulation tools you have at your disposal.
+Cho đến nay, bạn đã sử dụng khá nhiều chuỗi ký tự (string) mà chưa tìm hiểu nhiều về chi tiết.
+Bây giờ là lúc đi sâu vào chúng, tìm hiểu cách chuỗi ký tự hoạt động, và nắm vững một số công cụ xử lý chuỗi mạnh mẽ mà bạn có trong tay.
 
-We'll begin with the details of creating strings and character vectors.
-You'll then dive into creating strings from data, then the opposite: extracting strings from data.
-We'll then discuss tools that work with individual letters.
-The chapter finishes with functions that work with individual letters and a brief discussion of where your expectations from English might steer you wrong when working with other languages.
+Chúng ta sẽ bắt đầu với chi tiết về cách tạo chuỗi ký tự và vector ký tự (character vector).
+Sau đó bạn sẽ tìm hiểu cách tạo chuỗi từ dữ liệu, rồi ngược lại: trích xuất chuỗi từ dữ liệu.
+Tiếp theo chúng ta sẽ thảo luận về các công cụ làm việc với từng ký tự riêng lẻ.
+Chương này kết thúc với các hàm làm việc với từng ký tự riêng lẻ và một cuộc thảo luận ngắn về những chỗ mà kỳ vọng từ tiếng Anh có thể khiến bạn đi sai hướng khi làm việc với các ngôn ngữ khác.
 
-We'll keep working with strings in the next chapter, where you'll learn more about the power of regular expressions.
+Chúng ta sẽ tiếp tục làm việc với chuỗi ký tự trong chương tiếp theo, nơi bạn sẽ tìm hiểu thêm về sức mạnh của biểu thức chính quy (regular expression).
 
-### Prerequisites
+### Điều kiện tiên quyết
 
-In this chapter, we'll use functions from the stringr package, which is part of the core tidyverse.
-We'll also use the babynames data since it provides some fun strings to manipulate.
+Trong chương này, chúng ta sẽ sử dụng các hàm từ gói stringr, là một phần của tidyverse cốt lõi.
+Chúng ta cũng sẽ sử dụng dữ liệu babynames vì nó cung cấp một số chuỗi thú vị để thao tác.
 
 ```{r}
 #| label: setup
@@ -29,60 +29,60 @@ library(tidyverse)
 library(babynames)
 ```
 
-You can quickly tell when you're using a stringr function because all stringr functions start with `str_`.
-This is particularly useful if you use RStudio because typing `str_` will trigger autocomplete, allowing you to jog your memory of the available functions.
+Bạn có thể nhanh chóng nhận ra khi nào mình đang sử dụng hàm stringr vì tất cả các hàm stringr đều bắt đầu bằng `str_`.
+Điều này đặc biệt hữu ích nếu bạn dùng RStudio vì gõ `str_` sẽ kích hoạt tự động hoàn thành, giúp bạn nhớ lại các hàm có sẵn.
 
 ```{r}
 #| echo: false
 #| fig-alt: |
-#|   str_c typed into the RStudio console with the autocomplete tooltip shown 
-#|   on top, which lists functions beginning with str_c. The funtion signature 
-#|   and beginning of the man page for the highlighted function from the 
-#|   autocomplete list are shown in a panel to its right.
+#|   str_c được gõ vào console RStudio với tooltip tự động hoàn thành hiển thị
+#|   phía trên, liệt kê các hàm bắt đầu bằng str_c. Chữ ký hàm
+#|   và phần đầu trang trợ giúp cho hàm được chọn từ
+#|   danh sách tự động hoàn thành được hiển thị trong một bảng bên phải.
 knitr::include_graphics("screenshots/stringr-autocomplete.png")
 ```
 
-## Creating a string
+## Tạo chuỗi ký tự
 
-We've created strings in passing earlier in the book but didn't discuss the details.
-Firstly, you can create a string using either single quotes (`'`) or double quotes (`"`).
-There's no difference in behavior between the two, so in the interests of consistency, the [tidyverse style guide](https://style.tidyverse.org/syntax.html#character-vectors) recommends using `"`, unless the string contains multiple `"`.
+Chúng ta đã tạo chuỗi ký tự một cách sơ lược ở phần trước của cuốn sách nhưng chưa thảo luận chi tiết.
+Trước tiên, bạn có thể tạo một chuỗi bằng dấu nháy đơn (`'`) hoặc dấu nháy kép (`"`).
+Không có sự khác biệt về hành vi giữa hai loại, vì vậy để nhất quán, [hướng dẫn phong cách tidyverse](https://style.tidyverse.org/syntax.html#character-vectors) khuyến nghị sử dụng `"`, trừ khi chuỗi chứa nhiều `"`.
 
 ```{r}
 string1 <- "This is a string"
 string2 <- 'If I want to include a "quote" inside a string, I use single quotes'
 ```
 
-If you forget to close a quote, you'll see `+`, the continuation prompt:
+Nếu bạn quên đóng dấu nháy, bạn sẽ thấy `+`, dấu nhắc tiếp tục:
 
-```         
+```
 > "This is a string without a closing quote
-+ 
-+ 
++
++
 + HELP I'M STUCK IN A STRING
 ```
 
-If this happens to you and you can't figure out which quote to close, press Escape to cancel and try again.
+Nếu điều này xảy ra với bạn và bạn không thể tìm ra dấu nháy nào cần đóng, hãy nhấn Escape để hủy và thử lại.
 
-### Escapes
+### Ký tự thoát
 
-To include a literal single or double quote in a string, you can use `\` to "escape" it:
+Để chèn dấu nháy đơn hoặc nháy kép theo nghĩa đen vào chuỗi, bạn có thể sử dụng `\` để "thoát" (escape) nó:
 
 ```{r}
 double_quote <- "\"" # or '"'
 single_quote <- '\'' # or "'"
 ```
 
-So if you want to include a literal backslash in your string, you'll need to escape it: `"\\"`:
+Vì vậy nếu bạn muốn chèn dấu gạch chéo ngược theo nghĩa đen vào chuỗi, bạn sẽ cần thoát nó: `"\\"`:
 
 ```{r}
 backslash <- "\\"
 ```
 
-Beware that the printed representation of a string is not the same as the string itself because the printed representation shows the escapes (in other words, when you print a string, you can copy and paste the output to recreate that string).
-To see the raw contents of the string, use `str_view()`[^strings-1]:
+Lưu ý rằng biểu diễn in ra của chuỗi không giống với bản thân chuỗi vì biểu diễn in ra hiển thị các ký tự thoát (nói cách khác, khi bạn in một chuỗi, bạn có thể sao chép và dán kết quả để tái tạo chuỗi đó).
+Để xem nội dung thực của chuỗi, hãy dùng `str_view()`[^strings-1]:
 
-[^strings-1]: Or use the base R function `writeLines()`.
+[^strings-1]: Hoặc dùng hàm R cơ bản `writeLines()`.
 
 ```{r}
 x <- c(single_quote, double_quote, backslash)
@@ -90,10 +90,10 @@ x
 str_view(x)
 ```
 
-### Raw strings {#sec-raw-strings}
+### Chuỗi thô {#sec-raw-strings}
 
-Creating a string with multiple quotes or backslashes gets confusing quickly.
-To illustrate the problem, let's create a string that contains the contents of the code block where we define the `double_quote` and `single_quote` variables:
+Tạo chuỗi với nhiều dấu nháy hoặc dấu gạch chéo ngược sẽ nhanh chóng trở nên rối rắm.
+Để minh họa vấn đề, hãy tạo một chuỗi chứa nội dung của khối mã nơi chúng ta định nghĩa biến `double_quote` và `single_quote`:
 
 ```{r}
 tricky <- "double_quote <- \"\\\"\" # or '\"'
@@ -101,10 +101,10 @@ single_quote <- '\\'' # or \"'\""
 str_view(tricky)
 ```
 
-That's a lot of backslashes!
-(This is sometimes called [leaning toothpick syndrome](https://en.wikipedia.org/wiki/Leaning_toothpick_syndrome).) To eliminate the escaping, you can instead use a **raw string**[^strings-2]:
+Quá nhiều dấu gạch chéo ngược!
+(Hiện tượng này đôi khi được gọi là [hội chứng tăm nghiêng](https://en.wikipedia.org/wiki/Leaning_toothpick_syndrome).) Để loại bỏ việc thoát ký tự, bạn có thể sử dụng **chuỗi thô** (raw string)[^strings-2]:
 
-[^strings-2]: Available in R 4.0.0 and above.
+[^strings-2]: Có sẵn trong R 4.0.0 trở lên.
 
 ```{r}
 tricky <- r"(double_quote <- "\"" # or '"'
@@ -112,14 +112,14 @@ single_quote <- '\'' # or "'")"
 str_view(tricky)
 ```
 
-A raw string usually starts with `r"(` and finishes with `)"`.
-But if your string contains `)"` you can instead use `r"[]"` or `r"{}"`, and if that's still not enough, you can insert any number of dashes to make the opening and closing pairs unique, e.g., `r"--()--"`, `r"---()---"`, etc. Raw strings are flexible enough to handle any text.
+Chuỗi thô thường bắt đầu bằng `r"(` và kết thúc bằng `)"`.
+Nhưng nếu chuỗi của bạn chứa `)"` thì bạn có thể dùng `r"[]"` hoặc `r"{}"`, và nếu vẫn chưa đủ, bạn có thể chèn bất kỳ số lượng dấu gạch ngang nào để tạo cặp mở và đóng duy nhất, ví dụ `r"--()--"`, `r"---()---"`, v.v. Chuỗi thô đủ linh hoạt để xử lý bất kỳ văn bản nào.
 
-### Other special characters
+### Các ký tự đặc biệt khác
 
-As well as `"`, `'`, and `\`, there are a handful of other special characters that may come in handy. 
-The most common are `\n`, a new line, and `\t`, tab. You'll also sometimes see strings containing Unicode escapes that start with `\u` or `\U`. 
-This is a way of writing non-English characters that work on all systems. You can see the complete list of other special characters in `?Quotes`.
+Ngoài `"`, `'`, và `\`, còn một số ký tự đặc biệt khác có thể hữu ích.
+Phổ biến nhất là `\n`, xuống dòng mới, và `\t`, tab. Đôi khi bạn cũng sẽ thấy các chuỗi chứa ký tự Unicode thoát bắt đầu bằng `\u` hoặc `\U`.
+Đây là cách viết các ký tự không phải tiếng Anh hoạt động trên mọi hệ thống. Bạn có thể xem danh sách đầy đủ các ký tự đặc biệt khác trong `?Quotes`.
 
 ```{r}
 x <- c("one\ntwo", "one\ttwo", "\u00b5", "\U0001f604")
@@ -127,15 +127,15 @@ x
 str_view(x)
 ```
 
-Note that `str_view()` uses curly braces for tabs to make them easier to spot[^strings-3].
-One of the challenges of working with text is that there's a variety of ways that white space can end up in the text, so this background helps you recognize that something strange is going on.
+Lưu ý rằng `str_view()` sử dụng dấu ngoặc nhọn cho tab để dễ nhận biết hơn[^strings-3].
+Một trong những thách thức khi làm việc với văn bản là có nhiều cách khác nhau mà khoảng trắng có thể xuất hiện trong văn bản, vì vậy nền này giúp bạn nhận ra khi có điều gì đó bất thường.
 
-[^strings-3]: `str_view()` also uses color to bring tabs, spaces, matches, etc. to your attention.
-    The colors don't currently show up in the book, but you'll notice them when running code interactively.
+[^strings-3]: `str_view()` cũng sử dụng màu sắc để làm nổi bật tab, khoảng trắng, kết quả khớp, v.v.
+    Màu sắc hiện không hiển thị trong sách, nhưng bạn sẽ thấy chúng khi chạy mã tương tác.
 
-### Exercises
+### Bài tập
 
-1.  Create strings that contain the following values:
+1.  Tạo các chuỗi chứa các giá trị sau:
 
     1.  `He said "That's amazing!"`
 
@@ -143,26 +143,26 @@ One of the challenges of working with text is that there's a variety of ways tha
 
     3.  `\\\\\\`
 
-2.  Create the string in your R session and print it.
-    What happens to the special "\\u00a0"?
-    How does `str_view()` display it?
-    Can you do a little googling to figure out what this special character is?
+2.  Tạo chuỗi sau trong phiên R của bạn và in nó ra.
+    Điều gì xảy ra với ký tự đặc biệt "\\u00a0"?
+    `str_view()` hiển thị nó như thế nào?
+    Bạn có thể tìm kiếm trên Google để biết ký tự đặc biệt này là gì không?
 
     ```{r}
     x <- "This\u00a0is\u00a0tricky"
     ```
 
-## Creating many strings from data
+## Tạo nhiều chuỗi từ dữ liệu
 
-Now that you've learned the basics of creating a string or two by "hand", we'll go into the details of creating strings from other strings.
-This will help you solve the common problem where you have some text you wrote that you want to combine with strings from a data frame.
-For example, you might combine "Hello" with a `name` variable to create a greeting.
-We'll show you how to do this with `str_c()` and `str_glue()` and how you can use them with `mutate()`.
-That naturally raises the question of what stringr functions you might use with `summarize()`, so we'll finish this section with a discussion of `str_flatten()`, which is a summary function for strings.
+Bây giờ bạn đã học những kiến thức cơ bản về cách tạo một hoặc hai chuỗi "bằng tay", chúng ta sẽ đi vào chi tiết cách tạo chuỗi từ các chuỗi khác.
+Điều này sẽ giúp bạn giải quyết vấn đề phổ biến khi bạn có một đoạn văn bản muốn kết hợp với các chuỗi từ khung dữ liệu (data frame).
+Ví dụ, bạn có thể kết hợp "Hello" với biến `name` để tạo lời chào.
+Chúng tôi sẽ chỉ bạn cách thực hiện điều này với `str_c()` và `str_glue()` cũng như cách sử dụng chúng với `mutate()`.
+Điều đó tự nhiên dẫn đến câu hỏi bạn có thể dùng hàm stringr nào với `summarize()`, vì vậy chúng ta sẽ kết thúc phần này bằng thảo luận về `str_flatten()`, một hàm tóm tắt cho chuỗi.
 
 ### `str_c()`
 
-`str_c()` takes any number of vectors as arguments and returns a character vector:
+`str_c()` nhận bất kỳ số lượng vector nào làm đối số (argument) và trả về một vector ký tự:
 
 ```{r}
 str_c("x", "y")
@@ -170,18 +170,18 @@ str_c("x", "y", "z")
 str_c("Hello ", c("John", "Susan"))
 ```
 
-`str_c()` is very similar to the base `paste0()`, but is designed to be used with `mutate()` by obeying the usual tidyverse rules for recycling and propagating missing values:
+`str_c()` rất giống với hàm cơ bản `paste0()`, nhưng được thiết kế để dùng với `mutate()` bằng cách tuân theo các quy tắc tidyverse thông thường về tái chế (recycling) và lan truyền giá trị khuyết (missing value):
 
 ```{r}
 df <- tibble(name = c("Flora", "David", "Terra", NA))
 df |> mutate(greeting = str_c("Hi ", name, "!"))
 ```
 
-If you want missing values to display in another way, use `coalesce()` to replace them.
-Depending on what you want, you might use it either inside or outside of `str_c()`:
+Nếu bạn muốn giá trị khuyết hiển thị theo cách khác, hãy dùng `coalesce()` để thay thế chúng.
+Tùy thuộc vào mục đích, bạn có thể dùng nó bên trong hoặc bên ngoài `str_c()`:
 
 ```{r}
-df |> 
+df |>
   mutate(
     greeting1 = str_c("Hi ", coalesce(name, "you"), "!"),
     greeting2 = coalesce(str_c("Hi ", name, "!"), "Hi!")
@@ -190,19 +190,19 @@ df |>
 
 ### `str_glue()` {#sec-glue}
 
-If you are mixing many fixed and variable strings with `str_c()`, you'll notice that you type a lot of `"`s, making it hard to see the overall goal of the code. An alternative approach is provided by the [glue package](https://glue.tidyverse.org) via `str_glue()`[^strings-4]. You give it a single string that has a special feature: anything inside `{}` will be evaluated like it's outside of the quotes:
+Nếu bạn trộn nhiều chuỗi cố định và biến với `str_c()`, bạn sẽ nhận thấy phải gõ rất nhiều `"`, khiến khó nhìn thấy mục tiêu tổng thể của đoạn mã. Một cách tiếp cận thay thế được cung cấp bởi gói [glue](https://glue.tidyverse.org) thông qua `str_glue()`[^strings-4]. Bạn đưa cho nó một chuỗi duy nhất có tính năng đặc biệt: bất kỳ thứ gì bên trong `{}` sẽ được đánh giá như thể nằm bên ngoài dấu nháy:
 
-[^strings-4]: If you're not using stringr, you can also access it directly with `glue::glue()`.
+[^strings-4]: Nếu bạn không dùng stringr, bạn cũng có thể truy cập trực tiếp bằng `glue::glue()`.
 
 ```{r}
 df |> mutate(greeting = str_glue("Hi {name}!"))
 ```
 
-As you can see, `str_glue()` currently converts missing values to the string `"NA"`, unfortunately making it inconsistent with `str_c()`.
+Như bạn thấy, `str_glue()` hiện chuyển giá trị khuyết thành chuỗi `"NA"`, đáng tiếc là không nhất quán với `str_c()`.
 
-You also might wonder what happens if you need to include a regular `{` or `}` in your string.
-You're on the right track if you guess you'll need to escape it somehow.
-The trick is that glue uses a slightly different escaping technique: instead of prefixing with special character like `\`, you double up the special characters:
+Bạn cũng có thể thắc mắc điều gì xảy ra nếu cần chèn `{` hoặc `}` thông thường vào chuỗi.
+Bạn đang đi đúng hướng nếu đoán rằng cần thoát chúng bằng cách nào đó.
+Mẹo là glue sử dụng kỹ thuật thoát hơi khác: thay vì thêm tiền tố bằng ký tự đặc biệt như `\`, bạn viết gấp đôi các ký tự đặc biệt:
 
 ```{r}
 df |> mutate(greeting = str_glue("{{Hi {name}!}}"))
@@ -210,11 +210,11 @@ df |> mutate(greeting = str_glue("{{Hi {name}!}}"))
 
 ### `str_flatten()`
 
-`str_c()` and `str_glue()` work well with `mutate()` because their output is the same length as their inputs.
-What if you want a function that works well with `summarize()`, i.e. something that always returns a single string?
-That's the job of `str_flatten()`[^strings-5]: it takes a character vector and combines each element of the vector into a single string:
+`str_c()` và `str_glue()` hoạt động tốt với `mutate()` vì đầu ra của chúng có cùng độ dài với đầu vào.
+Nếu bạn muốn một hàm hoạt động tốt với `summarize()`, tức là hàm luôn trả về một chuỗi duy nhất thì sao?
+Đó là công việc của `str_flatten()`[^strings-5]: nó nhận một vector ký tự và kết hợp từng phần tử của vector thành một chuỗi duy nhất:
 
-[^strings-5]: The base R equivalent is `paste()` used with the `collapse` argument.
+[^strings-5]: Hàm R cơ bản tương đương là `paste()` được dùng với đối số `collapse`.
 
 ```{r}
 str_flatten(c("x", "y", "z"))
@@ -222,7 +222,7 @@ str_flatten(c("x", "y", "z"), ", ")
 str_flatten(c("x", "y", "z"), ", ", last = ", and ")
 ```
 
-This makes it work well with `summarize()`:
+Điều này giúp nó hoạt động tốt với `summarize()`:
 
 ```{r}
 df <- tribble(
@@ -235,13 +235,13 @@ df <- tribble(
   "Terence", "mandarin"
 )
 df |>
-  group_by(name) |> 
+  group_by(name) |>
   summarize(fruits = str_flatten(fruit, ", "))
 ```
 
-### Exercises
+### Bài tập
 
-1.  Compare and contrast the results of `paste0()` with `str_c()` for the following inputs:
+1.  So sánh và đối chiếu kết quả của `paste0()` với `str_c()` cho các đầu vào sau:
 
     ```{r}
     #| eval: false
@@ -249,10 +249,10 @@ df |>
     str_c(letters[1:2], letters[1:3])
     ```
 
-2.  What's the difference between `paste()` and `paste0()`?
-    How can you recreate the equivalent of `paste()` with `str_c()`?
+2.  Sự khác biệt giữa `paste()` và `paste0()` là gì?
+    Làm thế nào bạn có thể tái tạo tương đương `paste()` bằng `str_c()`?
 
-3.  Convert the following expressions from `str_c()` to `str_glue()` or vice versa:
+3.  Chuyển đổi các biểu thức sau từ `str_c()` sang `str_glue()` hoặc ngược lại:
 
     a.  `str_c("The price of ", food, " is ", price)`
 
@@ -260,57 +260,57 @@ df |>
 
     c.  `str_c("\\section{", title, "}")`
 
-## Extracting data from strings
+## Trích xuất dữ liệu từ chuỗi
 
-It's very common for multiple variables to be crammed together into a single string.
-In this section, you'll learn how to use four tidyr functions to extract them:
+Rất phổ biến khi nhiều biến được nhồi nhét vào một chuỗi duy nhất.
+Trong phần này, bạn sẽ học cách sử dụng bốn hàm tidyr để trích xuất chúng:
 
 -   `df |> separate_longer_delim(col, delim)`
 -   `df |> separate_longer_position(col, width)`
 -   `df |> separate_wider_delim(col, delim, names)`
 -   `df |> separate_wider_position(col, widths)`
 
-If you look closely, you can see there's a common pattern here: `separate_`, then `longer` or `wider`, then `_`, then by `delim` or `position`.
-That's because these four functions are composed of two simpler primitives:
+Nếu nhìn kỹ, bạn có thể thấy có một mẫu chung ở đây: `separate_`, sau đó `longer` hoặc `wider`, rồi `_`, tiếp theo là `delim` hoặc `position`.
+Đó là vì bốn hàm này được tạo thành từ hai nguyên thủy đơn giản hơn:
 
--   Just like with `pivot_longer()` and `pivot_wider()`, `_longer` functions make the input data frame longer by creating new rows and `_wider` functions make the input data frame wider by generating new columns.
--   `delim` splits up a string with a delimiter like `", "` or `" "`; `position` splits at specified widths, like `c(3, 5, 2)`.
+-   Giống như với `pivot_longer()` và `pivot_wider()`, các hàm `_longer` làm khung dữ liệu đầu vào dài hơn bằng cách tạo hàng mới và các hàm `_wider` làm khung dữ liệu đầu vào rộng hơn bằng cách tạo cột mới.
+-   `delim` tách chuỗi bằng ký tự phân cách (delimiter) như `", "` hoặc `" "`; `position` tách tại các độ rộng được chỉ định, như `c(3, 5, 2)`.
 
-We'll return to the last member of this family, `separate_wider_regex()`, in @sec-regular-expressions.
-It's the most flexible of the `wider` functions, but you need to know something about regular expressions before you can use it.
+Chúng ta sẽ quay lại thành viên cuối cùng của họ hàm này, `separate_wider_regex()`, trong @sec-regular-expressions.
+Đây là hàm linh hoạt nhất trong các hàm `wider`, nhưng bạn cần biết về biểu thức chính quy trước khi có thể sử dụng nó.
 
-The following two sections will give you the basic idea behind these separate functions, first separating into rows (which is a little simpler) and then separating into columns.
-We'll finish off by discussing the tools that the `wider` functions give you to diagnose problems.
+Hai phần tiếp theo sẽ cho bạn ý tưởng cơ bản về các hàm tách này, đầu tiên là tách thành hàng (đơn giản hơn một chút) và sau đó tách thành cột.
+Chúng ta sẽ kết thúc bằng thảo luận về các công cụ mà các hàm `wider` cung cấp để chẩn đoán vấn đề.
 
-### Separating into rows
+### Tách thành hàng
 
-Separating a string into rows tends to be most useful when the number of components varies from row to row.
-The most common case is requiring `separate_longer_delim()` to split based on a delimiter:
+Tách chuỗi thành hàng thường hữu ích nhất khi số lượng thành phần thay đổi giữa các hàng.
+Trường hợp phổ biến nhất là sử dụng `separate_longer_delim()` để tách dựa trên ký tự phân cách:
 
 ```{r}
 df1 <- tibble(x = c("a,b,c", "d,e", "f"))
-df1 |> 
+df1 |>
   separate_longer_delim(x, delim = ",")
 ```
 
-It's rarer to see `separate_longer_position()` in the wild, but some older datasets do use a very compact format where each character is used to record a value:
+Hiếm hơn khi thấy `separate_longer_position()` trong thực tế, nhưng một số tập dữ liệu cũ sử dụng định dạng rất gọn trong đó mỗi ký tự được dùng để ghi lại một giá trị:
 
 ```{r}
 df2 <- tibble(x = c("1211", "131", "21"))
-df2 |> 
+df2 |>
   separate_longer_position(x, width = 1)
 ```
 
-### Separating into columns {#sec-string-columns}
+### Tách thành cột {#sec-string-columns}
 
-Separating a string into columns tends to be most useful when there are a fixed number of components in each string, and you want to spread them into columns.
-They are slightly more complicated than their `longer` equivalents because you need to name the columns.
-For example, in this following dataset, `x` is made up of a code, an edition number, and a year, separated by `"."`.
-To use `separate_wider_delim()`, we supply the delimiter and the names in two arguments:
+Tách chuỗi thành cột thường hữu ích nhất khi có số lượng thành phần cố định trong mỗi chuỗi và bạn muốn trải chúng thành các cột.
+Chúng phức tạp hơn một chút so với các hàm `longer` tương ứng vì bạn cần đặt tên cho các cột.
+Ví dụ, trong tập dữ liệu sau, `x` được tạo thành từ mã, số phiên bản, và năm, phân cách bằng `"."`.
+Để sử dụng `separate_wider_delim()`, chúng ta cung cấp ký tự phân cách và tên trong hai đối số:
 
 ```{r}
 df3 <- tibble(x = c("a10.1.2022", "b10.2.2011", "e15.1.2015"))
-df3 |> 
+df3 |>
   separate_wider_delim(
     x,
     delim = ".",
@@ -318,10 +318,10 @@ df3 |>
   )
 ```
 
-If a specific piece is not useful you can use an `NA` name to omit it from the results:
+Nếu một phần cụ thể không hữu ích, bạn có thể dùng tên `NA` để bỏ nó khỏi kết quả:
 
 ```{r}
-df3 |> 
+df3 |>
   separate_wider_delim(
     x,
     delim = ".",
@@ -329,32 +329,32 @@ df3 |>
   )
 ```
 
-`separate_wider_position()` works a little differently because you typically want to specify the width of each column.
-So you give it a named integer vector, where the name gives the name of the new column, and the value is the number of characters it occupies.
-You can omit values from the output by not naming them:
+`separate_wider_position()` hoạt động hơi khác vì thông thường bạn muốn chỉ định độ rộng của mỗi cột.
+Vì vậy bạn đưa cho nó một vector số nguyên có tên, trong đó tên đặt tên cho cột mới, và giá trị là số ký tự mà nó chiếm.
+Bạn có thể bỏ giá trị khỏi đầu ra bằng cách không đặt tên cho chúng:
 
 ```{r}
-df4 <- tibble(x = c("202215TX", "202122LA", "202325CA")) 
-df4 |> 
+df4 <- tibble(x = c("202215TX", "202122LA", "202325CA"))
+df4 |>
   separate_wider_position(
     x,
     widths = c(year = 4, age = 2, state = 2)
   )
 ```
 
-### Diagnosing widening problems
+### Chẩn đoán vấn đề khi mở rộng
 
-`separate_wider_delim()`[^strings-6] requires a fixed and known set of columns.
-What happens if some of the rows don't have the expected number of pieces?
-There are two possible problems, too few or too many pieces, so `separate_wider_delim()` provides two arguments to help: `too_few` and `too_many`. Let's first look at the `too_few` case with the following sample dataset:
+`separate_wider_delim()`[^strings-6] yêu cầu một tập cột cố định và đã biết.
+Điều gì xảy ra nếu một số hàng không có số lượng phần như mong đợi?
+Có hai vấn đề có thể xảy ra, quá ít hoặc quá nhiều phần, vì vậy `separate_wider_delim()` cung cấp hai đối số để giúp: `too_few` và `too_many`. Hãy xem trường hợp `too_few` trước với tập dữ liệu mẫu sau:
 
-[^strings-6]: The same principles apply to `separate_wider_position()` and `separate_wider_regex()`.
+[^strings-6]: Các nguyên tắc tương tự áp dụng cho `separate_wider_position()` và `separate_wider_regex()`.
 
 ```{r}
 #| error: true
 df <- tibble(a = c("1-1-1", "1-1-2", "1-3", "1-3-2", "1"))
 
-df |> 
+df |>
   separate_wider_delim(
     a,
     delim = "-",
@@ -362,11 +362,11 @@ df |>
   )
 ```
 
-You'll notice that we get an error, but the error gives us some suggestions on how you might proceed.
-Let's start by debugging the problem:
+Bạn sẽ thấy rằng chúng ta nhận được lỗi, nhưng thông báo lỗi đưa ra một số gợi ý về cách bạn có thể tiến hành.
+Hãy bắt đầu bằng cách gỡ lỗi vấn đề:
 
 ```{r}
-debug <- df |> 
+debug <- df |>
   separate_wider_delim(
     a,
     delim = "-",
@@ -376,24 +376,24 @@ debug <- df |>
 debug
 ```
 
-When you use the debug mode, you get three extra columns added to the output: `a_ok`, `a_pieces`, and `a_remainder` (if you separate a variable with a different name, you'll get a different prefix).
-Here, `a_ok` lets you quickly find the inputs that failed:
+Khi bạn sử dụng chế độ gỡ lỗi (debug), ba cột phụ được thêm vào đầu ra: `a_ok`, `a_pieces`, và `a_remainder` (nếu bạn tách biến có tên khác, bạn sẽ nhận được tiền tố khác).
+Ở đây, `a_ok` cho phép bạn nhanh chóng tìm các đầu vào bị lỗi:
 
 ```{r}
 debug |> filter(!a_ok)
 ```
 
-`a_pieces` tells us how many pieces were found, compared to the expected 3 (the length of `names`).
-`a_remainder` isn't useful when there are too few pieces, but we'll see it again shortly.
+`a_pieces` cho biết có bao nhiêu phần được tìm thấy, so với 3 phần mong đợi (độ dài của `names`).
+`a_remainder` không hữu ích khi có quá ít phần, nhưng chúng ta sẽ thấy nó lại ngay.
 
-Sometimes looking at this debugging information will reveal a problem with your delimiter strategy or suggest that you need to do more preprocessing before separating.
-In that case, fix the problem upstream and make sure to remove `too_few = "debug"` to ensure that new problems become errors.
+Đôi khi xem thông tin gỡ lỗi này sẽ tiết lộ vấn đề với chiến lược phân cách hoặc gợi ý rằng bạn cần tiền xử lý thêm trước khi tách.
+Trong trường hợp đó, hãy sửa vấn đề từ đầu và nhớ xóa `too_few = "debug"` để đảm bảo các vấn đề mới trở thành lỗi.
 
-In other cases, you may want to fill in the missing pieces with `NA`s and move on.
-That's the job of `too_few = "align_start"` and `too_few = "align_end"` which allow you to control where the `NA`s should go:
+Trong các trường hợp khác, bạn có thể muốn điền các phần thiếu bằng `NA` và tiếp tục.
+Đó là công việc của `too_few = "align_start"` và `too_few = "align_end"` cho phép bạn kiểm soát vị trí đặt `NA`:
 
 ```{r}
-df |> 
+df |>
   separate_wider_delim(
     a,
     delim = "-",
@@ -402,13 +402,13 @@ df |>
   )
 ```
 
-The same principles apply if you have too many pieces:
+Các nguyên tắc tương tự áp dụng nếu bạn có quá nhiều phần:
 
 ```{r}
 #| error: true
 df <- tibble(a = c("1-1-1", "1-1-2", "1-3-5-6", "1-3-2", "1-3-5-7-9"))
 
-df |> 
+df |>
   separate_wider_delim(
     a,
     delim = "-",
@@ -416,10 +416,10 @@ df |>
   )
 ```
 
-But now, when we debug the result, you can see the purpose of `a_remainder`:
+Nhưng bây giờ, khi chúng ta gỡ lỗi kết quả, bạn có thể thấy mục đích của `a_remainder`:
 
 ```{r}
-debug <- df |> 
+debug <- df |>
   separate_wider_delim(
     a,
     delim = "-",
@@ -429,10 +429,10 @@ debug <- df |>
 debug |> filter(!a_ok)
 ```
 
-You have a slightly different set of options for handling too many pieces: you can either silently "drop" any additional pieces or "merge" them all into the final column:
+Bạn có một tập tùy chọn hơi khác để xử lý quá nhiều phần: bạn có thể âm thầm "bỏ" các phần thừa hoặc "gộp" tất cả vào cột cuối cùng:
 
 ```{r}
-df |> 
+df |>
   separate_wider_delim(
     a,
     delim = "-",
@@ -441,7 +441,7 @@ df |>
   )
 
 
-df |> 
+df |>
   separate_wider_delim(
     a,
     delim = "-",
@@ -450,106 +450,106 @@ df |>
   )
 ```
 
-## Letters
+## Ký tự
 
-In this section, we'll introduce you to functions that allow you to work with the individual letters within a string.
-You'll learn how to find the length of a string, extract substrings, and handle long strings in plots and tables.
+Trong phần này, chúng tôi sẽ giới thiệu cho bạn các hàm cho phép làm việc với từng ký tự riêng lẻ trong chuỗi.
+Bạn sẽ học cách tìm độ dài của chuỗi, trích xuất chuỗi con, và xử lý chuỗi dài trong biểu đồ và bảng.
 
-### Length
+### Độ dài
 
-`str_length()` tells you the number of letters in the string:
+`str_length()` cho bạn biết số lượng ký tự trong chuỗi:
 
 ```{r}
 str_length(c("a", "R for data science", NA))
 ```
 
-You could use this with `count()` to find the distribution of lengths of US babynames and then with `filter()` to look at the longest names, which happen to have 15 letters[^strings-7]:
+Bạn có thể sử dụng hàm này với `count()` để tìm phân phối độ dài tên trẻ em Mỹ và sau đó dùng `filter()` để xem các tên dài nhất, có 15 ký tự[^strings-7]:
 
-[^strings-7]: Looking at these entries, we'd guess that the babynames data drops spaces or hyphens and truncates after 15 letters.
+[^strings-7]: Nhìn vào các mục này, chúng tôi đoán rằng dữ liệu babynames bỏ khoảng trắng hoặc dấu gạch nối và cắt ngắn sau 15 ký tự.
 
 ```{r}
 babynames |>
   count(length = str_length(name), wt = n)
 
-babynames |> 
-  filter(str_length(name) == 15) |> 
+babynames |>
+  filter(str_length(name) == 15) |>
   count(name, wt = n, sort = TRUE)
 ```
 
-### Subsetting
+### Trích xuất chuỗi con
 
-You can extract parts of a string using `str_sub(string, start, end)`, where `start` and `end` are the positions where the substring should start and end.
-The `start` and `end` arguments are inclusive, so the length of the returned string will be `end - start + 1`:
+Bạn có thể trích xuất các phần của chuỗi bằng `str_sub(string, start, end)`, trong đó `start` và `end` là vị trí bắt đầu và kết thúc của chuỗi con.
+Các đối số `start` và `end` bao gồm cả hai đầu, vì vậy độ dài chuỗi trả về sẽ là `end - start + 1`:
 
 ```{r}
 x <- c("Apple", "Banana", "Pear")
 str_sub(x, 1, 3)
 ```
 
-You can use negative values to count back from the end of the string: -1 is the last character, -2 is the second to last character, etc.
+Bạn có thể dùng giá trị âm để đếm ngược từ cuối chuỗi: -1 là ký tự cuối cùng, -2 là ký tự kế cuối, v.v.
 
 ```{r}
 str_sub(x, -3, -1)
 ```
 
-Note that `str_sub()` won't fail if the string is too short: it will just return as much as possible:
+Lưu ý rằng `str_sub()` sẽ không báo lỗi nếu chuỗi quá ngắn: nó sẽ trả về nhiều nhất có thể:
 
 ```{r}
 str_sub("a", 1, 5)
 ```
 
-We could use `str_sub()` with `mutate()` to find the first and last letter of each name:
+Chúng ta có thể dùng `str_sub()` với `mutate()` để tìm chữ cái đầu tiên và cuối cùng của mỗi tên:
 
 ```{r}
-babynames |> 
+babynames |>
   mutate(
     first = str_sub(name, 1, 1),
     last = str_sub(name, -1, -1)
   )
 ```
 
-### Exercises
+### Bài tập
 
-1.  When computing the distribution of the length of babynames, why did we use `wt = n`?
-2.  Use `str_length()` and `str_sub()` to extract the middle letter from each baby name. What will you do if the string has an even number of characters?
-3.  Are there any major trends in the length of babynames over time? What about the popularity of first and last letters?
+1.  Khi tính phân phối độ dài của babynames, tại sao chúng ta dùng `wt = n`?
+2.  Sử dụng `str_length()` và `str_sub()` để trích xuất chữ cái ở giữa mỗi tên trẻ em. Bạn sẽ làm gì nếu chuỗi có số ký tự chẵn?
+3.  Có xu hướng lớn nào trong độ dài tên trẻ em theo thời gian không? Còn mức độ phổ biến của chữ cái đầu và cuối thì sao?
 
-## Non-English text {#sec-other-languages}
+## Văn bản không phải tiếng Anh {#sec-other-languages}
 
-So far, we've focused on English language text which is particularly easy to work with for two reasons.
-Firstly, the English alphabet is relatively simple: there are just 26 letters.
-Secondly (and maybe more importantly), the computing infrastructure we use today was predominantly designed by English speakers.
-Unfortunately, we don't have room for a full treatment of non-English languages.
-Still, we wanted to draw your attention to some of the biggest challenges you might encounter: encoding, letter variations, and locale-dependent functions.
+Cho đến nay, chúng ta đã tập trung vào văn bản tiếng Anh, đặc biệt dễ làm việc vì hai lý do.
+Thứ nhất, bảng chữ cái tiếng Anh tương đối đơn giản: chỉ có 26 chữ cái.
+Thứ hai (và có lẽ quan trọng hơn), hạ tầng máy tính mà chúng ta sử dụng ngày nay chủ yếu được thiết kế bởi người nói tiếng Anh.
+Đáng tiếc, chúng tôi không có đủ chỗ để trình bày đầy đủ về các ngôn ngữ không phải tiếng Anh.
+Tuy nhiên, chúng tôi muốn lưu ý bạn về một số thách thức lớn nhất mà bạn có thể gặp phải: mã hóa (encoding), biến thể chữ cái, và các hàm phụ thuộc vào ngôn ngữ địa phương (locale).
 
-### Encoding
+### Mã hóa
 
-When working with non-English text, the first challenge is often the **encoding**.
-To understand what's going on, we need to dive into how computers represent strings.
-In R, we can get at the underlying representation of a string using `charToRaw()`:
+Khi làm việc với văn bản không phải tiếng Anh, thách thức đầu tiên thường là **mã hóa** (encoding).
+Để hiểu chuyện gì đang xảy ra, chúng ta cần tìm hiểu cách máy tính biểu diễn chuỗi.
+Trong R, chúng ta có thể xem biểu diễn bên dưới của chuỗi bằng `charToRaw()`:
 
 ```{r}
 charToRaw("Hadley")
 ```
 
-Each of these six hexadecimal numbers represents one letter: `48` is H, `61` is a, and so on.
-The mapping from hexadecimal number to character is called the encoding, and in this case, the encoding is called ASCII.
-ASCII does a great job of representing English characters because it's the **American** Standard Code for Information Interchange.
+Mỗi trong sáu số thập lục phân này đại diện cho một chữ cái: `48` là H, `61` là a, và tiếp tục.
+Ánh xạ từ số thập lục phân sang ký tự được gọi là mã hóa, và trong trường hợp này, mã hóa được gọi là ASCII.
+ASCII biểu diễn tốt các ký tự tiếng Anh vì nó là Mã Chuẩn **Mỹ** cho Trao đổi Thông tin.
 
-Things aren't so easy for languages other than English.
-In the early days of computing, there were many competing standards for encoding non-English characters.
-For example, there were two different encodings for Europe: Latin1 (aka ISO-8859-1) was used for Western European languages, and Latin2 (aka ISO-8859-2) was used for Central European languages.
-In Latin1, the byte `b1` is "±", but in Latin2, it's "ą"!
-Fortunately, today there is one standard that is supported almost everywhere: UTF-8.
-UTF-8 can encode just about every character used by humans today and many extra symbols like emojis.
+Mọi thứ không dễ dàng như vậy đối với các ngôn ngữ không phải tiếng Anh.
+Trong những ngày đầu của điện toán, có nhiều tiêu chuẩn cạnh tranh để mã hóa các ký tự không phải tiếng Anh.
+Ví dụ, có hai mã hóa khác nhau cho châu Âu: Latin1 (hay ISO-8859-1) được dùng cho các ngôn ngữ Tây Âu, và Latin2 (hay ISO-8859-2) được dùng cho các ngôn ngữ Trung Âu.
+Trong Latin1, byte `b1` là "±", nhưng trong Latin2, nó là "ą"!
+May mắn thay, ngày nay có một tiêu chuẩn được hỗ trợ gần như ở mọi nơi: UTF-8.
+UTF-8 có thể mã hóa hầu hết mọi ký tự được con người sử dụng ngày nay và nhiều ký hiệu bổ sung như emoji.
 
-readr uses UTF-8 everywhere.
-This is a good default but will fail for data produced by older systems that don't use UTF-8.
-If this happens, your strings will look weird when you print them.
-Sometimes just one or two characters might be messed up; other times, you'll get complete gibberish.
-For example here are two inline CSVs with unusual encodings[^strings-8]:
+readr sử dụng UTF-8 ở mọi nơi.
+Đây là mặc định tốt nhưng sẽ thất bại với dữ liệu được tạo bởi các hệ thống cũ không sử dụng UTF-8.
+Nếu điều này xảy ra, chuỗi của bạn sẽ trông kỳ lạ khi in ra.
+Đôi khi chỉ một hoặc hai ký tự bị sai; lúc khác, bạn sẽ nhận được toàn bộ ký tự vô nghĩa.
+Ví dụ đây là hai CSV inline với mã hóa bất thường[^strings-8]:
 
-[^strings-8]: Here I'm using the special `\x` to encode binary data directly into a string.
+[^strings-8]: Ở đây tôi sử dụng `\x` đặc biệt để mã hóa dữ liệu nhị phân trực tiếp vào chuỗi.
 
 ```{r}
 #| eval: false
@@ -563,7 +563,7 @@ read_csv(x2)$text
 #> [1] "\x82\xb1\x82\xf1\x82ɂ\xbf\x82\xcd"
 ```
 
-To read these correctly, you specify the encoding via the `locale` argument:
+Để đọc chúng chính xác, bạn chỉ định mã hóa qua đối số `locale`:
 
 ```{r}
 #| eval: false
@@ -574,33 +574,33 @@ read_csv(x2, locale = locale(encoding = "Shift-JIS"))$text
 #> [1] "こんにちは"
 ```
 
-How do you find the correct encoding?
-If you're lucky, it'll be included somewhere in the data documentation.
-Unfortunately, that's rarely the case, so readr provides `guess_encoding()` to help you figure it out.
-It's not foolproof and works better when you have lots of text (unlike here), but it's a reasonable place to start.
-Expect to try a few different encodings before you find the right one.
+Làm thế nào để tìm mã hóa đúng?
+Nếu may mắn, nó sẽ được ghi trong tài liệu dữ liệu.
+Đáng tiếc, điều đó hiếm khi xảy ra, vì vậy readr cung cấp `guess_encoding()` để giúp bạn tìm ra.
+Nó không hoàn hảo và hoạt động tốt hơn khi bạn có nhiều văn bản (không như ở đây), nhưng đó là điểm khởi đầu hợp lý.
+Hãy chuẩn bị thử vài mã hóa khác nhau trước khi tìm được đúng.
 
-Encodings are a rich and complex topic; we've only scratched the surface here.
-If you'd like to learn more, we recommend reading the detailed explanation at <http://kunststube.net/encoding/>.
+Mã hóa là chủ đề phong phú và phức tạp; chúng ta mới chỉ chạm vào bề mặt ở đây.
+Nếu bạn muốn tìm hiểu thêm, chúng tôi khuyến nghị đọc giải thích chi tiết tại <http://kunststube.net/encoding/>.
 
-### Letter variations
+### Biến thể chữ cái
 
-Working in languages with accents poses a significant challenge when determining the position of letters (e.g., with `str_length()` and `str_sub()`) as accented letters might be encoded as a single individual character (e.g., ü) or as two characters by combining an unaccented letter (e.g., u) with a diacritic mark (e.g., ¨).
-For example, this code shows two ways of representing ü that look identical:
+Làm việc với các ngôn ngữ có dấu đặt ra thách thức đáng kể khi xác định vị trí ký tự (ví dụ, với `str_length()` và `str_sub()`) vì các chữ cái có dấu có thể được mã hóa thành một ký tự đơn lẻ (ví dụ, ü) hoặc thành hai ký tự bằng cách kết hợp chữ cái không dấu (ví dụ, u) với dấu phụ (ví dụ, ¨).
+Ví dụ, đoạn mã này cho thấy hai cách biểu diễn ü trông giống hệt nhau:
 
 ```{r}
 u <- c("\u00fc", "u\u0308")
 str_view(u)
 ```
 
-But both strings differ in length, and their first characters are different:
+Nhưng cả hai chuỗi có độ dài khác nhau, và ký tự đầu tiên của chúng cũng khác:
 
 ```{r}
 str_length(u)
 str_sub(u, 1, 1)
 ```
 
-Finally, note that a comparison of these strings with `==` interprets these strings as different, while the handy `str_equal()` function in stringr recognizes that both have the same appearance:
+Cuối cùng, lưu ý rằng phép so sánh các chuỗi này bằng `==` coi chúng là khác nhau, trong khi hàm `str_equal()` tiện lợi trong stringr nhận ra rằng cả hai có cùng hình dạng:
 
 ```{r}
 u[[1]] == u[[2]]
@@ -608,42 +608,42 @@ u[[1]] == u[[2]]
 str_equal(u[[1]], u[[2]])
 ```
 
-### Locale-dependent functions
+### Các hàm phụ thuộc ngôn ngữ địa phương
 
-Finally, there are a handful of stringr functions whose behavior depends on your **locale**.
-A locale is similar to a language but includes an optional region specifier to handle regional variations within a language.
-A locale is specified by a lower-case language abbreviation, optionally followed by a `_` and an upper-case region identifier.
-For example, "en" is English, "en_GB" is British English, and "en_US" is American English.
-If you don't already know the code for your language, [Wikipedia](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) has a good list, and you can see which are supported in stringr by looking at `stringi::stri_locale_list()`.
+Cuối cùng, có một số hàm stringr mà hành vi phụ thuộc vào **ngôn ngữ địa phương** (locale) của bạn.
+Ngôn ngữ địa phương tương tự như ngôn ngữ nhưng bao gồm một chỉ định vùng tùy chọn để xử lý biến thể trong cùng một ngôn ngữ.
+Ngôn ngữ địa phương được chỉ định bằng chữ viết tắt ngôn ngữ viết thường, tùy chọn theo sau bởi `_` và mã vùng viết hoa.
+Ví dụ, "en" là tiếng Anh, "en_GB" là tiếng Anh Anh, và "en_US" là tiếng Anh Mỹ.
+Nếu bạn chưa biết mã cho ngôn ngữ của mình, [Wikipedia](https://en.wikipedia.org/wiki/List_of_ISO_639-1_codes) có danh sách tốt, và bạn có thể xem ngôn ngữ nào được hỗ trợ trong stringr bằng cách xem `stringi::stri_locale_list()`.
 
-Base R string functions automatically use the locale set by your operating system.
-This means that base R string functions do what you expect for your language, but your code might work differently if you share it with someone who lives in a different country.
-To avoid this problem, stringr defaults to English rules by using the "en" locale and requires you to specify the `locale` argument to override it.
-Fortunately, there are only two sets of functions where the locale really matters: changing case and sorting.
+Các hàm chuỗi R cơ bản tự động sử dụng ngôn ngữ địa phương do hệ điều hành thiết lập.
+Điều này có nghĩa là các hàm chuỗi R cơ bản hoạt động đúng như bạn mong đợi cho ngôn ngữ của mình, nhưng mã của bạn có thể hoạt động khác nếu chia sẻ với ai đó sống ở quốc gia khác.
+Để tránh vấn đề này, stringr mặc định sử dụng quy tắc tiếng Anh bằng cách dùng locale "en" và yêu cầu bạn chỉ định đối số `locale` để ghi đè.
+May mắn thay, chỉ có hai nhóm hàm mà ngôn ngữ địa phương thực sự quan trọng: đổi chữ hoa chữ thường và sắp xếp.
 
-The rules for changing cases differ among languages.
-For example, Turkish has two i's: with and without a dot.
-Since they're two distinct letters, they're capitalized differently:
+Quy tắc đổi chữ hoa chữ thường khác nhau giữa các ngôn ngữ.
+Ví dụ, tiếng Thổ Nhĩ Kỳ có hai chữ i: có và không có dấu chấm.
+Vì chúng là hai chữ cái riêng biệt, chúng được viết hoa khác nhau:
 
 ```{r}
 str_to_upper(c("i", "ı"))
 str_to_upper(c("i", "ı"), locale = "tr")
 ```
 
-Sorting strings depends on the order of the alphabet, and the order of the alphabet is not the same in every language[^strings-9]!
-Here's an example: in Czech, "ch" is a compound letter that appears after `h` in the alphabet.
+Sắp xếp chuỗi phụ thuộc vào thứ tự bảng chữ cái, và thứ tự bảng chữ cái không giống nhau trong mọi ngôn ngữ[^strings-9]!
+Đây là một ví dụ: trong tiếng Séc, "ch" là một chữ cái ghép xuất hiện sau `h` trong bảng chữ cái.
 
-[^strings-9]: Sorting in languages that don't have an alphabet, like Chinese, is more complicated still.
+[^strings-9]: Sắp xếp trong các ngôn ngữ không có bảng chữ cái, như tiếng Trung, còn phức tạp hơn nữa.
 
 ```{r}
 str_sort(c("a", "c", "ch", "h", "z"))
 str_sort(c("a", "c", "ch", "h", "z"), locale = "cs")
 ```
 
-This also comes up when sorting strings with `dplyr::arrange()`, which is why it also has a `locale` argument.
+Điều này cũng xuất hiện khi sắp xếp chuỗi với `dplyr::arrange()`, đó là lý do tại sao nó cũng có đối số `locale`.
 
-## Summary
+## Tóm tắt
 
-In this chapter, you've learned about some of the power of the stringr package: how to create, combine, and extract strings, and about some of the challenges you might face with non-English strings.
-Now it's time to learn one of the most important and powerful tools for working with strings: regular expressions.
-Regular expressions are a very concise but very expressive language for describing patterns within strings and are the topic of the next chapter.
+Trong chương này, bạn đã tìm hiểu về một số sức mạnh của gói stringr: cách tạo, kết hợp, và trích xuất chuỗi, cũng như một số thách thức bạn có thể gặp với chuỗi không phải tiếng Anh.
+Bây giờ là lúc tìm hiểu một trong những công cụ quan trọng và mạnh mẽ nhất để làm việc với chuỗi: biểu thức chính quy.
+Biểu thức chính quy là ngôn ngữ rất ngắn gọn nhưng rất biểu cảm để mô tả các mẫu trong chuỗi và là chủ đề của chương tiếp theo.
