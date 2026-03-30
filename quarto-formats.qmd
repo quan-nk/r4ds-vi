@@ -1,46 +1,46 @@
-# Quarto formats {#sec-quarto-formats}
+# Các định dạng Quarto {#sec-quarto-formats}
 
 ```{r}
 #| echo: false
 source("_common.R")
 ```
 
-## Introduction
+## Giới thiệu
 
-So far, you've seen Quarto used to produce HTML documents.
-This chapter gives a brief overview of some of the many other types of output you can produce with Quarto.
+Cho đến nay, bạn đã thấy Quarto được sử dụng để tạo tài liệu HTML.
+Chương này sẽ giới thiệu tổng quan ngắn gọn về một số trong nhiều loại đầu ra (output) khác mà bạn có thể tạo với Quarto.
 
-There are two ways to set the output of a document:
+Có hai cách để thiết lập định dạng đầu ra của một tài liệu:
 
-1.  Permanently, by modifying the YAML header:
+1.  Cố định, bằng cách chỉnh sửa phần YAML header:
 
     ``` yaml
     title: "Diamond sizes"
     format: html
     ```
 
-2.  Transiently, by calling `quarto::quarto_render()` by hand:
+2.  Tạm thời, bằng cách gọi `quarto::quarto_render()` thủ công:
 
     ```{r}
     #| eval: false
     quarto::quarto_render("diamond-sizes.qmd", output_format = "docx")
     ```
 
-    This is useful if you want to programmatically produce multiple types of output since the `output_format` argument can also take a list of values.
+    Cách này hữu ích khi bạn muốn tạo nhiều loại đầu ra theo chương trình vì đối số `output_format` cũng có thể nhận một danh sách các giá trị.
 
     ```{r}
     #| eval: false
     quarto::quarto_render("diamond-sizes.qmd", output_format = c("docx", "pdf"))
     ```
 
-## Output options
+## Tùy chọn đầu ra
 
-Quarto offers a wide range of output formats.
-You can find the complete list at <https://quarto.org/docs/output-formats/all-formats.html>.
-Many formats share some output options (e.g., `toc: true` for including a table of contents), but others have options that are format specific (e.g., `code-fold: true` collapses code chunks into a `<details>` tag for HTML output so the user can display it on demand, it's not applicable in a PDF or Word document).
+Quarto cung cấp nhiều định dạng đầu ra khác nhau.
+Bạn có thể tìm danh sách đầy đủ tại <https://quarto.org/docs/output-formats/all-formats.html>.
+Nhiều định dạng chia sẻ một số tùy chọn đầu ra chung (ví dụ: `toc: true` để thêm mục lục), nhưng một số tùy chọn khác chỉ dành riêng cho từng định dạng (ví dụ: `code-fold: true` thu gọn các khối mã (code chunk) vào thẻ `<details>` cho đầu ra HTML để người dùng có thể hiển thị khi cần, tùy chọn này không áp dụng được cho tài liệu PDF hay Word).
 
-To override the default options, you need to use an expanded `format` field.
-For example, if you wanted to render an `html` with a floating table of contents, you'd use:
+Để ghi đè các tùy chọn mặc định, bạn cần sử dụng trường `format` mở rộng.
+Ví dụ, nếu bạn muốn biên dịch (render) một tài liệu `html` với mục lục nổi, bạn sẽ dùng:
 
 ``` yaml
 format:
@@ -49,7 +49,7 @@ format:
     toc_float: true
 ```
 
-You can even render to multiple outputs by supplying a list of formats:
+Bạn thậm chí có thể biên dịch sang nhiều định dạng đầu ra bằng cách cung cấp một danh sách các định dạng:
 
 ``` yaml
 format:
@@ -60,42 +60,42 @@ format:
   docx: default
 ```
 
-Note the special syntax (`pdf: default`) if you don't want to override any default options.
+Lưu ý cú pháp đặc biệt (`pdf: default`) nếu bạn không muốn ghi đè bất kỳ tùy chọn mặc định nào.
 
-To render to all formats specified in the YAML of a document, you can use `output_format = "all"`.
+Để biên dịch tất cả các định dạng được chỉ định trong YAML của một tài liệu, bạn có thể sử dụng `output_format = "all"`.
 
 ```{r}
 #| eval: false
 quarto::quarto_render("diamond-sizes.qmd", output_format = "all")
 ```
 
-## Documents
+## Tài liệu
 
-The previous chapter focused on the default `html` output.
-There are several basic variations on that theme, generating different types of documents.
-For example:
+Chương trước tập trung vào định dạng đầu ra `html` mặc định.
+Có một số biến thể cơ bản từ đó, tạo ra các loại tài liệu khác nhau.
+Ví dụ:
 
--   `pdf` makes a PDF with LaTeX (an open-source document layout system), which you'll need to install.
-    RStudio will prompt you if you don't already have it.
+-   `pdf` tạo tệp PDF bằng LaTeX (một hệ thống trình bày tài liệu mã nguồn mở), mà bạn sẽ cần cài đặt.
+    RStudio sẽ nhắc bạn nếu bạn chưa cài đặt nó.
 
--   `docx` for Microsoft Word (`.docx`) documents.
+-   `docx` cho tài liệu Microsoft Word (`.docx`).
 
--   `odt` for OpenDocument Text (`.odt`) documents.
+-   `odt` cho tài liệu OpenDocument Text (`.odt`).
 
--   `rtf` for Rich Text Format (`.rtf`) documents.
+-   `rtf` cho tài liệu Rich Text Format (`.rtf`).
 
--   `gfm` for a GitHub Flavored Markdown (`.md`) document.
+-   `gfm` cho tài liệu GitHub Flavored Markdown (`.md`).
 
--   `ipynb` for Jupyter Notebooks (`.ipynb`).
+-   `ipynb` cho Jupyter Notebooks (`.ipynb`).
 
-Remember, when generating a document to share with decision-makers, you can turn off the default display of code by setting global options in the document YAML:
+Hãy nhớ rằng, khi tạo tài liệu để chia sẻ với người ra quyết định, bạn có thể tắt hiển thị mã mặc định bằng cách thiết lập tùy chọn toàn cục trong YAML của tài liệu:
 
 ``` yaml
 execute:
   echo: false
 ```
 
-For `html` documents another option is to make the code chunks hidden by default, but visible with a click:
+Với tài liệu `html`, một tùy chọn khác là ẩn các khối mã theo mặc định, nhưng cho phép hiển thị khi nhấp chuột:
 
 ``` yaml
 format:
@@ -103,67 +103,67 @@ format:
     code: true
 ```
 
-## Presentations
+## Bài trình bày
 
-You can also use Quarto to produce presentations.
-You get less visual control than with a tool like Keynote or PowerPoint, but automatically inserting the results of your R code into a presentation can save a huge amount of time.
-Presentations work by dividing your content into slides, with a new slide beginning at each second (`##`) level header.
-Additionally, first (`#`) level headers indicate the beginning of a new section with a section title slide that is, by default, centered in the middle.
+Bạn cũng có thể sử dụng Quarto để tạo bài trình bày (presentation).
+Bạn có ít quyền kiểm soát trực quan hơn so với công cụ như Keynote hay PowerPoint, nhưng việc tự động chèn kết quả từ mã R vào bài trình bày có thể tiết kiệm rất nhiều thời gian.
+Bài trình bày hoạt động bằng cách chia nội dung thành các slide, với một slide mới bắt đầu tại mỗi tiêu đề cấp hai (`##`).
+Ngoài ra, tiêu đề cấp một (`#`) đánh dấu phần đầu của một phần mới với slide tiêu đề phần, mặc định được căn giữa.
 
-Quarto supports a variety of presentation formats, including:
+Quarto hỗ trợ nhiều định dạng bài trình bày, bao gồm:
 
-1.  `revealjs` - HTML presentation with revealjs
+1.  `revealjs` - Bài trình bày HTML với revealjs
 
-2.  `pptx` - PowerPoint presentation
+2.  `pptx` - Bài trình bày PowerPoint
 
-3.  `beamer` - PDF presentation with LaTeX Beamer.
+3.  `beamer` - Bài trình bày PDF với LaTeX Beamer.
 
-You can read more about creating presentations with Quarto at [https://quarto.org/docs/presentations](https://quarto.org/docs/presentations/).
+Bạn có thể đọc thêm về cách tạo bài trình bày với Quarto tại [https://quarto.org/docs/presentations](https://quarto.org/docs/presentations/).
 
-## Interactivity
+## Tính tương tác
 
-Just like any HTML document, HTML documents created with Quarto can contain interactive components as well.
-Here we introduce two options for including interactivity in your Quarto documents: htmlwidgets and Shiny.
+Giống như bất kỳ tài liệu HTML nào, tài liệu HTML được tạo bằng Quarto cũng có thể chứa các thành phần tương tác.
+Ở đây chúng tôi giới thiệu hai tùy chọn để thêm tính tương tác (interactivity) vào tài liệu Quarto của bạn: htmlwidgets và Shiny.
 
 ### htmlwidgets
 
-HTML is an interactive format, and you can take advantage of that interactivity with **htmlwidgets**, R functions that produce interactive HTML visualizations.
-For example, take the **leaflet** map below.
-If you're viewing this page on the web, you can drag the map around, zoom in and out, etc.
-You obviously can't do that in a book, so Quarto automatically inserts a static screenshot for you.
+HTML là một định dạng tương tác, và bạn có thể tận dụng tính tương tác đó với **htmlwidgets**, các hàm R tạo ra các trực quan hóa HTML tương tác.
+Ví dụ, hãy xem bản đồ **leaflet** bên dưới.
+Nếu bạn đang xem trang này trên web, bạn có thể kéo bản đồ, phóng to thu nhỏ, v.v.
+Rõ ràng bạn không thể làm điều đó trong sách, vì vậy Quarto tự động chèn ảnh chụp tĩnh cho bạn.
 
 ```{r}
 #| fig-alt: Leaflet map of Maungawhau / Mount Eden.
 library(leaflet)
 leaflet() |>
-  setView(174.764, -36.877, zoom = 16) |> 
+  setView(174.764, -36.877, zoom = 16) |>
   addTiles() |>
-  addMarkers(174.764, -36.877, popup = "Maungawhau") 
+  addMarkers(174.764, -36.877, popup = "Maungawhau")
 ```
 
-The great thing about htmlwidgets is that you don't need to know anything about HTML or JavaScript to use them.
-All the details are wrapped inside the package, so you don't need to worry about it.
+Điều tuyệt vời của htmlwidgets là bạn không cần biết gì về HTML hay JavaScript để sử dụng chúng.
+Tất cả chi tiết được đóng gói bên trong gói, nên bạn không cần phải lo lắng về điều đó.
 
-There are many packages that provide htmlwidgets, including:
+Có nhiều gói cung cấp htmlwidgets, bao gồm:
 
--   [**dygraphs**](https://rstudio.github.io/dygraphs) for interactive time series visualizations.
+-   [**dygraphs**](https://rstudio.github.io/dygraphs) cho trực quan hóa chuỗi thời gian tương tác.
 
--   [**DT**](https://rstudio.github.io/DT/) for interactive tables.
+-   [**DT**](https://rstudio.github.io/DT/) cho bảng tương tác.
 
--   [**threejs**](https://bwlewis.github.io/rthreejs) for interactive 3d plots.
+-   [**threejs**](https://bwlewis.github.io/rthreejs) cho biểu đồ 3d tương tác.
 
--   [**DiagrammeR**](https://rich-iannone.github.io/DiagrammeR) for diagrams (like flow charts and simple node-link diagrams).
+-   [**DiagrammeR**](https://rich-iannone.github.io/DiagrammeR) cho sơ đồ (như lưu đồ và sơ đồ nút-liên kết đơn giản).
 
-To learn more about htmlwidgets and see a complete list of packages that provide them visit <https://www.htmlwidgets.org>.
+Để tìm hiểu thêm về htmlwidgets và xem danh sách đầy đủ các gói cung cấp chúng, hãy truy cập <https://www.htmlwidgets.org>.
 
 ### Shiny
 
-htmlwidgets provide **client-side** interactivity --- all the interactivity happens in the browser, independently of R.
-On the one hand, that's great because you can distribute the HTML file without any connection to R.
-However, that fundamentally limits what you can do to things that have been implemented in HTML and JavaScript.
-An alternative approach is to use **shiny**, a package that allows you to create interactivity using R code, not JavaScript.
+htmlwidgets cung cấp tính tương tác **phía máy khách** (client-side) --- toàn bộ tương tác diễn ra trong trình duyệt, độc lập với R.
+Một mặt, điều đó rất tuyệt vì bạn có thể phân phối tệp HTML mà không cần kết nối với R.
+Tuy nhiên, điều đó về cơ bản giới hạn những gì bạn có thể làm trong phạm vi những thứ đã được triển khai bằng HTML và JavaScript.
+Một cách tiếp cận thay thế là sử dụng **shiny**, một gói cho phép bạn tạo tính tương tác bằng mã R, không phải JavaScript.
 
-To call Shiny code from a Quarto document, add `server: shiny` to the YAML header:
+Để gọi mã Shiny từ một tài liệu Quarto, hãy thêm `server: shiny` vào YAML header:
 
 ``` yaml
 title: "Shiny Web App"
@@ -171,7 +171,7 @@ format: html
 server: shiny
 ```
 
-Then you can use the "input" functions to add interactive components to the document:
+Sau đó bạn có thể sử dụng các hàm "input" để thêm các thành phần tương tác vào tài liệu:
 
 ```{r}
 #| eval: false
@@ -185,39 +185,39 @@ numericInput("age", "How old are you?", NA, min = 0, max = 150)
 #| echo: false
 #| out-width: null
 #| fig-alt: |
-#|   Two input boxes on top of each other. Top one says, "What is your 
+#|   Two input boxes on top of each other. Top one says, "What is your
 #|   name?", the bottom, "How old are you?".
 knitr::include_graphics("quarto/quarto-shiny.png")
 ```
 
-And you also need a code chunk with chunk option `context: server` which contains the code that needs to run in a Shiny server.
+Và bạn cũng cần một khối mã với tùy chọn khối `context: server` chứa mã cần chạy trong máy chủ Shiny.
 
-You can then refer to the values with `input$name` and `input$age`, and the code that uses them will be automatically re-run whenever they change.
+Sau đó bạn có thể tham chiếu đến các giá trị bằng `input$name` và `input$age`, và mã sử dụng chúng sẽ tự động được chạy lại mỗi khi chúng thay đổi.
 
-We can't show you a live shiny app here because shiny interactions occur on the **server-side**.
-This means that you can write interactive apps without knowing JavaScript, but you need a server to run them on.
-This introduces a logistical issue: Shiny apps need a Shiny server to be run online.
-When you run Shiny apps on your own computer, Shiny automatically sets up a Shiny server for you, but you need a public-facing Shiny server if you want to publish this sort of interactivity online.
-That's the fundamental trade-off of shiny: you can do anything in a shiny document that you can do in R, but it requires someone to be running R.
+Chúng tôi không thể hiển thị một ứng dụng shiny trực tiếp ở đây vì các tương tác shiny diễn ra **phía máy chủ** (server-side).
+Điều này có nghĩa là bạn có thể viết ứng dụng tương tác mà không cần biết JavaScript, nhưng bạn cần một máy chủ để chạy chúng.
+Điều này dẫn đến một vấn đề hậu cần: ứng dụng Shiny cần một máy chủ Shiny để chạy trực tuyến.
+Khi bạn chạy ứng dụng Shiny trên máy tính của mình, Shiny tự động thiết lập một máy chủ Shiny cho bạn, nhưng bạn cần một máy chủ Shiny công khai nếu muốn xuất bản loại tương tác này trực tuyến.
+Đó là sự đánh đổi cơ bản của shiny: bạn có thể làm bất cứ điều gì trong một tài liệu shiny mà bạn có thể làm trong R, nhưng nó yêu cầu ai đó phải chạy R.
 
-For learning more about Shiny, we recommend reading Mastering Shiny by Hadley Wickham, [https://mastering-shiny.org](https://mastering-shiny.org/).
+Để tìm hiểu thêm về Shiny, chúng tôi khuyên bạn đọc Mastering Shiny của Hadley Wickham, [https://mastering-shiny.org](https://mastering-shiny.org/).
 
-## Websites and books
+## Website và sách
 
-With a bit of additional infrastructure, you can use Quarto to generate a complete website or book:
+Với một chút cơ sở hạ tầng bổ sung, bạn có thể sử dụng Quarto để tạo một website hoàn chỉnh hoặc một cuốn sách:
 
--   Put your `.qmd` files in a single directory.
-    `index.qmd` will become the home page.
+-   Đặt các tệp `.qmd` của bạn trong một thư mục duy nhất.
+    `index.qmd` sẽ trở thành trang chủ.
 
--   Add a YAML file named `_quarto.yml` that provides the navigation for the site.
-    In this file, set the `project` type to either `book` or `website`, e.g.:
+-   Thêm một tệp YAML có tên `_quarto.yml` cung cấp điều hướng cho trang web.
+    Trong tệp này, thiết lập loại `project` là `book` hoặc `website`, ví dụ:
 
     ``` yaml
     project:
       type: book
     ```
 
-For example, the following `_quarto.yml` file creates a website from three source files: `index.qmd` (the home page), `viridis-colors.qmd`, and `terrain-colors.qmd`.
+Ví dụ, tệp `_quarto.yml` sau đây tạo một website từ ba tệp nguồn: `index.qmd` (trang chủ), `viridis-colors.qmd`, và `terrain-colors.qmd`.
 
 ```{r}
 #| echo: false
@@ -225,9 +225,9 @@ For example, the following `_quarto.yml` file creates a website from three sourc
 cat(readr::read_file("quarto/example-site.yml"))
 ```
 
-The `_quarto.yml` file you need for a book is very similarly structured.
-The following example shows how you can create a book with four chapters that renders to three different outputs (`html`, `pdf`, and `epub`).
-Once again, the source files are `.qmd` files.
+Tệp `_quarto.yml` cần cho một cuốn sách có cấu trúc rất tương tự.
+Ví dụ sau cho thấy cách bạn có thể tạo một cuốn sách với bốn chương biên dịch sang ba định dạng đầu ra khác nhau (`html`, `pdf`, và `epub`).
+Một lần nữa, các tệp nguồn là các tệp `.qmd`.
 
 ```{r}
 #| echo: false
@@ -235,37 +235,37 @@ Once again, the source files are `.qmd` files.
 cat(readr::read_file("quarto/example-book.yml"))
 ```
 
-We recommend that you use an RStudio project for your websites and books.
-Based on the `_quarto.yml` file, RStudio will recognize the type of project you're working on, and add a Build tab to the IDE that you can use to render and preview your websites and books.
-Both websites and books can also be rendered using `quarto::quarto_render()`.
+Chúng tôi khuyên bạn nên sử dụng một dự án RStudio (RStudio project) cho website và sách của bạn.
+Dựa trên tệp `_quarto.yml`, RStudio sẽ nhận diện loại dự án bạn đang làm việc, và thêm tab Build vào IDE để bạn có thể biên dịch và xem trước website và sách của mình.
+Cả website và sách cũng có thể được biên dịch bằng `quarto::quarto_render()`.
 
-Read more at <https://quarto.org/docs/websites> about Quarto websites and <https://quarto.org/docs/books> about books.
+Đọc thêm tại <https://quarto.org/docs/websites> về website Quarto và <https://quarto.org/docs/books> về sách.
 
-## Other formats
+## Các định dạng khác
 
-Quarto offers even more output formats:
+Quarto còn cung cấp thêm nhiều định dạng đầu ra nữa:
 
--   You can write journal articles using Quarto Journal Templates: <https://quarto.org/docs/journals/templates.html>.
+-   Bạn có thể viết bài báo khoa học sử dụng Quarto Journal Templates: <https://quarto.org/docs/journals/templates.html>.
 
--   You can output Quarto documents to Jupyter Notebooks with `format: ipynb`: <https://quarto.org/docs/reference/formats/ipynb.html>.
+-   Bạn có thể xuất tài liệu Quarto sang Jupyter Notebooks với `format: ipynb`: <https://quarto.org/docs/reference/formats/ipynb.html>.
 
-See <https://quarto.org/docs/output-formats/all-formats.html> for a list of even more formats.
+Xem <https://quarto.org/docs/output-formats/all-formats.html> để biết danh sách thêm nhiều định dạng khác.
 
-## Summary
+## Tóm tắt
 
-In this chapter we presented you a variety of options for communicating your results with Quarto, from static and interactive documents to presentations to websites and books.
+Trong chương này chúng tôi đã giới thiệu cho bạn nhiều tùy chọn khác nhau để truyền đạt kết quả của bạn với Quarto, từ tài liệu tĩnh và tương tác đến bài trình bày đến website và sách.
 
-To learn more about effective communication in these different formats, we recommend the following resources:
+Để tìm hiểu thêm về cách truyền đạt hiệu quả trong các định dạng khác nhau này, chúng tôi khuyên bạn tham khảo các tài nguyên sau:
 
--   To improve your presentation skills, try [*Presentation Patterns*](https://presentationpatterns.com/) by Neal Ford, Matthew McCollough, and Nathaniel Schutta.
-    It provides a set of effective patterns (both low- and high-level) that you can apply to improve your presentations.
+-   Để cải thiện kỹ năng trình bày, hãy thử [*Presentation Patterns*](https://presentationpatterns.com/) của Neal Ford, Matthew McCollough, và Nathaniel Schutta.
+    Cuốn sách cung cấp một tập hợp các mẫu hiệu quả (cả cấp thấp và cấp cao) mà bạn có thể áp dụng để cải thiện bài trình bày của mình.
 
--   If you give academic talks, you might like the [*Leek group guide to giving talks*](https://github.com/jtleek/talkguide).
+-   Nếu bạn thuyết trình học thuật, bạn có thể thích [*Leek group guide to giving talks*](https://github.com/jtleek/talkguide).
 
--   We haven't taken it ourselves, but we've heard good things about Matt McGarrity's online course on public speaking: <https://www.coursera.org/learn/public-speaking>.
+-   Chúng tôi chưa tự mình tham gia, nhưng đã nghe nhiều điều tốt về khóa học trực tuyến về diễn thuyết trước công chúng của Matt McGarrity: <https://www.coursera.org/learn/public-speaking>.
 
--   If you are creating many dashboards, make sure to read Stephen Few's [*Information Dashboard Design: The Effective Visual Communication of Data*](https://www.amazon.com/Information-Dashboard-Design-Effective-Communication/dp/0596100167).
-    It will help you create dashboards that are truly useful, not just pretty to look at.
+-   Nếu bạn tạo nhiều bảng điều khiển (dashboard), hãy chắc chắn đọc [*Information Dashboard Design: The Effective Visual Communication of Data*](https://www.amazon.com/Information-Dashboard-Design-Effective-Communication/dp/0596100167) của Stephen Few.
+    Cuốn sách sẽ giúp bạn tạo các bảng điều khiển thực sự hữu ích, không chỉ đẹp mắt.
 
--   Effectively communicating your ideas often benefits from some knowledge of graphic design.
-    Robin Williams' [*The Non-Designer's Design Book*](https://www.amazon.com/Non-Designers-Design-Book-4th/dp/0133966151) is a great place to start.
+-   Truyền đạt ý tưởng hiệu quả thường được hỗ trợ bởi một số kiến thức về thiết kế đồ họa.
+    [*The Non-Designer's Design Book*](https://www.amazon.com/Non-Designers-Design-Book-4th/dp/0133966151) của Robin Williams là một nơi tuyệt vời để bắt đầu.
