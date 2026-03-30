@@ -1,9 +1,12 @@
-# Danh sách Thuật ngữ Kỹ thuật Cần Xem xét - R4DS Tiếng Việt
+# Danh sách Thuật ngữ Kỹ thuật - R4DS Tiếng Việt
 
-## Mục đích
-Tài liệu này liệt kê TẤT CẢ các thuật ngữ kỹ thuật hiện đang được dịch sang tiếng Việt trong bản dịch R for Data Science. Bốn chuyên gia hiệu đính sẽ quyết định:
-- Thuật ngữ nào nên GIỮ NGUYÊN tiếng Anh (như package, geoms, aesthetic)
-- Thuật ngữ nào nên TIẾP TỤC DỊCH sang tiếng Việt (như khung dữ liệu, chuỗi)
+## ✅ QUYẾT ĐỊNH ĐÃ THỰC HIỆN
+
+**User decision (2026-03-30)**: "giữ tất cả trong tiếng anh" - Keep ALL technical terms in English.
+
+**Implementation status**: ✅ COMPLETED - All ~3,498 replacements done across 7 batches.
+
+Tất cả thuật ngữ kỹ thuật trong bản dịch R4DS tiếng Việt hiện đã sử dụng tiếng Anh.
 
 ## Chú giải
 - **Tình trạng hiện tại**: Cách thuật ngữ đang được sử dụng trong bản dịch
