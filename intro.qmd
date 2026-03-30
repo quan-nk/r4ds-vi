@@ -245,7 +245,7 @@ Xuyên suốt cuốn sách, chúng tôi sử dụng một bộ quy ước nhất
 
 -   Hàm được hiển thị bằng phông chữ mã và theo sau bởi dấu ngoặc đơn, như `sum()` hoặc `mean()`.
 
--   Các đối tượng R khác (như dữ liệu hoặc đối số của hàm) được hiển thị bằng phông chữ mã, không có dấu ngoặc đơn, như `flights` hoặc `x`.
+-   Các đối tượng R khác (như dữ liệu hoặc argument của hàm) được hiển thị bằng phông chữ mã, không có dấu ngoặc đơn, như `flights` hoặc `x`.
 
 -   Đôi khi, để làm rõ một đối tượng đến từ gói mở rộng nào, chúng tôi sẽ dùng tên gói mở rộng theo sau bởi hai dấu hai chấm, như `dplyr::mutate()` hoặc `nycflights13::flights`.
     Đây cũng là mã R hợp lệ.

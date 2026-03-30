@@ -145,7 +145,7 @@ label_info
 ```
 
 Rồi chúng ta dùng data frame mới để gắn nhãn trực tiếp ba nhóm, thay chú giải bằng nhãn đặt trên biểu đồ.
-Dùng đối số `fontface` và `size` để tùy chỉnh giao diện nhãn.
+Dùng argument `fontface` và `size` để tùy chỉnh giao diện nhãn.
 (`theme(legend.position = "none"`) tắt tất cả chú giải --- chúng ta sẽ nói thêm ngay.)
 
 ```{r}
@@ -218,7 +218,7 @@ Một vài ý tưởng:
     Ranh giới được định nghĩa bởi aesthetic `xmin`, `xmax`, `ymin`, `ymax`.
     Hoặc xem gói mở rộng [ggforce](https://ggforce.data-imaginist.com/index.html), cụ thể [`geom_mark_hull()`](https://ggforce.data-imaginist.com/reference/geom_mark_hull.html).
 
--   Dùng `geom_segment()` với đối số `arrow` để vẽ mũi tên chỉ đến điểm.
+-   Dùng `geom_segment()` với argument `arrow` để vẽ mũi tên chỉ đến điểm.
     Dùng aesthetic `x` và `y` cho vị trí bắt đầu, `xend` và `yend` cho vị trí kết thúc.
 
 Hàm tiện dụng khác để thêm chú thích là `annotate()`.
@@ -272,7 +272,7 @@ Giới hạn duy nhất là trí tưởng tượng (và sự kiên nhẫn địn
 
 4.  Đối số nào của `geom_label()` kiểm soát giao diện hộp nền?
 
-5.  Bốn đối số của `arrow()` là gì?
+5.  Bốn argument của `arrow()` là gì?
     Chúng hoạt động thế nào?
     Tạo chuỗi biểu đồ minh họa các tùy chọn quan trọng nhất.
 
@@ -312,7 +312,7 @@ Có nhiều thang đo không mặc định bạn sẽ học dưới đây.
 Thang đo mặc định được chọn kỹ để hoạt động tốt với nhiều đầu vào.
 Tuy nhiên, bạn có thể muốn ghi đè mặc định vì hai lý do:
 
--   Bạn muốn chỉnh một số tham số của thang đo mặc định, như thay đổi break trên trục hoặc nhãn chú giải.
+-   Bạn muốn chỉnh một số parameter của thang đo mặc định, như thay đổi break trên trục hoặc nhãn chú giải.
 
 -   Bạn muốn thay thế hoàn toàn thang đo, dùng thuật toán khác.
     Thường bạn làm tốt hơn mặc định vì hiểu dữ liệu hơn.
@@ -322,7 +322,7 @@ Tuy nhiên, bạn có thể muốn ghi đè mặc định vì hai lý do:
 Gộp lại, trục và chú giải được gọi là **hướng dẫn** (guide).
 Trục dùng cho aesthetic x và y; chú giải dùng cho mọi thứ khác.
 
-Có hai đối số chính ảnh hưởng giao diện vạch trục và khóa chú giải: `breaks` và `labels`.
+Có hai argument chính ảnh hưởng giao diện vạch trục và khóa chú giải: `breaks` và `labels`.
 Breaks kiểm soát vị trí vạch, hoặc giá trị liên kết với khóa.
 Labels kiểm soát nhãn văn bản của mỗi vạch/khóa.
 Cách dùng phổ biến nhất của `breaks` là ghi đè lựa chọn mặc định:
@@ -405,7 +405,7 @@ presidential |>
   scale_x_date(name = NULL, breaks = presidential$start, date_labels = "'%y")
 ```
 
-Lưu ý rằng chúng ta trích xuất biến `start` làm vector với `presidential$start` vì không thể dùng ánh xạ aesthetic cho đối số này.
+Lưu ý rằng chúng ta trích xuất biến `start` làm vector với `presidential$start` vì không thể dùng ánh xạ aesthetic cho argument này.
 Cũng lưu ý rằng đặc tả break và label cho thang đo ngày và ngày-giờ hơi khác:
 
 -   `date_labels` nhận đặc tả định dạng, cùng dạng với `parse_datetime()`.
@@ -460,7 +460,7 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
   guides(color = guide_legend(nrow = 2, override.aes = list(size = 4)))
 ```
 
-Lưu ý tên đối số trong `guides()` khớp với tên aesthetic, giống như trong `labs()`.
+Lưu ý tên argument trong `guides()` khớp với tên aesthetic, giống như trong `labs()`.
 
 ### Thay thế thang đo
 

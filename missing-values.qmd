@@ -53,7 +53,7 @@ treatment |>
 ```
 
 Cách xử lý này đôi khi được gọi là "lấp đầy bằng quan sát cuối cùng" (last observation carried forward), hay viết tắt là **locf**.
-Bạn có thể sử dụng đối số `.direction` để lấp đầy các missing value được tạo ra theo những cách phức tạp hơn.
+Bạn có thể sử dụng argument `.direction` để lấp đầy các missing value được tạo ra theo những cách phức tạp hơn.
 
 ### Giá trị cố định
 
@@ -68,7 +68,7 @@ coalesce(x, 0)
 Đôi khi bạn gặp vấn đề ngược lại: một giá trị cụ thể thực ra đại diện cho missing value.
 Điều này thường xảy ra với dữ liệu được tạo bởi phần mềm cũ không có cách biểu diễn missing value đúng cách, nên phải sử dụng một giá trị đặc biệt như 99 hoặc -999.
 
-Nếu có thể, hãy xử lý vấn đề này khi đọc dữ liệu, ví dụ bằng cách sử dụng đối số `na` của `readr::read_csv()`, như `read_csv(path, na = "99")`.
+Nếu có thể, hãy xử lý vấn đề này khi đọc dữ liệu, ví dụ bằng cách sử dụng argument `na` của `readr::read_csv()`, như `read_csv(path, na = "99")`.
 Nếu bạn phát hiện vấn đề muộn hơn, hoặc nguồn dữ liệu không cung cấp cách xử lý khi đọc, bạn có thể sử dụng `dplyr::na_if()`:
 
 ```{r}

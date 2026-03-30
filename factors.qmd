@@ -173,7 +173,7 @@ ggplot(relig_summary, aes(x = tvhours, y = relig)) +
 
 Biểu đồ này khó đọc vì không có mô hình tổng thể nào.
 Chúng ta có thể cải thiện nó bằng cách sắp xếp lại các mức của `relig` sử dụng `fct_reorder()`.
-`fct_reorder()` nhận ba đối số:
+`fct_reorder()` nhận ba argument:
 
 -   `.f`, nhân tố mà bạn muốn thay đổi các mức.
 -   `.x`, một vector số mà bạn muốn dùng để sắp xếp lại các mức.
@@ -401,7 +401,7 @@ Hãy đọc tài liệu để tìm hiểu về `fct_lump_min()` và `fct_lump_pr
 
 3.  Lưu ý rằng có 9 nhóm (không tính other) trong ví dụ `fct_lump` ở trên.
     Tại sao không phải 10?
-    (Gợi ý: gõ `?fct_lump`, và tìm giá trị mặc định cho đối số `other_level` là "Other".)
+    (Gợi ý: gõ `?fct_lump`, và tìm giá trị mặc định cho argument `other_level` là "Other".)
 
 ## Nhân tố có thứ tự {#sec-ordered-factors}
 

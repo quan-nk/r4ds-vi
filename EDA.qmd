@@ -171,7 +171,7 @@ ggplot(diamonds, aes(x = y)) +
   coord_cartesian(ylim = c(0, 50))
 ```
 
-`coord_cartesian()` cũng có đối số `xlim()` khi bạn cần phóng to trục x.
+`coord_cartesian()` cũng có argument `xlim()` khi bạn cần phóng to trục x.
 ggplot2 cũng có hàm `xlim()` và `ylim()` hoạt động hơi khác: chúng loại bỏ dữ liệu ngoài giới hạn.
 
 Điều này cho thấy có ba giá trị bất thường: 0, ~30, và ~60.

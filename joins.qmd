@@ -274,8 +274,8 @@ flights2 |>
   left_join(planes, join_by(tailnum))
 ```
 
-Lưu ý rằng các biến `year` được phân biệt trong đầu ra bằng hậu tố (`year.x` và `year.y`), cho bạn biết biến đến từ đối số `x` hay `y`.
-Bạn có thể ghi đè hậu tố mặc định bằng đối số `suffix`.
+Lưu ý rằng các biến `year` được phân biệt trong đầu ra bằng hậu tố (`year.x` và `year.y`), cho bạn biết biến đến từ argument `x` hay `y`.
+Bạn có thể ghi đè hậu tố mặc định bằng argument `suffix`.
 
 `join_by(tailnum)` là viết tắt của `join_by(tailnum == tailnum)`.
 Điều quan trọng là phải biết về dạng đầy đủ hơn này vì hai lý do.

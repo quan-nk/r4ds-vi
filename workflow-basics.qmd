@@ -83,7 +83,7 @@ Sử dụng chú thích để giải thích *tại sao* của mã, không phải
 Nếu bạn mô tả mọi bước trong chú thích, rồi thay đổi mã, bạn sẽ phải nhớ cập nhật chú thích nữa, nếu không sẽ gây nhầm lẫn khi bạn quay lại mã trong tương lai.
 
 Tìm hiểu *tại sao* điều gì đó được thực hiện khó hơn nhiều, nếu không muốn nói là không thể.
-Ví dụ, `geom_smooth()` có đối số gọi là `span`, kiểm soát độ mượt của đường cong, với giá trị lớn hơn tạo đường cong mượt hơn.
+Ví dụ, `geom_smooth()` có argument gọi là `span`, kiểm soát độ mượt của đường cong, với giá trị lớn hơn tạo đường cong mượt hơn.
 Giả sử bạn quyết định thay đổi giá trị `span` từ mặc định 0.75 thành 0.9: người đọc tương lai dễ dàng hiểu *cái gì* đang xảy ra, nhưng trừ khi bạn ghi lại suy nghĩ trong chú thích, không ai sẽ hiểu *tại sao* bạn thay đổi giá trị mặc định.
 
 Với mã phân tích dữ liệu, sử dụng chú thích để giải thích kế hoạch tổng thể và ghi lại các phát hiện quan trọng khi bạn gặp chúng.
@@ -160,20 +160,20 @@ Hãy thử sử dụng `seq()`, tạo ra các **dãy số** đều đặn, và t
 Gõ `se` và nhấn TAB.
 Một cửa sổ bật lên hiển thị các gợi ý hoàn thành.
 Chỉ định `seq()` bằng cách gõ thêm (chữ `q`) để phân biệt hoặc bằng cách sử dụng mũi tên ↑/↓ để chọn.
-Chú ý tooltip nổi xuất hiện, nhắc bạn về các đối số và mục đích của hàm.
+Chú ý tooltip nổi xuất hiện, nhắc bạn về các argument và mục đích của hàm.
 Nếu bạn muốn thêm trợ giúp, nhấn F1 để xem tất cả chi tiết trong tab trợ giúp ở bảng phải bên dưới.
 
 Khi bạn đã chọn hàm mong muốn, nhấn TAB lần nữa.
 RStudio sẽ thêm cặp ngoặc mở (`(`) và đóng (`)`) cho bạn.
-Gõ tên đối số đầu tiên, `from`, và đặt bằng `1`.
-Sau đó, gõ tên đối số thứ hai, `to`, và đặt bằng `10`.
+Gõ tên argument đầu tiên, `from`, và đặt bằng `1`.
+Sau đó, gõ tên argument thứ hai, `to`, và đặt bằng `10`.
 Cuối cùng, nhấn return.
 
 ```{r}
 seq(from = 1, to = 10)
 ```
 
-Chúng ta thường bỏ qua tên của các đối số đầu tiên trong lệnh gọi hàm, vì vậy chúng ta có thể viết lại như sau:
+Chúng ta thường bỏ qua tên của các argument đầu tiên trong lệnh gọi hàm, vì vậy chúng ta có thể viết lại như sau:
 
 ```{r}
 seq(1, 10)

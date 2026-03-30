@@ -228,7 +228,7 @@ df1 |>
   unnest_wider(y)
 ```
 
-Mặc định, tên của các cột mới chỉ lấy từ tên của các phần tử danh sách, nhưng bạn có thể dùng đối số `names_sep` để yêu cầu kết hợp tên cột và tên phần tử.
+Mặc định, tên của các cột mới chỉ lấy từ tên của các phần tử danh sách, nhưng bạn có thể dùng argument `names_sep` để yêu cầu kết hợp tên cột và tên phần tử.
 Điều này hữu ích để phân biệt các tên bị trùng.
 
 ```{r}

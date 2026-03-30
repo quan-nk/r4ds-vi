@@ -161,7 +161,7 @@ Hãy áp dụng những ý tưởng này vào dữ liệu thư viện Seattle đ
 Chúng ta sẽ phân vùng theo `CheckoutYear`, vì có khả năng một số phân tích chỉ muốn xem dữ liệu gần đây và phân vùng theo năm cho ra 18 khối có kích thước hợp lý.
 
 Để viết lại dữ liệu, chúng ta định nghĩa phân vùng bằng `dplyr::group_by()` và sau đó lưu các phân vùng vào một thư mục với `arrow::write_dataset()`.
-`write_dataset()` có hai đối số quan trọng: thư mục nơi chúng ta sẽ tạo các tệp và định dạng chúng ta sẽ sử dụng.
+`write_dataset()` có hai argument quan trọng: thư mục nơi chúng ta sẽ tạo các tệp và định dạng chúng ta sẽ sử dụng.
 
 ```{r}
 pq_path <- "data/seattle-library-checkouts"

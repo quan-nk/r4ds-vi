@@ -666,10 +666,10 @@ Cách dễ nhất để làm điều đó là đặt `error: true` trên khối 
 
 ## Phần đầu YAML
 
-Bạn có thể kiểm soát nhiều cài đặt "toàn bộ tài liệu" khác bằng cách điều chỉnh các tham số của phần đầu YAML.
+Bạn có thể kiểm soát nhiều cài đặt "toàn bộ tài liệu" khác bằng cách điều chỉnh các parameter của phần đầu YAML.
 Bạn có thể thắc mắc YAML là viết tắt của gì: đó là "YAML Ain't Markup Language", được thiết kế để biểu diễn dữ liệu phân cấp theo cách dễ đọc và viết cho con người.
 Quarto sử dụng nó để kiểm soát nhiều chi tiết của đầu ra.
-Ở đây chúng ta sẽ thảo luận ba nội dung: tài liệu độc lập, tham số tài liệu, và thư mục tham khảo.
+Ở đây chúng ta sẽ thảo luận ba nội dung: tài liệu độc lập, parameter tài liệu, và thư mục tham khảo.
 
 ### Tài liệu độc lập
 
@@ -688,12 +688,12 @@ Tệp kết quả sẽ hoàn toàn độc lập, không cần tệp bên ngoài 
 
 ### Tham số
 
-Tài liệu Quarto có thể bao gồm một hoặc nhiều tham số (parameter) mà giá trị của chúng có thể được đặt khi bạn biên dịch báo cáo.
+Tài liệu Quarto có thể bao gồm một hoặc nhiều parameter (parameter) mà giá trị của chúng có thể được đặt khi bạn biên dịch báo cáo.
 Tham số hữu ích khi bạn muốn biên dịch lại cùng một báo cáo với các giá trị khác nhau cho các đầu vào chính.
 Ví dụ, bạn có thể đang tạo báo cáo bán hàng theo chi nhánh, kết quả thi theo sinh viên, hoặc tóm tắt nhân khẩu học theo quốc gia.
-Để khai báo một hoặc nhiều tham số, sử dụng trường `params`.
+Để khai báo một hoặc nhiều parameter, sử dụng trường `params`.
 
-Ví dụ này sử dụng tham số `my_class` để xác định lớp xe nào sẽ hiển thị:
+Ví dụ này sử dụng parameter `my_class` để xác định lớp xe nào sẽ hiển thị:
 
 ```{r}
 #| echo: false
@@ -702,11 +702,11 @@ Ví dụ này sử dụng tham số `my_class` để xác định lớp xe nào 
 cat(readr::read_file("quarto/fuel-economy.qmd"))
 ```
 
-Như bạn có thể thấy, tham số có sẵn trong các khối mã dưới dạng danh sách chỉ đọc có tên `params`.
+Như bạn có thể thấy, parameter có sẵn trong các khối mã dưới dạng danh sách chỉ đọc có tên `params`.
 
 Bạn có thể viết vector nguyên tử trực tiếp vào phần đầu YAML.
-Bạn cũng có thể chạy biểu thức R tùy ý bằng cách thêm tiền tố `!expr` trước giá trị tham số.
-Đây là cách tốt để chỉ định tham số ngày/giờ.
+Bạn cũng có thể chạy biểu thức R tùy ý bằng cách thêm tiền tố `!expr` trước giá trị parameter.
+Đây là cách tốt để chỉ định parameter ngày/giờ.
 
 ``` yaml
 params:
@@ -833,7 +833,7 @@ Chúng tôi đã rút ra từ kinh nghiệm của mình và lời khuyên của 
 
 Trong chương này, chúng tôi đã giới thiệu Quarto để soạn thảo và xuất bản tài liệu tính toán tái tạo bao gồm mã nguồn và văn bản của bạn ở cùng một nơi.
 Bạn đã học về cách viết tài liệu Quarto trong RStudio với trình soạn thảo trực quan hoặc trình soạn thảo mã nguồn, cách khối mã hoạt động và cách tùy chỉnh các tùy chọn cho chúng, cách bao gồm hình ảnh và bảng trong tài liệu Quarto, và các tùy chọn bộ nhớ đệm cho tính toán.
-Ngoài ra, bạn đã học về cách điều chỉnh các tùy chọn phần đầu YAML để tạo tài liệu độc lập hoặc tài liệu có tham số cũng như bao gồm trích dẫn và thư mục tham khảo.
+Ngoài ra, bạn đã học về cách điều chỉnh các tùy chọn phần đầu YAML để tạo tài liệu độc lập hoặc tài liệu có parameter cũng như bao gồm trích dẫn và thư mục tham khảo.
 Chúng tôi cũng đã cung cấp một số mẹo khắc phục sự cố và quy trình làm việc.
 
 Mặc dù phần giới thiệu này đủ để giúp bạn bắt đầu với Quarto, vẫn còn rất nhiều điều để học.

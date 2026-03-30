@@ -176,7 +176,7 @@ billboard |>
   )
 ```
 
-Sau dữ liệu, có ba đối số quan trọng:
+Sau dữ liệu, có ba argument quan trọng:
 
 -   `cols` chỉ định cột nào cần được xoay, tức là cột nào không phải là biến. Đối số này sử dụng cùng cú pháp với `select()` nên ở đây chúng ta có thể dùng `!c(artist, track, date.entered)` hoặc `starts_with("wk")`.
 -   `names_to` đặt tên cho biến được lưu trong tên cột, chúng ta đặt tên biến đó là `week`.
@@ -390,7 +390,7 @@ household
 Tập dữ liệu này chứa dữ liệu về năm gia đình, với tên và ngày sinh của tối đa hai con.
 Thách thức mới trong tập dữ liệu này là tên cột chứa tên của hai biến (`dob`, `name`) và giá trị của một biến khác (`child`, với giá trị 1 hoặc 2).
 Để giải quyết vấn đề này, chúng ta lại cần cung cấp một vector cho `names_to` nhưng lần này chúng ta sử dụng giá trị đặc biệt `".value"`; đây không phải tên của một biến mà là một giá trị đặc biệt cho `pivot_longer()` biết phải làm điều gì đó khác.
-Điều này ghi đè đối số `values_to` thông thường để sử dụng thành phần đầu tiên của tên cột được xoay làm tên biến trong đầu ra.
+Điều này ghi đè argument `values_to` thông thường để sử dụng thành phần đầu tiên của tên cột được xoay làm tên biến trong đầu ra.
 
 ```{r}
 household |>

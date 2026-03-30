@@ -71,7 +71,7 @@ Gói mở rộng này sử dụng giao thức ODBC được nhiều DBMS hỗ tr
 odbc yêu cầu thêm một chút thiết lập vì bạn cũng cần cài đặt driver ODBC và cho gói mở rộng odbc biết nơi tìm nó.
 
 Cụ thể, bạn tạo kết nối database bằng `DBI::dbConnect()`.
-Đối số đầu tiên chọn DBMS[^databases-2], sau đó đối số thứ hai và các đối số tiếp theo mô tả cách kết nối tới nó (tức là nó ở đâu và thông tin xác thực bạn cần để truy cập).
+Đối số đầu tiên chọn DBMS[^databases-2], sau đó argument thứ hai và các argument tiếp theo mô tả cách kết nối tới nó (tức là nó ở đâu và thông tin xác thực bạn cần để truy cập).
 Đoạn mã sau đây cho thấy vài ví dụ điển hình:
 
 [^databases-2]: Thường đây là hàm duy nhất bạn sẽ dùng từ gói mở rộng client, nên chúng tôi khuyên bạn dùng `::` để lấy riêng hàm đó, thay vì tải toàn bộ gói mở rộng bằng `library()`.
@@ -109,7 +109,7 @@ con <- DBI::dbConnect(duckdb::duckdb())
 
 duckdb là một database hiệu năng cao được thiết kế rất phù hợp cho nhu cầu của nhà khoa học dữ liệu.
 Chúng ta dùng nó ở đây vì rất dễ bắt đầu, nhưng nó cũng có khả năng xử lý hàng gigabyte dữ liệu với tốc độ cao.
-Nếu bạn muốn dùng duckdb cho một dự án phân tích dữ liệu thực tế, bạn cũng cần cung cấp đối số `dbdir` để tạo database lâu dài và cho duckdb biết nơi lưu nó.
+Nếu bạn muốn dùng duckdb cho một dự án phân tích dữ liệu thực tế, bạn cũng cần cung cấp argument `dbdir` để tạo database lâu dài và cho duckdb biết nơi lưu nó.
 Giả sử bạn đang dùng dự án (project) (@sec-workflow-scripts-projects), việc lưu nó trong thư mục `duckdb` của dự án hiện tại là hợp lý:
 
 ```{r}
@@ -121,7 +121,7 @@ con <- DBI::dbConnect(duckdb::duckdb(), dbdir = "duckdb")
 
 Vì đây là database mới, chúng ta cần bắt đầu bằng việc thêm dữ liệu vào.
 Ở đây chúng ta sẽ thêm các tập dữ liệu `mpg` và `diamonds` từ ggplot2 bằng `DBI::dbWriteTable()`.
-Cách dùng đơn giản nhất của `dbWriteTable()` cần ba đối số: một kết nối database, tên bảng cần tạo trong database, và một data frame chứa dữ liệu.
+Cách dùng đơn giản nhất của `dbWriteTable()` cần ba argument: một kết nối database, tên bảng cần tạo trong database, và một data frame chứa dữ liệu.
 
 ```{r}
 dbWriteTable(con, "mpg", ggplot2::mpg)

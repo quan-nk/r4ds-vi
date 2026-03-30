@@ -98,9 +98,9 @@ x == c(1, 2)
 
 Chuyện gì đang xảy ra?
 Máy tính lưu trữ số với một số lượng chữ số thập phân cố định nên không có cách nào biểu diễn chính xác 1/49 hoặc `sqrt(2)` và các phép tính tiếp theo sẽ bị sai lệch rất nhỏ.
-Chúng ta có thể xem giá trị chính xác bằng cách gọi `print()` với đối số `digits`[^logicals-1]:
+Chúng ta có thể xem giá trị chính xác bằng cách gọi `print()` với argument `digits`[^logicals-1]:
 
-[^logicals-1]: R thường tự gọi print cho bạn (tức là `x` là cách viết tắt của `print(x)`), nhưng việc gọi tường minh sẽ hữu ích nếu bạn muốn cung cấp các đối số khác.
+[^logicals-1]: R thường tự gọi print cho bạn (tức là `x` là cách viết tắt của `print(x)`), nhưng việc gọi tường minh sẽ hữu ích nếu bạn muốn cung cấp các argument khác.
 
 ```{r}
 print(x, digits = 16)
@@ -415,7 +415,7 @@ Có hai công cụ quan trọng cho việc này: `if_else()` và `case_when()`.
 ### `if_else()`
 
 Nếu bạn muốn sử dụng một giá trị khi điều kiện là `TRUE` và một giá trị khác khi điều kiện là `FALSE`, bạn có thể sử dụng `dplyr::if_else()`[^logicals-4].
-Bạn sẽ luôn sử dụng ba đối số đầu tiên của `if_else()`. Đối số thứ nhất, `condition`, là một vector logic, đối số thứ hai, `true`, cho kết quả khi điều kiện đúng, và đối số thứ ba, `false`, cho kết quả khi điều kiện sai.
+Bạn sẽ luôn sử dụng ba argument đầu tiên của `if_else()`. Đối số thứ nhất, `condition`, là một vector logic, argument thứ hai, `true`, cho kết quả khi điều kiện đúng, và argument thứ ba, `false`, cho kết quả khi điều kiện sai.
 
 [^logicals-4]: `if_else()` của dplyr rất giống với `ifelse()` của base R.
     Có hai ưu điểm chính của `if_else()` so với `ifelse()`: bạn có thể chọn điều gì xảy ra với missing value, và `if_else()` có nhiều khả năng hơn để đưa ra lỗi có ý nghĩa nếu các biến của bạn có kiểu không tương thích.
@@ -427,20 +427,20 @@ x <- c(-3:3, NA)
 if_else(x > 0, "+ve", "-ve")
 ```
 
-Có một đối số thứ tư tùy chọn, `missing`, sẽ được sử dụng nếu đầu vào là `NA`:
+Có một argument thứ tư tùy chọn, `missing`, sẽ được sử dụng nếu đầu vào là `NA`:
 
 ```{r}
 if_else(x > 0, "+ve", "-ve", "???")
 ```
 
-Bạn cũng có thể sử dụng vector cho các đối số `true` và `false`.
+Bạn cũng có thể sử dụng vector cho các argument `true` và `false`.
 Ví dụ, điều này cho phép chúng ta tạo một phiên bản tối giản của `abs()`:
 
 ```{r}
 if_else(x < 0, -x, x)
 ```
 
-Cho đến nay tất cả các đối số đều sử dụng cùng một vector, nhưng tất nhiên bạn có thể kết hợp linh hoạt.
+Cho đến nay tất cả các argument đều sử dụng cùng một vector, nhưng tất nhiên bạn có thể kết hợp linh hoạt.
 Ví dụ, bạn có thể triển khai một phiên bản đơn giản của `coalesce()` như thế này:
 
 ```{r}

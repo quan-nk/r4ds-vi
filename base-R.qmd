@@ -393,7 +393,7 @@ Chúng tôi không khuyến khích dùng nó khi lập trình, vì việc đơn 
 purrr có một hàm tương tự gọi là `map_vec()` mà chúng tôi chưa đề cập trong @sec-iteration.
 
 base R cung cấp phiên bản nghiêm ngặt hơn của `sapply()` gọi là `vapply()`, viết tắt của **v**ector apply.
-Nó nhận thêm một đối số (argument) chỉ định kiểu mong đợi, đảm bảo việc đơn giản hóa xảy ra giống nhau bất kể đầu vào.
+Nó nhận thêm một argument (argument) chỉ định kiểu mong đợi, đảm bảo việc đơn giản hóa xảy ra giống nhau bất kể đầu vào.
 Ví dụ, chúng ta có thể thay thế lệnh `sapply()` ở trên bằng `vapply()` này, trong đó chúng ta chỉ định rằng chúng ta mong đợi `is.numeric()` trả về vector logic có độ dài 1:
 
 ```{r}

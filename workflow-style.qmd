@@ -118,8 +118,8 @@ flights |>
 flights|>filter(!is.na(arr_delay), !is.na(tailnum))|>count(dest)
 ```
 
-Nếu hàm bạn đang dẫn vào có đối số được đặt tên (như `mutate()` hoặc `summarize()`), đặt mỗi đối số trên một dòng mới.
-Nếu hàm không có đối số được đặt tên (như `select()` hoặc `filter()`), giữ mọi thứ trên một dòng trừ khi không vừa, trong trường hợp đó bạn nên đặt mỗi đối số trên dòng riêng.
+Nếu hàm bạn đang dẫn vào có argument được đặt tên (như `mutate()` hoặc `summarize()`), đặt mỗi argument trên một dòng mới.
+Nếu hàm không có argument được đặt tên (như `select()` hoặc `filter()`), giữ mọi thứ trên một dòng trừ khi không vừa, trong trường hợp đó bạn nên đặt mỗi argument trên dòng riêng.
 
 ```{r}
 #| eval: false
@@ -141,7 +141,7 @@ flights |>
 
 Sau bước đầu tiên của pipeline, thụt lề mỗi dòng hai dấu cách.
 RStudio sẽ tự động đặt dấu cách cho bạn sau khi xuống dòng theo sau `|>`.
-Nếu bạn đặt mỗi đối số trên dòng riêng, thụt lề thêm hai dấu cách nữa.
+Nếu bạn đặt mỗi argument trên dòng riêng, thụt lề thêm hai dấu cách nữa.
 Đảm bảo `)` nằm trên dòng riêng, và không thụt lề để khớp với vị trí ngang của tên hàm.
 
 ```{r}
@@ -210,7 +210,7 @@ flights |>
   geom_line()
 ```
 
-Một lần nữa, nếu bạn không thể đặt tất cả đối số của hàm trên một dòng, đặt mỗi đối số trên dòng riêng:
+Một lần nữa, nếu bạn không thể đặt tất cả argument của hàm trên một dòng, đặt mỗi argument trên dòng riêng:
 
 ```{r}
 #| eval: false
