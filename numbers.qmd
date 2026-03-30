@@ -1,24 +1,24 @@
-# Numbers {#sec-numbers}
+# Số {#sec-numbers}
 
 ```{r}
 #| echo: false
 source("_common.R")
 ```
 
-## Introduction
+## Giới thiệu
 
-Numeric vectors are the backbone of data science, and you've already used them a bunch of times earlier in the book.
-Now it's time to systematically survey what you can do with them in R, ensuring that you're well situated to tackle any future problem involving numeric vectors.
+Vector số (numeric vector) là xương sống của khoa học dữ liệu, và bạn đã sử dụng chúng rất nhiều lần ở phần trước của cuốn sách.
+Bây giờ là lúc khảo sát một cách có hệ thống những gì bạn có thể làm với chúng trong R, đảm bảo rằng bạn có đủ khả năng xử lý bất kỳ vấn đề nào liên quan đến vector số trong tương lai.
 
-We'll start by giving you a couple of tools to make numbers if you have strings, and then going into a little more detail of `count()`.
-Then we'll dive into various numeric transformations that pair well with `mutate()`, including more general transformations that can be applied to other types of vectors, but are often used with numeric vectors.
-We'll finish off by covering the summary functions that pair well with `summarize()` and show you how they can also be used with `mutate()`.
+Chúng ta sẽ bắt đầu bằng một vài công cụ để tạo số từ chuỗi ký tự, sau đó đi sâu hơn một chút vào `count()`.
+Tiếp theo, chúng ta sẽ khám phá các phép biến đổi (transformation) số khác nhau phù hợp với `mutate()`, bao gồm các phép biến đổi tổng quát hơn có thể áp dụng cho các loại vector khác nhưng thường được dùng với vector số.
+Cuối cùng, chúng ta sẽ đề cập đến các hàm tóm tắt (summary function) phù hợp với `summarize()` và chỉ cho bạn cách chúng cũng có thể được sử dụng với `mutate()`.
 
-### Prerequisites
+### Điều kiện tiên quyết
 
-This chapter mostly uses functions from base R, which are available without loading any packages.
-But we still need the tidyverse because we'll use these base R functions inside of tidyverse functions like `mutate()` and `filter()`.
-Like in the last chapter, we'll use real examples from nycflights13, as well as toy examples made with `c()` and `tribble()`.
+Chương này chủ yếu sử dụng các hàm từ R cơ sở (base R), có sẵn mà không cần tải bất kỳ gói nào.
+Nhưng chúng ta vẫn cần tidyverse vì chúng ta sẽ sử dụng các hàm R cơ sở bên trong các hàm tidyverse như `mutate()` và `filter()`.
+Giống như chương trước, chúng ta sẽ dùng các ví dụ thực từ nycflights13, cũng như các ví dụ đơn giản được tạo bằng `c()` và `tribble()`.
 
 ```{r}
 #| label: setup
@@ -27,162 +27,162 @@ library(tidyverse)
 library(nycflights13)
 ```
 
-## Making numbers
+## Tạo số
 
-In most cases, you'll get numbers already recorded in one of R's numeric types: integer or double.
-In some cases, however, you'll encounter them as strings, possibly because you've created them by pivoting from column headers or because something has gone wrong in your data import process.
+Trong hầu hết các trường hợp, bạn sẽ nhận được số đã được lưu ở một trong các kiểu số của R: số nguyên (integer) hoặc số thực (double).
+Tuy nhiên, trong một số trường hợp, bạn sẽ gặp chúng dưới dạng chuỗi ký tự, có thể vì bạn đã tạo chúng bằng cách xoay (pivot) từ tiêu đề cột hoặc vì có gì đó sai trong quá trình nhập dữ liệu.
 
-readr provides two useful functions for parsing strings into numbers: `parse_double()` and `parse_number()`.
-Use `parse_double()` when you have numbers that have been written as strings:
+readr cung cấp hai hàm hữu ích để phân tích cú pháp chuỗi ký tự thành số: `parse_double()` và `parse_number()`.
+Sử dụng `parse_double()` khi bạn có các số đã được viết dưới dạng chuỗi ký tự:
 
 ```{r}
 x <- c("1.2", "5.6", "1e3")
 parse_double(x)
 ```
 
-Use `parse_number()` when the string contains non-numeric text that you want to ignore.
-This is particularly useful for currency data and percentages:
+Sử dụng `parse_number()` khi chuỗi ký tự chứa văn bản không phải số mà bạn muốn bỏ qua.
+Điều này đặc biệt hữu ích cho dữ liệu tiền tệ và phần trăm:
 
 ```{r}
 x <- c("$1,234", "USD 3,513", "59%")
 parse_number(x)
 ```
 
-## Counts {#sec-counts}
+## Đếm {#sec-counts}
 
-It's surprising how much data science you can do with just counts and a little basic arithmetic, so dplyr strives to make counting as easy as possible with `count()`.
-This function is great for quick exploration and checks during analysis:
+Thật ngạc nhiên là bạn có thể làm được bao nhiêu việc trong khoa học dữ liệu chỉ với phép đếm và một chút số học cơ bản, vì vậy dplyr cố gắng làm cho việc đếm dễ dàng nhất có thể với `count()`.
+Hàm này rất tốt cho việc khám phá nhanh và kiểm tra trong quá trình phân tích:
 
 ```{r}
 flights |> count(dest)
 ```
 
-(Despite the advice in @sec-workflow-style, we usually put `count()` on a single line because it's usually used at the console for a quick check that a calculation is working as expected.)
+(Mặc dù có lời khuyên trong @sec-workflow-style, chúng ta thường đặt `count()` trên một dòng đơn vì nó thường được dùng tại console để kiểm tra nhanh xem một phép tính có hoạt động đúng như mong đợi không.)
 
-If you want to see the most common values, add `sort = TRUE`:
+Nếu bạn muốn xem các giá trị phổ biến nhất, thêm `sort = TRUE`:
 
 ```{r}
 flights |> count(dest, sort = TRUE)
 ```
 
-And remember that if you want to see all the values, you can use `|> View()` or `|> print(n = Inf)`.
+Và hãy nhớ rằng nếu bạn muốn xem tất cả các giá trị, bạn có thể sử dụng `|> View()` hoặc `|> print(n = Inf)`.
 
-You can perform the same computation "by hand" with `group_by()`, `summarize()` and `n()`.
-This is useful because it allows you to compute other summaries at the same time:
+Bạn có thể thực hiện cùng phép tính "bằng tay" với `group_by()`, `summarize()` và `n()`.
+Điều này hữu ích vì nó cho phép bạn tính các tóm tắt khác cùng lúc:
 
 ```{r}
-flights |> 
-  group_by(dest) |> 
+flights |>
+  group_by(dest) |>
   summarize(
     n = n(),
     delay = mean(arr_delay, na.rm = TRUE)
   )
 ```
 
-`n()` is a special summary function that doesn't take any arguments and instead accesses information about the "current" group.
-This means that it only works inside dplyr verbs:
+`n()` là một hàm tóm tắt đặc biệt không nhận bất kỳ đối số nào mà thay vào đó truy cập thông tin về nhóm "hiện tại".
+Điều này có nghĩa là nó chỉ hoạt động bên trong các động từ dplyr:
 
 ```{r}
 #| error: true
 n()
 ```
 
-There are a couple of variants of `n()` and `count()` that you might find useful:
+Có một vài biến thể của `n()` và `count()` mà bạn có thể thấy hữu ích:
 
--   `n_distinct(x)` counts the number of distinct (unique) values of one or more variables.
-    For example, we could figure out which destinations are served by the most carriers:
+-   `n_distinct(x)` đếm số lượng giá trị riêng biệt (duy nhất) của một hoặc nhiều biến.
+    Ví dụ, chúng ta có thể tìm xem điểm đến nào được phục vụ bởi nhiều hãng bay nhất:
 
     ```{r}
-    flights |> 
-      group_by(dest) |> 
-      summarize(carriers = n_distinct(carrier)) |> 
+    flights |>
+      group_by(dest) |>
+      summarize(carriers = n_distinct(carrier)) |>
       arrange(desc(carriers))
     ```
 
--   A weighted count is a sum.
-    For example you could "count" the number of miles each plane flew:
+-   Đếm có trọng số (weighted count) là một phép tổng.
+    Ví dụ bạn có thể "đếm" số dặm mà mỗi máy bay đã bay:
 
     ```{r}
-    flights |> 
-      group_by(tailnum) |> 
+    flights |>
+      group_by(tailnum) |>
       summarize(miles = sum(distance))
     ```
 
-    Weighted counts are a common problem so `count()` has a `wt` argument that does the same thing:
+    Đếm có trọng số là một vấn đề phổ biến nên `count()` có đối số `wt` thực hiện cùng một việc:
 
     ```{r}
     #| results: false
     flights |> count(tailnum, wt = distance)
     ```
 
--   You can count missing values by combining `sum()` and `is.na()`.
-    In the `flights` dataset this represents flights that are cancelled:
+-   Bạn có thể đếm các giá trị khuyết (missing value) bằng cách kết hợp `sum()` và `is.na()`.
+    Trong tập dữ liệu `flights`, đây là các chuyến bay đã bị hủy:
 
     ```{r}
-    flights |> 
-      group_by(dest) |> 
-      summarize(n_cancelled = sum(is.na(dep_time))) 
+    flights |>
+      group_by(dest) |>
+      summarize(n_cancelled = sum(is.na(dep_time)))
     ```
 
-### Exercises
+### Bài tập
 
-1.  How can you use `count()` to count the number of rows with a missing value for a given variable?
-2.  Expand the following calls to `count()` to instead use `group_by()`, `summarize()`, and `arrange()`:
+1.  Làm thế nào bạn có thể sử dụng `count()` để đếm số hàng có giá trị khuyết cho một biến nhất định?
+2.  Mở rộng các lệnh gọi `count()` sau đây để thay vào đó sử dụng `group_by()`, `summarize()`, và `arrange()`:
     1.  `flights |> count(dest, sort = TRUE)`
 
     2.  `flights |> count(tailnum, wt = distance)`
 
-## Numeric transformations
+## Biến đổi số
 
-Transformation functions work well with `mutate()` because their output is the same length as the input.
-The vast majority of transformation functions are already built into base R.
-It's impractical to list them all so this section will show the most useful ones.
-As an example, while R provides all the trigonometric functions that you might dream of, we don't list them here because they're rarely needed for data science.
+Các hàm biến đổi hoạt động tốt với `mutate()` vì đầu ra của chúng có cùng độ dài với đầu vào.
+Phần lớn các hàm biến đổi đã được tích hợp sẵn trong R cơ sở.
+Việc liệt kê tất cả chúng là không thực tế nên phần này sẽ trình bày những hàm hữu ích nhất.
+Ví dụ, mặc dù R cung cấp tất cả các hàm lượng giác mà bạn có thể mơ ước, chúng ta không liệt kê chúng ở đây vì chúng hiếm khi cần thiết cho khoa học dữ liệu.
 
-### Arithmetic and recycling rules {#sec-recycling}
+### Số học và quy tắc tái chế {#sec-recycling}
 
-We introduced the basics of arithmetic (`+`, `-`, `*`, `/`, `^`) in @sec-workflow-basics and have used them a bunch since.
-These functions don't need a huge amount of explanation because they do what you learned in grade school.
-But we need to briefly talk about the **recycling rules** which determine what happens when the left and right hand sides have different lengths.
-This is important for operations like `flights |> mutate(air_time = air_time / 60)` because there are 336,776 numbers on the left of `/` but only one on the right.
+Chúng ta đã giới thiệu các phép toán cơ bản (`+`, `-`, `*`, `/`, `^`) trong @sec-workflow-basics và đã sử dụng chúng rất nhiều kể từ đó.
+Các hàm này không cần giải thích nhiều vì chúng thực hiện những gì bạn đã học ở trường.
+Nhưng chúng ta cần nói ngắn gọn về **quy tắc tái chế (recycling rule)** xác định điều gì xảy ra khi vế trái và vế phải có độ dài khác nhau.
+Điều này quan trọng cho các phép toán như `flights |> mutate(air_time = air_time / 60)` vì có 336.776 số ở bên trái của `/` nhưng chỉ có một số ở bên phải.
 
-R handles mismatched lengths by **recycling,** or repeating, the short vector.
-We can see this in operation more easily if we create some vectors outside of a data frame:
+R xử lý độ dài không khớp bằng cách **tái chế,** hay lặp lại, vector ngắn hơn.
+Chúng ta có thể thấy điều này hoạt động dễ dàng hơn nếu tạo một số vector bên ngoài khung dữ liệu:
 
 ```{r}
 x <- c(1, 2, 10, 20)
 x / 5
-# is shorthand for
+# là viết tắt của
 x / c(5, 5, 5, 5)
 ```
 
-Generally, you only want to recycle single numbers (i.e. vectors of length 1), but R will recycle any shorter length vector.
-It usually (but not always) gives you a warning if the longer vector isn't a multiple of the shorter:
+Thông thường, bạn chỉ muốn tái chế các số đơn lẻ (tức là vector có độ dài 1), nhưng R sẽ tái chế bất kỳ vector nào có độ dài ngắn hơn.
+Nó thường (nhưng không phải luôn luôn) đưa ra cảnh báo nếu vector dài hơn không phải là bội số của vector ngắn hơn:
 
 ```{r}
 x * c(1, 2)
 x * c(1, 2, 3)
 ```
 
-These recycling rules are also applied to logical comparisons (`==`, `<`, `<=`, `>`, `>=`, `!=`) and can lead to a surprising result if you accidentally use `==` instead of `%in%` and the data frame has an unfortunate number of rows.
-For example, take this code which attempts to find all flights in January and February:
+Các quy tắc tái chế này cũng được áp dụng cho các phép so sánh logic (`==`, `<`, `<=`, `>`, `>=`, `!=`) và có thể dẫn đến kết quả bất ngờ nếu bạn vô tình sử dụng `==` thay vì `%in%` và khung dữ liệu có số hàng không may.
+Ví dụ, hãy xem đoạn mã này cố gắng tìm tất cả các chuyến bay trong tháng Một và tháng Hai:
 
 ```{r}
-flights |> 
+flights |>
   filter(month == c(1, 2))
 ```
 
-The code runs without error, but it doesn't return what you want.
-Because of the recycling rules it finds flights in odd numbered rows that departed in January and flights in even numbered rows that departed in February.
-And unfortunately there's no warning because `flights` has an even number of rows.
+Đoạn mã chạy mà không có lỗi, nhưng nó không trả về kết quả bạn muốn.
+Vì quy tắc tái chế, nó tìm các chuyến bay ở hàng lẻ khởi hành trong tháng Một và các chuyến bay ở hàng chẵn khởi hành trong tháng Hai.
+Và thật không may là không có cảnh báo vì `flights` có số hàng chẵn.
 
-To protect you from this type of silent failure, most tidyverse functions use a stricter form of recycling that only recycles single values.
-Unfortunately that doesn't help here, or in many other cases, because the key computation is performed by the base R function `==`, not `filter()`.
+Để bảo vệ bạn khỏi loại lỗi thầm lặng này, hầu hết các hàm tidyverse sử dụng một dạng tái chế chặt chẽ hơn chỉ tái chế các giá trị đơn lẻ.
+Thật không may, điều đó không giúp ích ở đây, hoặc trong nhiều trường hợp khác, vì phép tính chính được thực hiện bởi hàm R cơ sở `==`, không phải `filter()`.
 
-### Minimum and maximum
+### Giá trị nhỏ nhất và lớn nhất
 
-The arithmetic functions work with pairs of variables.
-Two closely related functions are `pmin()` and `pmax()`, which when given two or more variables will return the smallest or largest value in each row:
+Các hàm số học hoạt động với các cặp biến.
+Hai hàm liên quan chặt chẽ là `pmin()` và `pmax()`, khi được cung cấp hai hoặc nhiều biến sẽ trả về giá trị nhỏ nhất hoặc lớn nhất trong mỗi hàng:
 
 ```{r}
 df <- tribble(
@@ -192,38 +192,38 @@ df <- tribble(
   7, NA,
 )
 
-df |> 
+df |>
   mutate(
     min = pmin(x, y, na.rm = TRUE),
     max = pmax(x, y, na.rm = TRUE)
   )
 ```
 
-Note that these are different to the summary functions `min()` and `max()` which take multiple observations and return a single value.
-You can tell that you've used the wrong form when all the minimums and all the maximums have the same value:
+Lưu ý rằng các hàm này khác với các hàm tóm tắt `min()` và `max()` vốn nhận nhiều quan sát và trả về một giá trị duy nhất.
+Bạn có thể nhận ra mình đã dùng sai dạng khi tất cả các giá trị nhỏ nhất và tất cả các giá trị lớn nhất đều giống nhau:
 
 ```{r}
-df |> 
+df |>
   mutate(
     min = min(x, y, na.rm = TRUE),
     max = max(x, y, na.rm = TRUE)
   )
 ```
 
-### Modular arithmetic
+### Số học modular
 
-Modular arithmetic is the technical name for the type of math you did before you learned about decimal places, i.e. division that yields a whole number and a remainder.
-In R, `%/%` does integer division and `%%` computes the remainder:
+Số học modular (modular arithmetic) là tên kỹ thuật cho loại toán bạn đã làm trước khi học về số thập phân, tức là phép chia cho ra một số nguyên và một phần dư.
+Trong R, `%/%` thực hiện phép chia lấy phần nguyên và `%%` tính phần dư:
 
 ```{r}
 1:10 %/% 3
 1:10 %% 3
 ```
 
-Modular arithmetic is handy for the `flights` dataset, because we can use it to unpack the `sched_dep_time` variable into `hour` and `minute`:
+Số học modular rất tiện cho tập dữ liệu `flights`, vì chúng ta có thể sử dụng nó để tách biến `sched_dep_time` thành `hour` và `minute`:
 
 ```{r}
-flights |> 
+flights |>
   mutate(
     hour = sched_dep_time %/% 100,
     minute = sched_dep_time %% 100,
@@ -231,50 +231,50 @@ flights |>
   )
 ```
 
-We can combine that with the `mean(is.na(x))` trick from @sec-logical-summaries to see how the proportion of cancelled flights varies over the course of the day.
-The results are shown in @fig-prop-cancelled.
+Chúng ta có thể kết hợp điều đó với thủ thuật `mean(is.na(x))` từ @sec-logical-summaries để xem tỷ lệ chuyến bay bị hủy thay đổi như thế nào trong suốt cả ngày.
+Kết quả được hiển thị trong @fig-prop-cancelled.
 
 ```{r}
 #| label: fig-prop-cancelled
-#| fig-cap: | 
-#|   A line plot with scheduled departure hour on the x-axis, and proportion
-#|   of cancelled flights on the y-axis. Cancellations seem to accumulate
-#|   over the course of the day until 8pm, very late flights are much
-#|   less likely to be cancelled.
+#| fig-cap: |
+#|   Biểu đồ đường với giờ khởi hành theo lịch trình trên trục x, và tỷ lệ
+#|   chuyến bay bị hủy trên trục y. Số chuyến bay bị hủy dường như tích lũy
+#|   trong suốt cả ngày cho đến 8 giờ tối, các chuyến bay rất muộn ít
+#|   bị hủy hơn nhiều.
 #| fig-alt: |
-#|   A line plot showing how proportion of cancelled flights changes over
-#|   the course of the day. The proportion starts low at around 0.5% at
-#|   5am, then steadily increases over the course of the day until peaking
-#|   at 4% at 7pm. The proportion of cancelled flights then drops rapidly
-#|   getting down to around 1% by midnight.
-flights |> 
-  group_by(hour = sched_dep_time %/% 100) |> 
-  summarize(prop_cancelled = mean(is.na(dep_time)), n = n()) |> 
-  filter(hour > 1) |> 
+#|   Biểu đồ đường cho thấy tỷ lệ chuyến bay bị hủy thay đổi như thế nào
+#|   trong suốt cả ngày. Tỷ lệ bắt đầu thấp ở khoảng 0,5% lúc
+#|   5 giờ sáng, sau đó tăng đều đặn trong suốt cả ngày cho đến khi đạt đỉnh
+#|   ở 4% lúc 7 giờ tối. Tỷ lệ chuyến bay bị hủy sau đó giảm nhanh chóng
+#|   xuống khoảng 1% vào nửa đêm.
+flights |>
+  group_by(hour = sched_dep_time %/% 100) |>
+  summarize(prop_cancelled = mean(is.na(dep_time)), n = n()) |>
+  filter(hour > 1) |>
   ggplot(aes(x = hour, y = prop_cancelled)) +
-  geom_line(color = "grey50") + 
+  geom_line(color = "grey50") +
   geom_point(aes(size = n))
 ```
 
-### Logarithms
+### Logarit
 
-Logarithms are an incredibly useful transformation for dealing with data that ranges across multiple orders of magnitude and converting exponential growth to linear growth.
-In R, you have a choice of three logarithms: `log()` (the natural log, base e), `log2()` (base 2), and `log10()` (base 10).
-We recommend using `log2()` or `log10()`.
-`log2()` is easy to interpret because a difference of 1 on the log scale corresponds to doubling on the original scale and a difference of -1 corresponds to halving; whereas `log10()` is easy to back-transform because (e.g.) 3 is 10\^3 = 1000.
-The inverse of `log()` is `exp()`; to compute the inverse of `log2()` or `log10()` you'll need to use `2^` or `10^`.
+Logarit (logarithm) là một phép biến đổi cực kỳ hữu ích để xử lý dữ liệu trải dài trên nhiều bậc độ lớn và chuyển đổi tăng trưởng hàm mũ thành tăng trưởng tuyến tính.
+Trong R, bạn có thể chọn ba loại logarit: `log()` (logarit tự nhiên, cơ số e), `log2()` (cơ số 2), và `log10()` (cơ số 10).
+Chúng tôi khuyên dùng `log2()` hoặc `log10()`.
+`log2()` dễ diễn giải vì chênh lệch 1 trên thang logarit tương ứng với gấp đôi trên thang gốc và chênh lệch -1 tương ứng với giảm một nửa; trong khi `log10()` dễ chuyển ngược vì (ví dụ) 3 là 10\^3 = 1000.
+Nghịch đảo của `log()` là `exp()`; để tính nghịch đảo của `log2()` hoặc `log10()` bạn sẽ cần dùng `2^` hoặc `10^`.
 
-### Rounding {#sec-rounding}
+### Làm tròn {#sec-rounding}
 
-Use `round(x)` to round a number to the nearest integer:
+Sử dụng `round(x)` để làm tròn một số đến số nguyên gần nhất:
 
 ```{r}
 round(123.456)
 ```
 
-You can control the precision of the rounding with the second argument, `digits`.
-`round(x, digits)` rounds to the nearest `10^-n` so `digits = 2` will round to the nearest 0.01.
-This definition is useful because it implies `round(x, -3)` will round to the nearest thousand, which indeed it does:
+Bạn có thể kiểm soát độ chính xác của việc làm tròn với đối số thứ hai, `digits`.
+`round(x, digits)` làm tròn đến `10^-n` gần nhất nên `digits = 2` sẽ làm tròn đến 0,01 gần nhất.
+Định nghĩa này hữu ích vì nó ngụ ý `round(x, -3)` sẽ làm tròn đến hàng nghìn gần nhất, và đúng là vậy:
 
 ```{r}
 round(123.456, 2)  # two digits
@@ -283,16 +283,16 @@ round(123.456, -1) # round to nearest ten
 round(123.456, -2) # round to nearest hundred
 ```
 
-There's one weirdness with `round()` that seems surprising at first glance:
+Có một điều kỳ lạ với `round()` thoạt nhìn có vẻ ngạc nhiên:
 
 ```{r}
 round(c(1.5, 2.5))
 ```
 
-`round()` uses what's known as "round half to even" or Banker's rounding: if a number is half way between two integers, it will be rounded to the **even** integer.
-This is a good strategy because it keeps the rounding unbiased: half of all 0.5s are rounded up, and half are rounded down.
+`round()` sử dụng phương pháp gọi là "làm tròn nửa về số chẵn" (round half to even) hay làm tròn kiểu ngân hàng (Banker's rounding): nếu một số nằm giữa hai số nguyên, nó sẽ được làm tròn đến số nguyên **chẵn**.
+Đây là một chiến lược tốt vì nó giữ cho việc làm tròn không bị thiên lệch: một nửa của tất cả các số 0,5 được làm tròn lên, và nửa còn lại được làm tròn xuống.
 
-`round()` is paired with `floor()` which always rounds down and `ceiling()` which always rounds up:
+`round()` đi kèm với `floor()` luôn làm tròn xuống và `ceiling()` luôn làm tròn lên:
 
 ```{r}
 x <- 123.456
@@ -301,124 +301,124 @@ floor(x)
 ceiling(x)
 ```
 
-These functions don't have a `digits` argument, so you can instead scale down, round, and then scale back up:
+Các hàm này không có đối số `digits`, vì vậy bạn có thể thu nhỏ, làm tròn, rồi phóng to lại:
 
 ```{r}
-# Round down to nearest two digits
+# Làm tròn xuống đến hai chữ số thập phân
 floor(x / 0.01) * 0.01
-# Round up to nearest two digits
+# Làm tròn lên đến hai chữ số thập phân
 ceiling(x / 0.01) * 0.01
 ```
 
-You can use the same technique if you want to `round()` to a multiple of some other number:
+Bạn có thể sử dụng cùng kỹ thuật nếu muốn `round()` đến bội số của một số khác:
 
 ```{r}
-# Round to nearest multiple of 4
+# Làm tròn đến bội số gần nhất của 4
 round(x / 4) * 4
 
-# Round to nearest 0.25
+# Làm tròn đến 0,25 gần nhất
 round(x / 0.25) * 0.25
 ```
 
-### Cutting numbers into ranges
+### Chia số thành các khoảng
 
-Use `cut()`[^numbers-1] to break up (aka bin) a numeric vector into discrete buckets:
+Sử dụng `cut()`[^numbers-1] để phân chia (hay còn gọi là phân nhóm) một vector số thành các nhóm rời rạc:
 
-[^numbers-1]: ggplot2 provides some helpers for common cases in `cut_interval()`, `cut_number()`, and `cut_width()`.
-    ggplot2 is an admittedly weird place for these functions to live, but they are useful as part of histogram computation and were written before any other parts of the tidyverse existed.
+[^numbers-1]: ggplot2 cung cấp một số hàm hỗ trợ cho các trường hợp phổ biến trong `cut_interval()`, `cut_number()`, và `cut_width()`.
+    ggplot2 là một nơi kỳ lạ để các hàm này tồn tại, nhưng chúng hữu ích như một phần của việc tính toán biểu đồ tần suất và được viết trước khi bất kỳ phần nào khác của tidyverse ra đời.
 
 ```{r}
 x <- c(1, 2, 5, 10, 15, 20)
 cut(x, breaks = c(0, 5, 10, 15, 20))
 ```
 
-The breaks don't need to be evenly spaced:
+Các điểm chia không cần phải cách đều nhau:
 
 ```{r}
 cut(x, breaks = c(0, 5, 10, 100))
 ```
 
-You can optionally supply your own `labels`.
-Note that there should be one less `labels` than `breaks`.
+Bạn có thể tùy chọn cung cấp `labels` của riêng mình.
+Lưu ý rằng số `labels` nên ít hơn `breaks` một đơn vị.
 
 ```{r}
-cut(x, 
-  breaks = c(0, 5, 10, 15, 20), 
+cut(x,
+  breaks = c(0, 5, 10, 15, 20),
   labels = c("sm", "md", "lg", "xl")
 )
 ```
 
-Any values outside of the range of the breaks will become `NA`:
+Bất kỳ giá trị nào nằm ngoài phạm vi của các điểm chia sẽ trở thành `NA`:
 
 ```{r}
 y <- c(NA, -10, 5, 10, 30)
 cut(y, breaks = c(0, 5, 10, 15, 20))
 ```
 
-See the documentation for other useful arguments like `right` and `include.lowest`, which control if the intervals are `[a, b)` or `(a, b]` and if the lowest interval should be `[a, b]`.
+Xem tài liệu hướng dẫn để biết các đối số hữu ích khác như `right` và `include.lowest`, kiểm soát xem các khoảng là `[a, b)` hay `(a, b]` và khoảng thấp nhất có nên là `[a, b]` hay không.
 
-### Cumulative and rolling aggregates {#sec-cumulative-and-rolling-aggregates}
+### Tổng tích lũy và tổng hợp trượt {#sec-cumulative-and-rolling-aggregates}
 
-Base R provides `cumsum()`, `cumprod()`, `cummin()`, `cummax()` for running, or cumulative, sums, products, mins and maxes.
-dplyr provides `cummean()` for cumulative means.
-Cumulative sums tend to come up the most in practice:
+R cơ sở cung cấp `cumsum()`, `cumprod()`, `cummin()`, `cummax()` cho các phép tính tích lũy (cumulative) của tổng, tích, giá trị nhỏ nhất và lớn nhất.
+dplyr cung cấp `cummean()` cho trung bình tích lũy.
+Tổng tích lũy là hàm hay gặp nhất trong thực tế:
 
 ```{r}
 x <- 1:10
 cumsum(x)
 ```
 
-If you need more complex rolling or sliding aggregates, try the [slider](https://slider.r-lib.org/) package.
+Nếu bạn cần các phép tổng hợp trượt (rolling aggregate) phức tạp hơn, hãy thử gói [slider](https://slider.r-lib.org/).
 
-### Exercises
+### Bài tập
 
-1.  Explain in words what each line of the code used to generate @fig-prop-cancelled does.
+1.  Giải thích bằng lời mỗi dòng của đoạn mã được sử dụng để tạo @fig-prop-cancelled.
 
-2.  What trigonometric functions does R provide?
-    Guess some names and look up the documentation.
-    Do they use degrees or radians?
+2.  R cung cấp những hàm lượng giác nào?
+    Hãy đoán một số tên và tra cứu tài liệu hướng dẫn.
+    Chúng sử dụng độ hay radian?
 
-3.  Currently `dep_time` and `sched_dep_time` are convenient to look at, but hard to compute with because they're not really continuous numbers.
-    You can see the basic problem by running the code below: there's a gap between each hour.
+3.  Hiện tại `dep_time` và `sched_dep_time` trông tiện lợi nhưng khó tính toán vì chúng không thực sự là các số liên tục.
+    Bạn có thể thấy vấn đề cơ bản bằng cách chạy đoạn mã dưới đây: có một khoảng trống giữa mỗi giờ.
 
     ```{r}
     #| eval: false
-    flights |> 
-      filter(month == 1, day == 1) |> 
+    flights |>
+      filter(month == 1, day == 1) |>
       ggplot(aes(x = sched_dep_time, y = dep_delay)) +
       geom_point()
     ```
 
-    Convert them to a more truthful representation of time (either fractional hours or minutes since midnight).
+    Chuyển đổi chúng thành biểu diễn thời gian chính xác hơn (giờ phân số hoặc phút kể từ nửa đêm).
 
-4.  Round `dep_time` and `arr_time` to the nearest five minutes.
+4.  Làm tròn `dep_time` và `arr_time` đến bội số năm phút gần nhất.
 
-## General transformations
+## Biến đổi tổng quát
 
-The following sections describe some general transformations which are often used with numeric vectors, but can be applied to all other column types.
+Các phần sau mô tả một số phép biến đổi tổng quát thường được sử dụng với vector số, nhưng cũng có thể áp dụng cho tất cả các loại cột khác.
 
-### Ranks
+### Xếp hạng
 
-dplyr provides a number of ranking functions inspired by SQL, but you should always start with `dplyr::min_rank()`.
-It uses the typical method for dealing with ties, e.g., 1st, 2nd, 2nd, 4th.
+dplyr cung cấp một số hàm xếp hạng (ranking function) lấy cảm hứng từ SQL, nhưng bạn nên luôn bắt đầu với `dplyr::min_rank()`.
+Nó sử dụng phương pháp điển hình để xử lý các giá trị bằng nhau, ví dụ: thứ 1, thứ 2, thứ 2, thứ 4.
 
 ```{r}
 x <- c(1, 5, 5, 17, 22, NA)
 min_rank(x)
 ```
 
-Note that the smallest values get the lowest ranks; use `desc(x)` to give the largest values the smallest ranks:
+Lưu ý rằng các giá trị nhỏ nhất được xếp hạng thấp nhất; sử dụng `desc(x)` để cho các giá trị lớn nhất hạng nhỏ nhất:
 
 ```{r}
 min_rank(desc(x))
 ```
 
-If `min_rank()` doesn't do what you need, look at the variants `dplyr::row_number()`, `dplyr::dense_rank()`, `dplyr::percent_rank()`, and `dplyr::cume_dist()`.
-See the documentation for details.
+Nếu `min_rank()` không đáp ứng nhu cầu của bạn, hãy xem các biến thể `dplyr::row_number()`, `dplyr::dense_rank()`, `dplyr::percent_rank()`, và `dplyr::cume_dist()`.
+Xem tài liệu hướng dẫn để biết chi tiết.
 
 ```{r}
 df <- tibble(x = x)
-df |> 
+df |>
   mutate(
     row_number = row_number(x),
     dense_rank = dense_rank(x),
@@ -427,16 +427,16 @@ df |>
   )
 ```
 
-You can achieve many of the same results by picking the appropriate `ties.method` argument to base R's `rank()`; you'll probably also want to set `na.last = "keep"` to keep `NA`s as `NA`.
+Bạn có thể đạt được nhiều kết quả tương tự bằng cách chọn đối số `ties.method` phù hợp cho hàm `rank()` của R cơ sở; bạn có thể cũng muốn đặt `na.last = "keep"` để giữ `NA` dưới dạng `NA`.
 
-`row_number()` can also be used without any arguments when inside a dplyr verb.
-In this case, it'll give the number of the "current" row.
-When combined with `%%` or `%/%` this can be a useful tool for dividing data into similarly sized groups:
+`row_number()` cũng có thể được sử dụng mà không có đối số nào khi ở bên trong một động từ dplyr.
+Trong trường hợp này, nó sẽ cho số thứ tự của hàng "hiện tại".
+Khi kết hợp với `%%` hoặc `%/%`, đây là một công cụ hữu ích để chia dữ liệu thành các nhóm có kích thước tương tự:
 
 ```{r}
 df <- tibble(id = 1:10)
 
-df |> 
+df |>
   mutate(
     row0 = row_number() - 1,
     three_groups = row0 %% 3,
@@ -444,10 +444,10 @@ df |>
   )
 ```
 
-### Offsets
+### Độ lệch
 
-`dplyr::lead()` and `dplyr::lag()` allow you to refer to the values just before or just after the "current" value.
-They return a vector of the same length as the input, padded with `NA`s at the start or end:
+`dplyr::lead()` và `dplyr::lag()` cho phép bạn tham chiếu đến các giá trị ngay trước hoặc ngay sau giá trị "hiện tại".
+Chúng trả về một vector có cùng độ dài với đầu vào, được đệm bằng `NA` ở đầu hoặc cuối:
 
 ```{r}
 x <- c(2, 5, 11, 11, 19, 35)
@@ -455,25 +455,25 @@ lag(x)
 lead(x)
 ```
 
--   `x - lag(x)` gives you the difference between the current and previous value.
+-   `x - lag(x)` cho bạn hiệu giữa giá trị hiện tại và giá trị trước đó.
 
     ```{r}
     x - lag(x)
     ```
 
--   `x == lag(x)` tells you when the current value changes.
+-   `x == lag(x)` cho bạn biết khi nào giá trị hiện tại thay đổi.
 
     ```{r}
     x == lag(x)
     ```
 
-You can lead or lag by more than one position by using the second argument, `n`.
+Bạn có thể dịch chuyển nhiều hơn một vị trí bằng cách sử dụng đối số thứ hai, `n`.
 
-### Consecutive identifiers
+### Định danh liên tiếp
 
-Sometimes you want to start a new group every time some event occurs.
-For example, when you're looking at website data, it's common to want to break up events into sessions, where you begin a new session after a gap of more than `x` minutes since the last activity.
-For example, imagine you have the times when someone visited a website:
+Đôi khi bạn muốn bắt đầu một nhóm mới mỗi khi một sự kiện nào đó xảy ra.
+Ví dụ, khi bạn đang xem dữ liệu trang web, thường sẽ muốn chia các sự kiện thành các phiên (session), trong đó bạn bắt đầu một phiên mới sau khoảng cách hơn `x` phút kể từ hoạt động cuối cùng.
+Ví dụ, hãy tưởng tượng bạn có thời điểm ai đó truy cập trang web:
 
 ```{r}
 events <- tibble(
@@ -482,10 +482,10 @@ events <- tibble(
 
 ```
 
-And you've computed the time between each event, and figured out if there's a gap that's big enough to qualify:
+Và bạn đã tính thời gian giữa mỗi sự kiện, và xác định xem có khoảng trống đủ lớn không:
 
 ```{r}
-events <- events |> 
+events <- events |>
   mutate(
     diff = time - lag(time, default = first(time)),
     has_gap = diff >= 5
@@ -493,8 +493,8 @@ events <- events |>
 events
 ```
 
-But how do we go from that logical vector to something that we can `group_by()`?
-`cumsum()`, from @sec-cumulative-and-rolling-aggregates, comes to the rescue as gap, i.e. `has_gap` is `TRUE`, will increment `group` by one (@sec-numeric-summaries-of-logicals):
+Nhưng làm thế nào để chuyển từ vector logic đó thành thứ gì đó mà chúng ta có thể `group_by()`?
+`cumsum()`, từ @sec-cumulative-and-rolling-aggregates, giải cứu vì khoảng trống, tức `has_gap` là `TRUE`, sẽ tăng `group` lên một (@sec-numeric-summaries-of-logicals):
 
 ```{r}
 events |> mutate(
@@ -502,8 +502,8 @@ events |> mutate(
 )
 ```
 
-Another approach for creating grouping variables is `consecutive_id()`, which starts a new group every time one of its arguments changes.
-For example, inspired by [this stackoverflow question](https://stackoverflow.com/questions/27482712), imagine you have a data frame with a bunch of repeated values:
+Một cách tiếp cận khác để tạo biến nhóm là `consecutive_id()`, bắt đầu một nhóm mới mỗi khi một trong các đối số của nó thay đổi.
+Ví dụ, lấy cảm hứng từ [câu hỏi stackoverflow này](https://stackoverflow.com/questions/27482712), hãy tưởng tượng bạn có một khung dữ liệu với nhiều giá trị lặp lại:
 
 ```{r}
 df <- tibble(
@@ -512,81 +512,81 @@ df <- tibble(
 )
 ```
 
-If you want to keep the first row from each repeated `x`, you could use `group_by()`, `consecutive_id()`, and `slice_head()`:
+Nếu bạn muốn giữ hàng đầu tiên từ mỗi nhóm `x` lặp lại, bạn có thể sử dụng `group_by()`, `consecutive_id()`, và `slice_head()`:
 
 ```{r}
-df |> 
-  group_by(id = consecutive_id(x)) |> 
+df |>
+  group_by(id = consecutive_id(x)) |>
   slice_head(n = 1)
 ```
 
-### Exercises
+### Bài tập
 
-1.  Find the 10 most delayed flights using a ranking function.
-    How do you want to handle ties?
-    Carefully read the documentation for `min_rank()`.
+1.  Tìm 10 chuyến bay bị trễ nhiều nhất bằng một hàm xếp hạng.
+    Bạn muốn xử lý các giá trị bằng nhau như thế nào?
+    Đọc kỹ tài liệu hướng dẫn cho `min_rank()`.
 
-2.  Which plane (`tailnum`) has the worst on-time record?
+2.  Máy bay nào (`tailnum`) có hồ sơ đúng giờ tệ nhất?
 
-3.  What time of day should you fly if you want to avoid delays as much as possible?
+3.  Bạn nên bay vào thời điểm nào trong ngày nếu muốn tránh trễ nhiều nhất có thể?
 
-4.  What does `flights |> group_by(dest) |> filter(row_number() < 4)` do?
-    What does `flights |> group_by(dest) |> filter(row_number(dep_delay) < 4)` do?
+4.  `flights |> group_by(dest) |> filter(row_number() < 4)` làm gì?
+    `flights |> group_by(dest) |> filter(row_number(dep_delay) < 4)` làm gì?
 
-5.  For each destination, compute the total minutes of delay.
-    For each flight, compute the proportion of the total delay for its destination.
+5.  Với mỗi điểm đến, tính tổng số phút trễ.
+    Với mỗi chuyến bay, tính tỷ lệ trễ so với tổng số trễ của điểm đến.
 
-6.  Delays are typically temporally correlated: even once the problem that caused the initial delay has been resolved, later flights are delayed to allow earlier flights to leave.
-    Using `lag()`, explore how the average flight delay for an hour is related to the average delay for the previous hour.
+6.  Độ trễ thường có tương quan theo thời gian: ngay cả khi vấn đề gây ra độ trễ ban đầu đã được giải quyết, các chuyến bay sau vẫn bị trễ để cho phép các chuyến bay trước khởi hành.
+    Sử dụng `lag()`, khám phá mối quan hệ giữa độ trễ trung bình của chuyến bay trong một giờ với độ trễ trung bình của giờ trước đó.
 
     ```{r}
     #| results: false
-    flights |> 
-      mutate(hour = dep_time %/% 100) |> 
-      group_by(year, month, day, hour) |> 
+    flights |>
+      mutate(hour = dep_time %/% 100) |>
+      group_by(year, month, day, hour) |>
       summarize(
         dep_delay = mean(dep_delay, na.rm = TRUE),
         n = n(),
         .groups = "drop"
-      ) |> 
+      ) |>
       filter(n > 5)
     ```
 
-7.  Look at each destination.
-    Can you find flights that are suspiciously fast (i.e. flights that represent a potential data entry error)?
-    Compute the air time of a flight relative to the shortest flight to that destination.
-    Which flights were most delayed in the air?
+7.  Xem xét từng điểm đến.
+    Bạn có thể tìm các chuyến bay nhanh đáng ngờ (tức là các chuyến bay có thể là lỗi nhập dữ liệu) không?
+    Tính thời gian bay của một chuyến bay so với chuyến bay ngắn nhất đến điểm đến đó.
+    Chuyến bay nào bị trễ nhiều nhất trên không?
 
-8.  Find all destinations that are flown by at least two carriers.
-    Use those destinations to come up with a relative ranking of the carriers based on their performance for the same destination.
+8.  Tìm tất cả các điểm đến được phục vụ bởi ít nhất hai hãng bay.
+    Sử dụng các điểm đến đó để xếp hạng tương đối các hãng bay dựa trên hiệu suất của chúng cho cùng một điểm đến.
 
-## Numeric summaries
+## Tóm tắt số liệu
 
-Just using the counts, means, and sums that we've introduced already can get you a long way, but R provides many other useful summary functions.
-Here is a selection that you might find useful.
+Chỉ với phép đếm, trung bình và tổng mà chúng ta đã giới thiệu, bạn có thể đi được rất xa, nhưng R cung cấp nhiều hàm tóm tắt hữu ích khác.
+Đây là một số hàm bạn có thể thấy hữu ích.
 
-### Center
+### Trung tâm
 
-So far, we've mostly used `mean()` to summarize the center of a vector of values.
-As we've seen in @sec-sample-size, because the mean is the sum divided by the count, it is sensitive to even just a few unusually high or low values.
-An alternative is to use the `median()`, which finds a value that lies in the "middle" of the vector, i.e. 50% of the values are above it and 50% are below it.
-Depending on the shape of the distribution of the variable you're interested in, mean or median might be a better measure of center.
-For example, for symmetric distributions we generally report the mean while for skewed distributions we usually report the median.
+Cho đến nay, chúng ta chủ yếu sử dụng `mean()` để tóm tắt trung tâm của một vector giá trị.
+Như chúng ta đã thấy trong @sec-sample-size, vì trung bình (mean) là tổng chia cho số lượng, nó nhạy cảm với chỉ một vài giá trị cao hoặc thấp bất thường.
+Một lựa chọn thay thế là sử dụng `median()`, tìm giá trị nằm ở "giữa" vector, tức là 50% giá trị nằm trên nó và 50% nằm dưới nó.
+Tùy thuộc vào hình dạng phân phối (distribution) của biến bạn quan tâm, trung bình hoặc trung vị (median) có thể là thước đo trung tâm tốt hơn.
+Ví dụ, với phân phối đối xứng chúng ta thường báo cáo trung bình, trong khi với phân phối lệch chúng ta thường báo cáo trung vị.
 
-@fig-mean-vs-median compares the mean vs. the median departure delay (in minutes) for each destination.
-The median delay is always smaller than the mean delay because flights sometimes leave multiple hours late, but never leave multiple hours early.
+@fig-mean-vs-median so sánh trung bình với trung vị của độ trễ khởi hành (tính bằng phút) cho mỗi điểm đến.
+Trung vị trễ luôn nhỏ hơn trung bình trễ vì các chuyến bay đôi khi khởi hành trễ nhiều giờ, nhưng không bao giờ khởi hành sớm nhiều giờ.
 
 ```{r}
 #| label: fig-mean-vs-median
 #| fig-cap: |
-#|   A scatterplot showing the differences of summarizing daily departure
-#|   delay with median instead of mean.
+#|   Biểu đồ phân tán cho thấy sự khác biệt khi tóm tắt độ trễ khởi hành
+#|   hàng ngày bằng trung vị thay vì trung bình.
 #| fig-alt: |
-#|   All points fall below a 45° line, meaning that the median delay is
-#|   always less than the mean delay. Most points are clustered in a 
-#|   dense region of mean [0, 20] and median [-5, 5]. As the mean delay
-#|   increases, the spread of the median also increases. There are two
-#|   outlying points with mean ~60, median ~30, and mean ~85, median ~55.
+#|   Tất cả các điểm nằm dưới đường 45°, nghĩa là trung vị trễ luôn nhỏ
+#|   hơn trung bình trễ. Hầu hết các điểm tập trung trong một vùng dày đặc
+#|   với trung bình [0, 20] và trung vị [-5, 5]. Khi trung bình trễ tăng,
+#|   độ phân tán của trung vị cũng tăng. Có hai điểm ngoại lai với trung
+#|   bình ~60, trung vị ~30, và trung bình ~85, trung vị ~55.
 flights |>
   group_by(year, month, day) |>
   summarize(
@@ -594,26 +594,26 @@ flights |>
     median = median(dep_delay, na.rm = TRUE),
     n = n(),
     .groups = "drop"
-  ) |> 
-  ggplot(aes(x = mean, y = median)) + 
+  ) |>
+  ggplot(aes(x = mean, y = median)) +
   geom_abline(slope = 1, intercept = 0, color = "white", linewidth = 2) +
   geom_point()
 ```
 
-You might also wonder about the **mode**, or the most common value.
-This is a summary that only works well for very simple cases (which is why you might have learned about it in high school), but it doesn't work well for many real datasets.
-If the data is discrete, there may be multiple most common values, and if the data is continuous, there might be no most common value because every value is ever so slightly different.
-For these reasons, the mode tends not to be used by statisticians and there's no mode function included in base R[^numbers-2].
+Bạn cũng có thể thắc mắc về **yếu vị (mode)**, hay giá trị phổ biến nhất.
+Đây là một thống kê tóm tắt chỉ hoạt động tốt cho các trường hợp rất đơn giản (đó là lý do bạn có thể đã học về nó ở trường phổ thông), nhưng nó không hoạt động tốt cho nhiều tập dữ liệu thực.
+Nếu dữ liệu là rời rạc, có thể có nhiều giá trị phổ biến nhất, và nếu dữ liệu là liên tục, có thể không có giá trị phổ biến nhất vì mỗi giá trị hơi khác nhau một chút.
+Vì những lý do này, yếu vị ít được các nhà thống kê sử dụng và không có hàm tính yếu vị trong R cơ sở[^numbers-2].
 
-[^numbers-2]: The `mode()` function does something quite different!
+[^numbers-2]: Hàm `mode()` thực hiện một việc hoàn toàn khác!
 
-### Minimum, maximum, and quantiles {#sec-min-max-summary}
+### Giá trị nhỏ nhất, lớn nhất, và phân vị {#sec-min-max-summary}
 
-What if you're interested in locations other than the center?
-`min()` and `max()` will give you the largest and smallest values.
-Another powerful tool is `quantile()` which is a generalization of the median: `quantile(x, 0.25)` will find the value of `x` that is greater than 25% of the values, `quantile(x, 0.5)` is equivalent to the median, and `quantile(x, 0.95)` will find the value that's greater than 95% of the values.
+Nếu bạn quan tâm đến các vị trí khác ngoài trung tâm thì sao?
+`min()` và `max()` sẽ cho bạn giá trị lớn nhất và nhỏ nhất.
+Một công cụ mạnh mẽ khác là `quantile()` đây là dạng tổng quát của trung vị: `quantile(x, 0.25)` sẽ tìm giá trị của `x` lớn hơn 25% các giá trị, `quantile(x, 0.5)` tương đương với trung vị, và `quantile(x, 0.95)` sẽ tìm giá trị lớn hơn 95% các giá trị.
 
-For the `flights` data, you might want to look at the 95% quantile of delays rather than the maximum, because it will ignore the 5% of most delayed flights which can be quite extreme.
+Với tập dữ liệu `flights`, bạn có thể muốn xem phân vị (quantile) 95% của độ trễ thay vì giá trị lớn nhất, vì nó sẽ bỏ qua 5% chuyến bay trễ nhất vốn có thể khá cực đoan.
 
 ```{r}
 flights |>
@@ -625,150 +625,150 @@ flights |>
   )
 ```
 
-### Spread
+### Độ phân tán
 
-Sometimes you're not so interested in where the bulk of the data lies, but in how it is spread out.
-Two commonly used summaries are the standard deviation, `sd(x)`, and the inter-quartile range, `IQR()`.
-We won't explain `sd()` here since you're probably already familiar with it, but `IQR()` might be new --- it's `quantile(x, 0.75) - quantile(x, 0.25)` and gives you the range that contains the middle 50% of the data.
+Đôi khi bạn không quan tâm lắm đến vị trí phần lớn dữ liệu nằm ở đâu, mà quan tâm đến dữ liệu phân tán như thế nào.
+Hai thống kê tóm tắt thường dùng là độ lệch chuẩn (standard deviation), `sd(x)`, và khoảng tứ phân vị (inter-quartile range), `IQR()`.
+Chúng ta sẽ không giải thích `sd()` ở đây vì bạn có lẽ đã quen thuộc với nó, nhưng `IQR()` có thể là mới --- nó là `quantile(x, 0.75) - quantile(x, 0.25)` và cho bạn khoảng chứa 50% dữ liệu ở giữa.
 
-We can use this to reveal a small oddity in the `flights` data.
-You might expect the spread of the distance between origin and destination to be zero, since airports are always in the same place.
-But the code below reveals a data oddity for airport [EGE](https://en.wikipedia.org/wiki/Eagle_County_Regional_Airport):
+Chúng ta có thể dùng điều này để phát hiện một điểm kỳ lạ nhỏ trong dữ liệu `flights`.
+Bạn có thể kỳ vọng rằng độ phân tán của khoảng cách giữa điểm xuất phát và điểm đến bằng không, vì sân bay luôn ở cùng một chỗ.
+Nhưng đoạn mã dưới đây tiết lộ một điểm bất thường trong dữ liệu cho sân bay [EGE](https://en.wikipedia.org/wiki/Eagle_County_Regional_Airport):
 
 ```{r}
-flights |> 
-  group_by(origin, dest) |> 
+flights |>
+  group_by(origin, dest) |>
   summarize(
-    distance_iqr = IQR(distance), 
+    distance_iqr = IQR(distance),
     n = n(),
     .groups = "drop"
-  ) |> 
+  ) |>
   filter(distance_iqr > 0)
 ```
 
-### Distributions
+### Phân phối
 
-It's worth remembering that all of the summary statistics described above are a way of reducing the distribution down to a single number.
-This means that they're fundamentally reductive, and if you pick the wrong summary, you can easily miss important differences between groups.
-That's why it's always a good idea to visualize the distribution before committing to your summary statistics.
+Đáng nhớ rằng tất cả các thống kê tóm tắt mô tả ở trên là cách rút gọn phân phối xuống một con số duy nhất.
+Điều này có nghĩa là chúng về cơ bản mang tính rút gọn, và nếu bạn chọn sai thống kê tóm tắt, bạn có thể dễ dàng bỏ lỡ những khác biệt quan trọng giữa các nhóm.
+Đó là lý do tại sao luôn nên trực quan hóa phân phối trước khi quyết định chọn thống kê tóm tắt.
 
-@fig-flights-dist shows the overall distribution of departure delays.
-The distribution is so skewed that we have to zoom in to see the bulk of the data.
-This suggests that the mean is unlikely to be a good summary and we might prefer the median instead.
+@fig-flights-dist cho thấy phân phối tổng thể của độ trễ khởi hành.
+Phân phối lệch đến mức chúng ta phải phóng to để thấy phần lớn dữ liệu.
+Điều này gợi ý rằng trung bình khó có thể là thống kê tóm tắt tốt và chúng ta có thể nên dùng trung vị thay thế.
 
 ```{r}
 #| echo: false
 #| label: fig-flights-dist
 #| fig-cap: |
-#|   (Left) The histogram of the full data is extremely skewed making it
-#|   hard to get any details. (Right) Zooming into delays of less than two
-#|   hours makes it possible to see what's happening with the bulk of the
-#|   observations.
+#|   (Trái) Biểu đồ tần suất của toàn bộ dữ liệu cực kỳ lệch khiến
+#|   khó thấy chi tiết. (Phải) Phóng to vào độ trễ dưới hai giờ
+#|   giúp có thể thấy được điều gì đang xảy ra với phần lớn
+#|   các quan sát.
 #| fig-alt: |
-#|   Two histograms of `dep_delay`. On the left, it's very hard to see
-#|   any pattern except that there's a very large spike around zero, the
-#|   bars rapidly decay in height, and for most of the plot, you can't
-#|   see any bars because they are too short to see. On the right,
-#|   where we've discarded delays of greater than two hours, we can
-#|   see that the spike occurs slightly below zero (i.e. most flights
-#|   leave a couple of minutes early), but there's still a very steep
-#|   decay after that.
+#|   Hai biểu đồ tần suất của `dep_delay`. Ở bên trái, rất khó thấy
+#|   bất kỳ mẫu hình nào ngoại trừ có một đỉnh rất lớn quanh số không, các
+#|   cột giảm nhanh chóng về chiều cao, và phần lớn biểu đồ bạn không thể
+#|   thấy bất kỳ cột nào vì chúng quá ngắn. Ở bên phải,
+#|   nơi chúng ta đã loại bỏ các độ trễ hơn hai giờ, chúng ta có thể
+#|   thấy đỉnh xuất hiện hơi dưới số không (tức hầu hết chuyến bay
+#|   khởi hành sớm vài phút), nhưng vẫn có sự suy giảm rất dốc
+#|   sau đó.
 #| fig-asp: 0.5
 library(patchwork)
 
 full <- flights |>
-  ggplot(aes(x = dep_delay)) + 
+  ggplot(aes(x = dep_delay)) +
   geom_histogram(binwidth = 15, na.rm = TRUE)
 
 delayed120 <- flights |>
-  filter(dep_delay < 120) |> 
-  ggplot(aes(x = dep_delay)) + 
+  filter(dep_delay < 120) |>
+  ggplot(aes(x = dep_delay)) +
   geom_histogram(binwidth = 5)
 
 full + delayed120
 ```
 
-It's also a good idea to check that distributions for subgroups resemble the whole.
-In the following plot 365 frequency polygons of `dep_delay`, one for each day, are overlaid.
-The distributions seem to follow a common pattern, suggesting it's fine to use the same summary for each day.
+Cũng nên kiểm tra xem phân phối của các nhóm con có giống với toàn thể không.
+Trong biểu đồ sau, 365 đa giác tần suất (frequency polygon) của `dep_delay`, mỗi cái cho một ngày, được chồng lên nhau.
+Các phân phối dường như tuân theo một mẫu hình chung, gợi ý rằng việc sử dụng cùng một thống kê tóm tắt cho mỗi ngày là hợp lý.
 
 ```{r}
 #| fig-alt: |
-#|   The distribution of `dep_delay` is highly right skewed with a strong
-#|   peak slightly less than 0. The 365 frequency polygons are mostly 
-#|   overlapping forming a thick black band.
+#|   Phân phối của `dep_delay` lệch phải rõ rệt với đỉnh mạnh ở hơi
+#|   dưới 0. 365 đa giác tần suất hầu như chồng lên nhau tạo thành
+#|   một dải đen dày.
 flights |>
-  filter(dep_delay < 120) |> 
-  ggplot(aes(x = dep_delay, group = interaction(day, month))) + 
+  filter(dep_delay < 120) |>
+  ggplot(aes(x = dep_delay, group = interaction(day, month))) +
   geom_freqpoly(binwidth = 5, alpha = 1/5)
 ```
 
-Don't be afraid to explore your own custom summaries specifically tailored for the data that you're working with.
-In this case, that might mean separately summarizing the flights that left early vs. the flights that left late, or given that the values are so heavily skewed, you might try a log-transformation.
-Finally, don't forget what you learned in @sec-sample-size: whenever creating numerical summaries, it's a good idea to include the number of observations in each group.
+Đừng ngại khám phá các thống kê tóm tắt tùy chỉnh của riêng bạn được thiết kế đặc biệt cho dữ liệu mà bạn đang làm việc.
+Trong trường hợp này, điều đó có thể có nghĩa là tóm tắt riêng các chuyến bay khởi hành sớm so với các chuyến bay khởi hành muộn, hoặc vì các giá trị bị lệch nặng, bạn có thể thử phép biến đổi logarit.
+Cuối cùng, đừng quên những gì bạn đã học trong @sec-sample-size: mỗi khi tạo các thống kê tóm tắt số, nên bao gồm số lượng quan sát trong mỗi nhóm.
 
-### Positions
+### Vị trí
 
-There's one final type of summary that's useful for numeric vectors, but also works with every other type of value: extracting a value at a specific position: `first(x)`, `last(x)`, and `nth(x, n)`.
+Có một loại thống kê tóm tắt cuối cùng hữu ích cho vector số, nhưng cũng hoạt động với mọi loại giá trị khác: trích xuất giá trị tại một vị trí cụ thể: `first(x)`, `last(x)`, và `nth(x, n)`.
 
-For example, we can find the first, fifth and last departure for each day:
+Ví dụ, chúng ta có thể tìm chuyến bay đầu tiên, thứ năm và cuối cùng khởi hành mỗi ngày:
 
 ```{r}
-flights |> 
-  group_by(year, month, day) |> 
+flights |>
+  group_by(year, month, day) |>
   summarize(
-    first_dep = first(dep_time, na_rm = TRUE), 
+    first_dep = first(dep_time, na_rm = TRUE),
     fifth_dep = nth(dep_time, 5, na_rm = TRUE),
     last_dep = last(dep_time, na_rm = TRUE)
   )
 ```
 
-(NB: Because dplyr functions use `_` to separate components of function and arguments names, these functions use `na_rm` instead of `na.rm`.)
+(Lưu ý: Vì các hàm dplyr sử dụng `_` để phân tách các thành phần của tên hàm và đối số, các hàm này sử dụng `na_rm` thay vì `na.rm`.)
 
-If you're familiar with `[`, which we'll come back to in @sec-subset-many, you might wonder if you ever need these functions.
-There are three reasons: the `default` argument allows you to provide a default if the specified position doesn't exist, the `order_by` argument allows you to locally override the order of the rows, and the `na_rm` argument allows you to drop missing values.
+Nếu bạn đã quen với `[`, mà chúng ta sẽ quay lại trong @sec-subset-many, bạn có thể thắc mắc liệu có bao giờ cần các hàm này không.
+Có ba lý do: đối số `default` cho phép bạn cung cấp giá trị mặc định nếu vị trí chỉ định không tồn tại, đối số `order_by` cho phép bạn ghi đè cục bộ thứ tự các hàng, và đối số `na_rm` cho phép bạn loại bỏ các giá trị khuyết.
 
-Extracting values at positions is complementary to filtering on ranks.
-Filtering gives you all variables, with each observation in a separate row:
+Trích xuất giá trị tại các vị trí bổ sung cho việc lọc theo xếp hạng.
+Lọc cho bạn tất cả các biến, với mỗi quan sát trên một hàng riêng:
 
 ```{r}
-flights |> 
-  group_by(year, month, day) |> 
-  mutate(r = min_rank(sched_dep_time)) |> 
+flights |>
+  group_by(year, month, day) |>
+  mutate(r = min_rank(sched_dep_time)) |>
   filter(r %in% c(1, max(r)))
 ```
 
-### With `mutate()`
+### Với `mutate()`
 
-As the names suggest, the summary functions are typically paired with `summarize()`.
-However, because of the recycling rules we discussed in @sec-recycling they can also be paired usefully with `mutate()`, particularly when you want to do some sort of group standardization.
-For example:
+Như tên gọi gợi ý, các hàm tóm tắt thường được ghép đôi với `summarize()`.
+Tuy nhiên, nhờ quy tắc tái chế mà chúng ta đã thảo luận trong @sec-recycling, chúng cũng có thể được ghép hữu ích với `mutate()`, đặc biệt khi bạn muốn thực hiện một dạng chuẩn hóa theo nhóm nào đó.
+Ví dụ:
 
--   `x / sum(x)` calculates the proportion of a total.
--   `(x - mean(x)) / sd(x)` computes a Z-score (standardized to mean 0 and sd 1).
--   `(x - min(x)) / (max(x) - min(x))` standardizes to range \[0, 1\].
--   `x / first(x)` computes an index based on the first observation.
+-   `x / sum(x)` tính tỷ lệ so với tổng.
+-   `(x - mean(x)) / sd(x)` tính điểm Z (chuẩn hóa về trung bình 0 và độ lệch chuẩn 1).
+-   `(x - min(x)) / (max(x) - min(x))` chuẩn hóa về khoảng \[0, 1\].
+-   `x / first(x)` tính chỉ số dựa trên quan sát đầu tiên.
 
-### Exercises
+### Bài tập
 
-1.  Brainstorm at least 5 different ways to assess the typical delay characteristics of a group of flights.
-    When is `mean()` useful?
-    When is `median()` useful?
-    When might you want to use something else?
-    Should you use arrival delay or departure delay?
-    Why might you want to use data from `planes`?
+1.  Nghĩ ra ít nhất 5 cách khác nhau để đánh giá đặc tính trễ điển hình của một nhóm chuyến bay.
+    Khi nào `mean()` hữu ích?
+    Khi nào `median()` hữu ích?
+    Khi nào bạn có thể muốn sử dụng thứ khác?
+    Bạn nên dùng độ trễ đến hay độ trễ khởi hành?
+    Tại sao bạn có thể muốn sử dụng dữ liệu từ `planes`?
 
-2.  Which destinations show the greatest variation in air speed?
+2.  Điểm đến nào cho thấy sự biến thiên lớn nhất về tốc độ bay?
 
-3.  Create a plot to further explore the adventures of EGE.
-    Can you find any evidence that the airport moved locations?
-    Can you find another variable that might explain the difference?
+3.  Tạo một biểu đồ để khám phá thêm câu chuyện của EGE.
+    Bạn có thể tìm bằng chứng nào cho thấy sân bay đã thay đổi vị trí không?
+    Bạn có thể tìm biến nào khác có thể giải thích sự khác biệt không?
 
-## Summary
+## Tổng kết
 
-You're already familiar with many tools for working with numbers, and after reading this chapter you now know how to use them in R.
-You've also learned a handful of useful general transformations that are commonly, but not exclusively, applied to numeric vectors like ranks and offsets.
-Finally, you worked through a number of numeric summaries, and discussed a few of the statistical challenges that you should consider.
+Bạn đã quen thuộc với nhiều công cụ để làm việc với số, và sau khi đọc chương này bạn giờ đã biết cách sử dụng chúng trong R.
+Bạn cũng đã học được một số phép biến đổi tổng quát hữu ích thường được, nhưng không chỉ, áp dụng cho vector số như xếp hạng và độ lệch.
+Cuối cùng, bạn đã đi qua một số thống kê tóm tắt số và thảo luận về một vài thách thức thống kê mà bạn nên cân nhắc.
 
-Over the next two chapters, we'll dive into working with strings with the stringr package.
-Strings are a big topic so they get two chapters, one on the fundamentals of strings and one on regular expressions.
+Trong hai chương tiếp theo, chúng ta sẽ đi sâu vào làm việc với chuỗi ký tự bằng gói stringr.
+Chuỗi ký tự là một chủ đề lớn nên chúng được dành hai chương, một về nền tảng của chuỗi ký tự và một về biểu thức chính quy.
