@@ -19,7 +19,7 @@ Tiếp theo bạn sẽ sử dụng tập dữ liệu đó để thực hành tha
 
 base R cung cấp một số công cụ cơ bản để tạo và thao tác với factor.
 Chúng ta sẽ bổ sung thêm với gói mở rộng **forcats**, là một phần của tidyverse cốt lõi.
-Gói mở rộng này cung cấp các công cụ để xử lý các biến **phân loại** (**cat**egorical) bằng một loạt các hàm hỗ trợ để làm việc với factor.
+Gói mở rộng này cung cấp các công cụ để xử lý các biến **phân loại** (**cat**egorical) bằng một loạt các function hỗ trợ để làm việc với factor.
 
 ```{r}
 #| label: setup
@@ -177,7 +177,7 @@ Chúng ta có thể cải thiện nó bằng cách sắp xếp lại các mức 
 
 -   `.f`, factor mà bạn muốn thay đổi các mức.
 -   `.x`, một vector số mà bạn muốn dùng để sắp xếp lại các mức.
--   Tùy chọn, `.fun`, một hàm được sử dụng nếu có nhiều giá trị `.x` cho mỗi giá trị `.f`. Giá trị mặc định là `median`.
+-   Tùy chọn, `.fun`, một function được sử dụng nếu có nhiều giá trị `.x` cho mỗi giá trị `.f`. Giá trị mặc định là `median`.
 
 ```{r}
 #| fig-alt: |
@@ -228,7 +228,7 @@ Hãy dành `fct_reorder()` cho các factor có các mức được sắp xếp t
 
 Tuy nhiên, việc kéo "Not applicable" lên phía trước cùng với các mức đặc biệt khác là hợp lý.
 Bạn có thể sử dụng `fct_relevel()`.
-Hàm này nhận một factor, `.f`, và sau đó bất kỳ số lượng mức nào mà bạn muốn di chuyển lên đầu.
+Function này nhận một factor, `.f`, và sau đó bất kỳ số lượng mức nào mà bạn muốn di chuyển lên đầu.
 
 ```{r}
 #| fig-alt: |
@@ -306,7 +306,7 @@ gss_cat |>
 Mạnh hơn việc thay đổi thứ tự các mức là thay đổi giá trị của chúng.
 Điều này cho phép bạn làm rõ nhãn cho ấn phẩm, và gộp các mức lại cho các hiển thị tổng quát.
 Công cụ tổng quát và mạnh nhất là `fct_recode()`.
-Hàm này cho phép bạn mã hóa lại, hay thay đổi, giá trị của từng mức.
+Function này cho phép bạn mã hóa lại, hay thay đổi, giá trị của từng mức.
 Ví dụ, hãy xem biến `partyid` từ data frame `gss_cat`:
 
 ```{r}
@@ -315,7 +315,7 @@ gss_cat |> count(partyid)
 
 Các mức ngắn gọn và không nhất quán.
 Hãy chỉnh sửa chúng cho dài hơn và sử dụng cấu trúc song song.
-Giống như hầu hết các hàm đổi tên và mã hóa lại trong tidyverse, giá trị mới nằm bên trái và giá trị cũ nằm bên phải:
+Giống như hầu hết các function đổi tên và mã hóa lại trong tidyverse, giá trị mới nằm bên trái và giá trị cũ nằm bên phải:
 
 ```{r}
 gss_cat |>
@@ -373,8 +373,8 @@ gss_cat |>
 ```
 
 Đôi khi bạn chỉ muốn gộp các nhóm nhỏ lại để làm biểu đồ hoặc bảng đơn giản hơn.
-Đó là công việc của họ hàm `fct_lump_*()`.
-`fct_lump_lowfreq()` là điểm khởi đầu đơn giản, hàm này dần dần gộp các nhóm danh mục nhỏ nhất vào "Other", luôn giữ "Other" là danh mục nhỏ nhất.
+Đó là công việc của họ function `fct_lump_*()`.
+`fct_lump_lowfreq()` là điểm khởi đầu đơn giản, function này dần dần gộp các nhóm danh mục nhỏ nhất vào "Other", luôn giữ "Other" là danh mục nhỏ nhất.
 
 ```{r}
 gss_cat |>
@@ -391,7 +391,7 @@ gss_cat |>
   count(relig, sort = TRUE)
 ```
 
-Hãy đọc tài liệu để tìm hiểu về `fct_lump_min()` và `fct_lump_prop()`, những hàm hữu ích trong các trường hợp khác.
+Hãy đọc tài liệu để tìm hiểu về `fct_lump_min()` và `fct_lump_prop()`, những function hữu ích trong các trường hợp khác.
 
 ### Bài tập
 
@@ -406,7 +406,7 @@ Hãy đọc tài liệu để tìm hiểu về `fct_lump_min()` và `fct_lump_pr
 ## Nhân tố có thứ tự {#sec-ordered-factors}
 
 Trước khi tiếp tục, điều quan trọng là phải đề cập ngắn gọn về một loại factor đặc biệt: factor có thứ tự (ordered factor).
-Được tạo bằng hàm `ordered()`, factor có thứ tự ngụ ý một thứ tự nghiêm ngặt giữa các mức, nhưng không chỉ rõ bất kỳ điều gì về độ lớn của sự khác biệt giữa các mức.
+Được tạo bằng function `ordered()`, factor có thứ tự ngụ ý một thứ tự nghiêm ngặt giữa các mức, nhưng không chỉ rõ bất kỳ điều gì về độ lớn của sự khác biệt giữa các mức.
 Bạn sử dụng factor có thứ tự khi bạn biết các mức có thứ hạng, nhưng không có thứ hạng số chính xác.
 
 Bạn có thể nhận biết factor có thứ tự khi nó được in ra vì nó sử dụng ký hiệu `<` giữa các mức:
@@ -427,8 +427,8 @@ Trong những ngữ cảnh đó, việc xác định chính xác chúng là quan
 
 ## Tóm tắt
 
-Chương này giới thiệu cho bạn gói mở rộng forcats tiện dụng để làm việc với factor, giới thiệu các hàm được sử dụng phổ biến nhất.
-forcats chứa một loạt các hàm hỗ trợ khác mà chúng ta không có đủ chỗ để thảo luận ở đây, vì vậy mỗi khi bạn đối mặt với một thách thức phân tích factor mà bạn chưa gặp trước đây, tôi rất khuyên bạn nên lướt qua [trang chỉ mục tham khảo](https://forcats.tidyverse.org/reference/index.html) để xem có hàm sẵn có nào có thể giúp giải quyết vấn đề của bạn không.
+Chương này giới thiệu cho bạn gói mở rộng forcats tiện dụng để làm việc với factor, giới thiệu các function được sử dụng phổ biến nhất.
+forcats chứa một loạt các function hỗ trợ khác mà chúng ta không có đủ chỗ để thảo luận ở đây, vì vậy mỗi khi bạn đối mặt với một thách thức phân tích factor mà bạn chưa gặp trước đây, tôi rất khuyên bạn nên lướt qua [trang chỉ mục tham khảo](https://forcats.tidyverse.org/reference/index.html) để xem có function sẵn có nào có thể giúp giải quyết vấn đề của bạn không.
 
 Nếu bạn muốn tìm hiểu thêm về factor sau khi đọc chương này, chúng tôi khuyên bạn nên đọc bài báo của Amelia McNamara và Nicholas Horton, [*Wrangling categorical data in R*](https://peerj.com/preprints/3163/).
 Bài báo này trình bày một số lịch sử được thảo luận trong [*stringsAsFactors: An unauthorized biography*](https://simplystatistics.org/posts/2015-07-24-stringsasfactors-an-unauthorized-biography/) và [*stringsAsFactors = \<sigh\>*](https://notstatschat.tumblr.com/post/124987394001/stringsasfactors-sigh), và so sánh các phương pháp tidy để xử lý dữ liệu phân loại được trình bày trong cuốn sách này với các phương pháp base R.

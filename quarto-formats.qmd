@@ -127,7 +127,7 @@ Giống như bất kỳ tài liệu HTML nào, tài liệu HTML được tạo b
 
 ### htmlwidgets
 
-HTML là một định dạng tương tác, và bạn có thể tận dụng tính tương tác đó với **htmlwidgets**, các hàm R tạo ra các trực quan hóa HTML tương tác.
+HTML là một định dạng tương tác, và bạn có thể tận dụng tính tương tác đó với **htmlwidgets**, các function R tạo ra các trực quan hóa HTML tương tác.
 Ví dụ, hãy xem bản đồ **leaflet** bên dưới.
 Nếu bạn đang xem trang này trên web, bạn có thể kéo bản đồ, phóng to thu nhỏ, v.v.
 Rõ ràng bạn không thể làm điều đó trong sách, vì vậy Quarto tự động chèn ảnh chụp tĩnh cho bạn.
@@ -171,7 +171,7 @@ format: html
 server: shiny
 ```
 
-Sau đó bạn có thể sử dụng các hàm "input" để thêm các thành phần tương tác vào tài liệu:
+Sau đó bạn có thể sử dụng các function "input" để thêm các thành phần tương tác vào tài liệu:
 
 ```{r}
 #| eval: false

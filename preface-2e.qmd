@@ -19,9 +19,9 @@ Dưới đây là tóm tắt ngắn gọn về những thay đổi lớn nhất:
 -   Phần thứ tư của cuốn sách được gọi là "Nhập dữ liệu".
     Đây là một bộ chương mới vượt ra ngoài việc đọc file văn bản phẳng, bao gồm làm việc với spreadsheet, lấy dữ liệu từ database, làm việc với dữ liệu lớn, chuyển đổi dữ liệu phân cấp thành dạng bảng, và thu thập dữ liệu từ các trang web.
 
--   Phần "Lập trình" vẫn được giữ lại, nhưng đã được viết lại hoàn toàn để tập trung vào những phần quan trọng nhất của việc viết hàm và lặp.
-    Phần viết hàm giờ bao gồm chi tiết về cách bọc các hàm tidyverse (xử lý các thách thức của tidy evaluation), vì điều này đã trở nên dễ dàng và quan trọng hơn nhiều trong vài năm qua.
-    Chúng tôi đã thêm một chương mới về các hàm base R quan trọng mà bạn có thể gặp trong mã R thực tế.
+-   Phần "Lập trình" vẫn được giữ lại, nhưng đã được viết lại hoàn toàn để tập trung vào những phần quan trọng nhất của việc viết function và lặp.
+    Phần viết function giờ bao gồm chi tiết về cách bọc các function tidyverse (xử lý các thách thức của tidy evaluation), vì điều này đã trở nên dễ dàng và quan trọng hơn nhiều trong vài năm qua.
+    Chúng tôi đã thêm một chương mới về các function base R quan trọng mà bạn có thể gặp trong mã R thực tế.
 
 -   Phần mô hình hóa đã được loại bỏ.
     Chúng tôi chưa bao giờ có đủ không gian để trình bày mô hình hóa một cách đầy đủ, và hiện nay đã có những tài nguyên tốt hơn nhiều.

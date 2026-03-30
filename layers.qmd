@@ -17,12 +17,12 @@ Các phép biến đổi này được sử dụng để tính toán các giá t
 Bạn cũng sẽ tìm hiểu về điều chỉnh vị trí (position adjustment), giúp thay đổi cách các geom được hiển thị trong biểu đồ của bạn.
 Cuối cùng, chúng ta sẽ giới thiệu ngắn gọn về hệ tọa độ (coordinate system).
 
-Chúng ta sẽ không đề cập đến từng hàm và tùy chọn cho mỗi lớp này, nhưng chúng ta sẽ hướng dẫn bạn qua các chức năng quan trọng và thường được sử dụng nhất do ggplot2 cung cấp cũng như giới thiệu cho bạn các gói mở rộng ggplot2.
+Chúng ta sẽ không đề cập đến từng function và tùy chọn cho mỗi lớp này, nhưng chúng ta sẽ hướng dẫn bạn qua các chức năng quan trọng và thường được sử dụng nhất do ggplot2 cung cấp cũng như giới thiệu cho bạn các gói mở rộng ggplot2.
 
 ### Điều kiện tiên quyết
 
 Chương này tập trung vào ggplot2.
-Để truy cập các bộ dữ liệu, trang trợ giúp, và các hàm được sử dụng trong chương này, hãy tải tidyverse bằng cách chạy đoạn mã sau:
+Để truy cập các bộ dữ liệu, trang trợ giúp, và các function được sử dụng trong chương này, hãy tải tidyverse bằng cách chạy đoạn mã sau:
 
 ```{r}
 #| label: setup
@@ -120,7 +120,7 @@ Nó chọn một thang đo hợp lý để sử dụng với thuộc tính đồ
 Đối với thuộc tính đồ họa x và y, ggplot2 không tạo chú giải, nhưng nó tạo một đường trục với các vạch đánh dấu và nhãn.
 Đường trục cung cấp thông tin giống như chú giải; nó giải thích ánh xạ giữa vị trí và giá trị.
 
-Bạn cũng có thể đặt các thuộc tính trực quan của geom một cách thủ công như một argument của hàm geom (*bên ngoài* `aes()`) thay vì dựa vào ánh xạ biến để xác định giao diện.
+Bạn cũng có thể đặt các thuộc tính trực quan của geom một cách thủ công như một argument của function geom (*bên ngoài* `aes()`) thay vì dựa vào ánh xạ biến để xác định giao diện.
 Ví dụ, chúng ta có thể làm tất cả các điểm trong biểu đồ có màu xanh:
 
 ```{r}
@@ -234,7 +234,7 @@ Nhưng các biểu đồ không giống hệt nhau.
 Mỗi biểu đồ sử dụng một geom khác nhau để biểu diễn dữ liệu.
 Biểu đồ bên trái sử dụng geom điểm, và biểu đồ bên phải sử dụng geom trơn, một đường trơn được khớp với dữ liệu.
 
-Để thay đổi geom trong biểu đồ của bạn, hãy thay đổi hàm geom mà bạn thêm vào `ggplot()`.
+Để thay đổi geom trong biểu đồ của bạn, hãy thay đổi function geom mà bạn thêm vào `ggplot()`.
 Ví dụ, để tạo các biểu đồ ở trên, bạn có thể sử dụng đoạn mã sau:
 
 ```{r}
@@ -248,7 +248,7 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
   geom_smooth()
 ```
 
-Mọi hàm geom trong ggplot2 đều nhận một argument `mapping`, được định nghĩa cục bộ trong lớp geom hoặc toàn cục trong lớp `ggplot()`.
+Mọi function geom trong ggplot2 đều nhận một argument `mapping`, được định nghĩa cục bộ trong lớp geom hoặc toàn cục trong lớp `ggplot()`.
 Tuy nhiên, không phải thuộc tính đồ họa nào cũng hoạt động với mọi geom.
 Bạn có thể đặt hình dạng của một điểm, nhưng bạn không thể đặt "hình dạng" của một đường.
 Nếu bạn thử, ggplot2 sẽ lặng lẽ bỏ qua ánh xạ thuộc tính đồ họa đó.
@@ -329,7 +329,7 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
   geom_smooth(aes(color = drv), show.legend = FALSE)
 ```
 
-Nếu bạn đặt các ánh xạ trong hàm geom, ggplot2 sẽ coi chúng là ánh xạ cục bộ cho lớp đó.
+Nếu bạn đặt các ánh xạ trong function geom, ggplot2 sẽ coi chúng là ánh xạ cục bộ cho lớp đó.
 Nó sẽ sử dụng các ánh xạ này để mở rộng hoặc ghi đè các ánh xạ toàn cục *chỉ cho lớp đó*.
 Điều này giúp hiển thị các thuộc tính đồ họa khác nhau trong các lớp khác nhau trở nên khả thi.
 
@@ -408,7 +408,7 @@ ggplot(mpg, aes(x = hwy, y = drv, fill = drv, color = drv)) +
   geom_density_ridges(alpha = 0.5, show.legend = FALSE)
 ```
 
-Nơi tốt nhất để có cái nhìn tổng quan toàn diện về tất cả các geom mà ggplot2 cung cấp, cũng như tất cả các hàm trong gói mở rộng, là trang tham khảo: <https://ggplot2.tidyverse.org/reference>.
+Nơi tốt nhất để có cái nhìn tổng quan toàn diện về tất cả các geom mà ggplot2 cung cấp, cũng như tất cả các function trong gói mở rộng, là trang tham khảo: <https://ggplot2.tidyverse.org/reference>.
 Để tìm hiểu thêm về bất kỳ geom đơn lẻ nào, hãy sử dụng trang trợ giúp (ví dụ, `?geom_smooth`).
 
 ### Bài tập
@@ -506,7 +506,7 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
 
 Mặc định, mỗi facet chia sẻ cùng thang đo và phạm vi cho trục x và y.
 Điều này hữu ích khi bạn muốn so sánh dữ liệu giữa các facet nhưng có thể hạn chế khi bạn muốn trực quan hóa mối quan hệ trong mỗi facet tốt hơn.
-Đặt argument `scales` trong hàm facet thành `"free_x"` sẽ cho phép các thang đo trục x khác nhau giữa các column, `"free_y"` sẽ cho phép các thang đo trục y khác nhau giữa các row, và `"free"` sẽ cho phép cả hai.
+Đặt argument `scales` trong function facet thành `"free_x"` sẽ cho phép các thang đo trục x khác nhau giữa các column, `"free_y"` sẽ cho phép các thang đo trục y khác nhau giữa các row, và `"free"` sẽ cho phép cả hai.
 
 ```{r}
 #| fig-alt: |
@@ -700,12 +700,12 @@ Tuy nhiên, có ba lý do tại sao bạn có thể cần sử dụng stat một
     ```
 
 ggplot2 cung cấp hơn 20 stat cho bạn sử dụng.
-Mỗi stat là một hàm, vì vậy bạn có thể xem trợ giúp theo cách thông thường, ví dụ `?stat_bin`.
+Mỗi stat là một function, vì vậy bạn có thể xem trợ giúp theo cách thông thường, ví dụ `?stat_bin`.
 
 ### Bài tập
 
 1.  Geom mặc định liên kết với `stat_summary()` là gì?
-    Bạn có thể viết lại biểu đồ trước đó để sử dụng hàm geom đó thay vì hàm stat như thế nào?
+    Bạn có thể viết lại biểu đồ trước đó để sử dụng function geom đó thay vì function stat như thế nào?
 
 2.  `geom_col()` làm gì?
     Nó khác gì so với `geom_bar()`?
@@ -970,7 +970,7 @@ ggplot(data = <DATA>) +
 ```
 
 Mẫu mới của chúng ta nhận bảy parameter, các từ trong ngoặc nhọn xuất hiện trong mẫu.
-Trong thực tế, bạn hiếm khi cần cung cấp đủ bảy parameter để tạo biểu đồ vì ggplot2 sẽ cung cấp các giá trị mặc định hữu ích cho mọi thứ ngoại trừ dữ liệu, ánh xạ, và hàm geom.
+Trong thực tế, bạn hiếm khi cần cung cấp đủ bảy parameter để tạo biểu đồ vì ggplot2 sẽ cung cấp các giá trị mặc định hữu ích cho mọi thứ ngoại trừ dữ liệu, ánh xạ, và function geom.
 
 Bảy parameter trong mẫu tạo thành ngữ pháp đồ họa, một hệ thống hình thức để xây dựng biểu đồ.
 Ngữ pháp đồ họa dựa trên nhận thức rằng bạn có thể mô tả duy nhất *bất kỳ* biểu đồ nào như sự kết hợp của một bộ dữ liệu, một geom, một tập hợp ánh xạ, một stat, một điều chỉnh vị trí, một hệ tọa độ, một sơ đồ facet, và một chủ đề.

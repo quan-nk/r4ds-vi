@@ -74,7 +74,7 @@ z <- (a + b)^2 / d
 z<-( a + b ) ^ 2/d
 ```
 
-Không đặt dấu cách bên trong hoặc bên ngoài dấu ngoặc cho lệnh gọi hàm thông thường.
+Không đặt dấu cách bên trong hoặc bên ngoài dấu ngoặc cho lệnh gọi function thông thường.
 Luôn đặt dấu cách sau dấu phẩy, giống như trong tiếng Việt chuẩn.
 
 ```{r}
@@ -118,8 +118,8 @@ flights |>
 flights|>filter(!is.na(arr_delay), !is.na(tailnum))|>count(dest)
 ```
 
-Nếu hàm bạn đang dẫn vào có argument được đặt tên (như `mutate()` hoặc `summarize()`), đặt mỗi argument trên một dòng mới.
-Nếu hàm không có argument được đặt tên (như `select()` hoặc `filter()`), giữ mọi thứ trên một dòng trừ khi không vừa, trong trường hợp đó bạn nên đặt mỗi argument trên dòng riêng.
+Nếu function bạn đang dẫn vào có argument được đặt tên (như `mutate()` hoặc `summarize()`), đặt mỗi argument trên một dòng mới.
+Nếu function không có argument được đặt tên (như `select()` hoặc `filter()`), giữ mọi thứ trên một dòng trừ khi không vừa, trong trường hợp đó bạn nên đặt mỗi argument trên dòng riêng.
 
 ```{r}
 #| eval: false
@@ -142,7 +142,7 @@ flights |>
 Sau bước đầu tiên của pipeline, thụt lề mỗi dòng hai dấu cách.
 RStudio sẽ tự động đặt dấu cách cho bạn sau khi xuống dòng theo sau `|>`.
 Nếu bạn đặt mỗi argument trên dòng riêng, thụt lề thêm hai dấu cách nữa.
-Đảm bảo `)` nằm trên dòng riêng, và không thụt lề để khớp với vị trí ngang của tên hàm.
+Đảm bảo `)` nằm trên dòng riêng, và không thụt lề để khớp với vị trí ngang của tên function.
 
 ```{r}
 #| eval: false
@@ -210,7 +210,7 @@ flights |>
   geom_line()
 ```
 
-Một lần nữa, nếu bạn không thể đặt tất cả argument của hàm trên một dòng, đặt mỗi argument trên dòng riêng:
+Một lần nữa, nếu bạn không thể đặt tất cả argument của function trên một dòng, đặt mỗi argument trên dòng riêng:
 
 ```{r}
 #| eval: false
@@ -280,6 +280,6 @@ Và đừng quên gói mở rộng styler: đây là cách tuyệt vời để n
 
 Trong chương tiếp theo, chúng ta quay lại các công cụ khoa học dữ liệu, học về dữ liệu gọn gàng (tidy data).
 Dữ liệu gọn gàng là cách nhất quán để tổ chức data frame được sử dụng xuyên suốt tidyverse.
-Sự nhất quán này giúp cuộc sống của bạn dễ dàng hơn vì khi bạn có dữ liệu gọn gàng, nó hoạt động với phần lớn các hàm tidyverse.
+Sự nhất quán này giúp cuộc sống của bạn dễ dàng hơn vì khi bạn có dữ liệu gọn gàng, nó hoạt động với phần lớn các function tidyverse.
 Tất nhiên, cuộc sống không bao giờ dễ dàng, và hầu hết các tập dữ liệu bạn gặp ngoài thực tế sẽ chưa gọn gàng sẵn.
 Vì vậy chúng tôi cũng sẽ dạy bạn cách sử dụng gói mở rộng tidyr để sắp xếp dữ liệu chưa gọn gàng.

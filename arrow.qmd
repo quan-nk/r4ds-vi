@@ -102,7 +102,7 @@ Chúng ta có thể xem thực sự có gì bên trong bằng `glimpse()`.
 seattle_csv |> glimpse()
 ```
 
-Chúng ta có thể bắt đầu sử dụng tập dữ liệu này với các hàm (function) dplyr, dùng `collect()` để buộc arrow thực hiện tính toán và trả về dữ liệu.
+Chúng ta có thể bắt đầu sử dụng tập dữ liệu này với các function (function) dplyr, dùng `collect()` để buộc arrow thực hiện tính toán và trả về dữ liệu.
 Ví dụ, đoạn mã này cho chúng ta biết tổng số lượt mượn theo từng năm:
 
 ```{r}
@@ -226,7 +226,7 @@ query |> collect()
 ```
 
 Giống như dbplyr, arrow chỉ hiểu một số biểu thức R, nên bạn có thể không viết được chính xác mã như thường lệ.
-Tuy nhiên, list các phép toán và hàm được hỗ trợ khá rộng và tiếp tục được mở rộng; tìm list đầy đủ các hàm hiện được hỗ trợ trong `?acero`.
+Tuy nhiên, list các phép toán và function được hỗ trợ khá rộng và tiếp tục được mở rộng; tìm list đầy đủ các function hiện được hỗ trợ trong `?acero`.
 
 ### Hiệu suất {#sec-parquet-fast}
 

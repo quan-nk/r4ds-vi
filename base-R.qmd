@@ -7,20 +7,20 @@ source("_common.R")
 
 ## Giới thiệu
 
-Để kết thúc phần lập trình, chúng tôi sẽ giới thiệu nhanh cho bạn những hàm base R (base R) quan trọng nhất mà chúng tôi không đề cập ở những phần khác trong cuốn sách.
+Để kết thúc phần lập trình, chúng tôi sẽ giới thiệu nhanh cho bạn những function base R (base R) quan trọng nhất mà chúng tôi không đề cập ở những phần khác trong cuốn sách.
 Những công cụ này đặc biệt hữu ích khi bạn lập trình nhiều hơn và sẽ giúp bạn đọc được mã mà bạn gặp ngoài thực tế.
 
 Đây là lúc thích hợp để nhắc bạn rằng tidyverse không phải là cách duy nhất để giải quyết các bài toán khoa học dữ liệu (data science).
-Chúng tôi dạy tidyverse trong cuốn sách này vì các gói mở rộng tidyverse chia sẻ chung triết lý thiết kế, tăng tính nhất quán giữa các hàm, và khiến mỗi hàm hay gói mở rộng mới dễ học dễ dùng hơn một chút.
-Không thể dùng tidyverse mà không dùng base R, nên thực ra chúng tôi đã dạy bạn **rất nhiều** hàm base R: từ `library()` để tải gói mở rộng, đến `sum()` và `mean()` để tóm tắt số, đến kiểu dữ liệu factor (factor), ngày tháng (date), và POSIXct, và tất nhiên là tất cả các toán tử cơ bản như `+`, `-`, `/`, `*`, `|`, `&`, và `!`.
+Chúng tôi dạy tidyverse trong cuốn sách này vì các gói mở rộng tidyverse chia sẻ chung triết lý thiết kế, tăng tính nhất quán giữa các function, và khiến mỗi function hay gói mở rộng mới dễ học dễ dùng hơn một chút.
+Không thể dùng tidyverse mà không dùng base R, nên thực ra chúng tôi đã dạy bạn **rất nhiều** function base R: từ `library()` để tải gói mở rộng, đến `sum()` và `mean()` để tóm tắt số, đến kiểu dữ liệu factor (factor), ngày tháng (date), và POSIXct, và tất nhiên là tất cả các toán tử cơ bản như `+`, `-`, `/`, `*`, `|`, `&`, và `!`.
 Điều mà chúng tôi chưa tập trung cho đến giờ là quy trình làm việc với base R, nên chúng tôi sẽ giới thiệu một số quy trình trong chương này.
 
 Sau khi đọc cuốn sách này, bạn sẽ học các cách tiếp cận khác cho cùng những bài toán đó bằng base R, data.table, và các gói mở rộng khác.
 Chắc chắn bạn sẽ gặp các cách tiếp cận khác này khi bạn bắt đầu đọc mã R do người khác viết, đặc biệt nếu bạn đang dùng Stack Overflow.
 Việc viết mã kết hợp nhiều cách tiếp cận là hoàn toàn bình thường, và đừng để ai nói khác với bạn!
 
-Trong chương này, chúng tôi sẽ tập trung vào bốn chủ đề lớn: lấy tập con (subsetting) bằng `[`, lấy tập con bằng `[[` và `$`, họ hàm apply, và vòng lặp `for`.
-Để kết thúc, chúng tôi sẽ giới thiệu ngắn gọn hai hàm vẽ biểu đồ thiết yếu.
+Trong chương này, chúng tôi sẽ tập trung vào bốn chủ đề lớn: lấy tập con (subsetting) bằng `[`, lấy tập con bằng `[[` và `$`, họ function apply, và vòng lặp `for`.
+Để kết thúc, chúng tôi sẽ giới thiệu ngắn gọn hai function vẽ biểu đồ thiết yếu.
 
 ### Điều kiện tiên quyết
 
@@ -65,7 +65,7 @@ Có năm loại chính mà bạn có thể dùng để lấy tập con vector, t
 
 3.  **Một vector logic (logical vector)**.
     Lấy tập con bằng vector logic sẽ giữ lại tất cả giá trị tương ứng với giá trị `TRUE`.
-    Điều này thường hữu ích nhất khi kết hợp với các hàm so sánh.
+    Điều này thường hữu ích nhất khi kết hợp với các function so sánh.
 
     ```{r}
     x <- c(10, 3, NA, 5, 8, 1, NA)
@@ -142,7 +142,7 @@ Một cách để tránh sự mơ hồ này với `data.frame` là chỉ định
 df1[, "x" , drop = FALSE]
 ```
 
-### Các hàm dplyr tương đương
+### Các function dplyr tương đương
 
 Một số verb dplyr là trường hợp đặc biệt của `[`:
 
@@ -185,9 +185,9 @@ Một số verb dplyr là trường hợp đặc biệt của `[`:
     df[, c("x", "z")]
     ```
 
-base R cũng cung cấp một hàm kết hợp các tính năng của `filter()` và `select()`[^base-r-2] gọi là `subset()`:
+base R cũng cung cấp một function kết hợp các tính năng của `filter()` và `select()`[^base-r-2] gọi là `subset()`:
 
-[^base-r-2]: Nhưng nó không xử lý data frame đã nhóm khác biệt và không hỗ trợ các hàm trợ giúp chọn lọc như `starts_with()`.
+[^base-r-2]: Nhưng nó không xử lý data frame đã nhóm khác biệt và không hỗ trợ các function trợ giúp chọn lọc như `starts_with()`.
 
 ```{r}
 df |>
@@ -201,11 +201,11 @@ df |>
 df |> subset(x > 1, c(y, z))
 ```
 
-Hàm này là nguồn cảm hứng cho phần lớn cú pháp của dplyr.
+Function này là nguồn cảm hứng cho phần lớn cú pháp của dplyr.
 
 ### Bài tập
 
-1.  Tạo các hàm nhận vector làm đầu vào và trả về:
+1.  Tạo các function nhận vector làm đầu vào và trả về:
 
     a.  Các phần tử ở vị trí chẵn.
     b.  Mọi phần tử trừ giá trị cuối cùng.
@@ -257,7 +257,7 @@ max(diamonds$carat)
 levels(diamonds$cut)
 ```
 
-dplyr cũng cung cấp một hàm tương đương với `[[`/`$` mà chúng tôi chưa đề cập trong @sec-data-transform: `pull()`.
+dplyr cũng cung cấp một function tương đương với `[[`/`$` mà chúng tôi chưa đề cập trong @sec-data-transform: `pull()`.
 `pull()` nhận tên biến hoặc vị trí biến và trả về chỉ column đó.
 Điều đó có nghĩa là chúng ta có thể viết lại đoạn mã ở trên để dùng pipe:
 
@@ -360,20 +360,20 @@ Nguyên tắc tương tự cũng áp dụng khi bạn dùng `[` 1d với data fr
 2.  `pepper[[1]][1]` sẽ là gì?
     Còn `pepper[[1]][[1]]` thì sao?
 
-## Họ hàm apply {#sec-apply-family}
+## Họ function apply {#sec-apply-family}
 
-Trong @sec-iteration, bạn đã học các kỹ thuật tidyverse cho việc lặp (iteration) như `dplyr::across()` và họ hàm map.
-Trong phần này, bạn sẽ học về các hàm tương đương trong base R, **họ hàm apply**.
-Trong ngữ cảnh này apply và map là đồng nghĩa vì cách nói khác của "map một hàm lên mỗi phần tử của vector" là "apply một hàm lên mỗi phần tử của vector".
-Ở đây chúng tôi sẽ giới thiệu tổng quan nhanh về họ hàm này để bạn có thể nhận ra chúng ngoài thực tế.
+Trong @sec-iteration, bạn đã học các kỹ thuật tidyverse cho việc lặp (iteration) như `dplyr::across()` và họ function map.
+Trong phần này, bạn sẽ học về các function tương đương trong base R, **họ function apply**.
+Trong ngữ cảnh này apply và map là đồng nghĩa vì cách nói khác của "map một function lên mỗi phần tử của vector" là "apply một function lên mỗi phần tử của vector".
+Ở đây chúng tôi sẽ giới thiệu tổng quan nhanh về họ function này để bạn có thể nhận ra chúng ngoài thực tế.
 
 Thành viên quan trọng nhất của họ này là `lapply()`, rất giống với `purrr::map()`[^base-r-3].
 Thực tế, vì chúng ta chưa dùng bất kỳ tính năng nâng cao nào của `map()`, bạn có thể thay thế mọi lệnh gọi `map()` trong @sec-iteration bằng `lapply()`.
 
 [^base-r-3]: Nó chỉ thiếu các tính năng tiện lợi như thanh tiến trình và báo cáo phần tử nào gây ra lỗi nếu có lỗi xảy ra.
 
-Không có hàm base R nào tương đương chính xác với `across()` nhưng bạn có thể xấp xỉ bằng cách dùng `[` với `lapply()`.
-Điều này hoạt động vì ẩn bên dưới, data frame là list các column, nên gọi `lapply()` trên data frame sẽ áp dụng hàm lên mỗi column.
+Không có function base R nào tương đương chính xác với `across()` nhưng bạn có thể xấp xỉ bằng cách dùng `[` với `lapply()`.
+Điều này hoạt động vì ẩn bên dưới, data frame là list các column, nên gọi `lapply()` trên data frame sẽ áp dụng function lên mỗi column.
 
 ```{r}
 df <- tibble(a = 1, b = 2, c = "a", d = "b", e = 4)
@@ -387,10 +387,10 @@ df[, num_cols] <- lapply(df[, num_cols, drop = FALSE], \(x) x * 2)
 df
 ```
 
-Đoạn mã ở trên dùng một hàm mới, `sapply()`.
+Đoạn mã ở trên dùng một function mới, `sapply()`.
 Nó tương tự `lapply()` nhưng luôn cố đơn giản hóa kết quả, do đó có chữ `s` trong tên, ở đây tạo ra vector logic thay vì list.
 Chúng tôi không khuyến khích dùng nó khi lập trình, vì việc đơn giản hóa có thể thất bại và cho bạn kiểu không mong đợi, nhưng thường ổn cho sử dụng tương tác.
-purrr có một hàm tương tự gọi là `map_vec()` mà chúng tôi chưa đề cập trong @sec-iteration.
+purrr có một function tương tự gọi là `map_vec()` mà chúng tôi chưa đề cập trong @sec-iteration.
 
 base R cung cấp phiên bản nghiêm ngặt hơn của `sapply()` gọi là `vapply()`, viết tắt của **v**ector apply.
 Nó nhận thêm một argument (argument) chỉ định kiểu mong đợi, đảm bảo việc đơn giản hóa xảy ra giống nhau bất kể đầu vào.
@@ -400,7 +400,7 @@ Ví dụ, chúng ta có thể thay thế lệnh `sapply()` ở trên bằng `vap
 vapply(df, is.numeric, logical(1))
 ```
 
-Sự khác biệt giữa `sapply()` và `vapply()` thực sự quan trọng khi chúng ở bên trong một hàm (vì nó tạo ra khác biệt lớn cho tính mạnh mẽ của hàm với đầu vào bất thường), nhưng thường không quan trọng trong phân tích dữ liệu.
+Sự khác biệt giữa `sapply()` và `vapply()` thực sự quan trọng khi chúng ở bên trong một function (vì nó tạo ra khác biệt lớn cho tính mạnh mẽ của function với đầu vào bất thường), nhưng thường không quan trọng trong phân tích dữ liệu.
 
 Một thành viên quan trọng khác của họ apply là `tapply()`, tính toán một tóm tắt nhóm đơn lẻ:
 
@@ -415,7 +415,7 @@ tapply(diamonds$price, diamonds$cut, mean)
 Thật không may, `tapply()` trả kết quả dưới dạng vector có tên, đòi hỏi một số thao tác phức tạp nếu bạn muốn gom nhiều bảng tóm tắt và biến nhóm vào một data frame (chắc chắn bạn có thể không làm điều này và chỉ làm việc với các vector rời, nhưng theo kinh nghiệm của chúng tôi, điều đó chỉ trì hoãn công việc).
 Nếu bạn muốn xem cách dùng `tapply()` hoặc các kỹ thuật base R khác để thực hiện các tóm tắt nhóm khác, Hadley đã tổng hợp một số kỹ thuật [trong một gist](https://gist.github.com/hadley/c430501804349d382ce90754936ab8ec).
 
-Thành viên cuối cùng của họ apply là chính hàm `apply()`, hoạt động với ma trận (matrix) và mảng (array).
+Thành viên cuối cùng của họ apply là chính function `apply()`, hoạt động với ma trận (matrix) và mảng (array).
 Đặc biệt, hãy cẩn thận với `apply(df, 2, something)`, đây là cách chậm và có thể nguy hiểm để làm `lapply(df, something)`.
 Điều này hiếm khi xảy ra trong khoa học dữ liệu vì chúng ta thường làm việc với data frame chứ không phải ma trận.
 
@@ -432,7 +432,7 @@ for (element in vector) {
 }
 ```
 
-Cách sử dụng trực tiếp nhất của vòng lặp `for` là đạt được hiệu quả tương tự như `walk()`: gọi một hàm có tác dụng phụ (side-effect) trên mỗi phần tử của list.
+Cách sử dụng trực tiếp nhất của vòng lặp `for` là đạt được hiệu quả tương tự như `walk()`: gọi một function có tác dụng phụ (side-effect) trên mỗi phần tử của list.
 Ví dụ, trong @sec-save-database thay vì dùng `walk()`:
 
 ```{r}
@@ -498,7 +498,7 @@ Chúng tôi khuyến khích tránh mẫu này vì nó có thể trở nên rất
 ## Biểu đồ
 
 Nhiều người dùng R không dùng tidyverse cho việc khác vẫn thích ggplot2 để vẽ biểu đồ nhờ các tính năng hữu ích như giá trị mặc định hợp lý, chú giải tự động, và giao diện hiện đại.
-Tuy nhiên, các hàm vẽ biểu đồ base R vẫn có thể hữu ích vì chúng rất ngắn gọn --- chỉ cần gõ rất ít để tạo một biểu đồ khám phá cơ bản.
+Tuy nhiên, các function vẽ biểu đồ base R vẫn có thể hữu ích vì chúng rất ngắn gọn --- chỉ cần gõ rất ít để tạo một biểu đồ khám phá cơ bản.
 
 Có hai loại biểu đồ base R chính mà bạn sẽ thấy ngoài thực tế: biểu đồ phân tán (scatter plot) và biểu đồ tần suất (histogram), được tạo lần lượt bằng `plot()` và `hist()`.
 Đây là ví dụ nhanh từ tập dữ liệu diamonds:
@@ -522,13 +522,13 @@ hist(diamonds$carat)
 plot(diamonds$carat, diamonds$price)
 ```
 
-Lưu ý rằng các hàm vẽ biểu đồ base R làm việc với vector, nên bạn cần rút column ra khỏi data frame bằng `$` hoặc kỹ thuật khác.
+Lưu ý rằng các function vẽ biểu đồ base R làm việc với vector, nên bạn cần rút column ra khỏi data frame bằng `$` hoặc kỹ thuật khác.
 
 ## Tóm tắt
 
-Trong chương này, chúng tôi đã cho bạn thấy một số hàm base R hữu ích cho việc lấy tập con và lặp.
-So với các cách tiếp cận được thảo luận ở những nơi khác trong sách, các hàm này có xu hướng mang "hương vị vector" nhiều hơn "hương vị data frame" vì các hàm base R thường nhận các vector riêng lẻ, thay vì data frame và đặc tả column nào đó.
-Điều này thường giúp cuộc sống dễ dàng hơn khi lập trình và do đó trở nên quan trọng hơn khi bạn viết nhiều hàm hơn và bắt đầu viết gói mở rộng của riêng mình.
+Trong chương này, chúng tôi đã cho bạn thấy một số function base R hữu ích cho việc lấy tập con và lặp.
+So với các cách tiếp cận được thảo luận ở những nơi khác trong sách, các function này có xu hướng mang "hương vị vector" nhiều hơn "hương vị data frame" vì các function base R thường nhận các vector riêng lẻ, thay vì data frame và đặc tả column nào đó.
+Điều này thường giúp cuộc sống dễ dàng hơn khi lập trình và do đó trở nên quan trọng hơn khi bạn viết nhiều function hơn và bắt đầu viết gói mở rộng của riêng mình.
 
 Chương này kết thúc phần lập trình của cuốn sách.
 Bạn đã có một khởi đầu vững chắc trên hành trình trở thành không chỉ nhà khoa học dữ liệu sử dụng R, mà là nhà khoa học dữ liệu có thể *lập trình* bằng R.

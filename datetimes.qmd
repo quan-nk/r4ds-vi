@@ -146,9 +146,9 @@ Xem list các ngôn ngữ được hỗ trợ sẵn trong `date_names_langs()`, 
 ### Từ string
 
 Ngôn ngữ đặc tả định dạng date-time rất mạnh mẽ, nhưng đòi hỏi phân tích cẩn thận định dạng ngày.
-Một cách tiếp cận thay thế là sử dụng các hàm hỗ trợ của lubridate, tự động xác định định dạng khi bạn chỉ định thứ tự các thành phần.
+Một cách tiếp cận thay thế là sử dụng các function hỗ trợ của lubridate, tự động xác định định dạng khi bạn chỉ định thứ tự các thành phần.
 Để sử dụng chúng, hãy xác định thứ tự xuất hiện của năm, tháng, và ngày trong dữ liệu ngày của bạn, rồi sắp xếp "y", "m", và "d" theo cùng thứ tự đó.
-Kết quả cho bạn tên của hàm lubridate sẽ phân tích ngày của bạn.
+Kết quả cho bạn tên của function lubridate sẽ phân tích ngày của bạn.
 Ví dụ:
 
 ```{r}
@@ -157,8 +157,8 @@ mdy("January 31st, 2017")
 dmy("31-Jan-2017")
 ```
 
-`ymd()` và các hàm tương tự tạo ra date.
-Để tạo date-time, thêm dấu gạch dưới và một hoặc nhiều ký tự "h", "m", "s" vào tên hàm phân tích:
+`ymd()` và các function tương tự tạo ra date.
+Để tạo date-time, thêm dấu gạch dưới và một hoặc nhiều ký tự "h", "m", "s" vào tên function phân tích:
 
 ```{r}
 ymd_hms("2017-01-31 20:11:59")
@@ -285,7 +285,7 @@ as_date(365 * 10 + 2)
 2.  Đối số `tzone` của `today()` làm gì?
     Tại sao nó quan trọng?
 
-3.  Với mỗi date-time sau đây, hãy cho thấy cách bạn phân tích nó bằng đặc tả column readr và hàm lubridate.
+3.  Với mỗi date-time sau đây, hãy cho thấy cách bạn phân tích nó bằng đặc tả column readr và function lubridate.
 
     ```{r}
     d1 <- "January 1, 2010"
@@ -300,13 +300,13 @@ as_date(365 * 10 + 2)
 ## Các thành phần date-time
 
 Bây giờ bạn đã biết cách đưa dữ liệu date-time vào các cấu trúc dữ liệu date-time của R, hãy khám phá những gì bạn có thể làm với chúng.
-Phần này sẽ tập trung vào các hàm truy cập (accessor function) cho phép bạn lấy và thiết lập các thành phần riêng lẻ.
+Phần này sẽ tập trung vào các function truy cập (accessor function) cho phép bạn lấy và thiết lập các thành phần riêng lẻ.
 Phần tiếp theo sẽ xem xét cách phép toán số học hoạt động với date-time.
 
 ### Trích xuất thành phần
 
-Bạn có thể trích xuất các phần riêng lẻ của date bằng các hàm truy cập `year()`, `month()`, `mday()` (ngày trong tháng), `yday()` (ngày trong năm), `wday()` (ngày trong tuần), `hour()`, `minute()`, và `second()`.
-Về cơ bản, chúng là các hàm ngược lại của `make_datetime()`.
+Bạn có thể trích xuất các phần riêng lẻ của date bằng các function truy cập `year()`, `month()`, `mday()` (ngày trong tháng), `yday()` (ngày trong năm), `wday()` (ngày trong tuần), `hour()`, `minute()`, và `second()`.
+Về cơ bản, chúng là các function ngược lại của `make_datetime()`.
 
 ```{r}
 datetime <- ymd_hms("2026-07-08 12:34:56")
@@ -408,7 +408,7 @@ ggplot(sched_dep, aes(x = minute, y = n)) +
 ### Làm tròn
 
 Một cách tiếp cận thay thế để vẽ biểu đồ các thành phần riêng lẻ là làm tròn ngày đến đơn vị thời gian gần nhất, với `floor_date()`, `round_date()`, và `ceiling_date()`.
-Mỗi hàm nhận một vector các ngày cần điều chỉnh và tên đơn vị thời gian để làm tròn xuống (floor), làm tròn lên (ceiling), hoặc làm tròn đến.
+Mỗi function nhận một vector các ngày cần điều chỉnh và tên đơn vị thời gian để làm tròn xuống (floor), làm tròn lên (ceiling), hoặc làm tròn đến.
 Ví dụ, điều này cho phép chúng ta vẽ số chuyến bay mỗi tuần:
 
 ```{r}
@@ -456,7 +456,7 @@ flights_dt |>
 
 ### Chỉnh sửa thành phần
 
-Bạn cũng có thể dùng mỗi hàm truy cập để chỉnh sửa các thành phần của date/time.
+Bạn cũng có thể dùng mỗi function truy cập để chỉnh sửa các thành phần của date/time.
 Điều này không thường gặp trong phân tích dữ liệu, nhưng có thể hữu ích khi làm sạch dữ liệu có ngày rõ ràng không chính xác.
 
 ```{r}
@@ -471,7 +471,7 @@ datetime
 ```
 
 Ngoài ra, thay vì chỉnh sửa biến hiện có, bạn có thể tạo date-time mới với `update()`.
-Hàm này cũng cho phép bạn thiết lập nhiều giá trị cùng lúc:
+Function này cũng cho phép bạn thiết lập nhiều giá trị cùng lúc:
 
 ```{r}
 update(datetime, year = 2030, month = 2, mday = 2, hour = 2)
@@ -537,7 +537,7 @@ Sự mơ hồ này có thể khiến difftime hơi khó làm việc, nên lubrid
 as.duration(h_age)
 ```
 
-Duration đi kèm với một loạt hàm khởi tạo tiện lợi:
+Duration đi kèm với một loạt function khởi tạo tiện lợi:
 
 ```{r}
 dseconds(15)
@@ -592,7 +592,7 @@ one_am
 one_am + days(1)
 ```
 
-Giống như duration, period có thể được tạo bằng một số hàm khởi tạo thân thiện.
+Giống như duration, period có thể được tạo bằng một số function khởi tạo thân thiện.
 
 ```{r}
 hours(c(12, 24))
@@ -690,7 +690,7 @@ y2024 / days(1)
 2.  Tạo một vector các ngày cho ngày đầu tiên của mỗi tháng trong năm 2015.
     Tạo một vector các ngày cho ngày đầu tiên của mỗi tháng trong năm *hiện tại*.
 
-3.  Viết một hàm nhận ngày sinh của bạn (dạng date), trả về bạn bao nhiêu tuổi tính theo năm.
+3.  Viết một function nhận ngày sinh của bạn (dạng date), trả về bạn bao nhiêu tuổi tính theo năm.
 
 ## Múi giờ
 
@@ -787,7 +787,7 @@ Bạn có thể thay đổi múi giờ theo hai cách:
 
 Chương này đã giới thiệu cho bạn các công cụ mà lubridate cung cấp để giúp bạn làm việc với dữ liệu date-time.
 Làm việc với ngày và giờ có vẻ khó hơn mức cần thiết, nhưng hy vọng chương này đã giúp bạn hiểu tại sao --- date-time phức tạp hơn vẻ ngoài ban đầu, và việc xử lý mọi tình huống có thể xảy ra sẽ tăng thêm độ phức tạp.
-Ngay cả khi dữ liệu của bạn không bao giờ vượt qua ranh giới giờ mùa hè hay liên quan đến năm nhuận, các hàm vẫn cần có khả năng xử lý chúng.
+Ngay cả khi dữ liệu của bạn không bao giờ vượt qua ranh giới giờ mùa hè hay liên quan đến năm nhuận, các function vẫn cần có khả năng xử lý chúng.
 
 Chương tiếp theo tổng hợp về missing value.
 Bạn đã gặp chúng ở một vài nơi và chắc chắn đã gặp trong phân tích của riêng mình, và bây giờ là lúc cung cấp một bộ sưu tập các kỹ thuật hữu ích để xử lý chúng.

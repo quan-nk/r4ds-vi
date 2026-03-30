@@ -41,7 +41,7 @@ library(patchwork)
 ## Nhãn
 
 Nơi dễ nhất để bắt đầu khi chuyển đồ họa khám phá thành đồ họa trình bày là với nhãn tốt.
-Bạn thêm nhãn bằng hàm `labs()`.
+Bạn thêm nhãn bằng function `labs()`.
 
 ```{r}
 #| message: false
@@ -167,7 +167,7 @@ ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
 Lưu ý cách dùng `hjust` (căn ngang) và `vjust` (căn dọc) để kiểm soát vị trí nhãn.
 
 Tuy nhiên, biểu đồ chú thích ở trên khó đọc vì nhãn chồng chéo nhau và với điểm.
-Chúng ta có thể dùng hàm `geom_label_repel()` từ gói mở rộng ggrepel để giải quyết cả hai vấn đề.
+Chúng ta có thể dùng function `geom_label_repel()` từ gói mở rộng ggrepel để giải quyết cả hai vấn đề.
 Gói mở rộng này tự động điều chỉnh nhãn để không chồng chéo:
 
 ```{r}
@@ -221,7 +221,7 @@ Một vài ý tưởng:
 -   Dùng `geom_segment()` với argument `arrow` để vẽ mũi tên chỉ đến điểm.
     Dùng aesthetic `x` và `y` cho vị trí bắt đầu, `xend` và `yend` cho vị trí kết thúc.
 
-Hàm tiện dụng khác để thêm chú thích là `annotate()`.
+Function tiện dụng khác để thêm chú thích là `annotate()`.
 Theo nguyên tắc chung, geom hữu ích cho đánh dấu tập con dữ liệu trong khi `annotate()` hữu ích cho thêm một hoặc vài phần tử chú thích.
 
 Để minh họa `annotate()`, hãy tạo văn bản để thêm vào biểu đồ.
@@ -353,7 +353,7 @@ ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
   scale_color_discrete(labels = c("4" = "4-wheel", "f" = "front", "r" = "rear"))
 ```
 
-Đối số `labels` kết hợp với hàm gắn nhãn từ gói mở rộng scales cũng hữu ích để định dạng số thành tiền tệ, phần trăm, v.v.
+Đối số `labels` kết hợp với function gắn nhãn từ gói mở rộng scales cũng hữu ích để định dạng số thành tiền tệ, phần trăm, v.v.
 Biểu đồ bên trái hiển thị gắn nhãn mặc định với `label_dollar()`, thêm ký hiệu đô la và dấu phẩy phân cách row nghìn.
 Biểu đồ bên phải tùy chỉnh thêm bằng cách chia giá trị cho 1.000 và thêm hậu tố "K" cùng break tùy chỉnh.
 Lưu ý `breaks` dùng thang đo gốc của dữ liệu.
@@ -378,7 +378,7 @@ ggplot(diamonds, aes(x = price, y = cut)) +
   )
 ```
 
-Hàm gắn nhãn tiện dụng khác là `label_percent()`:
+Function gắn nhãn tiện dụng khác là `label_percent()`:
 
 ```{r}
 #| fig-alt: |
@@ -795,7 +795,7 @@ Cũng có thể kiểm soát từng thành phần của chủ đề, như kích 
 Chúng ta đã thấy `legend.position` kiểm soát vị trí chú giải.
 Nhiều khía cạnh khác có thể tùy chỉnh bằng `theme()`.
 Ví dụ, trong biểu đồ dưới chúng ta thay đổi hướng chú giải và thêm viền đen.
-Tùy chỉnh hộp chú giải và phần tử tiêu đề được thực hiện với hàm `element_*()`.
+Tùy chỉnh hộp chú giải và phần tử tiêu đề được thực hiện với function `element_*()`.
 Các phần tử theme kiểm soát vị trí tiêu đề và chú thích là `plot.title.position` và `plot.caption.position`, được đặt thành `"plot"` để căn chỉnh với toàn bộ vùng biểu đồ.
 
 ```{r}
@@ -853,7 +853,7 @@ p2 <- ggplot(mpg, aes(x = drv, y = hwy)) +
 p1 + p2
 ```
 
-Lưu ý rằng chúng ta không dùng hàm mới từ patchwork.
+Lưu ý rằng chúng ta không dùng function mới từ patchwork.
 Thay vào đó, gói mở rộng thêm chức năng mới cho toán tử `+`.
 
 Bạn cũng có thể tạo bố cục phức tạp.

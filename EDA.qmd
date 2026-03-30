@@ -172,7 +172,7 @@ ggplot(diamonds, aes(x = y)) +
 ```
 
 `coord_cartesian()` cũng có argument `xlim()` khi bạn cần phóng to trục x.
-ggplot2 cũng có hàm `xlim()` và `ylim()` hoạt động hơi khác: chúng loại bỏ dữ liệu ngoài giới hạn.
+ggplot2 cũng có function `xlim()` và `ylim()` hoạt động hơi khác: chúng loại bỏ dữ liệu ngoài giới hạn.
 
 Điều này cho thấy có ba giá trị bất thường: 0, ~30, và ~60.
 Chúng ta trích xuất chúng bằng dplyr:
@@ -241,7 +241,7 @@ Nếu bạn gặp giá trị bất thường trong tập dữ liệu, và muốn
 
 2.  Thay vào đó, chúng tôi khuyến nghị thay giá trị bất thường bằng missing value.
     Cách dễ nhất là dùng `mutate()` để thay biến bằng bản sao đã sửa.
-    Bạn có thể dùng hàm `if_else()` để thay giá trị bất thường bằng `NA`:
+    Bạn có thể dùng function `if_else()` để thay giá trị bất thường bằng `NA`:
 
     ```{r}
     diamonds2 <- diamonds |>
@@ -273,7 +273,7 @@ Ví dụ, trong `nycflights13::flights`[^eda-1], missing value trong biến `dep
 Vì vậy bạn có thể muốn so sánh thời gian khởi hành dự kiến cho chuyến bị hủy và không bị hủy.
 Bạn có thể làm bằng cách tạo biến mới, dùng `is.na()` để kiểm tra `dep_time` có bị thiếu không.
 
-[^eda-1]: Nhớ rằng khi cần chỉ rõ hàm (hoặc tập dữ liệu) đến từ đâu, chúng ta dùng dạng đặc biệt `package::function()` hoặc `package::dataset`.
+[^eda-1]: Nhớ rằng khi cần chỉ rõ function (hoặc tập dữ liệu) đến từ đâu, chúng ta dùng dạng đặc biệt `package::function()` hoặc `package::dataset`.
 
 ```{r}
 #| fig-alt: |
@@ -304,7 +304,7 @@ Trong phần tiếp theo chúng ta sẽ khám phá kỹ thuật cải thiện so
 
 3.  Tái tạo biểu đồ đa giác tần suất `scheduled_dep_time` tô màu theo chuyến bay có bị hủy hay không.
     Cũng facet theo biến `cancelled`.
-    Thử nghiệm các giá trị khác nhau của `scales` trong hàm facet để giảm ảnh hưởng của chênh lệch số lượng.
+    Thử nghiệm các giá trị khác nhau của `scales` trong function facet để giảm ảnh hưởng của chênh lệch số lượng.
 
 ## Đồng biến thiên
 
@@ -343,7 +343,7 @@ ggplot(diamonds, aes(x = price, y = after_stat(density))) +
   geom_freqpoly(aes(color = cut), binwidth = 500, linewidth = 0.75)
 ```
 
-Lưu ý chúng ta ánh xạ mật độ đến `y`, nhưng vì `density` không phải biến trong `diamonds`, chúng ta cần tính trước bằng hàm `after_stat()`.
+Lưu ý chúng ta ánh xạ mật độ đến `y`, nhưng vì `density` không phải biến trong `diamonds`, chúng ta cần tính trước bằng function `after_stat()`.
 
 Có điều khá bất ngờ ở biểu đồ này - kim cương Fair (chất lượng thấp nhất) có vẻ có giá trung bình cao nhất!
 Nhưng có lẽ vì đa giác tần suất hơi khó đọc - có quá nhiều thứ xảy ra.
@@ -480,7 +480,7 @@ Với biểu đồ lớn hơn, bạn có thể thử gói mở rộng heatmaply,
 Bạn đã thấy một cách tuyệt vời để trực quan hóa đồng biến thiên giữa hai biến số: vẽ biểu đồ phân tán bằng `geom_point()`.
 Bạn có thể thấy đồng biến thiên như mẫu trong các điểm.
 Ví dụ, bạn thấy mối quan hệ tích cực giữa kích thước carat và giá kim cương: kim cương nhiều carat hơn có giá cao hơn.
-Mối quan hệ là hàm mũ.
+Mối quan hệ là function mũ.
 
 ```{r}
 #| dev: "png"
@@ -588,7 +588,7 @@ Nếu bạn phát hiện mẫu, hãy tự hỏi:
 
 -   Mẫu này có thể do trùng hợp (tức là ngẫu nhiên) không?
 
--   Bạn có thể mô tả mối quan hệ mà mẫu hàm ý thế nào?
+-   Bạn có thể mô tả mối quan hệ mà mẫu function ý thế nào?
 
 -   Mối quan hệ mạnh đến mức nào?
 

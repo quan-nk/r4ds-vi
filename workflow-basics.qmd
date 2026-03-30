@@ -149,7 +149,7 @@ Chữ hoa chữ thường rất quan trọng; tương tự, R không thể đọ
 
 ## Gọi hàm
 
-R có một bộ sưu tập lớn các hàm tích hợp sẵn được gọi như thế này:
+R có một bộ sưu tập lớn các function tích hợp sẵn được gọi như thế này:
 
 ```{r}
 #| eval: false
@@ -160,10 +160,10 @@ Hãy thử sử dụng `seq()`, tạo ra các **dãy số** đều đặn, và t
 Gõ `se` và nhấn TAB.
 Một cửa sổ bật lên hiển thị các gợi ý hoàn thành.
 Chỉ định `seq()` bằng cách gõ thêm (chữ `q`) để phân biệt hoặc bằng cách sử dụng mũi tên ↑/↓ để chọn.
-Chú ý tooltip nổi xuất hiện, nhắc bạn về các argument và mục đích của hàm.
+Chú ý tooltip nổi xuất hiện, nhắc bạn về các argument và mục đích của function.
 Nếu bạn muốn thêm trợ giúp, nhấn F1 để xem tất cả chi tiết trong tab trợ giúp ở bảng phải bên dưới.
 
-Khi bạn đã chọn hàm mong muốn, nhấn TAB lần nữa.
+Khi bạn đã chọn function mong muốn, nhấn TAB lần nữa.
 RStudio sẽ thêm cặp ngoặc mở (`(`) và đóng (`)`) cho bạn.
 Gõ tên argument đầu tiên, `from`, và đặt bằng `1`.
 Sau đó, gõ tên argument thứ hai, `to`, và đặt bằng `10`.
@@ -173,7 +173,7 @@ Cuối cùng, nhấn return.
 seq(from = 1, to = 10)
 ```
 
-Chúng ta thường bỏ qua tên của các argument đầu tiên trong lệnh gọi hàm, vì vậy chúng ta có thể viết lại như sau:
+Chúng ta thường bỏ qua tên của các argument đầu tiên trong lệnh gọi function, vì vậy chúng ta có thể viết lại như sau:
 
 ```{r}
 seq(1, 10)
