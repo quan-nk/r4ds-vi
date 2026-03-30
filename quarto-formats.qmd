@@ -142,9 +142,9 @@ leaflet() |>
 ```
 
 Điều tuyệt vời của htmlwidgets là bạn không cần biết gì về HTML hay JavaScript để sử dụng chúng.
-Tất cả chi tiết được đóng gói bên trong gói, nên bạn không cần phải lo lắng về điều đó.
+Tất cả chi tiết được đóng gói bên trong gói mở rộng, nên bạn không cần phải lo lắng về điều đó.
 
-Có nhiều gói cung cấp htmlwidgets, bao gồm:
+Có nhiều gói mở rộng cung cấp htmlwidgets, bao gồm:
 
 -   [**dygraphs**](https://rstudio.github.io/dygraphs) cho trực quan hóa chuỗi thời gian tương tác.
 
@@ -154,14 +154,14 @@ Có nhiều gói cung cấp htmlwidgets, bao gồm:
 
 -   [**DiagrammeR**](https://rich-iannone.github.io/DiagrammeR) cho sơ đồ (như lưu đồ và sơ đồ nút-liên kết đơn giản).
 
-Để tìm hiểu thêm về htmlwidgets và xem danh sách đầy đủ các gói cung cấp chúng, hãy truy cập <https://www.htmlwidgets.org>.
+Để tìm hiểu thêm về htmlwidgets và xem danh sách đầy đủ các gói mở rộng cung cấp chúng, hãy truy cập <https://www.htmlwidgets.org>.
 
 ### Shiny
 
 htmlwidgets cung cấp tính tương tác **phía máy khách** (client-side) --- toàn bộ tương tác diễn ra trong trình duyệt, độc lập với R.
 Một mặt, điều đó rất tuyệt vì bạn có thể phân phối tệp HTML mà không cần kết nối với R.
 Tuy nhiên, điều đó về cơ bản giới hạn những gì bạn có thể làm trong phạm vi những thứ đã được triển khai bằng HTML và JavaScript.
-Một cách tiếp cận thay thế là sử dụng **shiny**, một gói cho phép bạn tạo tính tương tác bằng mã R, không phải JavaScript.
+Một cách tiếp cận thay thế là sử dụng **shiny**, một gói mở rộng cho phép bạn tạo tính tương tác bằng mã R, không phải JavaScript.
 
 Để gọi mã Shiny từ một tài liệu Quarto, hãy thêm `server: shiny` vào YAML header:
 
