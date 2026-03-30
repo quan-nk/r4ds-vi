@@ -19,7 +19,7 @@ Chúng ta sẽ tiếp tục làm việc với string trong chương tiếp theo,
 
 ### Điều kiện tiên quyết
 
-Trong chương này, chúng ta sẽ sử dụng các function từ gói mở rộng stringr, là một phần của tidyverse cốt lõi.
+Trong chương này, chúng ta sẽ sử dụng các function từ package stringr, là một phần của tidyverse cốt lõi.
 Chúng ta cũng sẽ sử dụng dữ liệu babynames vì nó cung cấp một số string thú vị để thao tác.
 
 ```{r}
@@ -190,7 +190,7 @@ df |>
 
 ### `str_glue()` {#sec-glue}
 
-Nếu bạn trộn nhiều string cố định và biến với `str_c()`, bạn sẽ nhận thấy phải gõ rất nhiều `"`, khiến khó nhìn thấy mục tiêu tổng thể của đoạn mã. Một cách tiếp cận thay thế được cung cấp bởi gói mở rộng [glue](https://glue.tidyverse.org) thông qua `str_glue()`[^strings-4]. Bạn đưa cho nó một string duy nhất có tính năng đặc biệt: bất kỳ thứ gì bên trong `{}` sẽ được đánh giá như thể nằm bên ngoài dấu nháy:
+Nếu bạn trộn nhiều string cố định và biến với `str_c()`, bạn sẽ nhận thấy phải gõ rất nhiều `"`, khiến khó nhìn thấy mục tiêu tổng thể của đoạn mã. Một cách tiếp cận thay thế được cung cấp bởi package [glue](https://glue.tidyverse.org) thông qua `str_glue()`[^strings-4]. Bạn đưa cho nó một string duy nhất có tính năng đặc biệt: bất kỳ thứ gì bên trong `{}` sẽ được đánh giá như thể nằm bên ngoài dấu nháy:
 
 [^strings-4]: Nếu bạn không dùng stringr, bạn cũng có thể truy cập trực tiếp bằng `glue::glue()`.
 
@@ -644,6 +644,6 @@ str_sort(c("a", "c", "ch", "h", "z"), locale = "cs")
 
 ## Tóm tắt
 
-Trong chương này, bạn đã tìm hiểu về một số sức mạnh của gói mở rộng stringr: cách tạo, kết hợp, và trích xuất string, cũng như một số thách thức bạn có thể gặp với string không phải tiếng Anh.
+Trong chương này, bạn đã tìm hiểu về một số sức mạnh của package stringr: cách tạo, kết hợp, và trích xuất string, cũng như một số thách thức bạn có thể gặp với string không phải tiếng Anh.
 Bây giờ là lúc tìm hiểu một trong những công cụ quan trọng và mạnh mẽ nhất để làm việc với string: regular expression.
 Biểu thức chính quy là ngôn ngữ rất ngắn gọn nhưng rất biểu cảm để mô tả các mẫu trong string và là theme của chương tiếp theo.

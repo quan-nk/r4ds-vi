@@ -16,7 +16,7 @@ Cuối cùng, chúng ta sẽ đề cập đến các function tóm tắt (summar
 
 ### Điều kiện tiên quyết
 
-Chương này chủ yếu sử dụng các function từ R cơ sở (base R), có sẵn mà không cần tải bất kỳ gói mở rộng nào.
+Chương này chủ yếu sử dụng các function từ R cơ sở (base R), có sẵn mà không cần tải bất kỳ package nào.
 Nhưng chúng ta vẫn cần tidyverse vì chúng ta sẽ sử dụng các function R cơ sở bên trong các function tidyverse như `mutate()` và `filter()`.
 Giống như chương trước, chúng ta sẽ dùng các ví dụ thực từ nycflights13, cũng như các ví dụ đơn giản được tạo bằng `c()` và `tribble()`.
 
@@ -368,7 +368,7 @@ x <- 1:10
 cumsum(x)
 ```
 
-Nếu bạn cần các phép tổng hợp trượt (rolling aggregate) phức tạp hơn, hãy thử gói mở rộng [slider](https://slider.r-lib.org/).
+Nếu bạn cần các phép tổng hợp trượt (rolling aggregate) phức tạp hơn, hãy thử package [slider](https://slider.r-lib.org/).
 
 ### Bài tập
 
@@ -770,5 +770,5 @@ Bạn đã quen thuộc với nhiều công cụ để làm việc với số, v
 Bạn cũng đã học được một số phép biến đổi tổng quát hữu ích thường được, nhưng không chỉ, áp dụng cho vector số như xếp hạng và độ lệch.
 Cuối cùng, bạn đã đi qua một số thống kê tóm tắt số và thảo luận về một vài thách thức thống kê mà bạn nên cân nhắc.
 
-Trong hai chương tiếp theo, chúng ta sẽ đi sâu vào làm việc với string bằng gói mở rộng stringr.
+Trong hai chương tiếp theo, chúng ta sẽ đi sâu vào làm việc với string bằng package stringr.
 Chuỗi ký tự là một theme lớn nên chúng được dành hai chương, một về nền tảng của string và một về regular expression.

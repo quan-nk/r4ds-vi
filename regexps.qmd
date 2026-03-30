@@ -20,7 +20,7 @@ Chúng ta sẽ kết thúc với một khảo sát về các nơi khác trong ti
 
 ### Điều kiện tiên quyết
 
-Trong chương này, chúng ta sẽ sử dụng các function regular expression từ stringr và tidyr, cả hai đều là thành viên cốt lõi của tidyverse, cũng như dữ liệu từ gói mở rộng babynames.
+Trong chương này, chúng ta sẽ sử dụng các function regular expression từ stringr và tidyr, cả hai đều là thành viên cốt lõi của tidyverse, cũng như dữ liệu từ package babynames.
 
 ```{r}
 #| label: setup
@@ -842,7 +842,7 @@ head(list.files(pattern = "\\.Rmd$"))
 ```
 
 Đáng lưu ý rằng ngôn ngữ mẫu được sử dụng bởi base R hơi khác một chút so với stringr.
-Đó là vì stringr được xây dựng trên gói mở rộng [stringi](https://stringi.gagolewski.com), và gói mở rộng này được xây dựng trên [ICU engine](https://unicode-org.github.io/icu/userguide/strings/regexp.html), trong khi các function base R sử dụng [TRE engine](https://github.com/laurikari/tre) hoặc [PCRE engine](https://www.pcre.org), tùy thuộc vào việc bạn có đặt `perl = TRUE` hay không.
+Đó là vì stringr được xây dựng trên package [stringi](https://stringi.gagolewski.com), và package này được xây dựng trên [ICU engine](https://unicode-org.github.io/icu/userguide/strings/regexp.html), trong khi các function base R sử dụng [TRE engine](https://github.com/laurikari/tre) hoặc [PCRE engine](https://www.pcre.org), tùy thuộc vào việc bạn có đặt `perl = TRUE` hay không.
 May mắn là những kiến thức cơ bản về regular expression đã được thiết lập vững chắc đến mức bạn sẽ gặp ít biến thể khi làm việc với các mẫu bạn học trong cuốn sách này.
 Bạn chỉ cần lưu ý sự khác biệt khi bạn bắt đầu dựa vào các tính năng nâng cao như phạm vi ký tự Unicode phức tạp hoặc các tính năng đặc biệt sử dụng cú pháp `(?…)`.
 
@@ -858,7 +858,7 @@ Một nơi tốt để bắt đầu là `vignette("regular-expressions", package
 Một tài liệu tham khảo hữu ích khác là [https://www.regular-expressions.info/](https://www.regular-expressions.info/tutorial.html).
 Nó không dành riêng cho R, nhưng bạn có thể sử dụng nó để tìm hiểu về các tính năng nâng cao nhất của regex và cách chúng hoạt động đằng sau hậu trường.
 
-Cũng tốt khi biết rằng stringr được xây dựng trên gói mở rộng stringi của Marek Gagolewski.
+Cũng tốt khi biết rằng stringr được xây dựng trên package stringi của Marek Gagolewski.
 Nếu bạn gặp khó khăn khi tìm một function thực hiện những gì bạn cần trong stringr, đừng ngại tìm kiếm trong stringi.
 Bạn sẽ thấy stringi rất dễ tiếp cận vì nó tuân theo nhiều quy ước giống như stringr.
 

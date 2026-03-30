@@ -92,7 +92,7 @@ Chúng tôi tin rằng điều quan trọng là phải tập trung vào những 
 
 Mô hình hóa (modeling) cực kỳ quan trọng cho khoa học dữ liệu, nhưng đó là một theme lớn, và thật không may, chúng tôi không có đủ không gian để trình bày nó xứng đáng ở đây.
 Để tìm hiểu thêm về mô hình hóa, chúng tôi rất khuyến nghị [Tidy Modeling with R](https://www.tmwr.org) của các đồng nghiệp Max Kuhn và Julia Silge.
-Cuốn sách này sẽ dạy bạn họ gói mở rộng tidymodels, mà như bạn có thể đoán từ tên gọi, chia sẻ nhiều quy ước với các gói mở rộng tidyverse mà chúng ta sử dụng trong cuốn sách này.
+Cuốn sách này sẽ dạy bạn họ package tidymodels, mà như bạn có thể đoán từ tên gọi, chia sẻ nhiều quy ước với các package tidyverse mà chúng ta sử dụng trong cuốn sách này.
 
 ### Dữ liệu lớn
 
@@ -120,7 +120,7 @@ Chúng tôi đã đưa ra một số giả định về những gì bạn đã b
 Bạn nên có kiến thức số học cơ bản, và sẽ hữu ích nếu bạn đã có chút kinh nghiệm lập trình.
 Nếu bạn chưa bao giờ lập trình, bạn có thể thấy [Hands on Programming with R](https://rstudio-education.github.io/hopr/) của Garrett là một tài liệu bổ trợ quý giá cho cuốn sách này.
 
-Bạn cần bốn thứ để chạy mã trong cuốn sách này: R, RStudio, một bộ sưu tập các gói mở rộng R gọi là **tidyverse**, và một số gói mở rộng khác.
+Bạn cần bốn thứ để chạy mã trong cuốn sách này: R, RStudio, một bộ sưu tập các package R gọi là **tidyverse**, và một số package khác.
 Gói mở rộng (package) là đơn vị cơ bản của mã R có tính tái lập.
 Chúng bao gồm các function có thể tái sử dụng, tài liệu mô tả cách sử dụng chúng, và dữ liệu mẫu.
 
@@ -129,7 +129,7 @@ Chúng bao gồm các function có thể tái sử dụng, tài liệu mô tả 
 Để tải R, hãy truy cập CRAN, mạng lưu trữ R toàn diện (**c**omprehensive **R** **a**rchive **n**etwork), <https://cloud.r-project.org>.
 Một phiên bản chính mới của R được phát hành mỗi năm một lần, và có 2-3 bản cập nhật phụ mỗi năm.
 Nên cập nhật thường xuyên.
-Việc nâng cấp có thể hơi phiền phức, đặc biệt với các phiên bản chính yêu cầu bạn cài đặt lại tất cả các gói mở rộng, nhưng trì hoãn chỉ làm mọi thứ tệ hơn.
+Việc nâng cấp có thể hơi phiền phức, đặc biệt với các phiên bản chính yêu cầu bạn cài đặt lại tất cả các package, nhưng trì hoãn chỉ làm mọi thứ tệ hơn.
 Chúng tôi khuyến nghị R 4.2.0 trở lên cho cuốn sách này.
 
 ### RStudio
@@ -159,11 +159,11 @@ knitr::include_graphics("diagrams/rstudio/console.png", dpi = 270)
 
 ### Tidyverse
 
-Bạn cũng cần cài đặt một số gói mở rộng R.
-Một **gói mở rộng** (package) R là một bộ sưu tập các function, dữ liệu, và tài liệu mở rộng khả năng của base R (Base R là tập hợp các function và công cụ cốt lõi được cài đặt sẵn mặc định trong ngôn ngữ lập trình R mà không cần phải tải thêm bất kỳ gói mở rộng nào khác).
-Sử dụng gói mở rộng là chìa khóa để sử dụng R thành công.
-Phần lớn các gói mở rộng bạn sẽ học trong cuốn sách này thuộc về cái gọi là tidyverse.
-Tất cả các gói mở rộng trong tidyverse chia sẻ một triết lý chung về dữ liệu và lập trình R, và được thiết kế để hoạt động cùng nhau.
+Bạn cũng cần cài đặt một số package R.
+Một **package** (package) R là một bộ sưu tập các function, dữ liệu, và tài liệu mở rộng khả năng của base R (Base R là tập hợp các function và công cụ cốt lõi được cài đặt sẵn mặc định trong ngôn ngữ lập trình R mà không cần phải tải thêm bất kỳ package nào khác).
+Sử dụng package là chìa khóa để sử dụng R thành công.
+Phần lớn các package bạn sẽ học trong cuốn sách này thuộc về cái gọi là tidyverse.
+Tất cả các package trong tidyverse chia sẻ một triết lý chung về dữ liệu và lập trình R, và được thiết kế để hoạt động cùng nhau.
 
 Bạn có thể cài đặt toàn bộ tidyverse bằng một dòng mã:
 
@@ -173,30 +173,30 @@ install.packages("tidyverse")
 ```
 
 Trên máy tính của bạn, gõ dòng mã đó vào console, rồi nhấn enter để chạy.
-R sẽ tải các gói mở rộng từ CRAN và cài đặt chúng trên máy tính của bạn.
+R sẽ tải các package từ CRAN và cài đặt chúng trên máy tính của bạn.
 
-Bạn sẽ không thể sử dụng các function, đối tượng, hay file trợ giúp trong một gói mở rộng cho đến khi bạn tải nó bằng `library()`.
-Sau khi đã cài đặt một gói mở rộng, bạn có thể tải nó bằng function `library()`:
+Bạn sẽ không thể sử dụng các function, đối tượng, hay file trợ giúp trong một package cho đến khi bạn tải nó bằng `library()`.
+Sau khi đã cài đặt một package, bạn có thể tải nó bằng function `library()`:
 
 ```{r}
 library(tidyverse)
 ```
 
-Điều này cho bạn biết rằng tidyverse tải chín gói mở rộng: dplyr, forcats, ggplot2, lubridate, purrr, readr, stringr, tibble, tidyr.
+Điều này cho bạn biết rằng tidyverse tải chín package: dplyr, forcats, ggplot2, lubridate, purrr, readr, stringr, tibble, tidyr.
 Chúng được coi là **lõi** của tidyverse vì bạn sẽ sử dụng chúng trong hầu hết mọi phân tích.
 
-Các gói mở rộng trong tidyverse thay đổi khá thường xuyên.
+Các package trong tidyverse thay đổi khá thường xuyên.
 Bạn có thể kiểm tra xem có bản cập nhật nào không bằng cách chạy `tidyverse_update()`.
 
-### Các gói mở rộng khác
+### Các package khác
 
-Có nhiều gói mở rộng xuất sắc khác không thuộc tidyverse vì chúng giải quyết vấn đề trong lĩnh vực khác hoặc được thiết kế với bộ nguyên tắc cơ bản khác.
+Có nhiều package xuất sắc khác không thuộc tidyverse vì chúng giải quyết vấn đề trong lĩnh vực khác hoặc được thiết kế với bộ nguyên tắc cơ bản khác.
 Điều này không làm chúng tốt hơn hay tệ hơn; nó chỉ làm chúng khác biệt.
-Nói cách khác, phần bổ sung cho tidyverse không phải là messyverse mà là nhiều vũ trụ khác của các gói mở rộng liên quan.
-Khi bạn giải quyết thêm nhiều dự án khoa học dữ liệu với R, bạn sẽ học các gói mở rộng mới và cách tư duy mới về dữ liệu.
+Nói cách khác, phần bổ sung cho tidyverse không phải là messyverse mà là nhiều vũ trụ khác của các package liên quan.
+Khi bạn giải quyết thêm nhiều dự án khoa học dữ liệu với R, bạn sẽ học các package mới và cách tư duy mới về dữ liệu.
 
-Chúng tôi sẽ sử dụng nhiều gói mở rộng ngoài tidyverse trong cuốn sách này.
-Ví dụ, chúng tôi sẽ sử dụng các gói mở rộng sau đây vì chúng cung cấp các tập dữ liệu thú vị để chúng ta làm việc trong quá trình học R:
+Chúng tôi sẽ sử dụng nhiều package ngoài tidyverse trong cuốn sách này.
+Ví dụ, chúng tôi sẽ sử dụng các package sau đây vì chúng cung cấp các tập dữ liệu thú vị để chúng ta làm việc trong quá trình học R:
 
 ```{r}
 #| eval: false
@@ -208,7 +208,7 @@ install.packages(
   )
 ```
 
-Chúng tôi cũng sẽ sử dụng một số gói mở rộng khác cho các ví dụ đơn lẻ.
+Chúng tôi cũng sẽ sử dụng một số package khác cho các ví dụ đơn lẻ.
 Bạn không cần cài đặt chúng ngay bây giờ, chỉ cần nhớ rằng bất cứ khi nào bạn thấy lỗi như thế này:
 
 ```{r}
@@ -217,7 +217,7 @@ library(ggrepel)
 #> Error in library(ggrepel) : there is no package called 'ggrepel'
 ```
 
-Bạn cần chạy `install.packages("ggrepel")` để cài đặt gói mở rộng đó.
+Bạn cần chạy `install.packages("ggrepel")` để cài đặt package đó.
 
 ## Chạy mã R
 
@@ -247,7 +247,7 @@ Xuyên suốt cuốn sách, chúng tôi sử dụng một bộ quy ước nhất
 
 -   Các đối tượng R khác (như dữ liệu hoặc argument của hàm) được hiển thị bằng phông chữ mã, không có dấu ngoặc đơn, như `flights` hoặc `x`.
 
--   Đôi khi, để làm rõ một đối tượng đến từ gói mở rộng nào, chúng tôi sẽ dùng tên gói mở rộng theo sau bởi hai dấu hai chấm, như `dplyr::mutate()` hoặc `nycflights13::flights`.
+-   Đôi khi, để làm rõ một đối tượng đến từ package nào, chúng tôi sẽ dùng tên package theo sau bởi hai dấu hai chấm, như `dplyr::mutate()` hoặc `nycflights13::flights`.
     Đây cũng là mã R hợp lệ.
 
 ## Lời cảm ơn

@@ -25,7 +25,7 @@ Học lập trình function có thể dễ dàng đi vào hướng trừu tượ
 
 Trong chương này, chúng ta sẽ tập trung vào các công cụ được cung cấp bởi dplyr và purrr, cả hai đều là thành viên cốt lõi của tidyverse.
 Bạn đã thấy dplyr trước đó, nhưng [purrr](http://purrr.tidyverse.org/) thì mới.
-Chúng ta chỉ sử dụng một vài function của purrr trong chương này, nhưng đây là một gói mở rộng tuyệt vời để khám phá khi bạn cải thiện kỹ năng lập trình của mình.
+Chúng ta chỉ sử dụng một vài function của purrr trong chương này, nhưng đây là một package tuyệt vời để khám phá khi bạn cải thiện kỹ năng lập trình của mình.
 
 ```{r}
 #| label: setup
@@ -471,7 +471,7 @@ Bạn hầu như luôn sử dụng ba argument:
 -   `full.names` xác định liệu tên thư mục có nên được bao gồm trong đầu ra hay không.
     Bạn hầu như luôn muốn giá trị này là `TRUE`.
 
-Để làm cho ví dụ động lực của chúng ta trở nên cụ thể, cuốn sách này chứa một thư mục với 12 spreadsheet excel chứa dữ liệu từ gói mở rộng gapminder.
+Để làm cho ví dụ động lực của chúng ta trở nên cụ thể, cuốn sách này chứa một thư mục với 12 spreadsheet excel chứa dữ liệu từ package gapminder.
 Thư mục này có thể được tìm thấy tại <https://github.com/hadley/r4ds/tree/main/data/gapminder>.
 Mỗi tệp chứa dữ liệu một năm cho 142 quốc gia.
 Chúng ta có thể liệt kê tất cả chúng với lệnh gọi thích hợp đến `list.files()`:
@@ -809,7 +809,7 @@ Chúng ta sẽ khám phá thách thức này bằng ba ví dụ:
 Đôi khi khi làm việc với nhiều tệp cùng lúc, không thể đưa tất cả dữ liệu của bạn vào bộ nhớ cùng lúc, và bạn không thể dùng `map(files, read_csv)`.
 Một cách tiếp cận để giải quyết vấn đề này là tải dữ liệu vào một database để bạn có thể truy cập chỉ những phần bạn cần với dbplyr.
 
-Nếu may mắn, gói mở rộng database bạn đang sử dụng sẽ cung cấp một function tiện lợi nhận một vector các đường dẫn và tải tất cả chúng vào database.
+Nếu may mắn, package database bạn đang sử dụng sẽ cung cấp một function tiện lợi nhận một vector các đường dẫn và tải tất cả chúng vào database.
 Đây là trường hợp với `duckdb_read_csv()` của duckdb:
 
 ```{r}

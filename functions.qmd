@@ -769,8 +769,8 @@ histogram <- function(df, var, binwidth = NULL) {
 ```
 
 Sẽ thật tuyệt nếu chúng ta có thể gắn nhãn cho đầu ra với biến và độ rộng bin đã sử dụng?
-Để làm điều này, chúng ta sẽ phải đi sâu vào bên trong đánh giá gọn gàng và sử dụng một function từ gói mở rộng chúng ta chưa nói đến: rlang.
-rlang là một gói mở rộng cấp thấp được sử dụng bởi hầu hết mọi gói mở rộng khác trong tidyverse vì nó triển khai đánh giá gọn gàng (cùng nhiều công cụ hữu ích khác).
+Để làm điều này, chúng ta sẽ phải đi sâu vào bên trong đánh giá gọn gàng và sử dụng một function từ package chúng ta chưa nói đến: rlang.
+rlang là một package cấp thấp được sử dụng bởi hầu hết mọi package khác trong tidyverse vì nó triển khai đánh giá gọn gàng (cùng nhiều công cụ hữu ích khác).
 
 Để giải quyết vấn đề gắn nhãn, chúng ta có thể dùng `rlang::englue()`.
 Function này hoạt động tương tự `str_glue()`, nên bất kỳ giá trị nào được bọc trong `{ }` sẽ được chèn vào string.

@@ -15,7 +15,7 @@ source("_common.R")
 
 Trong chương này, bạn sẽ học một cách nhất quán để tổ chức dữ liệu trong R bằng một hệ thống gọi là **tidy data (tidy data)**.
 Việc đưa dữ liệu vào định dạng này đòi hỏi một chút công sức ban đầu, nhưng công sức đó sẽ được đền đáp về lâu dài.
-Khi bạn đã có tidy data và các công cụ gọn gàng được cung cấp bởi các gói mở rộng trong tidyverse, bạn sẽ tốn ít thời gian hơn nhiều để chuyển đổi dữ liệu từ dạng biểu diễn này sang dạng khác, cho phép bạn dành nhiều thời gian hơn cho những câu hỏi về dữ liệu mà bạn quan tâm.
+Khi bạn đã có tidy data và các công cụ gọn gàng được cung cấp bởi các package trong tidyverse, bạn sẽ tốn ít thời gian hơn nhiều để chuyển đổi dữ liệu từ dạng biểu diễn này sang dạng khác, cho phép bạn dành nhiều thời gian hơn cho những câu hỏi về dữ liệu mà bạn quan tâm.
 
 Trong chương này, đầu tiên bạn sẽ tìm hiểu định nghĩa của tidy data và xem nó được áp dụng vào một tập dữ liệu đồ chơi đơn giản.
 Sau đó chúng ta sẽ đi sâu vào công cụ chính mà bạn sẽ sử dụng để chỉnh trang dữ liệu: xoay (pivoting).
@@ -23,7 +23,7 @@ Xoay cho phép bạn thay đổi hình dạng dữ liệu mà không thay đổi
 
 ### Điều kiện tiên quyết
 
-Trong chương này, chúng ta sẽ tập trung vào tidyr, một gói mở rộng cung cấp row loạt công cụ giúp chỉnh trang các tập dữ liệu lộn xộn.
+Trong chương này, chúng ta sẽ tập trung vào tidyr, một package cung cấp row loạt công cụ giúp chỉnh trang các tập dữ liệu lộn xộn.
 tidyr là một thành viên của tidyverse cốt lõi.
 
 ```{r}
@@ -83,7 +83,7 @@ Có hai lợi thế chính:
     Như bạn đã học trong @sec-mutate và @sec-summarize, hầu hết các function tích hợp sẵn trong R đều hoạt động với các vector giá trị.
     Điều đó làm cho việc biến đổi tidy data trở nên đặc biệt tự nhiên.
 
-dplyr, ggplot2, và tất cả các gói mở rộng khác trong tidyverse đều được thiết kế để hoạt động với tidy data.
+dplyr, ggplot2, và tất cả các package khác trong tidyverse đều được thiết kế để hoạt động với tidy data.
 Dưới đây là một vài ví dụ nhỏ cho thấy cách bạn có thể làm việc với `table1`.
 
 ```{r}

@@ -7,7 +7,7 @@ source("_common.R")
 
 ## Giới thiệu
 
-Làm việc với dữ liệu được cung cấp bởi các gói mở rộng R là một cách tuyệt vời để học các công cụ khoa học dữ liệu, nhưng đến một lúc nào đó bạn sẽ muốn áp dụng những gì đã học vào dữ liệu của chính mình.
+Làm việc với dữ liệu được cung cấp bởi các package R là một cách tuyệt vời để học các công cụ khoa học dữ liệu, nhưng đến một lúc nào đó bạn sẽ muốn áp dụng những gì đã học vào dữ liệu của chính mình.
 Trong chương này, bạn sẽ học những kiến thức cơ bản về việc đọc các file dữ liệu vào R.
 
 Cụ thể, chương này sẽ tập trung vào việc đọc các file văn bản thuần (plain-text) dạng hình chữ nhật (rectangular).
@@ -17,7 +17,7 @@ Cuối cùng, bạn sẽ học cách tạo data frame thủ công trong R.
 
 ### Điều kiện tiên quyết
 
-Trong chương này, bạn sẽ học cách tải các file phẳng (flat file) vào R với gói mở rộng **readr**, là một phần của tidyverse cốt lõi.
+Trong chương này, bạn sẽ học cách tải các file phẳng (flat file) vào R với package **readr**, là một phần của tidyverse cốt lõi.
 
 ```{r}
 #| label: setup
@@ -473,7 +473,7 @@ Có hai lựa chọn thay thế chính:
     #> 6          6 Güvenç Attila    Ice cream          Lunch only              6
     ```
 
-Parquet có xu hướng nhanh hơn nhiều so với RDS và có thể sử dụng được ngoài R, nhưng yêu cầu gói mở rộng arrow.
+Parquet có xu hướng nhanh hơn nhiều so với RDS và có thể sử dụng được ngoài R, nhưng yêu cầu package arrow.
 
 ```{r}
 #| include: false

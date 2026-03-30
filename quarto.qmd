@@ -18,13 +18,13 @@ Tệp Quarto được thiết kế để sử dụng theo ba cách:
 
 3.  Như một environment để *thực hiện* khoa học dữ liệu, như một cuốn sổ phòng thí nghiệm hiện đại nơi bạn có thể ghi lại không chỉ những gì bạn đã làm, mà còn cả những gì bạn đang suy nghĩ.
 
-Quarto là một công cụ giao diện dòng lệnh (command line interface), không phải một gói mở rộng R.
+Quarto là một công cụ giao diện dòng lệnh (command line interface), không phải một package R.
 Điều này có nghĩa là trợ giúp, nhìn chung, không có sẵn thông qua `?`.
 Thay vào đó, khi bạn làm việc qua chương này, và sử dụng Quarto trong tương lai, bạn nên tham khảo [tài liệu Quarto](https://quarto.org).
 
 Nếu bạn là người dùng R Markdown, bạn có thể nghĩ "Quarto nghe giống R Markdown quá".
 Bạn không sai!
-Quarto hợp nhất chức năng của nhiều gói mở rộng từ hệ sinh thái R Markdown (rmarkdown, bookdown, distill, xaringan, v.v.) thành một hệ thống nhất quán, đồng thời mở rộng thêm hỗ trợ gốc cho nhiều ngôn ngữ lập trình như Python và Julia ngoài R.
+Quarto hợp nhất chức năng của nhiều package từ hệ sinh thái R Markdown (rmarkdown, bookdown, distill, xaringan, v.v.) thành một hệ thống nhất quán, đồng thời mở rộng thêm hỗ trợ gốc cho nhiều ngôn ngữ lập trình như Python và Julia ngoài R.
 Theo một cách nào đó, Quarto phản ánh tất cả những gì đã được học từ việc mở rộng và hỗ trợ hệ sinh thái R Markdown trong suốt một thập kỷ.
 
 ### Điều kiện tiên quyết
@@ -544,8 +544,8 @@ knitr::kable(mtcars[1:5, ], )
 ```
 
 Đọc tài liệu cho `?knitr::kable` để xem các cách khác mà bạn có thể tùy chỉnh bảng.
-Để tùy chỉnh sâu hơn, hãy cân nhắc các gói mở rộng **gt**, **huxtable**, **reactable**, **kableExtra**, **xtable**, **stargazer**, **pander**, **tables**, và **ascii**.
-Mỗi gói mở rộng cung cấp một bộ công cụ để trả về bảng đã định dạng từ mã R.
+Để tùy chỉnh sâu hơn, hãy cân nhắc các package **gt**, **huxtable**, **reactable**, **kableExtra**, **xtable**, **stargazer**, **pander**, **tables**, và **ascii**.
+Mỗi package cung cấp một bộ công cụ để trả về bảng đã định dạng từ mã R.
 
 ### Bài tập
 
@@ -821,9 +821,9 @@ Chúng tôi đã rút ra từ kinh nghiệm của mình và lời khuyên của 
     Nếu bạn đang sử dụng bộ nhớ đệm, hãy đảm bảo xóa bộ nhớ đệm.
     Điều đó sẽ cho phép bạn sửa bất kỳ vấn đề nào khi mã vẫn còn tươi mới trong tâm trí.
 
--   Nếu bạn muốn mã của mình có thể tái tạo lâu dài (tức là để bạn có thể quay lại chạy nó vào tháng sau hoặc năm sau), bạn sẽ cần theo dõi phiên bản của các gói mở rộng mà mã sử dụng.
-    Một cách tiếp cận nghiêm ngặt là sử dụng **renv**, <https://rstudio.github.io/renv/index.html>, lưu trữ các gói mở rộng trong thư mục dự án.
-    Một cách nhanh và đơn giản là thêm một khối mã chạy `sessionInfo()` --- điều đó sẽ không cho phép bạn dễ dàng tái tạo các gói mở rộng như chúng ở hiện tại, nhưng ít nhất bạn sẽ biết chúng là gì.
+-   Nếu bạn muốn mã của mình có thể tái tạo lâu dài (tức là để bạn có thể quay lại chạy nó vào tháng sau hoặc năm sau), bạn sẽ cần theo dõi phiên bản của các package mà mã sử dụng.
+    Một cách tiếp cận nghiêm ngặt là sử dụng **renv**, <https://rstudio.github.io/renv/index.html>, lưu trữ các package trong thư mục dự án.
+    Một cách nhanh và đơn giản là thêm một khối mã chạy `sessionInfo()` --- điều đó sẽ không cho phép bạn dễ dàng tái tạo các package như chúng ở hiện tại, nhưng ít nhất bạn sẽ biết chúng là gì.
 
 -   Bạn sẽ tạo rất nhiều, rất nhiều sổ phân tích trong suốt sự nghiệp.
     Bạn sẽ tổ chức chúng như thế nào để có thể tìm lại trong tương lai?

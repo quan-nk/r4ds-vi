@@ -17,7 +17,7 @@ Các phép biến đổi này được sử dụng để tính toán các giá t
 Bạn cũng sẽ tìm hiểu về điều chỉnh vị trí (position adjustment), giúp thay đổi cách các geom được hiển thị trong biểu đồ của bạn.
 Cuối cùng, chúng ta sẽ giới thiệu ngắn gọn về hệ tọa độ (coordinate system).
 
-Chúng ta sẽ không đề cập đến từng function và tùy chọn cho mỗi lớp này, nhưng chúng ta sẽ hướng dẫn bạn qua các chức năng quan trọng và thường được sử dụng nhất do ggplot2 cung cấp cũng như giới thiệu cho bạn các gói mở rộng ggplot2.
+Chúng ta sẽ không đề cập đến từng function và tùy chọn cho mỗi lớp này, nhưng chúng ta sẽ hướng dẫn bạn qua các chức năng quan trọng và thường được sử dụng nhất do ggplot2 cung cấp cũng như giới thiệu cho bạn các package ggplot2.
 
 ### Điều kiện tiên quyết
 
@@ -34,7 +34,7 @@ library(tidyverse)
 
 > "Giá trị lớn nhất của một bức tranh là khi nó buộc chúng ta phải chú ý đến những điều mà chúng ta không bao giờ mong đợi được thấy." --- John Tukey
 
-Hãy nhớ rằng data frame `mpg` đi kèm với gói mở rộng ggplot2 chứa `r nrow(mpg)` quan sát trên `r mpg |> distinct(model) |> nrow()` mẫu xe.
+Hãy nhớ rằng data frame `mpg` đi kèm với package ggplot2 chứa `r nrow(mpg)` quan sát trên `r mpg |> distinct(model) |> nrow()` mẫu xe.
 
 ```{r}
 mpg
@@ -390,8 +390,8 @@ ggplot(mpg, aes(x = hwy)) +
 ```
 
 ggplot2 cung cấp hơn 40 geom nhưng chúng không bao phủ tất cả các biểu đồ có thể tạo.
-Nếu bạn cần một geom khác, chúng tôi khuyên bạn nên xem các gói mở rộng trước để kiểm tra xem ai đó đã triển khai nó chưa (xem <https://exts.ggplot2.tidyverse.org/gallery/> để xem một số mẫu).
-Ví dụ, gói mở rộng **ggridges** ([https://wilkelab.org/ggridges](https://wilkelab.org/ggridges/){.uri}) hữu ích để tạo biểu đồ đường sống núi (ridgeline plot), có thể hữu ích để visualization mật độ của một biến số cho các mức khác nhau của một biến phân loại.
+Nếu bạn cần một geom khác, chúng tôi khuyên bạn nên xem các package trước để kiểm tra xem ai đó đã triển khai nó chưa (xem <https://exts.ggplot2.tidyverse.org/gallery/> để xem một số mẫu).
+Ví dụ, package **ggridges** ([https://wilkelab.org/ggridges](https://wilkelab.org/ggridges/){.uri}) hữu ích để tạo biểu đồ đường sống núi (ridgeline plot), có thể hữu ích để visualization mật độ của một biến số cho các mức khác nhau của một biến phân loại.
 Trong biểu đồ sau, chúng ta không chỉ sử dụng một geom mới (`geom_density_ridges()`), mà còn mapping cùng một biến đến nhiều thuộc tính đồ họa (`drv` đến `y`, `fill`, và `color`) cũng như đặt một thuộc tính đồ họa (`alpha = 0.5`) để làm các đường cong mật độ trong suốt.
 
 ```{r}
@@ -408,7 +408,7 @@ ggplot(mpg, aes(x = hwy, y = drv, fill = drv, color = drv)) +
   geom_density_ridges(alpha = 0.5, show.legend = FALSE)
 ```
 
-Nơi tốt nhất để có cái nhìn tổng quan toàn diện về tất cả các geom mà ggplot2 cung cấp, cũng như tất cả các function trong gói mở rộng, là trang tham khảo: <https://ggplot2.tidyverse.org/reference>.
+Nơi tốt nhất để có cái nhìn tổng quan toàn diện về tất cả các geom mà ggplot2 cung cấp, cũng như tất cả các function trong package, là trang tham khảo: <https://ggplot2.tidyverse.org/reference>.
 Để tìm hiểu thêm về bất kỳ geom đơn lẻ nào, hãy sử dụng trang trợ giúp (ví dụ, `?geom_smooth`).
 
 ### Bài tập
@@ -597,7 +597,7 @@ ggplot(mpg, aes(x = displ, y = hwy)) +
 
 Hãy xem xét một biểu đồ column cơ bản, được vẽ với `geom_bar()` hoặc `geom_col()`.
 Biểu đồ sau hiển thị tổng số kim cương trong bộ dữ liệu `diamonds`, được nhóm theo `cut`.
-Bộ dữ liệu `diamonds` nằm trong gói mở rộng ggplot2 và chứa thông tin về \~54.000 viên kim cương, bao gồm `price`, `carat`, `color`, `clarity`, và `cut` của mỗi viên kim cương.
+Bộ dữ liệu `diamonds` nằm trong package ggplot2 và chứa thông tin về \~54.000 viên kim cương, bao gồm `price`, `carat`, `color`, `clarity`, và `cut` của mỗi viên kim cương.
 Biểu đồ cho thấy nhiều kim cương hơn có sẵn với chất lượng cắt cao hơn so với chất lượng cắt thấp.
 
 ```{r}
@@ -1009,6 +1009,6 @@ Nếu bạn muốn tìm hiểu thêm về nền tảng lý thuyết của ggplot
 Trong chương này bạn đã tìm hiểu về ngữ pháp đồ họa theo lớp bắt đầu với thuộc tính đồ họa và đối tượng hình học để xây dựng biểu đồ đơn giản, facet để chia biểu đồ thành các tập con, thống kê để hiểu cách geom được tính toán, điều chỉnh vị trí để kiểm soát các chi tiết vị trí khi các geom có thể chồng chéo, và hệ tọa độ cho phép bạn thay đổi căn bản ý nghĩa của `x` và `y`.
 Một lớp mà chúng ta chưa đề cập đến là theme (theme), sẽ được giới thiệu trong @sec-themes.
 
-Hai tài nguyên rất hữu ích để có cái nhìn tổng quan về toàn bộ chức năng của ggplot2 là bảng tóm tắt ggplot2 (bạn có thể tìm tại <https://posit.co/resources/cheatsheets>) và trang web gói mở rộng ggplot2 ([https://ggplot2.tidyverse.org](https://ggplot2.tidyverse.org/)).
+Hai tài nguyên rất hữu ích để có cái nhìn tổng quan về toàn bộ chức năng của ggplot2 là bảng tóm tắt ggplot2 (bạn có thể tìm tại <https://posit.co/resources/cheatsheets>) và trang web package ggplot2 ([https://ggplot2.tidyverse.org](https://ggplot2.tidyverse.org/)).
 
-Một bài học quan trọng mà bạn nên rút ra từ chương này là khi bạn cảm thấy cần một geom mà ggplot2 không cung cấp, luôn là ý tưởng tốt để xem liệu ai đó đã giải quyết vấn đề của bạn chưa bằng cách tạo một gói mở rộng ggplot2 cung cấp geom đó.
+Một bài học quan trọng mà bạn nên rút ra từ chương này là khi bạn cảm thấy cần một geom mà ggplot2 không cung cấp, luôn là ý tưởng tốt để xem liệu ai đó đã giải quyết vấn đề của bạn chưa bằng cách tạo một package ggplot2 cung cấp geom đó.

@@ -11,9 +11,9 @@ Sử dụng phong cách nhất quán giúp người khác (bao gồm bạn-trong
 Chương này sẽ giới thiệu các điểm quan trọng nhất của [hướng dẫn phong cách tidyverse](https://style.tidyverse.org), được sử dụng xuyên suốt cuốn sách này.
 
 Việc tạo phong cách cho mã sẽ hơi tẻ nhạt lúc đầu, nhưng nếu bạn thực hành, nó sẽ sớm trở thành bản năng.
-Ngoài ra, có một số công cụ tuyệt vời để nhanh chóng định dạng lại mã hiện có, như gói mở rộng [**styler**](https://styler.r-lib.org) của Lorenz Walthert.
+Ngoài ra, có một số công cụ tuyệt vời để nhanh chóng định dạng lại mã hiện có, như package [**styler**](https://styler.r-lib.org) của Lorenz Walthert.
 Sau khi cài đặt bằng `install.packages("styler")`, cách dễ nhất để sử dụng là qua **bảng lệnh** (command palette) của RStudio.
-Bảng lệnh cho phép bạn sử dụng bất kỳ lệnh RStudio tích hợp nào và nhiều tiện ích bổ sung từ các gói mở rộng.
+Bảng lệnh cho phép bạn sử dụng bất kỳ lệnh RStudio tích hợp nào và nhiều tiện ích bổ sung từ các package.
 Mở bảng lệnh bằng cách nhấn Cmd/Ctrl + Shift + P, sau đó gõ "styler" để xem tất cả phím tắt do styler cung cấp.
 @fig-styler hiển thị kết quả.
 
@@ -26,11 +26,11 @@ Mở bảng lệnh bằng cách nhấn Cmd/Ctrl + Shift + P, sau đó gõ "style
 #|   chỉ bằng bàn phím.
 #| fig-alt: |
 #|   Ảnh chụp màn hình hiển thị bảng lệnh sau khi gõ "styler", cho thấy
-#|   bốn công cụ định dạng được cung cấp bởi gói mở rộng.
+#|   bốn công cụ định dạng được cung cấp bởi package.
 knitr::include_graphics("screenshots/rstudio-palette.png")
 ```
 
-Chúng ta sẽ sử dụng các gói mở rộng tidyverse và nycflights13 cho các ví dụ mã trong chương này.
+Chúng ta sẽ sử dụng các package tidyverse và nycflights13 cho các ví dụ mã trong chương này.
 
 ```{r}
 #| label: setup
@@ -276,10 +276,10 @@ knitr::include_graphics("screenshots/rstudio-nav.png")
 
 Trong chương này, bạn đã học các nguyên tắc quan trọng nhất về phong cách mã.
 Ban đầu chúng có thể cảm thấy như một tập hợp các quy tắc tùy ý (vì đúng là vậy!) nhưng theo thời gian, khi bạn viết nhiều mã hơn và chia sẻ mã với nhiều người hơn, bạn sẽ thấy phong cách nhất quán quan trọng như thế nào.
-Và đừng quên gói mở rộng styler: đây là cách tuyệt vời để nhanh chóng cải thiện chất lượng mã có phong cách kém.
+Và đừng quên package styler: đây là cách tuyệt vời để nhanh chóng cải thiện chất lượng mã có phong cách kém.
 
 Trong chương tiếp theo, chúng ta quay lại các công cụ khoa học dữ liệu, học về tidy data (tidy data).
 Dữ liệu gọn gàng là cách nhất quán để tổ chức data frame được sử dụng xuyên suốt tidyverse.
 Sự nhất quán này giúp cuộc sống của bạn dễ dàng hơn vì khi bạn có tidy data, nó hoạt động với phần lớn các function tidyverse.
 Tất nhiên, cuộc sống không bao giờ dễ dàng, và hầu hết các tập dữ liệu bạn gặp ngoài thực tế sẽ chưa gọn gàng sẵn.
-Vì vậy chúng tôi cũng sẽ dạy bạn cách sử dụng gói mở rộng tidyr để sắp xếp dữ liệu chưa gọn gàng.
+Vì vậy chúng tôi cũng sẽ dạy bạn cách sử dụng package tidyr để sắp xếp dữ liệu chưa gọn gàng.

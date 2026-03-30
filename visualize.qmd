@@ -33,5 +33,5 @@ Ba chương này giúp bạn bắt đầu trong thế giới visualization, như
 Nơi tốt nhất tuyệt đối để tìm hiểu thêm là cuốn sách ggplot2: [*ggplot2: Elegant graphics for data analysis*](https://ggplot2-book.org/).
 Nó đi sâu hơn nhiều vào lý thuyết nền tảng, và có nhiều ví dụ hơn về cách kết hợp các thành phần riêng lẻ để giải quyết các vấn đề thực tế.
 Một tài nguyên tuyệt vời khác là thư viện mở rộng ggplot2 <https://exts.ggplot2.tidyverse.org/gallery/>.
-Trang web này liệt kê nhiều gói mở rộng ggplot2 với các geom và scale mới.
+Trang web này liệt kê nhiều package ggplot2 với các geom và scale mới.
 Đây là nơi tuyệt vời để bắt đầu nếu bạn đang cố gắng làm điều gì đó có vẻ khó với ggplot2.

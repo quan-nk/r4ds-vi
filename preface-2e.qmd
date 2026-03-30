@@ -25,7 +25,7 @@ Dưới đây là tóm tắt ngắn gọn về những thay đổi lớn nhất:
 
 -   Phần mô hình hóa đã được loại bỏ.
     Chúng tôi chưa bao giờ có đủ không gian để trình bày mô hình hóa một cách đầy đủ, và hiện nay đã có những tài nguyên tốt hơn nhiều.
-    Chúng tôi khuyến nghị sử dụng các gói mở rộng [tidymodels](https://www.tidymodels.org/) và đọc [Tidy Modeling with R](https://www.tmwr.org/) của Max Kuhn và Julia Silge.
+    Chúng tôi khuyến nghị sử dụng các package [tidymodels](https://www.tidymodels.org/) và đọc [Tidy Modeling with R](https://www.tmwr.org/) của Max Kuhn và Julia Silge.
 
 -   Phần "Truyền đạt" vẫn được giữ lại, nhưng đã được cập nhật toàn diện để sử dụng [Quarto](https://quarto.org/) thay vì R Markdown.
     Phiên bản này của cuốn sách được viết bằng Quarto, và rõ ràng đó là công cụ của tương lai.

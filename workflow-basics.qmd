@@ -252,4 +252,4 @@ knitr::include_graphics("screenshots/rstudio-env.png")
 ## Tóm tắt
 
 Bây giờ bạn đã học thêm một chút về cách mã R hoạt động, và một số mẹo để giúp bạn hiểu mã khi quay lại trong tương lai.
-Trong chương tiếp theo, chúng tôi sẽ tiếp tục hành trình khoa học dữ liệu của bạn bằng cách dạy bạn về dplyr, gói mở rộng tidyverse giúp bạn biến đổi dữ liệu, dù là chọn biến quan trọng, lọc các row quan tâm, hay tính toán thống kê tóm tắt.
+Trong chương tiếp theo, chúng tôi sẽ tiếp tục hành trình khoa học dữ liệu của bạn bằng cách dạy bạn về dplyr, package tidyverse giúp bạn biến đổi dữ liệu, dù là chọn biến quan trọng, lọc các row quan tâm, hay tính toán thống kê tóm tắt.

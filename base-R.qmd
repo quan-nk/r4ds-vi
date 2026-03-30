@@ -11,11 +11,11 @@ source("_common.R")
 Những công cụ này đặc biệt hữu ích khi bạn lập trình nhiều hơn và sẽ giúp bạn đọc được mã mà bạn gặp ngoài thực tế.
 
 Đây là lúc thích hợp để nhắc bạn rằng tidyverse không phải là cách duy nhất để giải quyết các bài toán khoa học dữ liệu (data science).
-Chúng tôi dạy tidyverse trong cuốn sách này vì các gói mở rộng tidyverse chia sẻ chung triết lý thiết kế, tăng tính nhất quán giữa các function, và khiến mỗi function hay gói mở rộng mới dễ học dễ dùng hơn một chút.
-Không thể dùng tidyverse mà không dùng base R, nên thực ra chúng tôi đã dạy bạn **rất nhiều** function base R: từ `library()` để tải gói mở rộng, đến `sum()` và `mean()` để tóm tắt số, đến kiểu dữ liệu factor (factor), ngày tháng (date), và POSIXct, và tất nhiên là tất cả các toán tử cơ bản như `+`, `-`, `/`, `*`, `|`, `&`, và `!`.
+Chúng tôi dạy tidyverse trong cuốn sách này vì các package tidyverse chia sẻ chung triết lý thiết kế, tăng tính nhất quán giữa các function, và khiến mỗi function hay package mới dễ học dễ dùng hơn một chút.
+Không thể dùng tidyverse mà không dùng base R, nên thực ra chúng tôi đã dạy bạn **rất nhiều** function base R: từ `library()` để tải package, đến `sum()` và `mean()` để tóm tắt số, đến kiểu dữ liệu factor (factor), ngày tháng (date), và POSIXct, và tất nhiên là tất cả các toán tử cơ bản như `+`, `-`, `/`, `*`, `|`, `&`, và `!`.
 Điều mà chúng tôi chưa tập trung cho đến giờ là workflow với base R, nên chúng tôi sẽ giới thiệu một số workflow trong chương này.
 
-Sau khi đọc cuốn sách này, bạn sẽ học các cách tiếp cận khác cho cùng những bài toán đó bằng base R, data.table, và các gói mở rộng khác.
+Sau khi đọc cuốn sách này, bạn sẽ học các cách tiếp cận khác cho cùng những bài toán đó bằng base R, data.table, và các package khác.
 Chắc chắn bạn sẽ gặp các cách tiếp cận khác này khi bạn bắt đầu đọc mã R do người khác viết, đặc biệt nếu bạn đang dùng Stack Overflow.
 Việc viết mã kết hợp nhiều cách tiếp cận là hoàn toàn bình thường, và đừng để ai nói khác với bạn!
 
@@ -528,7 +528,7 @@ Lưu ý rằng các function vẽ biểu đồ base R làm việc với vector, 
 
 Trong chương này, chúng tôi đã cho bạn thấy một số function base R hữu ích cho việc lấy tập con và iterate.
 So với các cách tiếp cận được thảo luận ở những nơi khác trong sách, các function này có xu hướng mang "hương vị vector" nhiều hơn "hương vị data frame" vì các function base R thường nhận các vector riêng lẻ, thay vì data frame và đặc tả column nào đó.
-Điều này thường giúp cuộc sống dễ dàng hơn khi lập trình và do đó trở nên quan trọng hơn khi bạn viết nhiều function hơn và bắt đầu viết gói mở rộng của riêng mình.
+Điều này thường giúp cuộc sống dễ dàng hơn khi lập trình và do đó trở nên quan trọng hơn khi bạn viết nhiều function hơn và bắt đầu viết package của riêng mình.
 
 Chương này kết thúc phần lập trình của cuốn sách.
 Bạn đã có một khởi đầu vững chắc trên hành trình trở thành không chỉ nhà khoa học dữ liệu sử dụng R, mà là nhà khoa học dữ liệu có thể *lập trình* bằng R.
