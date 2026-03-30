@@ -17,9 +17,9 @@ Tiếp theo bạn sẽ sử dụng tập dữ liệu đó để thực hành tha
 
 ### Điều kiện tiên quyết
 
-R cơ bản cung cấp một số công cụ cơ bản để tạo và thao tác với nhân tố.
-Chúng ta sẽ bổ sung thêm với gói **forcats**, là một phần của tidyverse cốt lõi.
-Gói này cung cấp các công cụ để xử lý các biến **phân loại** (**cat**egorical) bằng một loạt các hàm hỗ trợ để làm việc với nhân tố.
+base R cung cấp một số công cụ cơ bản để tạo và thao tác với nhân tố.
+Chúng ta sẽ bổ sung thêm với gói mở rộng **forcats**, là một phần của tidyverse cốt lõi.
+Gói mở rộng này cung cấp các công cụ để xử lý các biến **phân loại** (**cat**egorical) bằng một loạt các hàm hỗ trợ để làm việc với nhân tố.
 
 ```{r}
 #| label: setup
@@ -124,7 +124,7 @@ Cuộc khảo sát có hàng nghìn câu hỏi, vì vậy trong `gss_cat` Hadley
 gss_cat
 ```
 
-(Hãy nhớ rằng, vì tập dữ liệu này được cung cấp bởi một gói, bạn có thể xem thêm thông tin về các biến với `?gss_cat`.)
+(Hãy nhớ rằng, vì tập dữ liệu này được cung cấp bởi một gói mở rộng, bạn có thể xem thêm thông tin về các biến với `?gss_cat`.)
 
 Khi nhân tố được lưu trong một tibble, bạn không thể dễ dàng nhìn thấy các mức của chúng.
 Một cách để xem chúng là dùng `count()`:
@@ -415,7 +415,7 @@ Bạn có thể nhận biết nhân tố có thứ tự khi nó được in ra v
 ordered(c("a", "b", "c"))
 ```
 
-Trong cả R cơ bản và tidyverse, nhân tố có thứ tự hoạt động rất giống với nhân tố thông thường.
+Trong cả base R và tidyverse, nhân tố có thứ tự hoạt động rất giống với nhân tố thông thường.
 Chỉ có hai nơi bạn có thể nhận thấy hành vi khác biệt:
 
 -   Nếu bạn ánh xạ một nhân tố có thứ tự vào color hoặc fill trong ggplot2, nó sẽ mặc định sử dụng `scale_color_viridis()`/`scale_fill_viridis()`, một thang màu ngụ ý thứ hạng.
@@ -423,16 +423,16 @@ Chỉ có hai nơi bạn có thể nhận thấy hành vi khác biệt:
 
 Với mục đích của cuốn sách này, việc phân biệt chính xác giữa nhân tố thông thường và nhân tố có thứ tự không đặc biệt quan trọng.
 Tuy nhiên, rộng hơn, một số lĩnh vực (đặc biệt là khoa học xã hội) sử dụng nhân tố có thứ tự rất nhiều.
-Trong những ngữ cảnh đó, việc xác định chính xác chúng là quan trọng để các gói phân tích khác có thể cung cấp hành vi phù hợp.
+Trong những ngữ cảnh đó, việc xác định chính xác chúng là quan trọng để các gói mở rộng phân tích khác có thể cung cấp hành vi phù hợp.
 
 ## Tóm tắt
 
-Chương này giới thiệu cho bạn gói forcats tiện dụng để làm việc với nhân tố, giới thiệu các hàm được sử dụng phổ biến nhất.
+Chương này giới thiệu cho bạn gói mở rộng forcats tiện dụng để làm việc với nhân tố, giới thiệu các hàm được sử dụng phổ biến nhất.
 forcats chứa một loạt các hàm hỗ trợ khác mà chúng ta không có đủ chỗ để thảo luận ở đây, vì vậy mỗi khi bạn đối mặt với một thách thức phân tích nhân tố mà bạn chưa gặp trước đây, tôi rất khuyên bạn nên lướt qua [trang chỉ mục tham khảo](https://forcats.tidyverse.org/reference/index.html) để xem có hàm sẵn có nào có thể giúp giải quyết vấn đề của bạn không.
 
 Nếu bạn muốn tìm hiểu thêm về nhân tố sau khi đọc chương này, chúng tôi khuyên bạn nên đọc bài báo của Amelia McNamara và Nicholas Horton, [*Wrangling categorical data in R*](https://peerj.com/preprints/3163/).
-Bài báo này trình bày một số lịch sử được thảo luận trong [*stringsAsFactors: An unauthorized biography*](https://simplystatistics.org/posts/2015-07-24-stringsasfactors-an-unauthorized-biography/) và [*stringsAsFactors = \<sigh\>*](https://notstatschat.tumblr.com/post/124987394001/stringsasfactors-sigh), và so sánh các phương pháp tidy để xử lý dữ liệu phân loại được trình bày trong cuốn sách này với các phương pháp R cơ bản.
-Phiên bản đầu tiên của bài báo đã giúp thúc đẩy và định hình phạm vi cho gói forcats; cảm ơn Amelia & Nick!
+Bài báo này trình bày một số lịch sử được thảo luận trong [*stringsAsFactors: An unauthorized biography*](https://simplystatistics.org/posts/2015-07-24-stringsasfactors-an-unauthorized-biography/) và [*stringsAsFactors = \<sigh\>*](https://notstatschat.tumblr.com/post/124987394001/stringsasfactors-sigh), và so sánh các phương pháp tidy để xử lý dữ liệu phân loại được trình bày trong cuốn sách này với các phương pháp base R.
+Phiên bản đầu tiên của bài báo đã giúp thúc đẩy và định hình phạm vi cho gói mở rộng forcats; cảm ơn Amelia & Nick!
 
 Trong chương tiếp theo, chúng ta sẽ chuyển sang bắt đầu tìm hiểu về ngày tháng và thời gian trong R.
 Ngày tháng và thời gian có vẻ đơn giản một cách lừa dối, nhưng như bạn sẽ sớm thấy, bạn càng tìm hiểu về chúng, chúng càng có vẻ phức tạp hơn!
