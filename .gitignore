@@ -7,7 +7,6 @@ _book
 *.md
 !CODE_OF_CONDUCT.md
 !glossary.md
-CLAUDE.md
 /*.html
 !plausible.html
 search_index.json
