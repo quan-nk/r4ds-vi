@@ -1,30 +1,30 @@
-# A field guide to base R {#sec-base-r}
+# Cẩm nang về R cơ bản {#sec-base-r}
 
 ```{r}
 #| echo: false
 source("_common.R")
 ```
 
-## Introduction
+## Giới thiệu
 
-To finish off the programming section, we're going to give you a quick tour of the most important base R functions that we don't otherwise discuss in the book.
-These tools are particularly useful as you do more programming and will help you read code you'll encounter in the wild.
+Để kết thúc phần lập trình, chúng tôi sẽ giới thiệu nhanh cho bạn những hàm R cơ bản (base R) quan trọng nhất mà chúng tôi không đề cập ở những phần khác trong cuốn sách.
+Những công cụ này đặc biệt hữu ích khi bạn lập trình nhiều hơn và sẽ giúp bạn đọc được mã mà bạn gặp ngoài thực tế.
 
-This is a good place to remind you that the tidyverse is not the only way to solve data science problems.
-We teach the tidyverse in this book because tidyverse packages share a common design philosophy, increasing the consistency across functions, and making each new function or package a little easier to learn and use.
-It's not possible to use the tidyverse without using base R, so we've actually already taught you a **lot** of base R functions: from `library()` to load packages, to `sum()` and `mean()` for numeric summaries, to the factor, date, and POSIXct data types, and of course all the basic operators like `+`, `-`, `/`, `*`, `|`, `&`, and `!`.
-What we haven't focused on so far is base R workflows, so we will highlight a few of those in this chapter.
+Đây là lúc thích hợp để nhắc bạn rằng tidyverse không phải là cách duy nhất để giải quyết các bài toán khoa học dữ liệu (data science).
+Chúng tôi dạy tidyverse trong cuốn sách này vì các gói tidyverse chia sẻ chung triết lý thiết kế, tăng tính nhất quán giữa các hàm, và khiến mỗi hàm hay gói mới dễ học dễ dùng hơn một chút.
+Không thể dùng tidyverse mà không dùng R cơ bản, nên thực ra chúng tôi đã dạy bạn **rất nhiều** hàm R cơ bản: từ `library()` để tải gói, đến `sum()` và `mean()` để tóm tắt số, đến kiểu dữ liệu nhân tố (factor), ngày tháng (date), và POSIXct, và tất nhiên là tất cả các toán tử cơ bản như `+`, `-`, `/`, `*`, `|`, `&`, và `!`.
+Điều mà chúng tôi chưa tập trung cho đến giờ là quy trình làm việc với R cơ bản, nên chúng tôi sẽ giới thiệu một số quy trình trong chương này.
 
-After you read this book, you'll learn other approaches to the same problems using base R, data.table, and other packages.
-You'll undoubtedly encounter these other approaches when you start reading R code written by others, particularly if you're using Stack Overflow.
-It's 100% okay to write code that uses a mix of approaches, and don't let anyone tell you otherwise!
+Sau khi đọc cuốn sách này, bạn sẽ học các cách tiếp cận khác cho cùng những bài toán đó bằng R cơ bản, data.table, và các gói khác.
+Chắc chắn bạn sẽ gặp các cách tiếp cận khác này khi bạn bắt đầu đọc mã R do người khác viết, đặc biệt nếu bạn đang dùng Stack Overflow.
+Việc viết mã kết hợp nhiều cách tiếp cận là hoàn toàn bình thường, và đừng để ai nói khác với bạn!
 
-In this chapter, we'll focus on four big topics: subsetting with `[`, subsetting with `[[` and `$`, the apply family of functions, and `for` loops.
-To finish off, we'll briefly discuss two essential plotting functions.
+Trong chương này, chúng tôi sẽ tập trung vào bốn chủ đề lớn: lấy tập con (subsetting) bằng `[`, lấy tập con bằng `[[` và `$`, họ hàm apply, và vòng lặp `for`.
+Để kết thúc, chúng tôi sẽ giới thiệu ngắn gọn hai hàm vẽ biểu đồ thiết yếu.
 
-### Prerequisites
+### Điều kiện tiên quyết
 
-This package focuses on base R so doesn't have any real prerequisites, but we'll load the tidyverse in order to explain some of the differences.
+Chương này tập trung vào R cơ bản nên không thực sự có điều kiện tiên quyết nào, nhưng chúng tôi sẽ tải tidyverse để giải thích một số điểm khác biệt.
 
 ```{r}
 #| label: setup
@@ -32,101 +32,101 @@ This package focuses on base R so doesn't have any real prerequisites, but we'll
 library(tidyverse)
 ```
 
-## Selecting multiple elements with `[` {#sec-subset-many}
+## Chọn nhiều phần tử bằng `[` {#sec-subset-many}
 
-`[` is used to extract sub-components from vectors and data frames, and is called like `x[i]` or `x[i, j]`.
-In this section, we'll introduce you to the power of `[`, first showing you how you can use it with vectors, then how the same principles extend in a straightforward way to two-dimensional (2d) structures like data frames.
-We'll then help you cement that knowledge by showing how various dplyr verbs are special cases of `[`.
+`[` được dùng để trích xuất các thành phần con từ vector và khung dữ liệu (data frame), và được gọi dưới dạng `x[i]` hoặc `x[i, j]`.
+Trong phần này, chúng tôi sẽ giới thiệu cho bạn sức mạnh của `[`, bắt đầu bằng cách cho bạn thấy cách dùng nó với vector, rồi cách những nguyên tắc tương tự mở rộng một cách trực tiếp sang cấu trúc hai chiều (2d) như khung dữ liệu.
+Sau đó, chúng tôi sẽ giúp bạn củng cố kiến thức bằng cách cho thấy các verb khác nhau của dplyr là trường hợp đặc biệt của `[`.
 
-### Subsetting vectors
+### Lấy tập con vector
 
-There are five main types of things that you can subset a vector with, i.e., that can be the `i` in `x[i]`:
+Có năm loại chính mà bạn có thể dùng để lấy tập con vector, tức là `i` trong `x[i]`:
 
-1.  **A vector of positive integers**.
-    Subsetting with positive integers keeps the elements at those positions:
+1.  **Một vector số nguyên dương**.
+    Lấy tập con bằng số nguyên dương sẽ giữ lại các phần tử ở các vị trí đó:
 
     ```{r}
     x <- c("one", "two", "three", "four", "five")
     x[c(3, 2, 5)]
     ```
 
-    By repeating a position, you can actually make a longer output than input, making the term "subsetting" a bit of a misnomer.
+    Bằng cách lặp lại một vị trí, bạn thực ra có thể tạo đầu ra dài hơn đầu vào, khiến thuật ngữ "lấy tập con" hơi không chính xác.
 
     ```{r}
     x[c(1, 1, 5, 5, 5, 2)]
     ```
 
-2.  **A vector of negative integers**.
-    Negative values drop the elements at the specified positions:
+2.  **Một vector số nguyên âm**.
+    Giá trị âm loại bỏ các phần tử ở các vị trí được chỉ định:
 
     ```{r}
     x[c(-1, -3, -5)]
     ```
 
-3.  **A logical vector**.
-    Subsetting with a logical vector keeps all values corresponding to a `TRUE` value.
-    This is most often useful in conjunction with the comparison functions.
+3.  **Một vector logic (logical vector)**.
+    Lấy tập con bằng vector logic sẽ giữ lại tất cả giá trị tương ứng với giá trị `TRUE`.
+    Điều này thường hữu ích nhất khi kết hợp với các hàm so sánh.
 
     ```{r}
     x <- c(10, 3, NA, 5, 8, 1, NA)
 
-    # All non-missing values of x
+    # Tất cả giá trị không khuyết của x
     x[!is.na(x)]
 
-    # All even (or missing!) values of x
+    # Tất cả giá trị chẵn (hoặc khuyết!) của x
     x[x %% 2 == 0]
     ```
 
-    Unlike `filter()`, `NA` indices will be included in the output as `NA`s.
+    Khác với `filter()`, các chỉ số `NA` sẽ được bao gồm trong đầu ra dưới dạng `NA`.
 
-4.  **A character vector**.
-    If you have a named vector, you can subset it with a character vector:
+4.  **Một vector ký tự (character vector)**.
+    Nếu bạn có một vector được đặt tên, bạn có thể lấy tập con bằng vector ký tự:
 
     ```{r}
     x <- c(abc = 1, def = 2, xyz = 5)
     x[c("xyz", "def")]
     ```
 
-    As with subsetting with positive integers, you can use a character vector to duplicate individual entries.
+    Tương tự như lấy tập con bằng số nguyên dương, bạn có thể dùng vector ký tự để lặp lại các phần tử riêng lẻ.
 
-5.  **Nothing**.
-    The final type of subsetting is nothing, `x[]`, which returns the complete `x`.
-    This is not useful for subsetting vectors, but as we'll see shortly, it is useful when subsetting 2d structures like tibbles.
+5.  **Không có gì**.
+    Loại lấy tập con cuối cùng là không có gì, `x[]`, trả về toàn bộ `x`.
+    Điều này không hữu ích cho việc lấy tập con vector, nhưng như chúng ta sẽ thấy ngay, nó hữu ích khi lấy tập con cấu trúc 2d như tibble.
 
-### Subsetting data frames
+### Lấy tập con khung dữ liệu
 
-There are quite a few different ways[^base-r-1] that you can use `[` with a data frame, but the most important way is to select rows and columns independently with `df[rows, cols]`. Here `rows` and `cols` are vectors as described above.
-For example, `df[rows, ]` and `df[, cols]` select just rows or just columns, using the empty subset to preserve the other dimension.
+Có khá nhiều cách khác nhau[^base-r-1] để bạn dùng `[` với khung dữ liệu, nhưng cách quan trọng nhất là chọn hàng và cột độc lập bằng `df[rows, cols]`. Ở đây `rows` và `cols` là các vector như đã mô tả ở trên.
+Ví dụ, `df[rows, ]` và `df[, cols]` chỉ chọn hàng hoặc chỉ chọn cột, sử dụng tập con rỗng để giữ nguyên chiều còn lại.
 
-[^base-r-1]: Read <https://adv-r.hadley.nz/subsetting.html#subset-multiple> to see how you can also subset a data frame like it is a 1d object and how you can subset it with a matrix.
+[^base-r-1]: Đọc <https://adv-r.hadley.nz/subsetting.html#subset-multiple> để xem cách bạn cũng có thể lấy tập con khung dữ liệu như đối tượng 1d và cách bạn có thể lấy tập con bằng ma trận.
 
-Here are a couple of examples:
+Đây là một vài ví dụ:
 
 ```{r}
 df <- tibble(
-  x = 1:3, 
-  y = c("a", "e", "f"), 
+  x = 1:3,
+  y = c("a", "e", "f"),
   z = runif(3)
 )
 
-# Select first row and second column
+# Chọn hàng đầu tiên và cột thứ hai
 df[1, 2]
 
-# Select all rows and columns x and y
+# Chọn tất cả hàng và cột x, y
 df[, c("x" , "y")]
 
-# Select rows where `x` is greater than 1 and all columns
+# Chọn các hàng có `x` lớn hơn 1 và tất cả cột
 df[df$x > 1, ]
 ```
 
-We'll come back to `$` shortly, but you should be able to guess what `df$x` does from the context: it extracts the `x` variable from `df`.
-We need to use it here because `[` doesn't use tidy evaluation, so you need to be explicit about the source of the `x` variable.
+Chúng tôi sẽ quay lại `$` ngay, nhưng bạn có thể đoán được `df$x` làm gì từ ngữ cảnh: nó trích xuất biến `x` từ `df`.
+Chúng ta cần dùng nó ở đây vì `[` không sử dụng tidy evaluation, nên bạn cần chỉ rõ nguồn của biến `x`.
 
-There's an important difference between tibbles and data frames when it comes to `[`.
-In this book, we've mainly used tibbles, which *are* data frames, but they tweak some behaviors to make your life a little easier.
-In most places, you can use "tibble" and "data frame" interchangeably, so when we want to draw particular attention to R's built-in data frame, we'll write `data.frame`.
-If `df` is a `data.frame`, then `df[, cols]` will return a vector if `cols` selects a single column and a data frame if it selects more than one column.
-If `df` is a tibble, then `[` will always return a tibble.
+Có một điểm khác biệt quan trọng giữa tibble và khung dữ liệu khi dùng `[`.
+Trong cuốn sách này, chúng tôi chủ yếu sử dụng tibble, vốn *là* khung dữ liệu, nhưng chúng điều chỉnh một số hành vi để giúp cuộc sống của bạn dễ dàng hơn một chút.
+Ở hầu hết các nơi, bạn có thể dùng "tibble" và "khung dữ liệu" thay thế cho nhau, nên khi chúng tôi muốn đặc biệt chú ý đến khung dữ liệu tích hợp của R, chúng tôi sẽ viết `data.frame`.
+Nếu `df` là `data.frame`, thì `df[, cols]` sẽ trả về vector nếu `cols` chọn một cột duy nhất và trả về khung dữ liệu nếu chọn nhiều hơn một cột.
+Nếu `df` là tibble, thì `[` sẽ luôn trả về tibble.
 
 ```{r}
 df1 <- data.frame(x = 1:3)
@@ -136,93 +136,93 @@ df2 <- tibble(x = 1:3)
 df2[, "x"]
 ```
 
-One way to avoid this ambiguity with `data.frame`s is to explicitly specify `drop = FALSE`:
+Một cách để tránh sự mơ hồ này với `data.frame` là chỉ định rõ `drop = FALSE`:
 
 ```{r}
 df1[, "x" , drop = FALSE]
 ```
 
-### dplyr equivalents
+### Các hàm dplyr tương đương
 
-Several dplyr verbs are special cases of `[`:
+Một số verb dplyr là trường hợp đặc biệt của `[`:
 
--   `filter()` is equivalent to subsetting the rows with a logical vector, taking care to exclude missing values:
+-   `filter()` tương đương với lấy tập con các hàng bằng vector logic, chú ý loại trừ giá trị khuyết (missing value):
 
     ```{r}
     #| results: false
     df <- tibble(
-      x = c(2, 3, 1, 1, NA), 
-      y = letters[1:5], 
+      x = c(2, 3, 1, 1, NA),
+      y = letters[1:5],
       z = runif(5)
     )
     df |> filter(x > 1)
 
-    # same as
+    # tương đương
     df[!is.na(df$x) & df$x > 1, ]
     ```
 
-    Another common technique in the wild is to use `which()` for its side-effect of dropping missing values: `df[which(df$x > 1), ]`.
+    Một kỹ thuật phổ biến khác ngoài thực tế là dùng `which()` với tác dụng phụ là loại bỏ giá trị khuyết: `df[which(df$x > 1), ]`.
 
--   `arrange()` is equivalent to subsetting the rows with an integer vector, usually created with `order()`:
+-   `arrange()` tương đương với lấy tập con các hàng bằng vector số nguyên, thường được tạo bằng `order()`:
 
     ```{r}
     #| results: false
     df |> arrange(x, y)
 
-    # same as
+    # tương đương
     df[order(df$x, df$y), ]
     ```
 
-    You can use `order(decreasing = TRUE)` to sort all columns in descending order or `-rank(col)` to sort columns in decreasing order individually.
+    Bạn có thể dùng `order(decreasing = TRUE)` để sắp xếp tất cả cột theo thứ tự giảm dần hoặc `-rank(col)` để sắp xếp từng cột riêng lẻ theo thứ tự giảm dần.
 
--   Both `select()` and `relocate()` are similar to subsetting the columns with a character vector:
+-   Cả `select()` và `relocate()` đều tương tự lấy tập con các cột bằng vector ký tự:
 
     ```{r}
     #| results: false
     df |> select(x, z)
 
-    # same as
+    # tương đương
     df[, c("x", "z")]
     ```
 
-Base R also provides a function that combines the features of `filter()` and `select()`[^base-r-2] called `subset()`:
+R cơ bản cũng cung cấp một hàm kết hợp các tính năng của `filter()` và `select()`[^base-r-2] gọi là `subset()`:
 
-[^base-r-2]: But it doesn't handle grouped data frames differently and it doesn't support selection helper functions like `starts_with()`.
+[^base-r-2]: Nhưng nó không xử lý khung dữ liệu đã nhóm khác biệt và không hỗ trợ các hàm trợ giúp chọn lọc như `starts_with()`.
 
 ```{r}
-df |> 
-  filter(x > 1) |> 
+df |>
+  filter(x > 1) |>
   select(y, z)
 ```
 
 ```{r}
 #| results: false
-# same as
+# tương đương
 df |> subset(x > 1, c(y, z))
 ```
 
-This function was the inspiration for much of dplyr's syntax.
+Hàm này là nguồn cảm hứng cho phần lớn cú pháp của dplyr.
 
-### Exercises
+### Bài tập
 
-1.  Create functions that take a vector as input and return:
+1.  Tạo các hàm nhận vector làm đầu vào và trả về:
 
-    a.  The elements at even-numbered positions.
-    b.  Every element except the last value.
-    c.  Only even values (and no missing values).
+    a.  Các phần tử ở vị trí chẵn.
+    b.  Mọi phần tử trừ giá trị cuối cùng.
+    c.  Chỉ các giá trị chẵn (và không có giá trị khuyết).
 
-2.  Why is `x[-which(x > 0)]` not the same as `x[x <= 0]`?
-    Read the documentation for `which()` and do some experiments to figure it out.
+2.  Tại sao `x[-which(x > 0)]` không giống với `x[x <= 0]`?
+    Đọc tài liệu hướng dẫn của `which()` và thử nghiệm để tìm ra câu trả lời.
 
-## Selecting a single element with `$` and `[[` {#sec-subset-one}
+## Chọn một phần tử bằng `$` và `[[` {#sec-subset-one}
 
-`[`, which selects many elements, is paired with `[[` and `$`, which extract a single element.
-In this section, we'll show you how to use `[[` and `$` to pull columns out of data frames, discuss a couple more differences between `data.frames` and tibbles, and emphasize some important differences between `[` and `[[` when used with lists.
+`[`, chọn nhiều phần tử, đi cùng với `[[` và `$`, trích xuất một phần tử duy nhất.
+Trong phần này, chúng tôi sẽ cho bạn thấy cách dùng `[[` và `$` để rút cột ra khỏi khung dữ liệu, thảo luận thêm một vài điểm khác biệt giữa `data.frame` và tibble, và nhấn mạnh một số khác biệt quan trọng giữa `[` và `[[` khi dùng với danh sách (list).
 
-### Data frames
+### Khung dữ liệu
 
-`[[` and `$` can be used to extract columns out of a data frame.
-`[[` can access by position or by name, and `$` is specialized for access by name:
+`[[` và `$` có thể dùng để trích xuất cột từ khung dữ liệu.
+`[[` có thể truy cập theo vị trí hoặc theo tên, và `$` chuyên dùng để truy cập theo tên:
 
 ```{r}
 tb <- tibble(
@@ -230,26 +230,26 @@ tb <- tibble(
   y = c(10, 4, 1, 21)
 )
 
-# by position
+# theo vị trí
 tb[[1]]
 
-# by name
+# theo tên
 tb[["x"]]
 tb$x
 ```
 
-They can also be used to create new columns, the base R equivalent of `mutate()`:
+Chúng cũng có thể dùng để tạo cột mới, tương đương R cơ bản của `mutate()`:
 
 ```{r}
 tb$z <- tb$x + tb$y
 tb
 ```
 
-There are several other base R approaches to creating new columns including with `transform()`, `with()`, and `within()`.
-Hadley collected a few examples at <https://gist.github.com/hadley/1986a273e384fb2d4d752c18ed71bedf>.
+Có một số cách tiếp cận R cơ bản khác để tạo cột mới bao gồm `transform()`, `with()`, và `within()`.
+Hadley đã tổng hợp một số ví dụ tại <https://gist.github.com/hadley/1986a273e384fb2d4d752c18ed71bedf>.
 
-Using `$` directly is convenient when performing quick summaries.
-For example, if you just want to find the size of the biggest diamond or the possible values of `cut`, there's no need to use `summarize()`:
+Dùng `$` trực tiếp rất tiện khi thực hiện tóm tắt nhanh.
+Ví dụ, nếu bạn chỉ muốn tìm kích thước viên kim cương lớn nhất hoặc các giá trị có thể của `cut`, không cần dùng `summarize()`:
 
 ```{r}
 max(diamonds$carat)
@@ -257,9 +257,9 @@ max(diamonds$carat)
 levels(diamonds$cut)
 ```
 
-dplyr also provides an equivalent to `[[`/`$` that we didn't mention in @sec-data-transform: `pull()`.
-`pull()` takes either a variable name or variable position and returns just that column.
-That means we could rewrite the above code to use the pipe:
+dplyr cũng cung cấp một hàm tương đương với `[[`/`$` mà chúng tôi chưa đề cập trong @sec-data-transform: `pull()`.
+`pull()` nhận tên biến hoặc vị trí biến và trả về chỉ cột đó.
+Điều đó có nghĩa là chúng ta có thể viết lại đoạn mã ở trên để dùng pipe:
 
 ```{r}
 diamonds |> pull(carat) |> max()
@@ -267,10 +267,10 @@ diamonds |> pull(carat) |> max()
 diamonds |> pull(cut) |> levels()
 ```
 
-### Tibbles
+### Tibble
 
-There are a couple of important differences between tibbles and base `data.frame`s when it comes to `$`.
-Data frames match the prefix of any variable names (so-called **partial matching**) and don't complain if a column doesn't exist:
+Có một vài điểm khác biệt quan trọng giữa tibble và `data.frame` cơ bản khi dùng `$`.
+Khung dữ liệu khớp tiền tố của bất kỳ tên biến nào (gọi là **khớp một phần** (partial matching)) và không báo lỗi nếu cột không tồn tại:
 
 ```{r}
 df <- data.frame(x1 = 1)
@@ -278,7 +278,7 @@ df$x
 df$z
 ```
 
-Tibbles are more strict: they only ever match variable names exactly and they will generate a warning if the column you are trying to access doesn't exist:
+Tibble nghiêm ngặt hơn: chúng chỉ khớp chính xác tên biến và sẽ tạo cảnh báo nếu cột bạn đang cố truy cập không tồn tại:
 
 ```{r}
 tb <- tibble(x1 = 1)
@@ -287,24 +287,24 @@ tb$x
 tb$z
 ```
 
-For this reason we sometimes joke that tibbles are lazy and surly: they do less and complain more.
+Vì lý do này, đôi khi chúng tôi đùa rằng tibble lười và khó tính: chúng làm ít hơn và phàn nàn nhiều hơn.
 
-### Lists
+### Danh sách
 
-`[[` and `$` are also really important for working with lists, and it's important to understand how they differ from `[`.
-Let's illustrate the differences with a list named `l`:
+`[[` và `$` cũng rất quan trọng khi làm việc với danh sách, và việc hiểu chúng khác `[` như thế nào là quan trọng.
+Hãy minh họa sự khác biệt bằng danh sách tên `l`:
 
 ```{r}
 l <- list(
-  a = 1:3, 
-  b = "a string", 
-  c = pi, 
+  a = 1:3,
+  b = "a string",
+  c = pi,
   d = list(-1, -5)
 )
 ```
 
--   `[` extracts a sub-list.
-    It doesn't matter how many elements you extract, the result will always be a list.
+-   `[` trích xuất một danh sách con.
+    Bất kể bạn trích xuất bao nhiêu phần tử, kết quả sẽ luôn là danh sách.
 
     ```{r}
     str(l[1:2])
@@ -314,10 +314,10 @@ l <- list(
     str(l[4])
     ```
 
-    Like with vectors, you can subset with a logical, integer, or character vector.
+    Giống như với vector, bạn có thể lấy tập con bằng vector logic, số nguyên, hoặc ký tự.
 
--   `[[` and `$` extract a single component from a list.
-    They remove a level of hierarchy from the list.
+-   `[[` và `$` trích xuất một thành phần duy nhất từ danh sách.
+    Chúng loại bỏ một cấp phân cấp khỏi danh sách.
 
     ```{r}
     str(l[[1]])
@@ -327,120 +327,120 @@ l <- list(
     str(l$a)
     ```
 
-The difference between `[` and `[[` is particularly important for lists because `[[` drills down into the list while `[` returns a new, smaller list.
-To help you remember the difference, take a look at the unusual pepper shaker shown in @fig-pepper.
-If this pepper shaker is your list `pepper`, then, `pepper[1]` is a pepper shaker containing a single pepper packet.
-`pepper[2]` would look the same, but would contain the second packet.
-`pepper[1:2]` would be a pepper shaker containing two pepper packets.
-`pepper[[1]]` would extract the pepper packet itself.
+Sự khác biệt giữa `[` và `[[` đặc biệt quan trọng đối với danh sách vì `[[` đào sâu vào danh sách trong khi `[` trả về một danh sách mới nhỏ hơn.
+Để giúp bạn nhớ sự khác biệt, hãy xem lọ tiêu bất thường trong @fig-pepper.
+Nếu lọ tiêu này là danh sách `pepper` của bạn, thì `pepper[1]` là một lọ tiêu chứa một gói tiêu duy nhất.
+`pepper[2]` sẽ trông giống vậy, nhưng sẽ chứa gói thứ hai.
+`pepper[1:2]` sẽ là một lọ tiêu chứa hai gói tiêu.
+`pepper[[1]]` sẽ trích xuất chính gói tiêu đó.
 
 ```{r}
 #| label: fig-pepper
 #| echo: false
 #| out-width: "100%"
 #| fig-cap: |
-#|   (Left) A pepper shaker that Hadley once found in his hotel room.
-#|   (Middle) `pepper[1]`.
-#|   (Right) `pepper[[1]]`
+#|   (Trái) Một lọ tiêu mà Hadley từng tìm thấy trong phòng khách sạn.
+#|   (Giữa) `pepper[1]`.
+#|   (Phải) `pepper[[1]]`
 #| fig-alt: |
-#|   Three photos. On the left is a photo of a glass pepper shaker. Instead of 
-#|   the pepper shaker containing pepper, it contains a single packet of pepper.
-#|   In the middle is a photo of a single packet of pepper. On the right is a 
-#|   photo of the contents of a packet of pepper.
+#|   Ba bức ảnh. Bên trái là ảnh một lọ tiêu thủy tinh. Thay vì
+#|   lọ tiêu chứa tiêu, nó chứa một gói tiêu duy nhất.
+#|   Ở giữa là ảnh một gói tiêu đơn lẻ. Bên phải là
+#|   ảnh nội dung bên trong gói tiêu.
 knitr::include_graphics("diagrams/pepper.png")
 ```
 
-This same principle applies when you use 1d `[` with a data frame: `df["x"]` returns a one-column data frame and `df[["x"]]` returns a vector.
+Nguyên tắc tương tự cũng áp dụng khi bạn dùng `[` 1d với khung dữ liệu: `df["x"]` trả về khung dữ liệu một cột và `df[["x"]]` trả về vector.
 
-### Exercises
+### Bài tập
 
-1.  What happens when you use `[[` with a positive integer that's bigger than the length of the vector?
-    What happens when you subset with a name that doesn't exist?
+1.  Điều gì xảy ra khi bạn dùng `[[` với số nguyên dương lớn hơn độ dài của vector?
+    Điều gì xảy ra khi bạn lấy tập con bằng tên không tồn tại?
 
-2.  What would `pepper[[1]][1]` be?
-    What about `pepper[[1]][[1]]`?
+2.  `pepper[[1]][1]` sẽ là gì?
+    Còn `pepper[[1]][[1]]` thì sao?
 
-## Apply family
+## Họ hàm apply {#sec-apply-family}
 
-In @sec-iteration, you learned tidyverse techniques for iteration like `dplyr::across()` and the map family of functions.
-In this section, you'll learn about their base equivalents, the **apply family**.
-In this context apply and map are synonyms because another way of saying "map a function over each element of a vector" is "apply a function over each element of a vector".
-Here we'll give you a quick overview of this family so you can recognize them in the wild.
+Trong @sec-iteration, bạn đã học các kỹ thuật tidyverse cho việc lặp (iteration) như `dplyr::across()` và họ hàm map.
+Trong phần này, bạn sẽ học về các hàm tương đương trong R cơ bản, **họ hàm apply**.
+Trong ngữ cảnh này apply và map là đồng nghĩa vì cách nói khác của "map một hàm lên mỗi phần tử của vector" là "apply một hàm lên mỗi phần tử của vector".
+Ở đây chúng tôi sẽ giới thiệu tổng quan nhanh về họ hàm này để bạn có thể nhận ra chúng ngoài thực tế.
 
-The most important member of this family is `lapply()`, which is very similar to `purrr::map()`[^base-r-3].
-In fact, because we haven't used any of `map()`'s more advanced features, you can replace every `map()` call in @sec-iteration with `lapply()`.
+Thành viên quan trọng nhất của họ này là `lapply()`, rất giống với `purrr::map()`[^base-r-3].
+Thực tế, vì chúng ta chưa dùng bất kỳ tính năng nâng cao nào của `map()`, bạn có thể thay thế mọi lệnh gọi `map()` trong @sec-iteration bằng `lapply()`.
 
-[^base-r-3]: It just lacks convenient features like progress bars and reporting which element caused the problem if there's an error.
+[^base-r-3]: Nó chỉ thiếu các tính năng tiện lợi như thanh tiến trình và báo cáo phần tử nào gây ra lỗi nếu có lỗi xảy ra.
 
-There's no exact base R equivalent to `across()` but you can get close by using `[` with `lapply()`.
-This works because under the hood, data frames are lists of columns, so calling `lapply()` on a data frame applies the function to each column.
+Không có hàm R cơ bản nào tương đương chính xác với `across()` nhưng bạn có thể xấp xỉ bằng cách dùng `[` với `lapply()`.
+Điều này hoạt động vì ẩn bên dưới, khung dữ liệu là danh sách các cột, nên gọi `lapply()` trên khung dữ liệu sẽ áp dụng hàm lên mỗi cột.
 
 ```{r}
 df <- tibble(a = 1, b = 2, c = "a", d = "b", e = 4)
 
-# First find numeric columns
+# Đầu tiên tìm các cột số
 num_cols <- sapply(df, is.numeric)
 num_cols
 
-# Then transform each column with lapply() then replace the original values
+# Sau đó biến đổi mỗi cột bằng lapply() rồi thay thế các giá trị gốc
 df[, num_cols] <- lapply(df[, num_cols, drop = FALSE], \(x) x * 2)
 df
 ```
 
-The code above uses a new function, `sapply()`.
-It's similar to `lapply()` but it always tries to simplify the result, hence the `s` in its name, here producing a logical vector instead of a list.
-We don't recommend using it for programming, because the simplification can fail and give you an unexpected type, but it's usually fine for interactive use.
-purrr has a similar function called `map_vec()` that we didn't mention in @sec-iteration.
+Đoạn mã ở trên dùng một hàm mới, `sapply()`.
+Nó tương tự `lapply()` nhưng luôn cố đơn giản hóa kết quả, do đó có chữ `s` trong tên, ở đây tạo ra vector logic thay vì danh sách.
+Chúng tôi không khuyến khích dùng nó khi lập trình, vì việc đơn giản hóa có thể thất bại và cho bạn kiểu không mong đợi, nhưng thường ổn cho sử dụng tương tác.
+purrr có một hàm tương tự gọi là `map_vec()` mà chúng tôi chưa đề cập trong @sec-iteration.
 
-Base R provides a stricter version of `sapply()` called `vapply()`, short for **v**ector apply.
-It takes an additional argument that specifies the expected type, ensuring that simplification occurs the same way regardless of the input.
-For example, we could replace the `sapply()` call above with this `vapply()` where we specify that we expect `is.numeric()` to return a logical vector of length 1:
+R cơ bản cung cấp phiên bản nghiêm ngặt hơn của `sapply()` gọi là `vapply()`, viết tắt của **v**ector apply.
+Nó nhận thêm một đối số (argument) chỉ định kiểu mong đợi, đảm bảo việc đơn giản hóa xảy ra giống nhau bất kể đầu vào.
+Ví dụ, chúng ta có thể thay thế lệnh `sapply()` ở trên bằng `vapply()` này, trong đó chúng ta chỉ định rằng chúng ta mong đợi `is.numeric()` trả về vector logic có độ dài 1:
 
 ```{r}
 vapply(df, is.numeric, logical(1))
 ```
 
-The distinction between `sapply()` and `vapply()` is really important when they're inside a function (because it makes a big difference to the function's robustness to unusual inputs), but it doesn't usually matter in data analysis.
+Sự khác biệt giữa `sapply()` và `vapply()` thực sự quan trọng khi chúng ở bên trong một hàm (vì nó tạo ra khác biệt lớn cho tính mạnh mẽ của hàm với đầu vào bất thường), nhưng thường không quan trọng trong phân tích dữ liệu.
 
-Another important member of the apply family is `tapply()` which computes a single grouped summary:
+Một thành viên quan trọng khác của họ apply là `tapply()`, tính toán một tóm tắt nhóm đơn lẻ:
 
 ```{r}
-diamonds |> 
-  group_by(cut) |> 
+diamonds |>
+  group_by(cut) |>
   summarize(price = mean(price))
 
 tapply(diamonds$price, diamonds$cut, mean)
 ```
 
-Unfortunately `tapply()` returns its results in a named vector which requires some gymnastics if you want to collect multiple summaries and grouping variables into a data frame (it's certainly possible to not do this and just work with free floating vectors, but in our experience that just delays the work).
-If you want to see how you might use `tapply()` or other base techniques to perform other grouped summaries, Hadley has collected a few techniques [in a gist](https://gist.github.com/hadley/c430501804349d382ce90754936ab8ec).
+Thật không may, `tapply()` trả kết quả dưới dạng vector có tên, đòi hỏi một số thao tác phức tạp nếu bạn muốn gom nhiều bảng tóm tắt và biến nhóm vào một khung dữ liệu (chắc chắn bạn có thể không làm điều này và chỉ làm việc với các vector rời, nhưng theo kinh nghiệm của chúng tôi, điều đó chỉ trì hoãn công việc).
+Nếu bạn muốn xem cách dùng `tapply()` hoặc các kỹ thuật R cơ bản khác để thực hiện các tóm tắt nhóm khác, Hadley đã tổng hợp một số kỹ thuật [trong một gist](https://gist.github.com/hadley/c430501804349d382ce90754936ab8ec).
 
-The final member of the apply family is the titular `apply()`, which works with matrices and arrays.
-In particular, watch out for `apply(df, 2, something)`, which is a slow and potentially dangerous way of doing `lapply(df, something)`.
-This rarely comes up in data science because we usually work with data frames and not matrices.
+Thành viên cuối cùng của họ apply là chính hàm `apply()`, hoạt động với ma trận (matrix) và mảng (array).
+Đặc biệt, hãy cẩn thận với `apply(df, 2, something)`, đây là cách chậm và có thể nguy hiểm để làm `lapply(df, something)`.
+Điều này hiếm khi xảy ra trong khoa học dữ liệu vì chúng ta thường làm việc với khung dữ liệu chứ không phải ma trận.
 
-## `for` loops
+## Vòng lặp `for`
 
-`for` loops are the fundamental building block of iteration that both the apply and map families use under the hood.
-`for` loops are powerful and general tools that are important to learn as you become a more experienced R programmer.
-The basic structure of a `for` loop looks like this:
+Vòng lặp `for` là khối xây dựng cơ bản của phép lặp mà cả họ apply và map đều sử dụng ở bên dưới.
+Vòng lặp `for` là công cụ mạnh mẽ và đa năng, quan trọng để học khi bạn trở thành lập trình viên R có kinh nghiệm hơn.
+Cấu trúc cơ bản của vòng lặp `for` trông như thế này:
 
 ```{r}
 #| eval: false
 for (element in vector) {
-  # do something with element
+  # thực hiện gì đó với element
 }
 ```
 
-The most straightforward use of `for` loops is to achieve the same effect as `walk()`: call some function with a side-effect on each element of a list.
-For example, in @sec-save-database instead of using `walk()`:
+Cách sử dụng trực tiếp nhất của vòng lặp `for` là đạt được hiệu quả tương tự như `walk()`: gọi một hàm có tác dụng phụ (side-effect) trên mỗi phần tử của danh sách.
+Ví dụ, trong @sec-save-database thay vì dùng `walk()`:
 
 ```{r}
 #| eval: false
 paths |> walk(append_file)
 ```
 
-We could have used a `for` loop:
+Chúng ta có thể dùng vòng lặp `for`:
 
 ```{r}
 #| eval: false
@@ -449,27 +449,27 @@ for (path in paths) {
 }
 ```
 
-Things get a little trickier if you want to save the output of the `for` loop, for example reading all of the excel files in a directory like we did in @sec-iteration:
+Mọi thứ trở nên phức tạp hơn một chút nếu bạn muốn lưu đầu ra của vòng lặp `for`, ví dụ đọc tất cả các file excel trong một thư mục như chúng ta đã làm trong @sec-iteration:
 
 ```{r}
 paths <- dir("data/gapminder", pattern = "\\.xlsx$", full.names = TRUE)
 files <- map(paths, readxl::read_excel)
 ```
 
-There are a few different techniques that you can use, but we recommend being explicit about what the output is going to look like upfront.
-In this case, we're going to want a list the same length as `paths`, which we can create with `vector()`:
+Có một số kỹ thuật khác nhau bạn có thể dùng, nhưng chúng tôi khuyến khích bạn nên rõ ràng ngay từ đầu về đầu ra sẽ trông như thế nào.
+Trong trường hợp này, chúng ta sẽ muốn một danh sách có cùng độ dài với `paths`, mà chúng ta có thể tạo bằng `vector()`:
 
 ```{r}
 files <- vector("list", length(paths))
 ```
 
-Then instead of iterating over the elements of `paths`, we'll iterate over their indices, using `seq_along()` to generate one index for each element of paths:
+Rồi thay vì lặp qua các phần tử của `paths`, chúng ta sẽ lặp qua các chỉ số của chúng, dùng `seq_along()` để tạo một chỉ số cho mỗi phần tử của paths:
 
 ```{r}
 seq_along(paths)
 ```
 
-Using the indices is important because it allows us to link to each position in the input with the corresponding position in the output:
+Sử dụng chỉ số là quan trọng vì nó cho phép chúng ta liên kết mỗi vị trí trong đầu vào với vị trí tương ứng trong đầu ra:
 
 ```{r}
 for (i in seq_along(paths)) {
@@ -477,13 +477,13 @@ for (i in seq_along(paths)) {
 }
 ```
 
-To combine the list of tibbles into a single tibble you can use `do.call()` + `rbind()`:
+Để gộp danh sách các tibble thành một tibble duy nhất, bạn có thể dùng `do.call()` + `rbind()`:
 
 ```{r}
 do.call(rbind, files)
 ```
 
-Rather than making a list and saving the results as we go, a simpler approach is to build up the data frame piece-by-piece:
+Thay vì tạo danh sách và lưu kết quả khi đi, cách đơn giản hơn là xây dựng khung dữ liệu từng phần một:
 
 ```{r}
 out <- NULL
@@ -492,16 +492,16 @@ for (path in paths) {
 }
 ```
 
-We recommend avoiding this pattern because it can become very slow when the vector is very long.
-This is the source of the persistent canard that `for` loops are slow: they're not, but iteratively growing a vector is.
+Chúng tôi khuyến khích tránh mẫu này vì nó có thể trở nên rất chậm khi vector rất dài.
+Đây là nguồn gốc của quan niệm sai dai dẳng rằng vòng lặp `for` chậm: chúng không chậm, nhưng việc tăng dần vector thì có.
 
-## Plots
+## Biểu đồ
 
-Many R users who don't otherwise use the tidyverse prefer ggplot2 for plotting due to helpful features like sensible defaults, automatic legends, and a modern look.
-However, base R plotting functions can still be useful because they're so concise --- it takes very little typing to do a basic exploratory plot.
+Nhiều người dùng R không dùng tidyverse cho việc khác vẫn thích ggplot2 để vẽ biểu đồ nhờ các tính năng hữu ích như giá trị mặc định hợp lý, chú giải tự động, và giao diện hiện đại.
+Tuy nhiên, các hàm vẽ biểu đồ R cơ bản vẫn có thể hữu ích vì chúng rất ngắn gọn --- chỉ cần gõ rất ít để tạo một biểu đồ khám phá cơ bản.
 
-There are two main types of base plot you'll see in the wild: scatterplots and histograms, produced with `plot()` and `hist()` respectively.
-Here's a quick example from the diamonds dataset:
+Có hai loại biểu đồ R cơ bản chính mà bạn sẽ thấy ngoài thực tế: biểu đồ phân tán (scatter plot) và biểu đồ tần suất (histogram), được tạo lần lượt bằng `plot()` và `hist()`.
+Đây là ví dụ nhanh từ tập dữ liệu diamonds:
 
 ```{r}
 #| dev: png
@@ -509,27 +509,27 @@ Here's a quick example from the diamonds dataset:
 #| fig-asp: 1
 #| layout-ncol: 2
 #| fig-alt: |
-#|   On the left, histogram of carats of diamonds, ranging from 0 to 5 carats.
-#|   The distribution is unimodal and right-skewed. On the right, scatter 
-#|   plot of price vs. carat of diamonds, showing a positive relationship 
-#|   that fans out as both price and carat increases. The scatter plot 
-#|   shows very few diamonds bigger than 3 carats compared to diamonds between 
-#|   0 to 3 carats.
-# Left
+#|   Bên trái, biểu đồ tần suất của carat của kim cương, từ 0 đến 5 carat.
+#|   Phân phối đơn đỉnh và lệch phải. Bên phải, biểu đồ phân tán
+#|   của price theo carat của kim cương, cho thấy mối quan hệ dương
+#|   mở rộng khi cả price và carat tăng. Biểu đồ phân tán
+#|   cho thấy rất ít kim cương lớn hơn 3 carat so với kim cương từ
+#|   0 đến 3 carat.
+# Trái
 hist(diamonds$carat)
 
-# Right
+# Phải
 plot(diamonds$carat, diamonds$price)
 ```
 
-Note that base plotting functions work with vectors, so you need to pull columns out of the data frame using `$` or some other technique.
+Lưu ý rằng các hàm vẽ biểu đồ R cơ bản làm việc với vector, nên bạn cần rút cột ra khỏi khung dữ liệu bằng `$` hoặc kỹ thuật khác.
 
-## Summary
+## Tóm tắt
 
-In this chapter, we've shown you a selection of base R functions useful for subsetting and iteration.
-Compared to approaches discussed elsewhere in the book, these functions tend to have more of a "vector" flavor than a "data frame" flavor because base R functions tend to take individual vectors, rather than a data frame and some column specification.
-This often makes life easier for programming and so becomes more important as you write more functions and begin to write your own packages.
+Trong chương này, chúng tôi đã cho bạn thấy một số hàm R cơ bản hữu ích cho việc lấy tập con và lặp.
+So với các cách tiếp cận được thảo luận ở những nơi khác trong sách, các hàm này có xu hướng mang "hương vị vector" nhiều hơn "hương vị khung dữ liệu" vì các hàm R cơ bản thường nhận các vector riêng lẻ, thay vì khung dữ liệu và đặc tả cột nào đó.
+Điều này thường giúp cuộc sống dễ dàng hơn khi lập trình và do đó trở nên quan trọng hơn khi bạn viết nhiều hàm hơn và bắt đầu viết gói của riêng mình.
 
-This chapter concludes the programming section of the book.
-You've made a solid start on your journey to becoming not just a data scientist who uses R, but a data scientist who can *program* in R.
-We hope these chapters have sparked your interest in programming and that you're looking forward to learning more outside of this book.
+Chương này kết thúc phần lập trình của cuốn sách.
+Bạn đã có một khởi đầu vững chắc trên hành trình trở thành không chỉ nhà khoa học dữ liệu sử dụng R, mà là nhà khoa học dữ liệu có thể *lập trình* bằng R.
+Chúng tôi hy vọng những chương này đã khơi dậy sự quan tâm của bạn đối với lập trình và bạn đang mong chờ học thêm bên ngoài cuốn sách này.
