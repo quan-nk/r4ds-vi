@@ -528,7 +528,7 @@ Tương tự như hình ảnh, bạn có thể bao gồm hai loại bảng trong
 Chúng có thể là bảng markdown mà bạn tạo trực tiếp trong tài liệu Quarto (sử dụng menu Insert Table) hoặc chúng có thể là bảng được tạo ra từ kết quả của một khối mã.
 Trong phần này, chúng ta sẽ tập trung vào loại sau, bảng được tạo thông qua tính toán.
 
-Theo mặc định, Quarto in khung dữ liệu (data frame) và ma trận như bạn thấy chúng trong console:
+Theo mặc định, Quarto in data frame và ma trận như bạn thấy chúng trong console:
 
 ```{r}
 mtcars[1:5, ]
@@ -549,7 +549,7 @@ Mỗi gói mở rộng cung cấp một bộ công cụ để trả về bảng 
 
 ### Bài tập
 
-1.  Mở `diamond-sizes.qmd` trong trình soạn thảo trực quan, chèn một khối mã, và thêm một bảng bằng `knitr::kable()` hiển thị 5 hàng đầu tiên của khung dữ liệu `diamonds`.
+1.  Mở `diamond-sizes.qmd` trong trình soạn thảo trực quan, chèn một khối mã, và thêm một bảng bằng `knitr::kable()` hiển thị 5 hàng đầu tiên của data frame `diamonds`.
 2.  Hiển thị cùng bảng đó bằng `gt::gt()` thay thế.
 3.  Thêm nhãn khối mã bắt đầu bằng tiền tố `tbl-` và thêm chú thích cho bảng bằng tùy chọn khối mã `tbl-cap`. Sau đó, chỉnh sửa văn bản phía trên khối mã để thêm tham chiếu chéo đến bảng bằng Insert \> Cross Reference.
 

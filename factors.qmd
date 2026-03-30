@@ -307,7 +307,7 @@ Mạnh hơn việc thay đổi thứ tự các mức là thay đổi giá trị 
 Điều này cho phép bạn làm rõ nhãn cho ấn phẩm, và gộp các mức lại cho các hiển thị tổng quát.
 Công cụ tổng quát và mạnh nhất là `fct_recode()`.
 Hàm này cho phép bạn mã hóa lại, hay thay đổi, giá trị của từng mức.
-Ví dụ, hãy xem biến `partyid` từ khung dữ liệu (data frame) `gss_cat`:
+Ví dụ, hãy xem biến `partyid` từ data frame `gss_cat`:
 
 ```{r}
 gss_cat |> count(partyid)

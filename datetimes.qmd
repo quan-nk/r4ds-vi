@@ -707,12 +707,12 @@ Các múi giờ này sử dụng quy ước đặt tên nhất quán `{khu vực
 Ví dụ: "America/New_York", "Europe/Paris", và "Pacific/Auckland".
 
 Bạn có thể thắc mắc tại sao múi giờ dùng tên thành phố, trong khi thông thường bạn nghĩ múi giờ gắn với một quốc gia hoặc vùng trong quốc gia.
-Đó là vì cơ sở dữ liệu IANA phải ghi lại hàng thập kỷ quy tắc múi giờ.
+Đó là vì database IANA phải ghi lại hàng thập kỷ quy tắc múi giờ.
 Trong suốt nhiều thập kỷ, các quốc gia đổi tên (hoặc tách ra) khá thường xuyên, nhưng tên thành phố có xu hướng giữ nguyên.
 Một vấn đề khác là tên cần phản ánh không chỉ hành vi hiện tại, mà còn toàn bộ lịch sử.
 Ví dụ, có múi giờ cho cả "America/New_York" và "America/Detroit".
 Cả hai thành phố hiện tại đều sử dụng Giờ Chuẩn Miền Đông nhưng trong giai đoạn 1969-1972, Michigan (tiểu bang nơi Detroit tọa lạc) không tuân theo giờ mùa hè (DST), nên nó cần một tên riêng.
-Rất đáng để đọc cơ sở dữ liệu múi giờ thô (có sẵn tại <https://www.iana.org/time-zones>) chỉ để đọc một số câu chuyện này!
+Rất đáng để đọc database múi giờ thô (có sẵn tại <https://www.iana.org/time-zones>) chỉ để đọc một số câu chuyện này!
 
 Bạn có thể tìm hiểu R nghĩ múi giờ hiện tại của bạn là gì bằng `Sys.timezone()`:
 
@@ -789,5 +789,5 @@ Chương này đã giới thiệu cho bạn các công cụ mà lubridate cung c
 Làm việc với ngày và giờ có vẻ khó hơn mức cần thiết, nhưng hy vọng chương này đã giúp bạn hiểu tại sao --- date-time phức tạp hơn vẻ ngoài ban đầu, và việc xử lý mọi tình huống có thể xảy ra sẽ tăng thêm độ phức tạp.
 Ngay cả khi dữ liệu của bạn không bao giờ vượt qua ranh giới giờ mùa hè hay liên quan đến năm nhuận, các hàm vẫn cần có khả năng xử lý chúng.
 
-Chương tiếp theo tổng hợp về giá trị khuyết (missing value).
+Chương tiếp theo tổng hợp về missing value.
 Bạn đã gặp chúng ở một vài nơi và chắc chắn đã gặp trong phân tích của riêng mình, và bây giờ là lúc cung cấp một bộ sưu tập các kỹ thuật hữu ích để xử lý chúng.

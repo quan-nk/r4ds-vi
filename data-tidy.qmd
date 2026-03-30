@@ -66,7 +66,7 @@ Có ba quy tắc liên quan với nhau tạo nên một tập dữ liệu gọn 
 #|   Ba quy tắc sau đây tạo nên một tập dữ liệu gọn gàng: các biến là các cột,
 #|   các quan sát là các hàng, và các giá trị là các ô.
 #| fig-alt: |
-#|   Ba bảng, mỗi bảng đại diện cho một khung dữ liệu gọn gàng. Bảng đầu tiên
+#|   Ba bảng, mỗi bảng đại diện cho một data frame gọn gàng. Bảng đầu tiên
 #|   cho thấy mỗi biến là một cột. Bảng thứ hai cho thấy mỗi
 #|   quan sát là một hàng. Bảng thứ ba cho thấy mỗi giá trị là
 #|   một ô.
@@ -184,10 +184,10 @@ Sau dữ liệu, có ba đối số quan trọng:
 
 Lưu ý rằng trong mã, `"week"` và `"rank"` được đặt trong dấu ngoặc kép vì đó là các biến mới chúng ta đang tạo, chúng chưa tồn tại trong dữ liệu khi chúng ta chạy lệnh `pivot_longer()`.
 
-Bây giờ hãy chú ý đến khung dữ liệu (data frame) kết quả, dài hơn.
+Bây giờ hãy chú ý đến data frame kết quả, dài hơn.
 Điều gì xảy ra nếu một bài hát nằm trong top 100 ít hơn 76 tuần?
 Lấy ví dụ bài "Baby Don't Cry" của 2 Pac.
-Kết quả ở trên cho thấy nó chỉ nằm trong top 100 trong 7 tuần, và tất cả các tuần còn lại được điền bằng giá trị khuyết (missing value).
+Kết quả ở trên cho thấy nó chỉ nằm trong top 100 trong 7 tuần, và tất cả các tuần còn lại được điền bằng missing value.
 Những giá trị `NA` này không thực sự đại diện cho các quan sát chưa biết; chúng bị buộc phải tồn tại bởi cấu trúc của tập dữ liệu[^data-tidy-2], nên chúng ta có thể yêu cầu `pivot_longer()` loại bỏ chúng bằng cách đặt `values_drop_na = TRUE`:
 
 [^data-tidy-2]: Chúng ta sẽ quay lại ý tưởng này trong @sec-missing-values.
@@ -356,7 +356,7 @@ who2 |>
   )
 ```
 
-Một phương án thay thế cho `names_sep` là `names_pattern`, mà bạn có thể sử dụng để trích xuất các biến từ các tình huống đặt tên phức tạp hơn, khi bạn đã học về biểu thức chính quy trong @sec-regular-expressions.
+Một phương án thay thế cho `names_sep` là `names_pattern`, mà bạn có thể sử dụng để trích xuất các biến từ các tình huống đặt tên phức tạp hơn, khi bạn đã học về regular expression trong @sec-regular-expressions.
 
 Về mặt khái niệm, đây chỉ là một biến thể nhỏ so với trường hợp đơn giản hơn mà bạn đã thấy.
 @fig-pivot-multiple-names minh họa ý tưởng cơ bản: bây giờ, thay vì tên cột được xoay vào một cột duy nhất, chúng được xoay vào nhiều cột.
@@ -402,7 +402,7 @@ household |>
   )
 ```
 
-Chúng ta lại sử dụng `values_drop_na = TRUE`, vì hình dạng của dữ liệu đầu vào buộc phải tạo ra các giá trị khuyết rõ ràng (ví dụ, cho các gia đình chỉ có một con).
+Chúng ta lại sử dụng `values_drop_na = TRUE`, vì hình dạng của dữ liệu đầu vào buộc phải tạo ra các missing value rõ ràng (ví dụ, cho các gia đình chỉ có một con).
 
 @fig-pivot-names-and-values minh họa ý tưởng cơ bản với một ví dụ đơn giản hơn.
 Khi bạn sử dụng `".value"` trong `names_to`, tên cột trong đầu vào đóng góp vào cả giá trị và tên biến trong đầu ra.
@@ -515,7 +515,7 @@ df |>
   distinct()
 ```
 
-`pivot_wider()` sau đó kết hợp các kết quả này để tạo ra một khung dữ liệu rỗng:
+`pivot_wider()` sau đó kết hợp các kết quả này để tạo ra một data frame rỗng:
 
 ```{r}
 df |>
@@ -524,9 +524,9 @@ df |>
   mutate(x = NA, y = NA, z = NA)
 ```
 
-Sau đó nó điền tất cả các giá trị khuyết bằng dữ liệu trong đầu vào.
+Sau đó nó điền tất cả các missing value bằng dữ liệu trong đầu vào.
 Trong trường hợp này, không phải mọi ô trong đầu ra đều có giá trị tương ứng trong đầu vào vì không có lần đo huyết áp thứ ba cho bệnh nhân B, nên ô đó vẫn là khuyết.
-Chúng ta sẽ quay lại ý tưởng rằng `pivot_wider()` có thể "tạo ra" giá trị khuyết trong @sec-missing-values.
+Chúng ta sẽ quay lại ý tưởng rằng `pivot_wider()` có thể "tạo ra" missing value trong @sec-missing-values.
 
 Bạn cũng có thể tự hỏi điều gì xảy ra nếu có nhiều hàng trong đầu vào tương ứng với một ô trong đầu ra.
 Ví dụ bên dưới có hai hàng tương ứng với `id` "A" và `measurement` "bp1":

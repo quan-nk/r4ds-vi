@@ -13,11 +13,11 @@ Dưới đây là tóm tắt ngắn gọn về những thay đổi lớn nhất:
     Phần này trình bày các công cụ trực quan hóa dữ liệu (data visualization) và các phương pháp tốt nhất một cách kỹ lưỡng hơn so với phiên bản đầu.
     Nơi tốt nhất để tìm hiểu tất cả chi tiết vẫn là [cuốn sách ggplot2](http://ggplot2-book.org/), nhưng giờ đây R4DS trình bày chi tiết hơn về các kỹ thuật quan trọng nhất.
 
--   Phần thứ ba của cuốn sách giờ được gọi là "Biến đổi" và có thêm các chương mới về số, vector logic, và giá trị khuyết (missing values).
+-   Phần thứ ba của cuốn sách giờ được gọi là "Biến đổi" và có thêm các chương mới về số, vector logic, và missing value (missing values).
     Những nội dung này trước đây là một phần của chương biến đổi dữ liệu, nhưng cần nhiều không gian hơn để trình bày tất cả chi tiết.
 
 -   Phần thứ tư của cuốn sách được gọi là "Nhập dữ liệu".
-    Đây là một bộ chương mới vượt ra ngoài việc đọc file văn bản phẳng, bao gồm làm việc với bảng tính, lấy dữ liệu từ cơ sở dữ liệu, làm việc với dữ liệu lớn, chuyển đổi dữ liệu phân cấp thành dạng bảng, và thu thập dữ liệu từ các trang web.
+    Đây là một bộ chương mới vượt ra ngoài việc đọc file văn bản phẳng, bao gồm làm việc với spreadsheet, lấy dữ liệu từ database, làm việc với dữ liệu lớn, chuyển đổi dữ liệu phân cấp thành dạng bảng, và thu thập dữ liệu từ các trang web.
 
 -   Phần "Lập trình" vẫn được giữ lại, nhưng đã được viết lại hoàn toàn để tập trung vào những phần quan trọng nhất của việc viết hàm và lặp.
     Phần viết hàm giờ bao gồm chi tiết về cách bọc các hàm tidyverse (xử lý các thách thức của tidy evaluation), vì điều này đã trở nên dễ dàng và quan trọng hơn nhiều trong vài năm qua.

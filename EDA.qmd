@@ -239,7 +239,7 @@ Nếu bạn gặp giá trị bất thường trong tập dữ liệu, và muốn
     Chúng tôi không khuyến nghị cách này vì một giá trị sai không có nghĩa tất cả giá trị khác trong quan sát đó cũng sai.
     Ngoài ra, nếu dữ liệu chất lượng thấp, khi áp dụng cách này cho mọi biến bạn có thể không còn dữ liệu nào!
 
-2.  Thay vào đó, chúng tôi khuyến nghị thay giá trị bất thường bằng giá trị khuyết (missing value).
+2.  Thay vào đó, chúng tôi khuyến nghị thay giá trị bất thường bằng missing value.
     Cách dễ nhất là dùng `mutate()` để thay biến bằng bản sao đã sửa.
     Bạn có thể dùng hàm `if_else()` để thay giá trị bất thường bằng `NA`:
 
@@ -248,7 +248,7 @@ Nếu bạn gặp giá trị bất thường trong tập dữ liệu, và muốn
       mutate(y = if_else(y < 3 | y > 20, NA, y))
     ```
 
-Không rõ nên vẽ giá trị khuyết ở đâu, nên ggplot2 không đưa chúng vào biểu đồ, nhưng cảnh báo rằng chúng đã bị loại bỏ:
+Không rõ nên vẽ missing value ở đâu, nên ggplot2 không đưa chúng vào biểu đồ, nhưng cảnh báo rằng chúng đã bị loại bỏ:
 
 ```{r}
 #| dev: "png"
@@ -268,8 +268,8 @@ ggplot(diamonds2, aes(x = x, y = y)) +
   geom_point(na.rm = TRUE)
 ```
 
-Đôi khi bạn muốn hiểu quan sát có giá trị khuyết khác gì so với quan sát có giá trị ghi nhận.
-Ví dụ, trong `nycflights13::flights`[^eda-1], giá trị khuyết trong biến `dep_time` cho biết chuyến bay bị hủy.
+Đôi khi bạn muốn hiểu quan sát có missing value khác gì so với quan sát có giá trị ghi nhận.
+Ví dụ, trong `nycflights13::flights`[^eda-1], missing value trong biến `dep_time` cho biết chuyến bay bị hủy.
 Vì vậy bạn có thể muốn so sánh thời gian khởi hành dự kiến cho chuyến bị hủy và không bị hủy.
 Bạn có thể làm bằng cách tạo biến mới, dùng `is.na()` để kiểm tra `dep_time` có bị thiếu không.
 
@@ -296,7 +296,7 @@ Trong phần tiếp theo chúng ta sẽ khám phá kỹ thuật cải thiện so
 
 ### Bài tập
 
-1.  Điều gì xảy ra với giá trị khuyết trong biểu đồ tần suất?
+1.  Điều gì xảy ra với missing value trong biểu đồ tần suất?
     Trong biểu đồ cột?
     Tại sao có sự khác biệt?
 

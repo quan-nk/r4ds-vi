@@ -279,7 +279,7 @@ Ban đầu chúng có thể cảm thấy như một tập hợp các quy tắc t
 Và đừng quên gói mở rộng styler: đây là cách tuyệt vời để nhanh chóng cải thiện chất lượng mã có phong cách kém.
 
 Trong chương tiếp theo, chúng ta quay lại các công cụ khoa học dữ liệu, học về dữ liệu gọn gàng (tidy data).
-Dữ liệu gọn gàng là cách nhất quán để tổ chức khung dữ liệu được sử dụng xuyên suốt tidyverse.
+Dữ liệu gọn gàng là cách nhất quán để tổ chức data frame được sử dụng xuyên suốt tidyverse.
 Sự nhất quán này giúp cuộc sống của bạn dễ dàng hơn vì khi bạn có dữ liệu gọn gàng, nó hoạt động với phần lớn các hàm tidyverse.
 Tất nhiên, cuộc sống không bao giờ dễ dàng, và hầu hết các tập dữ liệu bạn gặp ngoài thực tế sẽ chưa gọn gàng sẵn.
 Vì vậy chúng tôi cũng sẽ dạy bạn cách sử dụng gói mở rộng tidyr để sắp xếp dữ liệu chưa gọn gàng.

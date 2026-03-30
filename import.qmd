@@ -24,9 +24,9 @@ knitr::include_graphics("diagrams/data-science/import.png", dpi = 270)
 
 Trong phần này của cuốn sách bạn sẽ học cách truy cập dữ liệu được lưu trữ theo các cách sau:
 
--   Trong @sec-import-spreadsheets, bạn sẽ học cách nhập dữ liệu từ bảng tính Excel và Google Sheets.
+-   Trong @sec-import-spreadsheets, bạn sẽ học cách nhập dữ liệu từ spreadsheet Excel và Google Sheets.
 
--   Trong @sec-import-databases, bạn sẽ học về cách lấy dữ liệu từ cơ sở dữ liệu vào R (và bạn cũng sẽ học một chút về cách đưa dữ liệu từ R vào cơ sở dữ liệu).
+-   Trong @sec-import-databases, bạn sẽ học về cách lấy dữ liệu từ database vào R (và bạn cũng sẽ học một chút về cách đưa dữ liệu từ R vào database).
 
 -   Trong @sec-arrow, bạn sẽ học về Arrow, một công cụ mạnh mẽ để làm việc với dữ liệu ngoài bộ nhớ, đặc biệt khi nó được lưu trữ ở định dạng parquet.
 

@@ -125,7 +125,7 @@ Công cụ đầu tiên là `geom_text()`.
 
 Có hai nguồn nhãn.
 Thứ nhất, bạn có thể có tibble cung cấp nhãn.
-Trong biểu đồ sau chúng ta trích xuất xe có dung tích động cơ lớn nhất trong mỗi loại hệ dẫn động và lưu thành khung dữ liệu mới `label_info`.
+Trong biểu đồ sau chúng ta trích xuất xe có dung tích động cơ lớn nhất trong mỗi loại hệ dẫn động và lưu thành data frame mới `label_info`.
 
 ```{r}
 label_info <- mpg |>
@@ -144,7 +144,7 @@ label_info <- mpg |>
 label_info
 ```
 
-Rồi chúng ta dùng khung dữ liệu mới để gắn nhãn trực tiếp ba nhóm, thay chú giải bằng nhãn đặt trên biểu đồ.
+Rồi chúng ta dùng data frame mới để gắn nhãn trực tiếp ba nhóm, thay chú giải bằng nhãn đặt trên biểu đồ.
 Dùng đối số `fontface` và `size` để tùy chỉnh giao diện nhãn.
 (`theme(legend.position = "none"`) tắt tất cả chú giải --- chúng ta sẽ nói thêm ngay.)
 

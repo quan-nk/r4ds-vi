@@ -115,7 +115,7 @@ Có một vài biến thể của `n()` và `count()` mà bạn có thể thấy
     flights |> count(tailnum, wt = distance)
     ```
 
--   Bạn có thể đếm các giá trị khuyết (missing value) bằng cách kết hợp `sum()` và `is.na()`.
+-   Bạn có thể đếm các missing value bằng cách kết hợp `sum()` và `is.na()`.
     Trong tập dữ liệu `flights`, đây là các chuyến bay đã bị hủy:
 
     ```{r}
@@ -126,7 +126,7 @@ Có một vài biến thể của `n()` và `count()` mà bạn có thể thấy
 
 ### Bài tập
 
-1.  Làm thế nào bạn có thể sử dụng `count()` để đếm số hàng có giá trị khuyết cho một biến nhất định?
+1.  Làm thế nào bạn có thể sử dụng `count()` để đếm số hàng có missing value cho một biến nhất định?
 2.  Mở rộng các lệnh gọi `count()` sau đây để thay vào đó sử dụng `group_by()`, `summarize()`, và `arrange()`:
     1.  `flights |> count(dest, sort = TRUE)`
 
@@ -147,7 +147,7 @@ Nhưng chúng ta cần nói ngắn gọn về **quy tắc tái chế (recycling 
 Điều này quan trọng cho các phép toán như `flights |> mutate(air_time = air_time / 60)` vì có 336.776 số ở bên trái của `/` nhưng chỉ có một số ở bên phải.
 
 R xử lý độ dài không khớp bằng cách **tái chế,** hay lặp lại, vector ngắn hơn.
-Chúng ta có thể thấy điều này hoạt động dễ dàng hơn nếu tạo một số vector bên ngoài khung dữ liệu:
+Chúng ta có thể thấy điều này hoạt động dễ dàng hơn nếu tạo một số vector bên ngoài data frame:
 
 ```{r}
 x <- c(1, 2, 10, 20)
@@ -164,7 +164,7 @@ x * c(1, 2)
 x * c(1, 2, 3)
 ```
 
-Các quy tắc tái chế này cũng được áp dụng cho các phép so sánh logic (`==`, `<`, `<=`, `>`, `>=`, `!=`) và có thể dẫn đến kết quả bất ngờ nếu bạn vô tình sử dụng `==` thay vì `%in%` và khung dữ liệu có số hàng không may.
+Các quy tắc tái chế này cũng được áp dụng cho các phép so sánh logic (`==`, `<`, `<=`, `>`, `>=`, `!=`) và có thể dẫn đến kết quả bất ngờ nếu bạn vô tình sử dụng `==` thay vì `%in%` và data frame có số hàng không may.
 Ví dụ, hãy xem đoạn mã này cố gắng tìm tất cả các chuyến bay trong tháng Một và tháng Hai:
 
 ```{r}
@@ -503,7 +503,7 @@ events |> mutate(
 ```
 
 Một cách tiếp cận khác để tạo biến nhóm là `consecutive_id()`, bắt đầu một nhóm mới mỗi khi một trong các đối số của nó thay đổi.
-Ví dụ, lấy cảm hứng từ [câu hỏi stackoverflow này](https://stackoverflow.com/questions/27482712), hãy tưởng tượng bạn có một khung dữ liệu với nhiều giá trị lặp lại:
+Ví dụ, lấy cảm hứng từ [câu hỏi stackoverflow này](https://stackoverflow.com/questions/27482712), hãy tưởng tượng bạn có một data frame với nhiều giá trị lặp lại:
 
 ```{r}
 df <- tibble(
@@ -726,7 +726,7 @@ flights |>
 (Lưu ý: Vì các hàm dplyr sử dụng `_` để phân tách các thành phần của tên hàm và đối số, các hàm này sử dụng `na_rm` thay vì `na.rm`.)
 
 Nếu bạn đã quen với `[`, mà chúng ta sẽ quay lại trong @sec-subset-many, bạn có thể thắc mắc liệu có bao giờ cần các hàm này không.
-Có ba lý do: đối số `default` cho phép bạn cung cấp giá trị mặc định nếu vị trí chỉ định không tồn tại, đối số `order_by` cho phép bạn ghi đè cục bộ thứ tự các hàng, và đối số `na_rm` cho phép bạn loại bỏ các giá trị khuyết.
+Có ba lý do: đối số `default` cho phép bạn cung cấp giá trị mặc định nếu vị trí chỉ định không tồn tại, đối số `order_by` cho phép bạn ghi đè cục bộ thứ tự các hàng, và đối số `na_rm` cho phép bạn loại bỏ các missing value.
 
 Trích xuất giá trị tại các vị trí bổ sung cho việc lọc theo xếp hạng.
 Lọc cho bạn tất cả các biến, với mỗi quan sát trên một hàng riêng:
@@ -771,4 +771,4 @@ Bạn cũng đã học được một số phép biến đổi tổng quát hữ
 Cuối cùng, bạn đã đi qua một số thống kê tóm tắt số và thảo luận về một vài thách thức thống kê mà bạn nên cân nhắc.
 
 Trong hai chương tiếp theo, chúng ta sẽ đi sâu vào làm việc với chuỗi ký tự bằng gói mở rộng stringr.
-Chuỗi ký tự là một chủ đề lớn nên chúng được dành hai chương, một về nền tảng của chuỗi ký tự và một về biểu thức chính quy.
+Chuỗi ký tự là một chủ đề lớn nên chúng được dành hai chương, một về nền tảng của chuỗi ký tự và một về regular expression.
