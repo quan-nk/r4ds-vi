@@ -10,27 +10,27 @@ freeze: true
 source("_common.R")
 ```
 
-## Introduction
+## Giới thiệu
 
-CSV files are designed to be easily read by humans.
-They're a good interchange format because they're very simple and they can be read by every tool under the sun.
-But CSV files aren't very efficient: you have to do quite a lot of work to read the data into R.
-In this chapter, you'll learn about a powerful alternative: the [parquet format](https://parquet.apache.org/), an open standards-based format widely used by big data systems.
+Tệp CSV được thiết kế để con người dễ đọc.
+Chúng là một định dạng trao đổi tốt vì rất đơn giản và mọi công cụ đều có thể đọc được.
+Nhưng tệp CSV không thực sự hiệu quả: bạn phải thực hiện khá nhiều thao tác để đọc dữ liệu vào R.
+Trong chương này, bạn sẽ tìm hiểu về một giải pháp thay thế mạnh mẽ: [định dạng parquet](https://parquet.apache.org/), một định dạng dựa trên tiêu chuẩn mở được sử dụng rộng rãi bởi các hệ thống dữ liệu lớn (big data).
 
-We'll pair parquet files with [Apache Arrow](https://arrow.apache.org), a multi-language toolbox designed for efficient analysis and transport of large datasets.
-We'll use Apache Arrow via the [arrow package](https://arrow.apache.org/docs/r/), which provides a dplyr backend allowing you to analyze larger-than-memory datasets using familiar dplyr syntax.
-As an additional benefit, arrow is extremely fast: you'll see some examples later in the chapter.
+Chúng ta sẽ kết hợp tệp parquet với [Apache Arrow](https://arrow.apache.org), một bộ công cụ đa ngôn ngữ được thiết kế để phân tích và truyền tải tập dữ liệu (dataset) lớn một cách hiệu quả.
+Chúng ta sẽ sử dụng Apache Arrow thông qua [gói arrow](https://arrow.apache.org/docs/r/), gói này cung cấp một backend cho dplyr cho phép bạn phân tích các tập dữ liệu lớn hơn bộ nhớ bằng cú pháp dplyr quen thuộc.
+Một lợi ích bổ sung là arrow cực kỳ nhanh: bạn sẽ thấy một số ví dụ ở phần sau của chương.
 
-Both arrow and dbplyr provide dplyr backends, so you might wonder when to use each.
-In many cases, the choice is made for you, as the data is already in a database or in parquet files, and you'll want to work with it as is.
-But if you're starting with your own data (perhaps CSV files), you can either load it into a database or convert it to parquet.
-In general, it's hard to know what will work best, so in the early stages of your analysis we'd encourage you to try both and pick the one that works the best for you.
+Cả arrow và dbplyr đều cung cấp backend cho dplyr, nên bạn có thể thắc mắc khi nào nên dùng cái nào.
+Trong nhiều trường hợp, lựa chọn đã được quyết định sẵn cho bạn, vì dữ liệu đã nằm trong cơ sở dữ liệu hoặc trong tệp parquet, và bạn sẽ muốn làm việc với nó nguyên trạng.
+Nhưng nếu bạn bắt đầu với dữ liệu của riêng mình (có thể là tệp CSV), bạn có thể nạp nó vào cơ sở dữ liệu hoặc chuyển đổi sang parquet.
+Nhìn chung, rất khó biết cách nào sẽ hoạt động tốt nhất, vì vậy trong giai đoạn đầu phân tích, chúng tôi khuyến khích bạn thử cả hai và chọn cái phù hợp nhất.
 
-(A big thanks to Danielle Navarro who contributed the initial version of this chapter.)
+(Xin cảm ơn Danielle Navarro, người đã đóng góp phiên bản ban đầu của chương này.)
 
-### Prerequisites
+### Điều kiện tiên quyết
 
-In this chapter, we'll continue to use the tidyverse, particularly dplyr, but we'll pair it with the arrow package which is designed specifically for working with large data.
+Trong chương này, chúng ta sẽ tiếp tục sử dụng tidyverse, đặc biệt là dplyr, nhưng sẽ kết hợp với gói arrow được thiết kế riêng để làm việc với dữ liệu lớn.
 
 ```{r setup}
 #| message: false
@@ -39,21 +39,21 @@ library(tidyverse)
 library(arrow)
 ```
 
-Later in the chapter, we'll also see some connections between arrow and duckdb, so we'll also need dbplyr and duckdb.
+Ở phần sau của chương, chúng ta cũng sẽ thấy một số kết nối giữa arrow và duckdb, nên chúng ta cũng cần dbplyr và duckdb.
 
 ```{r}
 library(dbplyr, warn.conflicts = FALSE)
 library(duckdb)
 ```
 
-## Getting the data
+## Lấy dữ liệu
 
-We begin by getting a dataset worthy of these tools: a dataset of item checkouts from Seattle public libraries, available online at [data.seattle.gov/Community/Checkouts-by-Title/tmmm-ytt6](https://data.seattle.gov/Community/Checkouts-by-Title/tmmm-ytt6).
-This dataset contains 41,389,465 rows that tell you how many times each book was checked out each month from April 2005 to October 2022.
+Chúng ta bắt đầu bằng việc lấy một tập dữ liệu xứng tầm với những công cụ này: tập dữ liệu về lượt mượn sách từ các thư viện công cộng Seattle, có sẵn trực tuyến tại [data.seattle.gov/Community/Checkouts-by-Title/tmmm-ytt6](https://data.seattle.gov/Community/Checkouts-by-Title/tmmm-ytt6).
+Tập dữ liệu này chứa 41.389.465 hàng cho biết mỗi cuốn sách được mượn bao nhiêu lần mỗi tháng từ tháng 4 năm 2005 đến tháng 10 năm 2022.
 
-The following code will get you a cached copy of the data.
-The data is a 9GB CSV file, so it will take some time to download.
-I highly recommend using `curl::multi_download()` to get very large files as it's built for exactly this purpose: it gives you a progress bar and it can resume the download if it's interrupted.
+Đoạn mã sau sẽ giúp bạn lấy bản sao đã lưu trong bộ nhớ đệm (cache) của dữ liệu.
+Dữ liệu là một tệp CSV 9GB, nên sẽ mất một lúc để tải xuống.
+Tôi rất khuyến khích sử dụng `curl::multi_download()` để tải các tệp rất lớn vì nó được xây dựng chính xác cho mục đích này: nó cho bạn thanh tiến trình và có thể tiếp tục tải xuống nếu bị gián đoạn.
 
 ```{r}
 #| eval: !expr "!file.exists('data/seattle-library-checkouts.csv')"
@@ -66,102 +66,102 @@ curl::multi_download(
 )
 ```
 
-## Opening a dataset
+## Mở một tập dữ liệu
 
-Let's start by taking a look at the data.
-At 9 GB, this file is large enough that we probably don't want to load the whole thing into memory.
-A good rule of thumb is that you usually want at least twice as much memory as the size of the data, and many laptops top out at 16 GB.
-This means we want to avoid `read_csv()` and instead use the `arrow::open_dataset()`:
+Hãy bắt đầu bằng cách xem qua dữ liệu.
+Với kích thước 9 GB, tệp này đủ lớn để chúng ta có lẽ không muốn nạp toàn bộ vào bộ nhớ.
+Một quy tắc kinh nghiệm tốt là bạn thường cần ít nhất gấp đôi dung lượng bộ nhớ so với kích thước dữ liệu, và nhiều máy tính xách tay chỉ có tối đa 16 GB.
+Điều này có nghĩa là chúng ta muốn tránh `read_csv()` và thay vào đó sử dụng `arrow::open_dataset()`:
 
 ```{r open-dataset}
 seattle_csv <- open_dataset(
-  sources = "data/seattle-library-checkouts.csv", 
+  sources = "data/seattle-library-checkouts.csv",
   col_types = schema(ISBN = string()),
   format = "csv"
 )
 ```
 
-What happens when this code is run?
-`open_dataset()` will scan a few thousand rows to figure out the structure of the dataset.
-The `ISBN` column contains blank values for the first 80,000 rows, so we have to specify the column type to help arrow work out the data structure.
-Once the data has been scanned by `open_dataset()`, it records what it's found and stops; it will only read further rows as you specifically request them.
-This metadata is what we see if we print `seattle_csv`:
+Điều gì xảy ra khi đoạn mã này được chạy?
+`open_dataset()` sẽ quét vài nghìn hàng để xác định cấu trúc của tập dữ liệu.
+Cột `ISBN` chứa giá trị trống trong 80.000 hàng đầu tiên, nên chúng ta phải chỉ định kiểu cột để giúp arrow xác định cấu trúc dữ liệu.
+Sau khi dữ liệu đã được quét bởi `open_dataset()`, nó ghi lại những gì đã tìm thấy và dừng lại; nó chỉ đọc thêm các hàng khi bạn yêu cầu cụ thể.
+Siêu dữ liệu (metadata) này là những gì chúng ta thấy khi in `seattle_csv`:
 
 ```{r}
 seattle_csv
 ```
 
-The first line in the output tells you that `seattle_csv` is stored locally on-disk as a single CSV file; it will only be loaded into memory as needed.
-The remainder of the output tells you the column type that arrow has imputed for each column.
+Dòng đầu tiên trong kết quả cho bạn biết rằng `seattle_csv` được lưu trữ cục bộ trên đĩa dưới dạng một tệp CSV duy nhất; nó sẽ chỉ được nạp vào bộ nhớ khi cần.
+Phần còn lại của kết quả cho bạn biết kiểu cột mà arrow đã suy luận cho mỗi cột.
 
-We can see what's actually in with `glimpse()`.
-This reveals that there are \~41 million rows and 12 columns, and shows us a few values.
+Chúng ta có thể xem thực sự có gì bên trong bằng `glimpse()`.
+Điều này cho thấy có \~41 triệu hàng và 12 cột, và hiển thị một vài giá trị.
 
 ```{r glimpse-data}
 #| cache: true
 seattle_csv |> glimpse()
 ```
 
-We can start to use this dataset with dplyr verbs, using `collect()` to force arrow to perform the computation and return some data.
-For example, this code tells us the total number of checkouts per year:
+Chúng ta có thể bắt đầu sử dụng tập dữ liệu này với các hàm (function) dplyr, dùng `collect()` để buộc arrow thực hiện tính toán và trả về dữ liệu.
+Ví dụ, đoạn mã này cho chúng ta biết tổng số lượt mượn theo từng năm:
 
 ```{r}
 #| cache: true
-seattle_csv |> 
-  group_by(CheckoutYear) |> 
-  summarise(Checkouts = sum(Checkouts)) |> 
-  arrange(CheckoutYear) |> 
+seattle_csv |>
+  group_by(CheckoutYear) |>
+  summarise(Checkouts = sum(Checkouts)) |>
+  arrange(CheckoutYear) |>
   collect()
 ```
 
-Thanks to arrow, this code will work regardless of how large the underlying dataset is.
-But it's currently rather slow: on Hadley's computer, it took \~10s to run.
-That's not terrible given how much data we have, but we can make it much faster by switching to a better format.
+Nhờ arrow, đoạn mã này sẽ hoạt động bất kể tập dữ liệu bên dưới lớn đến đâu.
+Nhưng hiện tại nó khá chậm: trên máy tính của Hadley, mất \~10 giây để chạy.
+Điều đó không quá tệ xét theo lượng dữ liệu chúng ta có, nhưng chúng ta có thể làm nhanh hơn nhiều bằng cách chuyển sang định dạng tốt hơn.
 
-## The parquet format {#sec-parquet}
+## Định dạng parquet {#sec-parquet}
 
-To make this data easier to work with, let's switch to the parquet file format and split it up into multiple files.
-The following sections will first introduce you to parquet and partitioning, and then apply what we learned to the Seattle library data.
+Để làm cho dữ liệu này dễ làm việc hơn, hãy chuyển sang định dạng tệp parquet và chia nhỏ nó thành nhiều tệp.
+Các phần tiếp theo sẽ giới thiệu cho bạn về parquet và phân vùng (partitioning), sau đó áp dụng những gì chúng ta đã học vào dữ liệu thư viện Seattle.
 
-### Advantages of parquet
+### Ưu điểm của parquet
 
-Like CSV, parquet is used for rectangular data, but instead of being a text format that you can read with any file editor, it's a custom binary format designed specifically for the needs of big data.
-This means that:
+Giống như CSV, parquet được dùng cho dữ liệu hình chữ nhật, nhưng thay vì là định dạng văn bản mà bạn có thể đọc bằng bất kỳ trình soạn thảo nào, nó là một định dạng nhị phân (binary format) tùy chỉnh được thiết kế riêng cho nhu cầu của dữ liệu lớn.
+Điều này có nghĩa là:
 
--   Parquet files are usually smaller than the equivalent CSV file.
-    Parquet relies on [efficient encodings](https://parquet.apache.org/docs/file-format/data-pages/encodings/) to keep file size down, and supports file compression.
-    This helps make parquet files fast because there's less data to move from disk to memory.
+-   Tệp parquet thường nhỏ hơn tệp CSV tương đương.
+    Parquet dựa vào [các phương pháp mã hóa hiệu quả](https://parquet.apache.org/docs/file-format/data-pages/encodings/) để giữ kích thước tệp nhỏ, và hỗ trợ nén tệp.
+    Điều này giúp tệp parquet nhanh vì có ít dữ liệu hơn cần di chuyển từ đĩa vào bộ nhớ.
 
--   Parquet files have a rich type system.
-    As we talked about in @sec-col-types, a CSV file does not provide any information about column types.
-    For example, a CSV reader has to guess whether `"08-10-2022"` should be parsed as a string or a date.
-    In contrast, parquet files store data in a way that records the type along with the data.
+-   Tệp parquet có hệ thống kiểu dữ liệu phong phú.
+    Như chúng ta đã nói ở @sec-col-types, tệp CSV không cung cấp bất kỳ thông tin nào về kiểu cột.
+    Ví dụ, một trình đọc CSV phải đoán xem `"08-10-2022"` nên được phân tích cú pháp thành chuỗi ký tự hay ngày tháng.
+    Ngược lại, tệp parquet lưu trữ dữ liệu theo cách ghi lại kiểu cùng với dữ liệu.
 
--   Parquet files are "column-oriented".
-    This means that they're organized column-by-column, much like R's data frame.
-    This typically leads to better performance for data analysis tasks compared to CSV files, which are organized row-by-row.
+-   Tệp parquet được "tổ chức theo cột" (column-oriented).
+    Điều này có nghĩa là chúng được sắp xếp theo từng cột, tương tự như khung dữ liệu trong R.
+    Điều này thường dẫn đến hiệu suất tốt hơn cho các tác vụ phân tích dữ liệu so với tệp CSV, vốn được tổ chức theo hàng.
 
--   Parquet files are "chunked", which makes it possible to work on different parts of the file at the same time, and, if you're lucky, to skip some chunks altogether.
+-   Tệp parquet được "chia thành khối" (chunked), giúp có thể làm việc trên các phần khác nhau của tệp cùng lúc, và nếu may mắn, có thể bỏ qua hoàn toàn một số khối.
 
-There's one primary disadvantage to parquet files: they are no longer "human readable", i.e. if you look at a parquet file using `readr::read_file()`, you'll just see a bunch of gibberish.
+Có một nhược điểm chính của tệp parquet: chúng không còn "đọc được bằng mắt người", tức là nếu bạn xem một tệp parquet bằng `readr::read_file()`, bạn sẽ chỉ thấy một mớ ký tự vô nghĩa.
 
-### Partitioning
+### Phân vùng
 
-As datasets get larger and larger, storing all the data in a single file gets increasingly painful and it's often useful to split large datasets across many files.
-When this structuring is done intelligently, this strategy can lead to significant improvements in performance because many analyses will only require a subset of the files.
+Khi tập dữ liệu ngày càng lớn, việc lưu trữ tất cả dữ liệu trong một tệp duy nhất trở nên ngày càng khó khăn và thường hữu ích khi chia tập dữ liệu lớn thành nhiều tệp.
+Khi việc cấu trúc này được thực hiện một cách thông minh, chiến lược này có thể dẫn đến cải thiện hiệu suất đáng kể vì nhiều phân tích chỉ cần một tập con các tệp.
 
-There are no hard and fast rules about how to partition your dataset: the results will depend on your data, access patterns, and the systems that read the data.
-You're likely to need to do some experimentation before you find the ideal partitioning for your situation.
-As a rough guide, arrow suggests that you avoid files smaller than 20MB and larger than 2GB and avoid partitions that produce more than 10,000 files.
-You should also try to partition by variables that you filter by; as you'll see shortly, that allows arrow to skip a lot of work by reading only the relevant files.
+Không có quy tắc cứng nhắc nào về cách phân vùng tập dữ liệu của bạn: kết quả sẽ phụ thuộc vào dữ liệu, cách truy cập, và các hệ thống đọc dữ liệu.
+Bạn có thể sẽ cần thử nghiệm một chút trước khi tìm ra cách phân vùng lý tưởng cho tình huống của mình.
+Như một hướng dẫn sơ bộ, arrow khuyến nghị bạn tránh các tệp nhỏ hơn 20MB và lớn hơn 2GB, và tránh phân vùng tạo ra hơn 10.000 tệp.
+Bạn cũng nên cố gắng phân vùng theo các biến mà bạn dùng để lọc; như bạn sẽ thấy ngay sau đây, điều đó cho phép arrow bỏ qua rất nhiều công việc bằng cách chỉ đọc các tệp liên quan.
 
-### Rewriting the Seattle library data
+### Viết lại dữ liệu thư viện Seattle
 
-Let's apply these ideas to the Seattle library data to see how they play out in practice.
-We're going to partition by `CheckoutYear`, since it's likely some analyses will only want to look at recent data and partitioning by year yields 18 chunks of a reasonable size.
+Hãy áp dụng những ý tưởng này vào dữ liệu thư viện Seattle để xem chúng hoạt động như thế nào trong thực tế.
+Chúng ta sẽ phân vùng theo `CheckoutYear`, vì có khả năng một số phân tích chỉ muốn xem dữ liệu gần đây và phân vùng theo năm cho ra 18 khối có kích thước hợp lý.
 
-To rewrite the data we define the partition using `dplyr::group_by()` and then save the partitions to a directory with `arrow::write_dataset()`.
-`write_dataset()` has two important arguments: a directory where we'll create the files and the format we'll use.
+Để viết lại dữ liệu, chúng ta định nghĩa phân vùng bằng `dplyr::group_by()` và sau đó lưu các phân vùng vào một thư mục với `arrow::write_dataset()`.
+`write_dataset()` có hai đối số quan trọng: thư mục nơi chúng ta sẽ tạo các tệp và định dạng chúng ta sẽ sử dụng.
 
 ```{r}
 pq_path <- "data/seattle-library-checkouts"
@@ -175,9 +175,9 @@ seattle_csv |>
   write_dataset(path = pq_path, format = "parquet")
 ```
 
-This takes about a minute to run; as we'll see shortly this is an initial investment that pays off by making future operations much much faster.
+Việc này mất khoảng một phút để chạy; như chúng ta sẽ thấy ngay sau đây, đây là khoản đầu tư ban đầu sẽ được đền đáp bằng việc các thao tác sau này nhanh hơn rất nhiều.
 
-Let's take a look at what we just produced:
+Hãy xem những gì chúng ta vừa tạo ra:
 
 ```{r show-parquet-files}
 tibble(
@@ -186,92 +186,92 @@ tibble(
 )
 ```
 
-Our single 9GB CSV file has been rewritten into 18 parquet files.
-The file names use a "self-describing" convention used by the [Apache Hive](https://hive.apache.org) project.
-Hive-style partitions name folders with a "key=value" convention, so as you might guess, the `CheckoutYear=2005` directory contains all the data where `CheckoutYear` is 2005.
-Each file is between 100 and 300 MB and the total size is now around 4 GB, a little over half the size of the original CSV file.
-This is as we expect since parquet is a much more efficient format.
+Tệp CSV 9GB duy nhất của chúng ta đã được viết lại thành 18 tệp parquet.
+Tên tệp sử dụng quy ước "tự mô tả" được dùng bởi dự án [Apache Hive](https://hive.apache.org).
+Phân vùng kiểu Hive đặt tên thư mục theo quy ước "key=value", nên như bạn có thể đoán, thư mục `CheckoutYear=2005` chứa tất cả dữ liệu có `CheckoutYear` là 2005.
+Mỗi tệp có kích thước từ 100 đến 300 MB và tổng kích thước bây giờ khoảng 4 GB, hơn một nửa kích thước tệp CSV gốc.
+Điều này đúng như kỳ vọng vì parquet là định dạng hiệu quả hơn nhiều.
 
-## Using dplyr with arrow
+## Sử dụng dplyr với arrow
 
-Now we've created these parquet files, we'll need to read them in again.
-We use `open_dataset()` again, but this time we give it a directory:
+Bây giờ chúng ta đã tạo các tệp parquet này, chúng ta sẽ cần đọc lại chúng.
+Chúng ta sử dụng `open_dataset()` một lần nữa, nhưng lần này chúng ta truyền vào một thư mục:
 
 ```{r}
 seattle_pq <- open_dataset(pq_path)
 ```
 
-Now we can write our dplyr pipeline.
-For example, we could count the total number of books checked out in each month for the last five years:
+Bây giờ chúng ta có thể viết pipeline dplyr.
+Ví dụ, chúng ta có thể đếm tổng số sách được mượn mỗi tháng trong năm năm gần nhất:
 
 ```{r books-by-year-query}
-query <- seattle_pq |> 
+query <- seattle_pq |>
   filter(CheckoutYear >= 2018, MaterialType == "BOOK") |>
   group_by(CheckoutYear, CheckoutMonth) |>
   summarize(TotalCheckouts = sum(Checkouts)) |>
   arrange(CheckoutYear, CheckoutMonth)
 ```
 
-Writing dplyr code for arrow data is conceptually similar to dbplyr, @sec-import-databases: you write dplyr code, which is automatically transformed into a query that the Apache Arrow C++ library understands, which is then executed when you call `collect()`.
-If we print out the `query` object we can see a little information about what we expect Arrow to return when the execution takes place:
+Viết mã dplyr cho dữ liệu arrow về mặt khái niệm tương tự như dbplyr, @sec-import-databases: bạn viết mã dplyr, mã này tự động được chuyển đổi thành truy vấn (query) mà thư viện C++ của Apache Arrow hiểu được, và truy vấn đó được thực thi khi bạn gọi `collect()`.
+Nếu chúng ta in đối tượng `query`, chúng ta có thể thấy một chút thông tin về những gì Arrow dự kiến trả về khi thực thi:
 
 ```{r}
 query
 ```
 
-And we can get the results by calling `collect()`:
+Và chúng ta có thể lấy kết quả bằng cách gọi `collect()`:
 
 ```{r books-by-year}
 query |> collect()
 ```
 
-Like dbplyr, arrow only understands some R expressions, so you may not be able to write exactly the same code you usually would.
-However, the list of operations and functions supported is fairly extensive and continues to grow; find a complete list of currently supported functions in `?acero`.
+Giống như dbplyr, arrow chỉ hiểu một số biểu thức R, nên bạn có thể không viết được chính xác mã như thường lệ.
+Tuy nhiên, danh sách các phép toán và hàm được hỗ trợ khá rộng và tiếp tục được mở rộng; tìm danh sách đầy đủ các hàm hiện được hỗ trợ trong `?acero`.
 
-### Performance {#sec-parquet-fast}
+### Hiệu suất {#sec-parquet-fast}
 
-Let's take a quick look at the performance impact of switching from CSV to parquet.
-First, let's time how long it takes to calculate the number of books checked out in each month of 2021, when the data is stored as a single large csv:
+Hãy xem nhanh tác động hiệu suất khi chuyển từ CSV sang parquet.
+Đầu tiên, hãy đo thời gian tính số sách được mượn mỗi tháng của năm 2021, khi dữ liệu được lưu dưới dạng một tệp csv lớn:
 
 ```{r dataset-performance-csv}
 #| cache: true
 
-seattle_csv |> 
+seattle_csv |>
   filter(CheckoutYear == 2021, MaterialType == "BOOK") |>
   group_by(CheckoutMonth) |>
   summarize(TotalCheckouts = sum(Checkouts)) |>
   arrange(desc(CheckoutMonth)) |>
-  collect() |> 
+  collect() |>
   system.time()
 ```
 
-Now let's use our new version of the dataset in which the Seattle library checkout data has been partitioned into 18 smaller parquet files:
+Bây giờ hãy dùng phiên bản mới của tập dữ liệu trong đó dữ liệu mượn sách thư viện Seattle đã được phân vùng thành 18 tệp parquet nhỏ hơn:
 
 ```{r dataset-performance-multiple-parquet}
 #| cache: true
 
-seattle_pq |> 
+seattle_pq |>
   filter(CheckoutYear == 2021, MaterialType == "BOOK") |>
   group_by(CheckoutMonth) |>
   summarize(TotalCheckouts = sum(Checkouts)) |>
   arrange(desc(CheckoutMonth)) |>
-  collect() |> 
+  collect() |>
   system.time()
 ```
 
-The \~100x speedup in performance is attributable to two factors: the multi-file partitioning, and the format of individual files:
+Tốc độ nhanh hơn \~100 lần là nhờ hai yếu tố: phân vùng đa tệp và định dạng của từng tệp riêng lẻ:
 
--   Partitioning improves performance because this query uses `CheckoutYear == 2021` to filter the data, and arrow is smart enough to recognize that it only needs to read 1 of the 18 parquet files.
--   The parquet format improves performance by storing data in a binary format that can be read more directly into memory. The column-wise format and rich metadata means that arrow only needs to read the four columns actually used in the query (`CheckoutYear`, `MaterialType`, `CheckoutMonth`, and `Checkouts`).
+-   Phân vùng cải thiện hiệu suất vì truy vấn này sử dụng `CheckoutYear == 2021` để lọc dữ liệu, và arrow đủ thông minh để nhận ra rằng nó chỉ cần đọc 1 trong 18 tệp parquet.
+-   Định dạng parquet cải thiện hiệu suất bằng cách lưu trữ dữ liệu ở định dạng nhị phân có thể đọc trực tiếp hơn vào bộ nhớ. Định dạng theo cột và siêu dữ liệu phong phú nghĩa là arrow chỉ cần đọc bốn cột thực sự được sử dụng trong truy vấn (`CheckoutYear`, `MaterialType`, `CheckoutMonth`, và `Checkouts`).
 
-This massive difference in performance is why it pays off to convert large CSVs to parquet!
+Sự khác biệt hiệu suất to lớn này là lý do tại sao việc chuyển đổi CSV lớn sang parquet rất đáng giá!
 
-### Using duckdb with arrow
+### Sử dụng duckdb với arrow
 
-There's one last advantage of parquet and arrow --- it's very easy to turn an arrow dataset into a DuckDB database (@sec-import-databases) by calling `arrow::to_duckdb()`:
+Có một ưu điểm cuối cùng của parquet và arrow --- rất dễ biến một tập dữ liệu arrow thành cơ sở dữ liệu DuckDB (@sec-import-databases) bằng cách gọi `arrow::to_duckdb()`:
 
 ```{r use-duckdb}
-seattle_pq |> 
+seattle_pq |>
   to_duckdb() |>
   filter(CheckoutYear >= 2018, MaterialType == "BOOK") |>
   group_by(CheckoutYear) |>
@@ -280,20 +280,20 @@ seattle_pq |>
   collect()
 ```
 
-The neat thing about `to_duckdb()` is that the transfer doesn't involve any memory copying, and speaks to the goals of the arrow ecosystem: enabling seamless transitions from one computing environment to another.
+Điều tuyệt vời về `to_duckdb()` là việc chuyển đổi không liên quan đến bất kỳ sao chép bộ nhớ nào, và thể hiện mục tiêu của hệ sinh thái arrow: cho phép chuyển đổi liền mạch từ môi trường tính toán này sang môi trường tính toán khác.
 
-### Exercises
+### Bài tập
 
-1.  Figure out the most popular book each year.
-2.  Which author has the most books in the Seattle library system?
-3.  How has checkouts of books vs ebooks changed over the last 10 years?
+1.  Tìm cuốn sách phổ biến nhất mỗi năm.
+2.  Tác giả nào có nhiều sách nhất trong hệ thống thư viện Seattle?
+3.  Lượt mượn sách giấy so với sách điện tử (ebook) đã thay đổi như thế nào trong 10 năm qua?
 
-## Summary
+## Tóm tắt
 
-In this chapter, you've been given a taste of the arrow package, which provides a dplyr backend for working with large on-disk datasets.
-It can work with CSV files, and it's much much faster if you convert your data to parquet.
-Parquet is a binary data format that's designed specifically for data analysis on modern computers.
-Far fewer tools can work with parquet files compared to CSV, but its partitioned, compressed, and columnar structure makes it much more efficient to analyze.
+Trong chương này, bạn đã được giới thiệu sơ lược về gói arrow, gói cung cấp backend cho dplyr để làm việc với các tập dữ liệu lớn trên đĩa.
+Nó có thể làm việc với tệp CSV, và nhanh hơn rất nhiều nếu bạn chuyển đổi dữ liệu sang parquet.
+Parquet là định dạng dữ liệu nhị phân được thiết kế riêng cho phân tích dữ liệu trên máy tính hiện đại.
+Ít công cụ hơn có thể làm việc với tệp parquet so với CSV, nhưng cấu trúc phân vùng, nén và theo cột của nó giúp việc phân tích hiệu quả hơn nhiều.
 
-Next up you'll learn about your first non-rectangular data source, which you'll handle using tools provided by the tidyr package.
-We'll focus on data that comes from JSON files, but the general principles apply to tree-like data regardless of its source.
+Tiếp theo bạn sẽ tìm hiểu về nguồn dữ liệu phi hình chữ nhật đầu tiên, mà bạn sẽ xử lý bằng các công cụ do gói tidyr cung cấp.
+Chúng ta sẽ tập trung vào dữ liệu từ tệp JSON, nhưng các nguyên tắc chung áp dụng cho dữ liệu dạng cây bất kể nguồn gốc của nó.
