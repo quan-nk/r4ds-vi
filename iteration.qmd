@@ -25,7 +25,7 @@ Học lập trình hàm có thể dễ dàng đi vào hướng trừu tượng, 
 
 Trong chương này, chúng ta sẽ tập trung vào các công cụ được cung cấp bởi dplyr và purrr, cả hai đều là thành viên cốt lõi của tidyverse.
 Bạn đã thấy dplyr trước đó, nhưng [purrr](http://purrr.tidyverse.org/) thì mới.
-Chúng ta chỉ sử dụng một vài hàm của purrr trong chương này, nhưng đây là một gói tuyệt vời để khám phá khi bạn cải thiện kỹ năng lập trình của mình.
+Chúng ta chỉ sử dụng một vài hàm của purrr trong chương này, nhưng đây là một gói mở rộng tuyệt vời để khám phá khi bạn cải thiện kỹ năng lập trình của mình.
 
 ```{r}
 #| label: setup
@@ -107,7 +107,7 @@ Lưu ý các cột nhóm (`grp` ở đây) không được bao gồm trong `acro
 -   `where(is.POSIXct)` chọn tất cả các cột ngày-giờ.
 -   `where(is.logical)` chọn tất cả các cột logic.
 
-Giống như các bộ chọn khác, bạn có thể kết hợp chúng với đại số Boolean.
+Giống như các bộ chọn khác, bạn có thể kết hợp chúng với đại số Boole.
 Ví dụ, `!where(is.numeric)` chọn tất cả các cột không phải số, và `starts_with("a") & where(is.logical)` chọn tất cả các cột logic có tên bắt đầu bằng "a".
 
 ### Gọi một hàm đơn
@@ -471,7 +471,7 @@ Bạn hầu như luôn sử dụng ba đối số:
 -   `full.names` xác định liệu tên thư mục có nên được bao gồm trong đầu ra hay không.
     Bạn hầu như luôn muốn giá trị này là `TRUE`.
 
-Để làm cho ví dụ động lực của chúng ta trở nên cụ thể, cuốn sách này chứa một thư mục với 12 bảng tính excel chứa dữ liệu từ gói gapminder.
+Để làm cho ví dụ động lực của chúng ta trở nên cụ thể, cuốn sách này chứa một thư mục với 12 bảng tính excel chứa dữ liệu từ gói mở rộng gapminder.
 Thư mục này có thể được tìm thấy tại <https://github.com/hadley/r4ds/tree/main/data/gapminder>.
 Mỗi tệp chứa dữ liệu một năm cho 142 quốc gia.
 Chúng ta có thể liệt kê tất cả chúng với lệnh gọi thích hợp đến `list.files()`:
@@ -809,7 +809,7 @@ Chúng ta sẽ khám phá thách thức này bằng ba ví dụ:
 Đôi khi khi làm việc với nhiều tệp cùng lúc, không thể đưa tất cả dữ liệu của bạn vào bộ nhớ cùng lúc, và bạn không thể dùng `map(files, read_csv)`.
 Một cách tiếp cận để giải quyết vấn đề này là tải dữ liệu vào một cơ sở dữ liệu để bạn có thể truy cập chỉ những phần bạn cần với dbplyr.
 
-Nếu may mắn, gói cơ sở dữ liệu bạn đang sử dụng sẽ cung cấp một hàm tiện lợi nhận một vector các đường dẫn và tải tất cả chúng vào cơ sở dữ liệu.
+Nếu may mắn, gói mở rộng cơ sở dữ liệu bạn đang sử dụng sẽ cung cấp một hàm tiện lợi nhận một vector các đường dẫn và tải tất cả chúng vào cơ sở dữ liệu.
 Đây là trường hợp với `duckdb_read_csv()` của duckdb:
 
 ```{r}
@@ -1015,4 +1015,4 @@ Khi bạn đã thành thạo các kỹ thuật trong chương này, chúng tôi 
 Nếu bạn biết nhiều về lặp trong các ngôn ngữ khác, bạn có thể ngạc nhiên rằng chúng tôi không thảo luận về vòng lặp `for`.
 Đó là vì hướng phân tích dữ liệu của R thay đổi cách chúng ta lặp: trong hầu hết các trường hợp bạn có thể dựa vào một thành ngữ có sẵn để làm gì đó cho mỗi cột hoặc mỗi nhóm.
 Và khi bạn không thể, bạn thường có thể sử dụng một công cụ lập trình hàm như `map()` để làm gì đó với mỗi phần tử của một danh sách.
-Tuy nhiên, bạn sẽ thấy vòng lặp `for` trong code ngoài tự nhiên, nên bạn sẽ học về chúng trong chương tiếp theo nơi chúng ta thảo luận một số công cụ R cơ bản quan trọng.
+Tuy nhiên, bạn sẽ thấy vòng lặp `for` trong code ngoài tự nhiên, nên bạn sẽ học về chúng trong chương tiếp theo nơi chúng ta thảo luận một số công cụ base R quan trọng.
