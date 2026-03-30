@@ -1,24 +1,24 @@
-# Logical vectors {#sec-logicals}
+# Vector logic {#sec-logicals}
 
 ```{r}
 #| echo: false
 source("_common.R")
 ```
 
-## Introduction
+## Giới thiệu
 
-In this chapter, you'll learn tools for working with logical vectors.
-Logical vectors are the simplest type of vector because each element can only be one of three possible values: `TRUE`, `FALSE`, and `NA`.
-It's relatively rare to find logical vectors in your raw data, but you'll create and manipulate them in the course of almost every analysis.
+Trong chương này, bạn sẽ học các công cụ để làm việc với vector logic (logical vector).
+Vector logic là loại vector đơn giản nhất vì mỗi phần tử chỉ có thể là một trong ba giá trị: `TRUE`, `FALSE`, và `NA`.
+Khá hiếm khi bạn tìm thấy vector logic trong dữ liệu thô, nhưng bạn sẽ tạo và thao tác với chúng trong hầu hết mọi phân tích.
 
-We'll begin by discussing the most common way of creating logical vectors: with numeric comparisons.
-Then you'll learn about how you can use Boolean algebra to combine different logical vectors, as well as some useful summaries.
-We'll finish off with `if_else()` and `case_when()`, two useful functions for making conditional changes powered by logical vectors.
+Chúng ta sẽ bắt đầu bằng cách thảo luận về cách phổ biến nhất để tạo vector logic: so sánh số học.
+Sau đó bạn sẽ học cách sử dụng đại số Boolean (Boolean algebra) để kết hợp các vector logic khác nhau, cũng như một số phép tóm tắt hữu ích.
+Chúng ta sẽ kết thúc với `if_else()` và `case_when()`, hai hàm hữu ích để thực hiện các thay đổi có điều kiện dựa trên vector logic.
 
-### Prerequisites
+### Điều kiện tiên quyết
 
-Most of the functions you'll learn about in this chapter are provided by base R, so we don't need the tidyverse, but we'll still load it so we can use `mutate()`, `filter()`, and friends to work with data frames.
-We'll also continue to draw examples from the `nycflights13::flights` dataset.
+Hầu hết các hàm bạn sẽ học trong chương này được cung cấp bởi base R, vì vậy chúng ta không cần tidyverse, nhưng chúng ta vẫn sẽ tải nó để có thể sử dụng `mutate()`, `filter()`, và các hàm liên quan để làm việc với khung dữ liệu (data frame).
+Chúng ta cũng sẽ tiếp tục sử dụng các ví dụ từ tập dữ liệu `nycflights13::flights`.
 
 ```{r}
 #| label: setup
@@ -27,38 +27,38 @@ library(tidyverse)
 library(nycflights13)
 ```
 
-However, as we start to cover more tools, there won't always be a perfect real example.
-So we'll start making up some dummy data with `c()`:
+Tuy nhiên, khi chúng ta bắt đầu đề cập đến nhiều công cụ hơn, sẽ không phải lúc nào cũng có ví dụ thực tế hoàn hảo.
+Vì vậy chúng ta sẽ bắt đầu tạo một số dữ liệu giả với `c()`:
 
 ```{r}
 x <- c(1, 2, 3, 5, 7, 11, 13)
 x * 2
 ```
 
-This makes it easier to explain individual functions at the cost of making it harder to see how it might apply to your data problems.
-Just remember that any manipulation we do to a free-floating vector, you can do to a variable inside a data frame with `mutate()` and friends.
+Điều này giúp việc giải thích từng hàm dễ dàng hơn nhưng đổi lại khó thấy được cách áp dụng vào bài toán dữ liệu của bạn.
+Chỉ cần nhớ rằng bất kỳ thao tác nào chúng ta thực hiện trên một vector độc lập, bạn đều có thể thực hiện trên một biến bên trong khung dữ liệu với `mutate()` và các hàm liên quan.
 
 ```{r}
 df <- tibble(x)
-df |> 
+df |>
   mutate(y = x * 2)
 ```
 
-## Comparisons
+## Phép so sánh
 
-A very common way to create a logical vector is via a numeric comparison with `<`, `<=`, `>`, `>=`, `!=`, and `==`.
-So far, we've mostly created logical variables transiently within `filter()` --- they are computed, used, and then thrown away.
-For example, the following filter finds all daytime departures that arrive roughly on time:
+Một cách rất phổ biến để tạo vector logic là thông qua phép so sánh số học với `<`, `<=`, `>`, `>=`, `!=`, và `==`.
+Cho đến nay, chúng ta chủ yếu tạo các biến logic tạm thời bên trong `filter()` --- chúng được tính toán, sử dụng, rồi bị loại bỏ.
+Ví dụ, bộ lọc sau tìm tất cả các chuyến bay khởi hành ban ngày đến nơi gần đúng giờ:
 
 ```{r}
-flights |> 
+flights |>
   filter(dep_time > 600 & dep_time < 2000 & abs(arr_delay) < 20)
 ```
 
-It's useful to know that this is a shortcut and you can explicitly create the underlying logical variables with `mutate()`:
+Sẽ hữu ích khi biết rằng đây là một cách viết tắt và bạn có thể tạo rõ ràng các biến logic cơ sở với `mutate()`:
 
 ```{r}
-flights |> 
+flights |>
   mutate(
     daytime = dep_time > 600 & dep_time < 2000,
     approx_ontime = abs(arr_delay) < 20,
@@ -66,96 +66,96 @@ flights |>
   )
 ```
 
-This is particularly useful for more complicated logic because naming the intermediate steps makes it easier to both read your code and check that each step has been computed correctly.
+Điều này đặc biệt hữu ích cho logic phức tạp hơn vì việc đặt tên cho các bước trung gian giúp bạn dễ đọc mã hơn và kiểm tra xem mỗi bước đã được tính toán chính xác chưa.
 
-All up, the initial filter is equivalent to:
+Tổng hợp lại, bộ lọc ban đầu tương đương với:
 
 ```{r}
 #| results: false
-flights |> 
+flights |>
   mutate(
     daytime = dep_time > 600 & dep_time < 2000,
     approx_ontime = abs(arr_delay) < 20,
-  ) |> 
+  ) |>
   filter(daytime & approx_ontime)
 ```
 
-### Floating point comparison {#sec-fp-comparison}
+### So sánh số thực dấu phẩy động {#sec-fp-comparison}
 
-Beware of using `==` with numbers.
-For example, it looks like this vector contains the numbers 1 and 2:
+Hãy cẩn thận khi sử dụng `==` với số.
+Ví dụ, có vẻ như vector này chứa các số 1 và 2:
 
 ```{r}
 x <- c(1 / 49 * 49, sqrt(2) ^ 2)
 x
 ```
 
-But if you test them for equality, you get `FALSE`:
+Nhưng nếu bạn kiểm tra tính bằng nhau, bạn sẽ nhận được `FALSE`:
 
 ```{r}
 x == c(1, 2)
 ```
 
-What's going on?
-Computers store numbers with a fixed number of decimal places so there's no way to exactly represent 1/49 or `sqrt(2)` and subsequent computations will be very slightly off.
-We can see the exact values by calling `print()` with the `digits`[^logicals-1] argument:
+Chuyện gì đang xảy ra?
+Máy tính lưu trữ số với một số lượng chữ số thập phân cố định nên không có cách nào biểu diễn chính xác 1/49 hoặc `sqrt(2)` và các phép tính tiếp theo sẽ bị sai lệch rất nhỏ.
+Chúng ta có thể xem giá trị chính xác bằng cách gọi `print()` với đối số `digits`[^logicals-1]:
 
-[^logicals-1]: R normally calls print for you (i.e. `x` is a shortcut for `print(x)`), but calling it explicitly is useful if you want to provide other arguments.
+[^logicals-1]: R thường tự gọi print cho bạn (tức là `x` là cách viết tắt của `print(x)`), nhưng việc gọi tường minh sẽ hữu ích nếu bạn muốn cung cấp các đối số khác.
 
 ```{r}
 print(x, digits = 16)
 ```
 
-You can see why R defaults to rounding these numbers; they really are very close to what you expect.
+Bạn có thể thấy tại sao R mặc định làm tròn các số này; chúng thực sự rất gần với giá trị bạn mong đợi.
 
-Now that you've seen why `==` is failing, what can you do about it?
-One option is to use `dplyr::near()` which ignores small differences:
+Bây giờ bạn đã hiểu tại sao `==` bị sai, bạn có thể làm gì?
+Một lựa chọn là sử dụng `dplyr::near()` để bỏ qua các khác biệt nhỏ:
 
 ```{r}
 near(x, c(1, 2))
 ```
 
-### Missing values {#sec-na-comparison}
+### Giá trị khuyết {#sec-na-comparison}
 
-Missing values represent the unknown so they are "contagious": almost any operation involving an unknown value will also be unknown:
+Giá trị khuyết (missing value) đại diện cho điều chưa biết nên chúng có tính "lây lan": hầu hết mọi phép toán liên quan đến một giá trị chưa biết cũng sẽ cho kết quả chưa biết:
 
 ```{r}
 NA > 5
 10 == NA
 ```
 
-The most confusing result is this one:
+Kết quả khó hiểu nhất là kết quả này:
 
 ```{r}
 NA == NA
 ```
 
-It's easiest to understand why this is true if we artificially supply a little more context:
+Cách dễ nhất để hiểu tại sao điều này đúng là thêm một chút ngữ cảnh:
 
 ```{r}
-# We don't know how old Mary is
+# Chúng ta không biết Mary bao nhiêu tuổi
 age_mary <- NA
 
-# We don't know how old John is
+# Chúng ta không biết John bao nhiêu tuổi
 age_john <- NA
 
-# Are Mary and John the same age?
+# Mary và John có cùng tuổi không?
 age_mary == age_john
-# We don't know!
+# Chúng ta không biết!
 ```
 
-So if you want to find all flights where `dep_time` is missing, the following code doesn't work because `dep_time == NA` will yield `NA` for every single row, and `filter()` automatically drops missing values:
+Vì vậy nếu bạn muốn tìm tất cả các chuyến bay có `dep_time` bị khuyết, đoạn mã sau sẽ không hoạt động vì `dep_time == NA` sẽ trả về `NA` cho mọi hàng, và `filter()` tự động loại bỏ các giá trị khuyết:
 
 ```{r}
-flights |> 
+flights |>
   filter(dep_time == NA)
 ```
 
-Instead we'll need a new tool: `is.na()`.
+Thay vào đó chúng ta sẽ cần một công cụ mới: `is.na()`.
 
 ### `is.na()`
 
-`is.na(x)` works with any type of vector and returns `TRUE` for missing values and `FALSE` for everything else:
+`is.na(x)` hoạt động với bất kỳ loại vector nào và trả về `TRUE` cho giá trị khuyết và `FALSE` cho mọi thứ khác:
 
 ```{r}
 is.na(c(TRUE, NA, FALSE))
@@ -163,115 +163,115 @@ is.na(c(1, NA, 3))
 is.na(c("a", NA, "b"))
 ```
 
-We can use `is.na()` to find all the rows with a missing `dep_time`:
+Chúng ta có thể sử dụng `is.na()` để tìm tất cả các hàng có `dep_time` bị khuyết:
 
 ```{r}
-flights |> 
+flights |>
   filter(is.na(dep_time))
 ```
 
-`is.na()` can also be useful in `arrange()`.
-`arrange()` usually puts all the missing values at the end but you can override this default by first sorting by `is.na()`:
+`is.na()` cũng có thể hữu ích trong `arrange()`.
+`arrange()` thường đặt tất cả giá trị khuyết ở cuối nhưng bạn có thể ghi đè mặc định này bằng cách sắp xếp theo `is.na()` trước:
 
 ```{r}
-flights |> 
-  filter(month == 1, day == 1) |> 
+flights |>
+  filter(month == 1, day == 1) |>
   arrange(dep_time)
 
-flights |> 
-  filter(month == 1, day == 1) |> 
+flights |>
+  filter(month == 1, day == 1) |>
   arrange(desc(is.na(dep_time)), dep_time)
 ```
 
-We'll come back to cover missing values in more depth in @sec-missing-values.
+Chúng ta sẽ quay lại đề cập giá trị khuyết chi tiết hơn trong @sec-missing-values.
 
-### Exercises
+### Bài tập
 
-1.  How does `dplyr::near()` work? Type `near` to see the source code. Is `sqrt(2)^2` near 2?
-2.  Use `mutate()`, `is.na()`, and `count()` together to describe how the missing values in `dep_time`, `sched_dep_time` and `dep_delay` are connected.
+1.  `dplyr::near()` hoạt động như thế nào? Gõ `near` để xem mã nguồn. `sqrt(2)^2` có gần bằng 2 không?
+2.  Sử dụng `mutate()`, `is.na()`, và `count()` cùng nhau để mô tả cách các giá trị khuyết trong `dep_time`, `sched_dep_time` và `dep_delay` liên quan với nhau.
 
-## Boolean algebra
+## Đại số Boolean
 
-Once you have multiple logical vectors, you can combine them together using Boolean algebra.
-In R, `&` is "and", `|` is "or", `!` is "not", and `xor()` is exclusive or[^logicals-2].
-For example, `df |> filter(!is.na(x))` finds all rows where `x` is not missing and `df |> filter(x < -10 | x > 0)` finds all rows where `x` is smaller than -10 or bigger than 0.
-@fig-bool-ops shows examples of commonly used Boolean operations and how they work.
+Khi bạn có nhiều vector logic, bạn có thể kết hợp chúng lại bằng đại số Boolean (Boolean algebra).
+Trong R, `&` là "và", `|` là "hoặc", `!` là "phủ định", và `xor()` là hoặc loại trừ (exclusive or)[^logicals-2].
+Ví dụ, `df |> filter(!is.na(x))` tìm tất cả các hàng mà `x` không bị khuyết và `df |> filter(x < -10 | x > 0)` tìm tất cả các hàng mà `x` nhỏ hơn -10 hoặc lớn hơn 0.
+@fig-bool-ops cho thấy các ví dụ về các phép toán Boolean thường dùng và cách chúng hoạt động.
 
-[^logicals-2]: That is, `xor(x, y)` is true if x is true, or y is true, but not both.
-    This is how we usually use "or" In English.
-    "Both" is not usually an acceptable answer to the question "would you like ice cream or cake?".
+[^logicals-2]: Nghĩa là `xor(x, y)` đúng nếu x đúng, hoặc y đúng, nhưng không phải cả hai.
+    Đây là cách chúng ta thường sử dụng "hoặc" trong tiếng Anh.
+    "Cả hai" thường không phải là câu trả lời chấp nhận được cho câu hỏi "bạn muốn kem hay bánh?".
 
 ```{r}
 #| label: fig-bool-ops
 #| echo: false
 #| out-width: NULL
-#| fig-cap: | 
-#|    A set of commonly used Boolean operations. `x` is the left-hand
-#|    circle, `y` is the right-hand circle, and the shaded regions show 
-#|    which parts each operator selects.
+#| fig-cap: |
+#|    Tập hợp các phép toán Boolean thường dùng. `x` là vòng tròn bên
+#|    trái, `y` là vòng tròn bên phải, và vùng tô đậm cho thấy
+#|    phần nào mỗi toán tử chọn.
 #| fig-alt: |
-#|    Seven Venn diagrams, each explaining a given logical operator. The
-#|    circles (sets) in each of the Venn diagrams represent x and y. x &
-#|    !y is x but none of y; x & y is the intersection of x and y; !x & y is
-#|    y but none of x; x is all of x; xor(x, y) is everything
-#|    except the intersection of x and y; y is all of y; and 
-#|    x | y is everything.
+#|    Bảy biểu đồ Venn, mỗi biểu đồ giải thích một toán tử logic cho trước.
+#|    Các vòng tròn (tập hợp) trong mỗi biểu đồ Venn đại diện cho x và y. x &
+#|    !y là x nhưng không có y; x & y là giao của x và y; !x & y là
+#|    y nhưng không có x; x là tất cả của x; xor(x, y) là tất cả
+#|    ngoại trừ giao của x và y; y là tất cả của y; và
+#|    x | y là tất cả.
 knitr::include_graphics("diagrams/transform.png", dpi = 270)
 ```
 
-As well as `&` and `|`, R also has `&&` and `||`.
-Don't use them in dplyr functions!
-These are called short-circuiting operators and only ever return a single `TRUE` or `FALSE`.
-They're important for programming, not data science.
+Ngoài `&` và `|`, R còn có `&&` và `||`.
+Đừng sử dụng chúng trong các hàm dplyr!
+Đây được gọi là toán tử đoản mạch (short-circuiting operator) và chỉ trả về một giá trị `TRUE` hoặc `FALSE` duy nhất.
+Chúng quan trọng cho lập trình, không phải cho khoa học dữ liệu.
 
-### Missing values {#sec-na-boolean}
+### Giá trị khuyết {#sec-na-boolean}
 
-The rules for missing values in Boolean algebra are a little tricky to explain because they seem inconsistent at first glance:
+Các quy tắc cho giá trị khuyết trong đại số Boolean hơi khó giải thích vì thoạt nhìn chúng có vẻ không nhất quán:
 
 ```{r}
 df <- tibble(x = c(TRUE, FALSE, NA))
 
-df |> 
+df |>
   mutate(
     and = x & NA,
     or = x | NA
   )
 ```
 
-To understand what's going on, think about `NA | TRUE` (`NA` or `TRUE`).
-A missing value in a logical vector means that the value could either be `TRUE` or `FALSE`.
-`TRUE | TRUE` and `FALSE | TRUE` are both `TRUE` because at least one of them is `TRUE`.
-`NA | TRUE` must also be `TRUE` because `NA` can either be `TRUE` or `FALSE`.
-However, `NA | FALSE` is `NA` because we don't know if `NA` is `TRUE` or `FALSE`.
-Similar reasoning applies for `&` considering that both conditions must be fulfilled.
-Therefore `NA & TRUE` is `NA` because `NA` can either be `TRUE` or `FALSE` and `NA & FALSE` is `FALSE` because at least one of the conditions is `FALSE`.
+Để hiểu chuyện gì đang xảy ra, hãy nghĩ về `NA | TRUE` (`NA` hoặc `TRUE`).
+Một giá trị khuyết trong vector logic có nghĩa là giá trị đó có thể là `TRUE` hoặc `FALSE`.
+`TRUE | TRUE` và `FALSE | TRUE` đều là `TRUE` vì ít nhất một trong số chúng là `TRUE`.
+`NA | TRUE` cũng phải là `TRUE` vì `NA` có thể là `TRUE` hoặc `FALSE`.
+Tuy nhiên, `NA | FALSE` là `NA` vì chúng ta không biết `NA` là `TRUE` hay `FALSE`.
+Lý luận tương tự áp dụng cho `&` khi xem xét rằng cả hai điều kiện phải được thỏa mãn.
+Do đó `NA & TRUE` là `NA` vì `NA` có thể là `TRUE` hoặc `FALSE` và `NA & FALSE` là `FALSE` vì ít nhất một trong các điều kiện là `FALSE`.
 
-### Order of operations {#sec-order-operations-boolean}
+### Thứ tự phép toán {#sec-order-operations-boolean}
 
-Note that the order of operations doesn't work like English.
-Take the following code that finds all flights that departed in November or December:
+Lưu ý rằng thứ tự phép toán không hoạt động giống như tiếng Anh.
+Xem đoạn mã sau tìm tất cả các chuyến bay khởi hành vào tháng Mười Một hoặc tháng Mười Hai:
 
 ```{r}
 #| eval: false
-flights |> 
+flights |>
    filter(month == 11 | month == 12)
 ```
 
-You might be tempted to write it like you'd say in English: "Find all flights that departed in November or December.":
+Bạn có thể muốn viết như cách nói trong tiếng Anh: "Tìm tất cả các chuyến bay khởi hành vào tháng Mười Một hoặc tháng Mười Hai.":
 
 ```{r}
-flights |> 
+flights |>
    filter(month == 11 | 12)
 ```
 
-This code doesn't error but it also doesn't seem to have worked.
-What's going on?
-Here, R first evaluates `month == 11` creating a logical vector, which we call `nov`.
-It computes `nov | 12`.
-When you use a number with a logical operator it converts everything apart from 0 to `TRUE`, so this is equivalent to `nov | TRUE` which will always be `TRUE`, so every row will be selected:
+Đoạn mã này không báo lỗi nhưng cũng có vẻ không hoạt động đúng.
+Chuyện gì đang xảy ra?
+Ở đây, R trước tiên tính `month == 11` tạo ra một vector logic, mà chúng ta gọi là `nov`.
+Nó tính `nov | 12`.
+Khi bạn sử dụng một số với toán tử logic, nó chuyển đổi mọi thứ ngoại trừ 0 thành `TRUE`, vì vậy điều này tương đương với `nov | TRUE` và sẽ luôn là `TRUE`, nên mọi hàng sẽ được chọn:
 
 ```{r}
-flights |> 
+flights |>
   mutate(
     nov = month == 11,
     final = nov | 12,
@@ -281,60 +281,60 @@ flights |>
 
 ### `%in%`
 
-An easy way to avoid the problem of getting your `==`s and `|`s in the right order is to use `%in%`.
-`x %in% y` returns a logical vector the same length as `x` that is `TRUE` whenever a value in `x` is anywhere in `y` .
+Một cách dễ dàng để tránh vấn đề sắp xếp đúng thứ tự `==` và `|` là sử dụng `%in%`.
+`x %in% y` trả về một vector logic có cùng độ dài với `x`, là `TRUE` bất cứ khi nào một giá trị trong `x` xuất hiện ở bất kỳ đâu trong `y`.
 
 ```{r}
 1:12 %in% c(1, 5, 11)
 letters[1:10] %in% c("a", "e", "i", "o", "u")
 ```
 
-So to find all flights in November and December we could write:
+Vì vậy để tìm tất cả các chuyến bay vào tháng Mười Một và tháng Mười Hai, chúng ta có thể viết:
 
 ```{r}
 #| eval: false
-flights |> 
+flights |>
   filter(month %in% c(11, 12))
 ```
 
-Note that `%in%` obeys different rules for `NA` to `==`, as `NA %in% NA` is `TRUE`.
+Lưu ý rằng `%in%` tuân theo các quy tắc khác với `==` đối với `NA`, vì `NA %in% NA` là `TRUE`.
 
 ```{r}
 c(1, 2, NA) == NA
 c(1, 2, NA) %in% NA
 ```
 
-This can make for a useful shortcut:
+Điều này có thể tạo thành một phím tắt hữu ích:
 
 ```{r}
-flights |> 
+flights |>
   filter(dep_time %in% c(NA, 0800))
 ```
 
-### Exercises
+### Bài tập
 
-1.  Find all flights where `arr_delay` is missing but `dep_delay` is not. Find all flights where neither `arr_time` nor `sched_arr_time` are missing, but `arr_delay` is.
-2.  How many flights have a missing `dep_time`? What other variables are missing in these rows? What might these rows represent?
-3.  Assuming that a missing `dep_time` implies that a flight is cancelled, look at the number of cancelled flights per day. Is there a pattern? Is there a connection between the proportion of cancelled flights and the average delay of non-cancelled flights?
+1.  Tìm tất cả các chuyến bay mà `arr_delay` bị khuyết nhưng `dep_delay` thì không. Tìm tất cả các chuyến bay mà cả `arr_time` lẫn `sched_arr_time` đều không bị khuyết, nhưng `arr_delay` thì bị khuyết.
+2.  Có bao nhiêu chuyến bay có `dep_time` bị khuyết? Những biến nào khác cũng bị khuyết trong các hàng này? Những hàng này có thể đại diện cho điều gì?
+3.  Giả sử rằng `dep_time` bị khuyết nghĩa là chuyến bay bị hủy, hãy xem số lượng chuyến bay bị hủy theo ngày. Có quy luật nào không? Có mối liên hệ nào giữa tỷ lệ chuyến bay bị hủy và độ trễ trung bình của các chuyến bay không bị hủy không?
 
-## Summaries {#sec-logical-summaries}
+## Tóm tắt thống kê {#sec-logical-summaries}
 
-The following sections describe some useful techniques for summarizing logical vectors.
-As well as functions that only work specifically with logical vectors, you can also use functions that work with numeric vectors.
+Các phần tiếp theo mô tả một số kỹ thuật hữu ích để tóm tắt vector logic.
+Ngoài các hàm chỉ hoạt động riêng với vector logic, bạn cũng có thể sử dụng các hàm hoạt động với vector số.
 
-### Logical summaries
+### Tóm tắt logic
 
-There are two main logical summaries: `any()` and `all()`.
-`any(x)` is the equivalent of `|`; it'll return `TRUE` if there are any `TRUE`'s in `x`.
-`all(x)` is equivalent of `&`; it'll return `TRUE` only if all values of `x` are `TRUE`'s.
-Like most summary functions, you can make the missing values go away with `na.rm = TRUE`.
+Có hai hàm tóm tắt logic chính: `any()` và `all()`.
+`any(x)` tương đương với `|`; nó sẽ trả về `TRUE` nếu có bất kỳ giá trị `TRUE` nào trong `x`.
+`all(x)` tương đương với `&`; nó sẽ trả về `TRUE` chỉ khi tất cả các giá trị của `x` đều là `TRUE`.
+Giống như hầu hết các hàm tóm tắt, bạn có thể loại bỏ giá trị khuyết bằng `na.rm = TRUE`.
 
-For example, we could use `all()` and `any()` to find out if every flight was delayed on departure by at most an hour or if any flights were delayed on arrival by five hours or more.
-And using `group_by()` allows us to do that by day:
+Ví dụ, chúng ta có thể sử dụng `all()` và `any()` để tìm xem liệu mọi chuyến bay có bị trễ khởi hành tối đa một giờ hay không hoặc liệu có chuyến bay nào bị trễ đến nơi năm giờ trở lên hay không.
+Và sử dụng `group_by()` cho phép chúng ta thực hiện điều đó theo ngày:
 
 ```{r}
-flights |> 
-  group_by(year, month, day) |> 
+flights |>
+  group_by(year, month, day) |>
   summarize(
     all_delayed = all(dep_delay <= 60, na.rm = TRUE),
     any_long_delay = any(arr_delay >= 300, na.rm = TRUE),
@@ -342,19 +342,19 @@ flights |>
   )
 ```
 
-In most cases, however, `any()` and `all()` are a little too crude, and it would be nice to be able to get a little more detail about how many values are `TRUE` or `FALSE`.
-That leads us to the numeric summaries.
+Tuy nhiên trong hầu hết các trường hợp, `any()` và `all()` hơi quá thô sơ, và sẽ tốt hơn nếu có thể biết thêm chi tiết về số lượng giá trị `TRUE` hoặc `FALSE`.
+Điều đó dẫn chúng ta đến phần tóm tắt bằng số.
 
-### Numeric summaries of logical vectors {#sec-numeric-summaries-of-logicals}
+### Tóm tắt bằng số của vector logic {#sec-numeric-summaries-of-logicals}
 
-When you use a logical vector in a numeric context, `TRUE` becomes 1 and `FALSE` becomes 0.
-This makes `sum()` and `mean()` very useful with logical vectors because `sum(x)` gives the number of `TRUE`s and `mean(x)` gives the proportion of `TRUE`s (because `mean()` is just `sum()` divided by `length()`).
+Khi bạn sử dụng vector logic trong ngữ cảnh số, `TRUE` trở thành 1 và `FALSE` trở thành 0.
+Điều này khiến `sum()` và `mean()` rất hữu ích với vector logic vì `sum(x)` cho số lượng giá trị `TRUE` và `mean(x)` cho tỷ lệ giá trị `TRUE` (vì `mean()` chỉ là `sum()` chia cho `length()`).
 
-That, for example, allows us to see the proportion of flights that were delayed on departure by at most an hour and the number of flights that were delayed on arrival by five hours or more:
+Ví dụ, điều đó cho phép chúng ta xem tỷ lệ chuyến bay bị trễ khởi hành tối đa một giờ và số lượng chuyến bay bị trễ đến nơi năm giờ trở lên:
 
 ```{r}
-flights |> 
-  group_by(year, month, day) |> 
+flights |>
+  group_by(year, month, day) |>
   summarize(
     proportion_delayed = mean(dep_delay <= 60, na.rm = TRUE),
     count_long_delay = sum(arr_delay >= 300, na.rm = TRUE),
@@ -362,18 +362,18 @@ flights |>
   )
 ```
 
-### Logical subsetting
+### Lọc con bằng logic
 
-There's one final use for logical vectors in summaries: you can use a logical vector to filter a single variable to a subset of interest.
-This makes use of the base `[` (pronounced subset) operator, which you'll learn more about in @sec-subset-many.
+Còn một cách sử dụng cuối cùng cho vector logic trong tóm tắt: bạn có thể sử dụng vector logic để lọc một biến đơn lẻ thành một tập con quan tâm.
+Điều này sử dụng toán tử `[` (đọc là subset) của base R, mà bạn sẽ tìm hiểu thêm trong @sec-subset-many.
 
-Imagine we wanted to look at the average delay just for flights that were actually delayed.
-One way to do so would be to first filter the flights and then calculate the average delay:
+Hãy tưởng tượng chúng ta muốn xem độ trễ trung bình chỉ cho các chuyến bay thực sự bị trễ.
+Một cách để làm điều này là lọc các chuyến bay trước rồi tính độ trễ trung bình:
 
 ```{r}
-flights |> 
-  filter(arr_delay > 0) |> 
-  group_by(year, month, day) |> 
+flights |>
+  filter(arr_delay > 0) |>
+  group_by(year, month, day) |>
   summarize(
     behind = mean(arr_delay),
     n = n(),
@@ -381,17 +381,17 @@ flights |>
   )
 ```
 
-This works, but what if we wanted to also compute the average delay for flights that arrived early?
-We'd need to perform a separate filter step, and then figure out how to combine the two data frames together[^logicals-3].
-Instead you could use `[` to perform an inline filtering: `arr_delay[arr_delay > 0]` will yield only the positive arrival delays.
+Cách này hoạt động, nhưng nếu chúng ta cũng muốn tính độ trễ trung bình cho các chuyến bay đến sớm thì sao?
+Chúng ta sẽ cần thực hiện một bước lọc riêng, rồi tìm cách kết hợp hai khung dữ liệu lại với nhau[^logicals-3].
+Thay vào đó bạn có thể sử dụng `[` để lọc trực tiếp: `arr_delay[arr_delay > 0]` sẽ chỉ trả về các giá trị trễ đến dương.
 
-[^logicals-3]: We'll cover this in @sec-joins.
+[^logicals-3]: Chúng ta sẽ đề cập điều này trong @sec-joins.
 
-This leads to:
+Điều này dẫn đến:
 
 ```{r}
-flights |> 
-  group_by(year, month, day) |> 
+flights |>
+  group_by(year, month, day) |>
   summarize(
     behind = mean(arr_delay[arr_delay > 0], na.rm = TRUE),
     ahead = mean(arr_delay[arr_delay < 0], na.rm = TRUE),
@@ -400,48 +400,48 @@ flights |>
   )
 ```
 
-Also note the difference in the group size: in the first chunk `n()` gives the number of delayed flights per day; in the second, `n()` gives the total number of flights.
+Cũng lưu ý sự khác biệt về kích thước nhóm: trong khối mã đầu tiên `n()` cho số lượng chuyến bay bị trễ mỗi ngày; trong khối thứ hai, `n()` cho tổng số chuyến bay.
 
-### Exercises
+### Bài tập
 
-1.  What will `sum(is.na(x))` tell you? How about `mean(is.na(x))`?
-2.  What does `prod()` return when applied to a logical vector? What logical summary function is it equivalent to? What does `min()` return when applied to a logical vector? What logical summary function is it equivalent to? Read the documentation and perform a few experiments.
+1.  `sum(is.na(x))` sẽ cho bạn biết điều gì? Còn `mean(is.na(x))` thì sao?
+2.  `prod()` trả về gì khi áp dụng lên vector logic? Nó tương đương với hàm tóm tắt logic nào? `min()` trả về gì khi áp dụng lên vector logic? Nó tương đương với hàm tóm tắt logic nào? Đọc tài liệu và thực hiện một vài thí nghiệm.
 
-## Conditional transformations
+## Biến đổi có điều kiện
 
-One of the most powerful features of logical vectors are their use for conditional transformations, i.e. doing one thing for condition x, and something different for condition y.
-There are two important tools for this: `if_else()` and `case_when()`.
+Một trong những tính năng mạnh mẽ nhất của vector logic là khả năng sử dụng chúng cho biến đổi có điều kiện (conditional transformation), tức là thực hiện một điều cho điều kiện x, và một điều khác cho điều kiện y.
+Có hai công cụ quan trọng cho việc này: `if_else()` và `case_when()`.
 
 ### `if_else()`
 
-If you want to use one value when a condition is `TRUE` and another value when it's `FALSE`, you can use `dplyr::if_else()`[^logicals-4].
-You'll always use the first three arguments of `if_else()`. The first argument, `condition`, is a logical vector, the second, `true`, gives the output when the condition is true, and the third, `false`, gives the output if the condition is false.
+Nếu bạn muốn sử dụng một giá trị khi điều kiện là `TRUE` và một giá trị khác khi điều kiện là `FALSE`, bạn có thể sử dụng `dplyr::if_else()`[^logicals-4].
+Bạn sẽ luôn sử dụng ba đối số đầu tiên của `if_else()`. Đối số thứ nhất, `condition`, là một vector logic, đối số thứ hai, `true`, cho kết quả khi điều kiện đúng, và đối số thứ ba, `false`, cho kết quả khi điều kiện sai.
 
-[^logicals-4]: dplyr's `if_else()` is very similar to base R's `ifelse()`.
-    There are two main advantages of `if_else()` over `ifelse()`: you can choose what should happen to missing values, and `if_else()` is much more likely to give you a meaningful error if your variables have incompatible types.
+[^logicals-4]: `if_else()` của dplyr rất giống với `ifelse()` của base R.
+    Có hai ưu điểm chính của `if_else()` so với `ifelse()`: bạn có thể chọn điều gì xảy ra với giá trị khuyết, và `if_else()` có nhiều khả năng hơn để đưa ra lỗi có ý nghĩa nếu các biến của bạn có kiểu không tương thích.
 
-Let's begin with a simple example of labeling a numeric vector as either "+ve" (positive) or "-ve" (negative):
+Hãy bắt đầu với một ví dụ đơn giản về việc gán nhãn một vector số là "+ve" (dương) hoặc "-ve" (âm):
 
 ```{r}
 x <- c(-3:3, NA)
 if_else(x > 0, "+ve", "-ve")
 ```
 
-There's an optional fourth argument, `missing` which will be used if the input is `NA`:
+Có một đối số thứ tư tùy chọn, `missing`, sẽ được sử dụng nếu đầu vào là `NA`:
 
 ```{r}
 if_else(x > 0, "+ve", "-ve", "???")
 ```
 
-You can also use vectors for the `true` and `false` arguments.
-For example, this allows us to create a minimal implementation of `abs()`:
+Bạn cũng có thể sử dụng vector cho các đối số `true` và `false`.
+Ví dụ, điều này cho phép chúng ta tạo một phiên bản tối giản của `abs()`:
 
 ```{r}
 if_else(x < 0, -x, x)
 ```
 
-So far all the arguments have used the same vectors, but you can of course mix and match.
-For example, you could implement a simple version of `coalesce()` like this:
+Cho đến nay tất cả các đối số đều sử dụng cùng một vector, nhưng tất nhiên bạn có thể kết hợp linh hoạt.
+Ví dụ, bạn có thể triển khai một phiên bản đơn giản của `coalesce()` như thế này:
 
 ```{r}
 x1 <- c(NA, 1, 2, NA)
@@ -449,39 +449,39 @@ y1 <- c(3, NA, 4, 6)
 if_else(is.na(x1), y1, x1)
 ```
 
-You might have noticed a small infelicity in our labeling example above: zero is neither positive nor negative.
-We could resolve this by adding an additional `if_else()`:
+Bạn có thể đã nhận thấy một điểm chưa hoàn hảo nhỏ trong ví dụ gán nhãn ở trên: số không không phải là số dương cũng không phải số âm.
+Chúng ta có thể giải quyết điều này bằng cách thêm một `if_else()` bổ sung:
 
 ```{r}
 if_else(x == 0, "0", if_else(x < 0, "-ve", "+ve"), "???")
 ```
 
-This is already a little hard to read, and you can imagine it would only get harder if you have more conditions.
-Instead, you can switch to `dplyr::case_when()`.
+Đoạn mã này đã hơi khó đọc, và bạn có thể tưởng tượng nó sẽ càng khó hơn nếu có thêm điều kiện.
+Thay vào đó, bạn có thể chuyển sang `dplyr::case_when()`.
 
 ### `case_when()`
 
-dplyr's `case_when()` is inspired by SQL's `CASE` statement and provides a flexible way of performing different computations for different conditions.
-It has a special syntax that unfortunately looks like nothing else you'll use in the tidyverse.
-It takes pairs that look like `condition ~ output`.
-`condition` must be a logical vector; when it's `TRUE`, `output` will be used.
+`case_when()` của dplyr được lấy cảm hứng từ câu lệnh `CASE` của SQL và cung cấp một cách linh hoạt để thực hiện các phép tính khác nhau cho các điều kiện khác nhau.
+Nó có cú pháp đặc biệt mà không giống bất kỳ thứ gì khác bạn sẽ sử dụng trong tidyverse.
+Nó nhận các cặp có dạng `condition ~ output`.
+`condition` phải là một vector logic; khi nó là `TRUE`, `output` sẽ được sử dụng.
 
-This means we could recreate our previous nested `if_else()` as follows:
+Điều này có nghĩa là chúng ta có thể tái tạo `if_else()` lồng nhau trước đó như sau:
 
 ```{r}
 x <- c(-3:3, NA)
 case_when(
   x == 0   ~ "0",
-  x < 0    ~ "-ve", 
+  x < 0    ~ "-ve",
   x > 0    ~ "+ve",
   is.na(x) ~ "???"
 )
 ```
 
-This is more code, but it's also more explicit.
+Đoạn mã này dài hơn, nhưng cũng rõ ràng hơn.
 
-To explain how `case_when()` works, let's explore some simpler cases.
-If none of the cases match, the output gets an `NA`:
+Để giải thích cách `case_when()` hoạt động, hãy khám phá một số trường hợp đơn giản hơn.
+Nếu không có trường hợp nào khớp, kết quả sẽ là `NA`:
 
 ```{r}
 case_when(
@@ -490,7 +490,7 @@ case_when(
 )
 ```
 
-Use `.default` if you want to create a "default"/catch all value:
+Sử dụng `.default` nếu bạn muốn tạo giá trị "mặc định"/bắt tất cả:
 
 ```{r}
 case_when(
@@ -500,7 +500,7 @@ case_when(
 )
 ```
 
-And note that if multiple conditions match, only the first will be used:
+Và lưu ý rằng nếu nhiều điều kiện khớp, chỉ điều kiện đầu tiên sẽ được sử dụng:
 
 ```{r}
 case_when(
@@ -509,11 +509,11 @@ case_when(
 )
 ```
 
-Just like with `if_else()` you can use variables on both sides of the `~` and you can mix and match variables as needed for your problem.
-For example, we could use `case_when()` to provide some human readable labels for the arrival delay:
+Giống như với `if_else()`, bạn có thể sử dụng biến ở cả hai bên của `~` và có thể kết hợp linh hoạt các biến tùy theo bài toán.
+Ví dụ, chúng ta có thể sử dụng `case_when()` để cung cấp các nhãn dễ đọc cho độ trễ đến nơi:
 
 ```{r}
-flights |> 
+flights |>
   mutate(
     status = case_when(
       is.na(arr_delay)      ~ "cancelled",
@@ -527,52 +527,52 @@ flights |>
   )
 ```
 
-Be wary when writing this sort of complex `case_when()` statement; my first two attempts used a mix of `<` and `>` and I kept accidentally creating overlapping conditions.
+Hãy cẩn thận khi viết loại `case_when()` phức tạp này; hai lần thử đầu tiên của tôi đã sử dụng kết hợp `<` và `>` và tôi liên tục tạo ra các điều kiện chồng lấp.
 
-### Compatible types
+### Kiểu tương thích
 
-Note that both `if_else()` and `case_when()` require **compatible** types in the output.
-If they're not compatible, you'll see errors like this:
+Lưu ý rằng cả `if_else()` và `case_when()` đều yêu cầu các kiểu **tương thích** trong kết quả đầu ra.
+Nếu chúng không tương thích, bạn sẽ thấy các lỗi như thế này:
 
 ```{r}
 #| error: true
 if_else(TRUE, "a", 1)
 
 case_when(
-  x < -1 ~ TRUE,  
+  x < -1 ~ TRUE,
   x > 0  ~ now()
 )
 ```
 
-Overall, relatively few types are compatible, because automatically converting one type of vector to another is a common source of errors.
-Here are the most important cases that are compatible:
+Nhìn chung, khá ít kiểu dữ liệu tương thích với nhau, vì việc tự động chuyển đổi một kiểu vector sang kiểu khác là nguồn gốc phổ biến của lỗi.
+Dưới đây là các trường hợp quan trọng nhất tương thích với nhau:
 
--   Numeric and logical vectors are compatible, as we discussed in @sec-numeric-summaries-of-logicals.
--   Strings and factors (@sec-factors) are compatible, because you can think of a factor as a string with a restricted set of values.
--   Dates and date-times, which we'll discuss in @sec-dates-and-times, are compatible because you can think of a date as a special case of date-time.
--   `NA`, which is technically a logical vector, is compatible with everything because every vector has some way of representing a missing value.
+-   Vector số và vector logic tương thích, như chúng ta đã thảo luận trong @sec-numeric-summaries-of-logicals.
+-   Chuỗi ký tự và nhân tố (@sec-factors) tương thích, vì bạn có thể coi nhân tố là chuỗi ký tự với tập giá trị bị giới hạn.
+-   Ngày và ngày-giờ, mà chúng ta sẽ thảo luận trong @sec-dates-and-times, tương thích vì bạn có thể coi ngày là trường hợp đặc biệt của ngày-giờ.
+-   `NA`, về mặt kỹ thuật là vector logic, tương thích với mọi thứ vì mọi vector đều có cách biểu diễn giá trị khuyết.
 
-We don't expect you to memorize these rules, but they should become second nature over time because they are applied consistently throughout the tidyverse.
+Chúng tôi không mong bạn ghi nhớ các quy tắc này, nhưng chúng sẽ trở thành bản năng thứ hai theo thời gian vì chúng được áp dụng nhất quán trong toàn bộ tidyverse.
 
-### Exercises
+### Bài tập
 
-1.  A number is even if it's divisible by two, which in R you can find out with `x %% 2 == 0`.
-    Use this fact and `if_else()` to determine whether each number between 0 and 20 is even or odd.
+1.  Một số là số chẵn nếu nó chia hết cho hai, mà trong R bạn có thể kiểm tra bằng `x %% 2 == 0`.
+    Sử dụng sự kiện này và `if_else()` để xác định xem mỗi số từ 0 đến 20 là chẵn hay lẻ.
 
-2.  Given a vector of days like `x <- c("Monday", "Saturday", "Wednesday")`, use an `if_else()` statement to label them as weekends or weekdays.
+2.  Cho một vector các ngày như `x <- c("Monday", "Saturday", "Wednesday")`, sử dụng câu lệnh `if_else()` để gán nhãn chúng là ngày cuối tuần hoặc ngày trong tuần.
 
-3.  Use `if_else()` to compute the absolute value of a numeric vector called `x`.
+3.  Sử dụng `if_else()` để tính giá trị tuyệt đối của một vector số có tên `x`.
 
-4.  Write a `case_when()` statement that uses the `month` and `day` columns from `flights` to label a selection of important US holidays (e.g., New Years Day, 4th of July, Thanksgiving, and Christmas).
-    First create a logical column that is either `TRUE` or `FALSE`, and then create a character column that either gives the name of the holiday or is `NA`.
+4.  Viết một câu lệnh `case_when()` sử dụng các cột `month` và `day` từ `flights` để gán nhãn cho một số ngày lễ quan trọng của Mỹ (ví dụ: Ngày Năm Mới, ngày 4 tháng 7, Lễ Tạ Ơn, và Giáng Sinh).
+    Đầu tiên tạo một cột logic có giá trị `TRUE` hoặc `FALSE`, sau đó tạo một cột ký tự cho tên ngày lễ hoặc là `NA`.
 
-## Summary
+## Tổng kết
 
-The definition of a logical vector is simple because each value must be either `TRUE`, `FALSE`, or `NA`.
-But logical vectors provide a huge amount of power.
-In this chapter, you learned how to create logical vectors with `>`, `<`, `<=`, `>=`, `==`, `!=`, and `is.na()`, how to combine them with `!`, `&`, and `|`, and how to summarize them with `any()`, `all()`, `sum()`, and `mean()`.
-You also learned the powerful `if_else()` and `case_when()` functions that allow you to return values depending on the value of a logical vector.
+Định nghĩa của vector logic rất đơn giản vì mỗi giá trị chỉ có thể là `TRUE`, `FALSE`, hoặc `NA`.
+Nhưng vector logic mang lại sức mạnh rất lớn.
+Trong chương này, bạn đã học cách tạo vector logic với `>`, `<`, `<=`, `>=`, `==`, `!=`, và `is.na()`, cách kết hợp chúng với `!`, `&`, và `|`, và cách tóm tắt chúng với `any()`, `all()`, `sum()`, và `mean()`.
+Bạn cũng đã học các hàm mạnh mẽ `if_else()` và `case_when()` cho phép bạn trả về giá trị tùy thuộc vào giá trị của vector logic.
 
-We'll see logical vectors again and again in the following chapters.
-For example in @sec-strings you'll learn about `str_detect(x, pattern)` which returns a logical vector that's `TRUE` for the elements of `x` that match the `pattern`, and in @sec-dates-and-times you'll create logical vectors from the comparison of dates and times.
-But for now, we're going to move onto the next most important type of vector: numeric vectors.
+Chúng ta sẽ gặp lại vector logic nhiều lần nữa trong các chương tiếp theo.
+Ví dụ trong @sec-strings bạn sẽ học về `str_detect(x, pattern)` trả về một vector logic là `TRUE` cho các phần tử của `x` khớp với `pattern`, và trong @sec-dates-and-times bạn sẽ tạo vector logic từ phép so sánh ngày và giờ.
+Nhưng bây giờ, chúng ta sẽ chuyển sang loại vector quan trọng tiếp theo: vector số.
