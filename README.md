@@ -6,8 +6,8 @@
 
 <!-- badges: end -->
 
-Repository này chứa mã nguồn của cuốn sách [R for Data Science](http://r4ds.hadley.nz).
-Cuốn sách được xây dựng bằng [Quarto](https://quarto.org/).
+Repository này chứa mã nguồn tiếng Việt của cuốn sách [R for Data Science](http://r4ds.hadley.nz).
+Cuốn sách được xây dựng bằng [Quarto](https://quarto.org/), sau đó được Việt hoá.
 
 ## Hình ảnh
 
