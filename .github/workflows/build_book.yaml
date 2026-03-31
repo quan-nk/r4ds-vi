@@ -1,8 +1,8 @@
 on:
   push:
-    branches: main
+    branches: translate
   pull_request:
-    branches: main
+    branches: translate
   # to be able to trigger a manual build
   workflow_dispatch:
   schedule:
@@ -43,7 +43,7 @@ jobs:
           quarto render
 
       - name: Upload website artifact
-        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master' }}
+        if: ${{ github.ref == 'refs/heads/translate' }}
         uses: actions/upload-pages-artifact@v3
         with:
           path: "_book"

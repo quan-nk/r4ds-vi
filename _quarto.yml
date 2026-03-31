@@ -12,7 +12,7 @@ book:
     left: |
       R cho Khoa học Dữ liệu (2e) được viết bởi Hadley Wickham, Mine
       Çetinkaya-Rundel, và Garrett Grolemund. Bản dịch tiếng Việt bởi
-      Nguyễn Khôi Quân.
+      Nguyễn Khởi Quân.
     right: |
       Cuốn sách này được xây dựng bằng <a href="https://quarto.org/">Quarto</a>.
   cover-image: cover.jpg

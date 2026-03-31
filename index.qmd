@@ -1,19 +1,21 @@
 # Chào mừng {.unnumbered}
 
 Đây là trang web cho phiên bản thứ 2 của **"R cho Khoa học Dữ liệu"**.
-Cuốn sách này sẽ dạy bạn cách thực hiện khoa học dữ liệu (data science) với R: Bạn sẽ học cách đưa dữ liệu vào R, chuyển đổi nó sang cấu trúc hữu ích nhất, biến đổi và visualization.
+Cuốn sách này sẽ dạy bạn cách thực hiện khoa học dữ liệu (data science) với R: Bạn sẽ học cách đưa dữ liệu vào R, chuyển đổi nó sang cấu trúc hữu ích nhất, biến đổi và trực quan hóa.
 
 Trong cuốn sách này, bạn sẽ tìm thấy một bộ kỹ năng thực hành cho khoa học dữ liệu.
 Giống như một nhà hóa học học cách rửa ống nghiệm và trang bị phòng thí nghiệm, bạn sẽ học cách làm sạch dữ liệu và vẽ biểu đồ---cùng nhiều thứ khác nữa.
 Đây là những kỹ năng giúp khoa học dữ liệu trở thành hiện thực, và ở đây bạn sẽ tìm thấy các phương pháp tốt nhất để thực hiện từng công việc này với R.
 Bạn sẽ học cách sử dụng ngữ pháp đồ họa (grammar of graphics), lập trình văn học (literate programming), và nghiên cứu tái lập (reproducible research) để tiết kiệm thời gian.
-Bạn cũng sẽ học cách quản lý nguồn lực nhận thức để hỗ trợ việc khám phá khi xử lý, visualization và khảo sát dữ liệu.
+Bạn cũng sẽ học cách quản lý nguồn lực nhận thức để hỗ trợ việc khám phá khi xử lý, trực quan hóa và khảo sát dữ liệu.
 
 Trang web này miễn phí và sẽ luôn miễn phí, được cấp phép theo giấy phép [CC BY-NC-ND 3.0](https://creativecommons.org/licenses/by-nc-nd/3.0/us/).
 Nếu bạn muốn có một bản in, bạn có thể đặt mua trên [Amazon](https://www.amazon.com/dp/1492097403?&tag=hadlwick-20).
 Nếu bạn trân trọng việc đọc sách miễn phí và muốn đóng góp lại, xin hãy quyên góp cho [Kākāpō Recovery](https://www.doc.govt.nz/kakapo-donate): loài [kākāpō](https://www.youtube.com/watch?v=9T1vfsHYiKY) (xuất hiện trên bìa R4DS) là một loài vẹt cực kỳ nguy cấp có nguồn gốc từ New Zealand; hiện chỉ còn 244 con.
 
-Phiên bản tiếng Việt này được dịch bởi Nguyễn Khởi Quân ([Email](nguyenkhoiquan@gmail.com) / [Github](https://github.com/quan-nk), hoàn thiện lần đầu vào 30/03/2026.
+Phiên bản tiếng Việt này được dịch bởi Nguyễn Khởi Quân, hoàn thiện vào 30/03/2026.
+
+Mọi ý kiến đóng góp hoặc phản hồi về bản dịch, xin vui lòng liên hệ qua [Email](nguyenkhoiquan@gmail.com) hoặc [Github](https://github.com/quan-nk).
 
 Nếu bạn nói một ngôn ngữ khác, bạn có thể quan tâm đến các bản dịch miễn phí của phiên bản thứ 1:
 
