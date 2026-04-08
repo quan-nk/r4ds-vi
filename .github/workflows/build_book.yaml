@@ -1,8 +1,8 @@
 on:
   push:
-    branches: translate
+    branches: [main, translate]
   pull_request:
-    branches: translate
+    branches: [main, translate]
   # to be able to trigger a manual build
   workflow_dispatch:
   schedule:
@@ -14,6 +14,7 @@ name: build_book.yaml
 env:
   isExtPR: ${{ github.event.pull_request.head.repo.fork == true }}
   RUST_BACKTRACE: 1
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
   build:
@@ -44,13 +45,14 @@ jobs:
           quarto render
 
       - name: Upload website artifact
-        if: ${{ github.ref == 'refs/heads/translate' }}
+        if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/translate' }}
         uses: actions/upload-pages-artifact@v3
         with:
           path: "_book"
 
   deploy:
     needs: build
+    if: ${{ github.ref == 'refs/heads/main' || github.ref == 'refs/heads/translate' }}
 
     permissions:
       pages: write # to deploy to Pages
