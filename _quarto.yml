@@ -19,7 +19,7 @@ book:
   favicon: cover.jpg
   site-url: https://quan-nk.github.io/r4ds-vi/
   repo-url: https://github.com/quan-nk/r4ds-vi/
-  repo-branch: translate
+  repo-branch: main
   repo-actions: [edit, issue]
   chapters:
     - index.qmd
