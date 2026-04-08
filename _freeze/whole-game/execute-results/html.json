@@ -1,0 +1,15 @@
+{
+  "hash": "3585b73fae9978c8de9e7762d4c7003e",
+  "result": {
+    "engine": "knitr",
+    "markdown": "# Toàn cảnh {#sec-whole-game-intro .unnumbered}\n\n\n\nMục tiêu của chúng tôi trong phần này của cuốn sách là cung cấp cho bạn cái nhìn tổng quan nhanh về các công cụ chính của khoa học dữ liệu: **nhập**, **sắp xếp**, **biến đổi**, và **visualization dữ liệu**, như trong @fig-ds-whole-game.\nChúng tôi muốn cho bạn thấy \"toàn cảnh\" khoa học dữ liệu bằng cách cung cấp đủ kiến thức về tất cả các phần chính để bạn có thể xử lý các tập dữ liệu thực tế, dù đơn giản.\nCác phần sau của cuốn sách sẽ đi sâu hơn vào từng theme này, mở rộng phạm vi các thách thức khoa học dữ liệu mà bạn có thể giải quyết.\n\n\n::: {.cell}\n::: {.cell-output-display}\n![Trong phần này của cuốn sách, bạn sẽ học cách nhập,\nsắp xếp, biến đổi, và visualization dữ liệu.\n](diagrams/data-science/whole-game.png){#fig-ds-whole-game fig-alt='Sơ đồ hiển thị chu trình khoa học dữ liệu: Nhập -> Sắp xếp ->\nHiểu (bao gồm các giai đoạn Biến đổi -> Trực quan hóa -> Mô hình hóa\ntrong một chu trình) -> Truyền đạt. Bao quanh tất cả là Lập trình.\nNhập, Sắp xếp, Biến đổi, và Trực quan hóa được đánh dấu.' width=535}\n:::\n:::\n\n\nBốn chương tập trung vào các công cụ khoa học dữ liệu:\n\n-   Trực quan hóa là nơi tuyệt vời để bắt đầu lập trình R, vì thành quả rất rõ ràng: bạn có thể tạo các biểu đồ đẹp mắt và giàu thông tin giúp bạn hiểu dữ liệu.\n    Trong @sec-data-visualization bạn sẽ đi sâu vào visualization, học cấu trúc cơ bản của biểu đồ ggplot2, và các kỹ thuật mạnh mẽ để biến dữ liệu thành biểu đồ.\n\n-   Chỉ visualization thôi thường là chưa đủ, vì vậy trong @sec-data-transform, bạn sẽ học các động từ chính cho phép bạn chọn các biến quan trọng, lọc các quan sát chính, tạo biến mới, và tính toán tóm tắt.\n\n-   Trong @sec-data-tidy, bạn sẽ học về tidy data (tidy data), một cách nhất quán để lưu trữ dữ liệu giúp biến đổi, visualization, và mô hình hóa dễ dàng hơn.\n    Bạn sẽ học các nguyên tắc cơ bản, và cách đưa dữ liệu vào dạng gọn gàng.\n\n-   Trước khi có thể biến đổi và visualization dữ liệu, bạn cần đưa dữ liệu vào R trước.\n    Trong @sec-data-import bạn sẽ học những kiến thức cơ bản về cách đưa file `.csv` vào R.\n\nXen kẽ giữa các chương này là bốn chương khác tập trung vào workflow R của bạn.\nTrong @sec-workflow-basics, @sec-workflow-style, và @sec-workflow-scripts-projects bạn sẽ học các phương pháp workflow tốt để viết và tổ chức mã R.\nChúng sẽ giúp bạn thành công lâu dài, vì chúng cung cấp cho bạn các công cụ để duy trì tổ chức khi bạn thực hiện các dự án thực tế.\nCuối cùng, @sec-workflow-getting-help sẽ dạy bạn cách tìm kiếm trợ giúp và tiếp tục học hỏi.\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

@@ -84,4 +84,7 @@ format:
     author-meta: "Hadley Wickham, Mine Çetinkaya-Rundel, và Garrett Grolemund"
     callout-appearance: simple
 
+execute:
+  freeze: auto
+
 editor: source

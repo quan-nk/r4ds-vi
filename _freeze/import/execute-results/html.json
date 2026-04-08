@@ -1,0 +1,15 @@
+{
+  "hash": "043544282a981ec80608cbea3eb117fc",
+  "result": {
+    "engine": "knitr",
+    "markdown": "# Nhập dữ liệu {#sec-import .unnumbered}\n\n\n::: {.cell}\n\n:::\n\n\nTrong phần này của cuốn sách, bạn sẽ học cách nhập nhiều loại dữ liệu hơn vào R, cũng như cách đưa chúng vào dạng hữu ích cho phân tích.\nĐôi khi đây chỉ là việc gọi một function từ package nhập dữ liệu phù hợp.\nNhưng trong các trường hợp phức tạp hơn, có thể cần cả sắp xếp và biến đổi để có được bảng tidy data mà bạn muốn làm việc.\n\n\n::: {.cell}\n::: {.cell-output-display}\n![Nhập dữ liệu là bước đầu tiên của workflow khoa học dữ liệu; không có\ndữ liệu thì bạn không thể thực hiện khoa học dữ liệu!\n](diagrams/data-science/import.png){#fig-ds-import fig-alt='Mô hình khoa học dữ liệu của chúng tôi với phần nhập dữ liệu được\nđánh dấu bằng màu xanh.\n' width=535}\n:::\n:::\n\n\nTrong phần này của cuốn sách bạn sẽ học cách truy cập dữ liệu được lưu trữ theo các cách sau:\n\n-   Trong @sec-import-spreadsheets, bạn sẽ học cách nhập dữ liệu từ spreadsheet Excel và Google Sheets.\n\n-   Trong @sec-import-databases, bạn sẽ học về cách lấy dữ liệu từ database vào R (và bạn cũng sẽ học một chút về cách đưa dữ liệu từ R vào database).\n\n-   Trong @sec-arrow, bạn sẽ học về Arrow, một công cụ mạnh mẽ để làm việc với dữ liệu ngoài bộ nhớ, đặc biệt khi nó được lưu trữ ở định dạng parquet.\n\n-   Trong @sec-rectangling, bạn sẽ học cách làm việc với dữ liệu phân cấp, bao gồm các list lồng nhau sâu được tạo ra bởi dữ liệu lưu trữ ở định dạng JSON.\n\n-   Trong @sec-scraping, bạn sẽ học về \"scraping\" web, nghệ thuật và khoa học của việc trích xuất dữ liệu từ các trang web.\n\nCó hai package tidyverse quan trọng mà chúng tôi không thảo luận ở đây: haven và xml2.\nNếu bạn đang làm việc với dữ liệu từ file SPSS, Stata, và SAS, hãy xem package **haven**, <https://haven.tidyverse.org>.\nNếu bạn đang làm việc với dữ liệu XML, hãy xem package **xml2**, <https://xml2.r-lib.org>.\nNếu không, bạn sẽ cần nghiên cứu thêm để tìm ra package nào bạn cần sử dụng; google là người bạn tốt nhất của bạn ở đây 😃.\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "hash": "f0864757dd30872800a3b090e459ee45",
+  "result": {
+    "engine": "knitr",
+    "markdown": "# Trực quan hóa {#sec-visualize .unnumbered}\n\n\n::: {.cell}\n\n:::\n\n\nSau khi đọc phần đầu tiên của cuốn sách, bạn đã hiểu (ít nhất là ở mức bề mặt) các công cụ quan trọng nhất để thực hiện khoa học dữ liệu.\nBây giờ là lúc bắt đầu đi sâu vào chi tiết.\nTrong phần này của cuốn sách, bạn sẽ tìm hiểu sâu hơn về visualization dữ liệu.\n\n\n::: {.cell}\n::: {.cell-output-display}\n![Trực quan hóa dữ liệu thường là bước đầu tiên trong khám phá dữ liệu.\n](diagrams/data-science/visualize.png){#fig-ds-visualize fig-alt='Mô hình khoa học dữ liệu của chúng tôi, với phần visualization được\nđánh dấu bằng màu xanh.\n' width=535}\n:::\n:::\n\n\nMỗi chương đề cập đến một hoặc vài khía cạnh của việc tạo visualization dữ liệu.\n\n-   Trong @sec-layers bạn sẽ học về ngữ pháp đồ họa theo lớp (layered grammar of graphics).\n\n-   Trong @sec-exploratory-data-analysis, bạn sẽ kết hợp visualization với sự tò mò và hoài nghi để đặt ra và trả lời các câu hỏi thú vị về dữ liệu.\n\n-   Cuối cùng, trong @sec-communication bạn sẽ học cách lấy các biểu đồ khám phá, nâng cao chúng, và biến chúng thành các biểu đồ trình bày, những biểu đồ giúp người mới đến với phân tích của bạn hiểu được chuyện gì đang xảy ra nhanh chóng và dễ dàng nhất có thể.\n\nBa chương này giúp bạn bắt đầu trong thế giới visualization, nhưng còn rất nhiều điều để học.\nNơi tốt nhất tuyệt đối để tìm hiểu thêm là cuốn sách ggplot2: [*ggplot2: Elegant graphics for data analysis*](https://ggplot2-book.org/).\nNó đi sâu hơn nhiều vào lý thuyết nền tảng, và có nhiều ví dụ hơn về cách kết hợp các thành phần riêng lẻ để giải quyết các vấn đề thực tế.\nMột tài nguyên tuyệt vời khác là thư viện mở rộng ggplot2 <https://exts.ggplot2.tidyverse.org/gallery/>.\nTrang web này liệt kê nhiều package ggplot2 với các geom và scale mới.\nĐây là nơi tuyệt vời để bắt đầu nếu bạn đang cố gắng làm điều gì đó có vẻ khó với ggplot2.\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

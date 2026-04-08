@@ -1,0 +1,15 @@
+{
+  "hash": "1902e30e3b92f7cacf241c7299a5c115",
+  "result": {
+    "engine": "knitr",
+    "markdown": "# Biến đổi {#sec-transform-intro .unnumbered}\n\n\n\nPhần thứ hai của cuốn sách là phần đi sâu vào visualization dữ liệu.\nTrong phần này của cuốn sách, bạn sẽ tìm hiểu về các loại biến quan trọng nhất mà bạn sẽ gặp bên trong một data frame và học các công cụ bạn có thể sử dụng để làm việc với chúng.\n\n\n::: {.cell}\n::: {.cell-output-display}\n![Các tùy chọn biến đổi dữ liệu phụ thuộc rất nhiều vào loại\ndữ liệu liên quan, theme của phần này trong cuốn sách.\n](diagrams/data-science/transform.png){#fig-ds-transform fig-alt='Mô hình khoa học dữ liệu của chúng tôi, với phần biến đổi được\nđánh dấu bằng màu xanh.\n' width=535}\n:::\n:::\n\n\nBạn có thể đọc các chương này khi cần; chúng được thiết kế phần lớn độc lập để có thể đọc không theo thứ tự.\n\n-   @sec-logicals dạy bạn về vector logic (logical vectors).\n    Đây là loại vector đơn giản nhất, nhưng cực kỳ mạnh mẽ.\n    Bạn sẽ học cách tạo chúng bằng các phép so sánh số, cách kết hợp chúng với đại số Boole, cách sử dụng chúng trong tóm tắt, và cách sử dụng chúng cho các biến đổi có điều kiện.\n\n-   @sec-numbers đi sâu vào các công cụ cho vector số, động lực chính của khoa học dữ liệu.\n    Bạn sẽ học thêm về đếm và một loạt các function biến đổi và tóm tắt quan trọng.\n\n-   @sec-strings sẽ cung cấp cho bạn các công cụ để làm việc với string (string): bạn sẽ cắt chúng, chia chúng, và ghép chúng lại với nhau.\n    Chương này chủ yếu tập trung vào package stringr, nhưng bạn cũng sẽ học thêm một số function tidyr dành riêng cho việc trích xuất dữ liệu từ string.\n\n-   @sec-regular-expressions giới thiệu cho bạn về regular expression, một công cụ mạnh mẽ để xử lý string.\n    Chương này sẽ đưa bạn từ việc nghĩ rằng có con mèo đi trên bàn phím đến việc đọc và viết các mẫu string phức tạp.\n\n-   @sec-factors giới thiệu factor (factor): kiểu dữ liệu mà R sử dụng để lưu trữ dữ liệu phân loại.\n    Bạn sử dụng factor khi một biến có tập hợp cố định các giá trị có thể, hoặc khi bạn muốn sử dụng thứ tự không theo bảng chữ cái của string.\n\n-   @sec-dates-and-times sẽ cung cấp cho bạn các công cụ chính để làm việc với ngày và ngày-giờ (date-time).\n    Thật không may, bạn càng tìm hiểu về ngày-giờ, chúng càng có vẻ phức tạp hơn, nhưng với sự hỗ trợ của package lubridate, bạn sẽ học cách vượt qua những thách thức phổ biến nhất.\n\n-   @sec-missing-values thảo luận sâu về missing value.\n    Chúng tôi đã thảo luận về chúng vài lần riêng lẻ, nhưng bây giờ là lúc thảo luận một cách toàn diện, giúp bạn nắm bắt sự khác biệt giữa missing value ẩn và hiện, và cách thức cũng như lý do bạn có thể chuyển đổi giữa chúng.\n\n-   @sec-joins kết thúc phần này của cuốn sách bằng cách cung cấp cho bạn các công cụ để nối (join) hai (hoặc nhiều) data frame lại với nhau.\n    Việc học về nối sẽ buộc bạn phải đối mặt với khái niệm khóa (key), và suy nghĩ về cách bạn xác định từng row trong tập dữ liệu.\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

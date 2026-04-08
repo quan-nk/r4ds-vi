@@ -1,0 +1,15 @@
+{
+  "hash": "dfeacad3b0361f71727be890e04e439e",
+  "result": {
+    "engine": "knitr",
+    "markdown": "# Truyền đạt {#sec-communicate-intro .unnumbered}\n\n\n::: {.cell}\n\n:::\n\n\nĐến giờ, bạn đã học các công cụ để đưa dữ liệu vào R, sắp xếp nó thành dạng thuận tiện cho phân tích, và sau đó hiểu dữ liệu thông qua biến đổi và visualization.\nTuy nhiên, dù phân tích của bạn tuyệt vời đến đâu cũng không quan trọng nếu bạn không thể giải thích nó cho người khác: bạn cần **truyền đạt** kết quả của mình.\n\n\n::: {.cell}\n::: {.cell-output-display}\n![Truyền đạt là phần cuối cùng của workflow khoa học dữ liệu; nếu bạn\nkhông thể truyền đạt kết quả đến người khác, dù phân tích của bạn\ntuyệt vời đến đâu cũng không quan trọng.\n](diagrams/data-science/communicate.png){#fig-ds-communicate fig-alt='Sơ đồ hiển thị chu trình khoa học dữ liệu với phần\ntruyền đạt được đánh dấu bằng màu xanh.\n' width=535}\n:::\n:::\n\n\nTruyền đạt là theme của hai chương tiếp theo:\n\n-   Trong @sec-quarto, bạn sẽ tìm hiểu về Quarto, một công cụ để tích hợp văn bản, mã, và kết quả.\n    Bạn có thể sử dụng Quarto cho giao tiếp giữa nhà phân tích với nhà phân tích cũng như giữa nhà phân tích với người ra quyết định.\n    Nhờ sức mạnh của các định dạng Quarto, bạn thậm chí có thể sử dụng cùng một tài liệu cho cả hai mục đích.\n\n-   Trong @sec-quarto-formats, bạn sẽ tìm hiểu một chút về nhiều loại đầu ra khác mà bạn có thể tạo bằng Quarto, bao gồm console (dashboard), trang web, và sách.\n\nCác chương này chủ yếu tập trung vào các khía cạnh kỹ thuật của truyền đạt, không phải những vấn đề thực sự khó khăn của việc truyền đạt suy nghĩ đến người khác.\nTuy nhiên, có rất nhiều cuốn sách tuyệt vời khác về truyền đạt, mà chúng tôi sẽ giới thiệu cho bạn ở cuối mỗi chương.\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
