@@ -13,10 +13,6 @@ Trang web này miễn phí và sẽ luôn miễn phí, được cấp phép theo
 Nếu bạn muốn có một bản in, bạn có thể đặt mua trên [Amazon](https://www.amazon.com/dp/1492097403?&tag=hadlwick-20).
 Nếu bạn trân trọng việc đọc sách miễn phí và muốn đóng góp lại, xin hãy quyên góp cho [Kākāpō Recovery](https://www.doc.govt.nz/kakapo-donate): loài [kākāpō](https://www.youtube.com/watch?v=9T1vfsHYiKY) (xuất hiện trên bìa R4DS) là một loài vẹt cực kỳ nguy cấp có nguồn gốc từ New Zealand; hiện chỉ còn 244 con.
 
-Phiên bản tiếng Việt này được dịch bởi Nguyễn Khởi Quân, hoàn thiện vào 30/03/2026.
-
-Mọi ý kiến đóng góp hoặc phản hồi về bản dịch, xin vui lòng liên hệ qua [Email](nguyenkhoiquan@gmail.com) hoặc [Github](https://github.com/quan-nk).
-
 Nếu bạn nói một ngôn ngữ khác, bạn có thể quan tâm đến các bản dịch miễn phí của phiên bản thứ 1:
 
 -   [Tiếng Tây Ban Nha](http://es.r4ds.hadley.nz)
@@ -27,8 +23,17 @@ Nếu bạn nói một ngôn ngữ khác, bạn có thể quan tâm đến các 
 và phiên bản thứ 2
 
 -   [Tiếng Tây Ban Nha](https://davidrsch.github.io/r4ds-es/)
+-   [Tiếng Việt](https://quan-nk.github.io/r4ds-vi/) 
 
 Bạn có thể tìm các đáp án gợi ý cho bài tập trong sách tại <https://mine-cetinkaya-rundel.github.io/r4ds-solutions>.
 
 Xin lưu ý rằng R4DS sử dụng [Quy tắc Ứng xử của Người đóng góp](https://contributor-covenant.org/version/2/0/CODE_OF_CONDUCT.html).
 Bằng việc đóng góp vào cuốn sách này, bạn đồng ý tuân thủ các điều khoản của nó.
+
+## Về bản dịch {.unnumbered}
+
+Bản dịch tiếng Việt của "R cho Khoa học Dữ liệu" là dự án cá nhân của Nguyễn Khởi Quân với mục tiêu giúp việc học Khoa học Dữ liệu với R trở nên dễ tiếp cận hơn với người đọc tiếng Việt.
+
+Lưu ý rằng đây là bản dịch của cuốn sách gốc, vì vậy khi các tác giả đề cập đến bản thân theo ngôi thứ nhất, đó là Hadley Wickham, Mine Çetinkaya-Rundel & Garrett Grolemund, không phải người dịch.
+
+Nếu bạn phát hiện lỗi liên quan đến nội dung bản dịch, hãy mở một issue hoặc gửi pull request trên repository này. Bạn cũng có thể liên hệ trực tiếp qua [email](mailto:nguyenkhoiquan@gmail.com).
