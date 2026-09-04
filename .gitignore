@@ -25,3 +25,6 @@ site_libs
 /data/seattle-library-checkouts.parquet
 /data/seattle-library-checkouts
 oreilly
+
+# Claude Code agent definitions and review reports (local only)
+.claude/
